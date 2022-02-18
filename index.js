@@ -1,5 +1,7 @@
 const state = {
-  breweries: []
+  breweries: [],
+  page: 1,
+  breweriesPerPage: 10
 };
 
 const breweriesList = document.querySelector("#breweries-list");
@@ -35,14 +37,14 @@ searchCurrentBreweries.addEventListener('input', function(event) {
     .forEach((brewery) => addBrewery(brewery));
 })
 
-clearAll.addEventListener('click', function(event) {
+clearAll.addEventListener('click', function() {
   const checkboxes = filterByCity.querySelectorAll('input')
   for(const checkbox of checkboxes) {
     checkbox.checked = false
   }
   state.breweries.forEach(brewery => brewery.isCityChecked = false)
 
-    render()
+  render()
 })
 
 function addBrewery(brewery) {
@@ -108,10 +110,40 @@ function render() {
       (brewery) =>
       brewery.isCityChecked === true
     )
+    .filter(
+      (brewery) =>
+      isPaginated(brewery)
+    )
     .forEach((brewery) => addBrewery(brewery))
+
+
+    const addButton = document.createElement('button') 
+    const pageNumber = document.createElement('span') 
+    const subtractButton = document.createElement('button') 
+
+    pageNumber.style.margin = "10px"
+    
+    addButton.innerText = "+"
+    pageNumber.innerText = state.page
+    subtractButton.innerText = "-"
+
+    addButton.addEventListener('click', function() {
+      if(state.breweries.filter((brewery) => brewery.isCityChecked === true).length / state.breweriesPerPage > state.page) {
+        state.page++
+      }
+      render()
+    }) 
+    
+    subtractButton.addEventListener('click', function() {
+      if(state.page > 1) state.page--
+      render()
+    }) 
+
+    breweriesList.prepend(subtractButton, pageNumber, addButton)
 }
 
 function retrieveBreweryData(apiEndpoint) {
+  state.page = 1
   fetch(apiEndpoint)
     .then(function (response) {
       return response.json();
@@ -127,4 +159,15 @@ function retrieveBreweryData(apiEndpoint) {
       addCities()
       render();
     });
+}
+
+function isPaginated(brewery) {
+  const index = state.breweries.filter(
+    (brewery) =>
+    brewery.isCityChecked === true
+  )
+  .indexOf(brewery)
+
+  return index >= (state.breweriesPerPage * (state.page - 1)) && index <= ((state.breweriesPerPage * state.page) - 1)
+
 }
