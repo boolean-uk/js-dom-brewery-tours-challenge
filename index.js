@@ -1,51 +1,62 @@
 const state = {
   breweries: [],
   page: 1,
-  breweriesPerPage: 10
+  breweriesPerPage: 10,
 };
 
 const breweriesList = document.querySelector("#breweries-list");
 const stateSearch = document.querySelector("#select-state-form");
-const filterBrewery = document.querySelector('#filter-by-type-form')
-const searchCurrentBreweries = document.querySelector('#search-breweries-form')
-const filterByCity = document.querySelector('#filter-by-city-form')
-const clearAll = document.querySelector('.clear-all-btn')
+const filterBrewery = document.querySelector("#filter-by-type-form");
+const searchCurrentBreweries = document.querySelector("#search-breweries-form");
+const filterByCity = document.querySelector("#filter-by-city-form");
+const clearAll = document.querySelector(".clear-all-btn");
 
-filterBrewery.addEventListener('change', function(event) {
-    const currentState = state.breweries[0].state
-    if(event.target.value === "") {
-      retrieveBreweryData(`https://api.openbrewerydb.org/breweries?by_state=${currentState}&per_page=50`)
-    }
-    else{
-      retrieveBreweryData(`https://api.openbrewerydb.org/breweries?by_state=${currentState}&by_type=${event.target.value}&per_page=50`)
-    }   
-})
+filterBrewery.addEventListener("change", function (event) {
+  const currentState = state.breweries[0].state;
+  if (event.target.value === "") {
+    retrieveBreweryData(
+      `https://api.openbrewerydb.org/breweries?by_state=${currentState}&per_page=50`
+    );
+  } else {
+    retrieveBreweryData(
+      `https://api.openbrewerydb.org/breweries?by_state=${currentState}&by_type=${event.target.value}&per_page=50`
+    );
+  }
+});
 
 stateSearch.addEventListener("submit", function (event) {
   event.preventDefault();
-  retrieveBreweryData(`https://api.openbrewerydb.org/breweries?by_state=${stateSearch["select-state"].value}&per_page=50`)  
+  retrieveBreweryData(
+    `https://api.openbrewerydb.org/breweries?by_state=${stateSearch["select-state"].value}&per_page=50`
+  );
 });
 
-searchCurrentBreweries.addEventListener('input', function(event) {
+searchCurrentBreweries.addEventListener("input", function (event) {
   breweriesList.innerHTML = "";
-    state.breweries
+  state.breweries
     .filter(
-        (brewery) => 
-        brewery.name.toLowerCase().includes(event.target.value) || 
-        brewery.name.toUpperCase().includes(event.target.value) 
+      (brewery) =>
+        brewery.name.toLowerCase().includes(event.target.value) ||
+        brewery.name.toUpperCase().includes(event.target.value)
     )
+    .filter((brewery) => brewery.isCityChecked === true)
+    .filter((brewery) => isPaginated(brewery))
     .forEach((brewery) => addBrewery(brewery));
-})
 
-clearAll.addEventListener('click', function() {
-  const checkboxes = filterByCity.querySelectorAll('input')
-  for(const checkbox of checkboxes) {
-    checkbox.checked = false
+  if (howManyPages() > 1) {
+    addPaginationButtons()
   }
-  state.breweries.forEach(brewery => brewery.isCityChecked = false)
+});
 
-  render()
-})
+clearAll.addEventListener("click", function () {
+  const checkboxes = filterByCity.querySelectorAll("input");
+  for (const checkbox of checkboxes) {
+    checkbox.checked = false;
+  }
+  state.breweries.forEach((brewery) => (brewery.isCityChecked = false));
+
+  render();
+});
 
 function addBrewery(brewery) {
   const liElement = document.createElement("li");
@@ -66,84 +77,81 @@ function addBrewery(brewery) {
   breweriesList.append(liElement);
 }
 
-function addCity(brewery) { 
-const citiesOnPage = filterByCity.querySelectorAll('label')
-    for (const label of citiesOnPage) {
-        if(label.innerText === brewery.city) {
-            return
-        }
-}
-const input = document.createElement('input')
-const label = document.createElement('label')
-
-input.setAttribute('type', 'checkbox')
-input.checked = true
-input.setAttribute('name', brewery.city.toLowerCase())
-input.setAttribute('value', brewery.city.toLowerCase())
-
-input.addEventListener('change', function() {
-  for (let i = 0; i < state.breweries.length; i++) {
-    if(state.breweries[i].city === brewery.city) {
-      state.breweries[i].isCityChecked = input.checked
+function addCity(brewery) {
+  const citiesOnPage = filterByCity.querySelectorAll("label");
+  for (const label of citiesOnPage) {
+    if (label.innerText === brewery.city) {
+      return;
     }
   }
-  render()
-})
+  const input = document.createElement("input");
+  const label = document.createElement("label");
 
-label.setAttribute('for', brewery.city.toLowerCase())
-label.innerText = brewery.city
+  input.setAttribute("type", "checkbox");
+  input.checked = true;
+  input.setAttribute("name", brewery.city.toLowerCase());
+  input.setAttribute("value", brewery.city.toLowerCase());
 
-filterByCity.append(input,label)
+  input.addEventListener("change", function () {
+    for (let i = 0; i < state.breweries.length; i++) {
+      if (state.breweries[i].city === brewery.city) {
+        state.breweries[i].isCityChecked = input.checked;
+      }
+    }
+    render();
+  });
+
+  label.setAttribute("for", brewery.city.toLowerCase());
+  label.innerText = brewery.city;
+
+  filterByCity.append(input, label);
 }
 
 function addCities() {
   filterByCity.innerHTML = "";
-  state.breweries
-  .forEach((brewery) => addCity(brewery))
+  state.breweries.forEach((brewery) => addCity(brewery));
 }
-
 
 function render() {
   breweriesList.innerHTML = "";
   state.breweries
-    .filter(
-      (brewery) =>
-      brewery.isCityChecked === true
-    )
-    .filter(
-      (brewery) =>
-      isPaginated(brewery)
-    )
-    .forEach((brewery) => addBrewery(brewery))
+    .filter((brewery) => brewery.isCityChecked === true)
+    .filter((brewery) => isPaginated(brewery))
+    .forEach((brewery) => addBrewery(brewery));
 
+  if (howManyPages() > 1) {
+    addPaginationButtons()
+  }
+}
 
-    const addButton = document.createElement('button') 
-    const pageNumber = document.createElement('span') 
-    const subtractButton = document.createElement('button') 
+function addPaginationButtons() {
+  const addButton = document.createElement("button");
+  const pageNumber = document.createElement("span");
+  const subtractButton = document.createElement("button");
 
-    pageNumber.style.margin = "10px"
-    
-    addButton.innerText = "+"
-    pageNumber.innerText = state.page
-    subtractButton.innerText = "-"
+  pageNumber.style.margin = "10px";
 
-    addButton.addEventListener('click', function() {
-      if(state.breweries.filter((brewery) => brewery.isCityChecked === true).length / state.breweriesPerPage > state.page) {
-        state.page++
-      }
-      render()
-    }) 
-    
-    subtractButton.addEventListener('click', function() {
-      if(state.page > 1) state.page--
-      render()
-    }) 
+  addButton.innerText = "+";
+  pageNumber.innerText = state.page;
+  subtractButton.innerText = "-";
 
-    breweriesList.prepend(subtractButton, pageNumber, addButton)
+  addButton.addEventListener("click", function () {
+    if (howManyPages() > state.page) {
+      state.page++;
+    }
+    render();
+  });
+
+  subtractButton.addEventListener("click", function () {
+    if (state.page > 1) state.page--;
+    render();
+  });
+
+  breweriesList.prepend(subtractButton, pageNumber, addButton);
 }
 
 function retrieveBreweryData(apiEndpoint) {
-  state.page = 1
+  state.page = 1;
   fetch(apiEndpoint)
     .then(function (response) {
       return response.json();
@@ -155,19 +163,26 @@ function retrieveBreweryData(apiEndpoint) {
           brewery.brewery_type === "regional" ||
           brewery.brewery_type === "brewpub"
       );
-      state.breweries.forEach(brewery => brewery.isCityChecked = true)
-      addCities()
+      state.breweries.forEach((brewery) => (brewery.isCityChecked = true));
+      addCities();
       render();
     });
 }
 
 function isPaginated(brewery) {
-  const index = state.breweries.filter(
-    (brewery) =>
-    brewery.isCityChecked === true
-  )
-  .indexOf(brewery)
+  const index = state.breweries
+    .filter((brewery) => brewery.isCityChecked === true)
+    .indexOf(brewery);
 
-  return index >= (state.breweriesPerPage * (state.page - 1)) && index <= ((state.breweriesPerPage * state.page) - 1)
+  return (
+    index >= state.breweriesPerPage * (state.page - 1) &&
+    index <= state.breweriesPerPage * state.page - 1
+  );
+}
 
+function howManyPages() {
+  return (
+    state.breweries.filter((brewery) => brewery.isCityChecked === true).length /
+    state.breweriesPerPage
+  );
 }
