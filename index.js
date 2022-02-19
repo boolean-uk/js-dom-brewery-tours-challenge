@@ -1,5 +1,6 @@
 const state = {
   breweries: [],
+  brewerySearch: [],
   page: 1,
   breweriesPerPage: 10,
 };
@@ -29,23 +30,18 @@ stateSearch.addEventListener("submit", function (event) {
   retrieveBreweryData(
     `https://api.openbrewerydb.org/breweries?by_state=${stateSearch["select-state"].value}&per_page=50`
   );
+
 });
 
 searchCurrentBreweries.addEventListener("input", function (event) {
   breweriesList.innerHTML = "";
-  state.breweries
+  state.brewerySearch = state.breweries
     .filter(
       (brewery) =>
         brewery.name.toLowerCase().includes(event.target.value) ||
         brewery.name.toUpperCase().includes(event.target.value)
     )
-    .filter((brewery) => brewery.isCityChecked === true)
-    .filter((brewery) => isPaginated(brewery))
-    .forEach((brewery) => addBrewery(brewery));
-
-  if (howManyPages() > 1) {
-    addPaginationButtons()
-  }
+    render(state.brewerySearch)
 });
 
 clearAll.addEventListener("click", function () {
@@ -112,44 +108,6 @@ function addCities() {
   state.breweries.forEach((brewery) => addCity(brewery));
 }
 
-function render() {
-  breweriesList.innerHTML = "";
-  state.breweries
-    .filter((brewery) => brewery.isCityChecked === true)
-    .filter((brewery) => isPaginated(brewery))
-    .forEach((brewery) => addBrewery(brewery));
-
-  if (howManyPages() > 1) {
-    addPaginationButtons()
-  }
-}
-
-function addPaginationButtons() {
-  const addButton = document.createElement("button");
-  const pageNumber = document.createElement("span");
-  const subtractButton = document.createElement("button");
-
-  pageNumber.style.margin = "10px";
-
-  addButton.innerText = "+";
-  pageNumber.innerText = state.page;
-  subtractButton.innerText = "-";
-
-  addButton.addEventListener("click", function () {
-    if (howManyPages() > state.page) {
-      state.page++;
-    }
-    render();
-  });
-
-  subtractButton.addEventListener("click", function () {
-    if (state.page > 1) state.page--;
-    render();
-  });
-
-  breweriesList.prepend(subtractButton, pageNumber, addButton);
-}
-
 function retrieveBreweryData(apiEndpoint) {
   state.page = 1;
   fetch(apiEndpoint)
@@ -169,8 +127,48 @@ function retrieveBreweryData(apiEndpoint) {
     });
 }
 
-function isPaginated(brewery) {
-  const index = state.breweries
+function render(arrayOfBreweries = state.breweries) {
+  breweriesList.innerHTML = "";
+  arrayOfBreweries
+    .filter((brewery) => brewery.isCityChecked === true)
+    .filter((brewery) => isPaginated(arrayOfBreweries, brewery))
+    .forEach((brewery) => addBrewery(brewery));
+
+  if (howManyPages(arrayOfBreweries) > 1) {
+    addPaginationButtons(arrayOfBreweries)
+  }
+}
+
+//pagination functions
+
+function addPaginationButtons(arrayOfBreweries) {
+  const addButton = document.createElement("button");
+  const pageNumber = document.createElement("span");
+  const subtractButton = document.createElement("button");
+
+  pageNumber.style.margin = "10px";
+
+  addButton.innerText = "+";
+  pageNumber.innerText = state.page;
+  subtractButton.innerText = "-";
+
+  addButton.addEventListener("click", function () {
+    if (howManyPages(arrayOfBreweries) > state.page) {
+      state.page++;
+    }
+    render(arrayOfBreweries);
+  });
+
+  subtractButton.addEventListener("click", function () {
+    if (state.page > 1) state.page--;
+    render(arrayOfBreweries);
+  });
+
+  breweriesList.prepend(subtractButton, pageNumber, addButton);
+}
+
+function isPaginated(arrayOfBreweries, brewery) {
+  const index = arrayOfBreweries
     .filter((brewery) => brewery.isCityChecked === true)
     .indexOf(brewery);
 
@@ -180,9 +178,9 @@ function isPaginated(brewery) {
   );
 }
 
-function howManyPages() {
+function howManyPages(arrayOfBreweries) {
   return (
-    state.breweries.filter((brewery) => brewery.isCityChecked === true).length /
+    arrayOfBreweries.filter((brewery) => brewery.isCityChecked === true).length /
     state.breweriesPerPage
   );
 }
