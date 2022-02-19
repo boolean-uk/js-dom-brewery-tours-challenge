@@ -5,31 +5,37 @@ const state = {
   breweriesPerPage: 10,
 };
 
+// To do 
+// cites change when search value is added and not have them all ticked
+
 const breweriesList = document.querySelector("#breweries-list");
 const stateSearch = document.querySelector("#select-state-form");
 const filterBrewery = document.querySelector("#filter-by-type-form");
+const resetFilterBrewery = document.querySelector('#filter-by-type')
 const searchCurrentBreweries = document.querySelector("#search-breweries-form");
 const filterByCity = document.querySelector("#filter-by-city-form");
 const clearAll = document.querySelector(".clear-all-btn");
 
-filterBrewery.addEventListener("change", function (event) {
-  const currentState = state.breweries[0].state;
-  if (event.target.value === "") {
-    retrieveBreweryData(
-      `https://api.openbrewerydb.org/breweries?by_state=${currentState}&per_page=50`
-    );
-  } else {
-    retrieveBreweryData(
-      `https://api.openbrewerydb.org/breweries?by_state=${currentState}&by_type=${event.target.value}&per_page=50`
-    );
-  }
-});
 
 stateSearch.addEventListener("submit", function (event) {
   event.preventDefault();
   retrieveBreweryData(
     `https://api.openbrewerydb.org/breweries?by_state=${stateSearch["select-state"].value}&per_page=50`
   );
+
+  resetFilterBrewery.value = ""
+
+  filterBrewery.addEventListener("change", function (event) {
+    if (event.target.value === "") {
+      retrieveBreweryData(
+        `https://api.openbrewerydb.org/breweries?by_state=${stateSearch["select-state"].value}&per_page=50`
+      );
+    } else {
+      retrieveBreweryData(
+        `https://api.openbrewerydb.org/breweries?by_state=${stateSearch["select-state"].value}&by_type=${event.target.value}&per_page=50`
+      );
+    }
+  });
 
 });
 
@@ -38,10 +44,11 @@ searchCurrentBreweries.addEventListener("input", function (event) {
   state.brewerySearch = state.breweries
     .filter(
       (brewery) =>
-        brewery.name.toLowerCase().includes(event.target.value) ||
-        brewery.name.toUpperCase().includes(event.target.value)
+        brewery.name.toLowerCase().includes(event.target.value.toLowerCase())
     )
     render(state.brewerySearch)
+    // addCities(state.brewerySearch)
+
 });
 
 clearAll.addEventListener("click", function () {
@@ -76,9 +83,7 @@ function addBrewery(brewery) {
 function addCity(brewery) {
   const citiesOnPage = filterByCity.querySelectorAll("label");
   for (const label of citiesOnPage) {
-    if (label.innerText === brewery.city) {
-      return;
-    }
+    if (label.innerText === brewery.city) return;
   }
   const input = document.createElement("input");
   const label = document.createElement("label");
@@ -103,9 +108,9 @@ function addCity(brewery) {
   filterByCity.append(input, label);
 }
 
-function addCities() {
+function addCities(arrayOfBreweries = state.breweries) {
   filterByCity.innerHTML = "";
-  state.breweries.forEach((brewery) => addCity(brewery));
+  arrayOfBreweries.forEach((brewery) => addCity(brewery));
 }
 
 function retrieveBreweryData(apiEndpoint) {
@@ -124,6 +129,7 @@ function retrieveBreweryData(apiEndpoint) {
       state.breweries.forEach((brewery) => (brewery.isCityChecked = true));
       addCities();
       render();
+      searchCurrentBreweries.reset()
     });
 }
 
