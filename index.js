@@ -3,6 +3,7 @@ const state = {
   brewerySearch: [],
   page: 1,
   breweriesPerPage: 10,
+  visitBreweryList: []
 };
 
 //core criteria
@@ -14,6 +15,7 @@ const resetFilterBrewery = document.querySelector("#filter-by-type");
 const searchCurrentBreweries = document.querySelector("#search-breweries-form");
 const filterByCity = document.querySelector("#filter-by-city-form");
 const clearAll = document.querySelector(".clear-all-btn");
+const showVisitList = document.querySelector('.visit-list')
 const FIFTY_PER_PAGE = `&per_page=50`;
 const breweryTypes = ["micro", "regional", "brewpub"];
 
@@ -50,10 +52,16 @@ function addBrewery(brewery) {
     <p>${brewery.phone}</p>
   </section>
   <section class="link">
+  <button>${visitListButtonText(brewery)}</button>
     <a href="${brewery.website_url}" target="_blank">Visit Website</a>
   </section>`;
+
+  const visitList = liElement.querySelector('button')
+  addAndDeleteVisitListButton(visitList, brewery)
+
   breweriesList.append(liElement);
 }
+
 
 function retrieveBreweryData(apiEndpoint) {
   state.page = 1;
@@ -206,3 +214,76 @@ function howManyPages(arrayOfBreweries) {
       .length / state.breweriesPerPage
   );
 }
+
+// ext 4 showing bookmarked mreweries to visit
+
+showVisitList.addEventListener('click', function(){
+  createVisitList()
+  if(showVisitList.innerHTML === "show visit list") {
+      showVisitList.innerHTML = "show state breweries"
+        renderBreweries(state.visitBreweryList)
+        renderCities(state.visitBreweryList)
+  }
+  else if(showVisitList.innerHTML === "show state breweries") {
+    showVisitList.innerHTML = "show visit list"
+    renderBreweries(state.breweries) 
+    renderCities(state.breweries)
+  }
+})
+
+function addAndDeleteVisitListButton(visitList, brewery) {
+  visitList.addEventListener('click', function() {
+  if(visitList.innerHTML === "Add to Visit List") {
+  fetch("http://localhost:3000/visit-list", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(brewery)
+  }).then(function() {
+
+  fetch(`http://localhost:3000/visit-list/${brewery.id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({isCityChecked: true})
+  })
+ visitList.innerHTML = "delete from visit list"
+ } )
+    }
+else {
+  fetch(`http://localhost:3000/visit-list/${brewery.id}`, {
+    method: "DELETE"})
+    visitList.innerHTML = "Add to Visit List"
+}
+})
+}
+
+function isInVisitList(brewery) {
+for (let item of state.visitBreweryList) {
+  if(item.id === brewery.id) return true
+}
+return false
+}
+
+function visitListButtonText(brewery) {
+  if(isInVisitList(brewery)) {
+    return `delete from visit list`
+  }
+  return `Add to Visit List`
+}
+
+//todo find out why stuff is disappearing
+function createVisitList() {
+fetch("http://localhost:3000/visit-list")
+.then(function (response) {
+  return response.json();
+})
+  .then(function(response) { 
+    state.visitBreweryList = response
+  })
+}
+
+createVisitList()
+
