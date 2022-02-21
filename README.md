@@ -48,6 +48,19 @@ Use the `index.html` file as a starting point. The `templates` folder provides H
 -  Add pagination to the list; if the list of breweries is greater than 10 a user can go to the next page to view more breweries.
 - The user can also go back a page.
 
+### Extension 4
+Using json-server, add functionality to your page so the user can maintain a list of breweries they want to visit.
+- For each brewery in the search results list, add a "Add to visit list" button.
+- When the button is clicked, a POST request should be made to your json-server to store that brewery in a list of breweries the user wants to visit.
+- For breweries that are already in that list, add a "Remove from visit list" button that when clicked should make a DELETE request to json-server to remove the brewery from the list.
+- Add a link to the page that displays the list of breweries stored in the to visit list. You can decide where and how you want to display this - either alongside search results, or in a new section and allow the user to switch between the search functionality and the visit list.
+- When the page is reloaded, the list of breweries to visit should be loaded from json-server.
+
+For this extension, you will have to consider:
+- How are you going to store the list of breweries to visit in json-server? What information will you need to capture?:
+- When rendering the list of breweries from search results, how can you tell if the brewery is already in the list of breweries to visit?
+
+
 ## Tips
 - Read the "Open Brewery DB" documentation: https://www.openbrewerydb.org/documentation/01-listbreweries
 - The API supports searching by different criteria. In this case, you want to search by state so the URL format you will use is: `https://api.openbrewerydb.org/breweries?by_state=[state]`, with `[state]` replaced with the state the user searches for.
