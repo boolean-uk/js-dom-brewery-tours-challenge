@@ -16,6 +16,7 @@ const searchCurrentBreweries = document.querySelector("#search-breweries-form");
 const filterByCity = document.querySelector("#filter-by-city-form");
 const clearAll = document.querySelector(".clear-all-btn");
 const showVisitList = document.querySelector('.visit-list')
+const breweryHeading = document.querySelector('h1')
 const FIFTY_PER_PAGE = `&per_page=50`;
 const breweryTypes = ["micro", "regional", "brewpub"];
 
@@ -97,9 +98,14 @@ function renderBreweries(arrayOfBreweries = state.breweries) {
 
 searchCurrentBreweries.addEventListener("input", function (event) {
   state.page = 1;
-  state.brewerySearch = state.breweries.filter((brewery) =>
-    brewery.name.toLowerCase().includes(event.target.value.toLowerCase())
-  );
+  if(showVisitList.innerHTML === "show state breweries") {
+    state.brewerySearch = state.visitBreweryList.filter((brewery) =>
+    brewery.name.toLowerCase().includes(event.target.value.toLowerCase()))
+  } 
+  else {
+    state.brewerySearch = state.breweries.filter((brewery) =>
+    brewery.name.toLowerCase().includes(event.target.value.toLowerCase()));
+  }
   renderBreweries(state.brewerySearch);
   renderCities(state.brewerySearch);
 });
@@ -224,17 +230,20 @@ function howManyPages(arrayOfBreweries) {
   );
 }
 
-// ext 4 showing bookmarked mreweries to visit
+// ext 4 showing bookmarked breweries to visit
 
 showVisitList.addEventListener('click', function(){
+  searchCurrentBreweries.reset()
   if(showVisitList.innerHTML === "show visit list") {
       showVisitList.innerHTML = "show state breweries"
+      breweryHeading.innerHTML = "My Visit List"
         renderBreweries(state.visitBreweryList)
         renderCities(state.visitBreweryList)
 
   }
   else if(showVisitList.innerHTML === "show state breweries") {
     showVisitList.innerHTML = "show visit list"
+    breweryHeading.innerHTML = "List of Breweries"
     renderBreweries(state.breweries) 
     renderCities(state.breweries)
   }
