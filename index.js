@@ -88,7 +88,6 @@ function renderBreweries(arrayOfBreweries = state.breweries) {
 
 searchCurrentBreweries.addEventListener("input", function (event) {
   state.page = 1;
-  breweriesList.innerHTML = "";
   state.brewerySearch = state.breweries.filter((brewery) =>
     brewery.name.toLowerCase().includes(event.target.value.toLowerCase())
   );
@@ -123,10 +122,7 @@ function addCity(city) {
     checkboxEvent(state.brewerySearch, city, input);
     checkboxEvent(state.breweries, city, input);
 
-    if (
-      state.brewerySearch.length > 0 &&
-      state.brewerySearch.length !== state.breweries.length
-    ) {
+    if (isInputInSearchBreweries()) {
       renderBreweries(state.brewerySearch);
     } else {
       renderBreweries();
@@ -136,10 +132,17 @@ function addCity(city) {
   filterByCity.append(input, label);
 }
 
+function isInputInSearchBreweries() {
+  return (
+    state.brewerySearch.length > 0 &&
+    state.brewerySearch.length !== state.breweries.length
+  );
+}
+
 function checkboxEvent(arrayOfBreweries, city, input) {
-  for (let i = 0; i < arrayOfBreweries.length; i++) {
-    if (arrayOfBreweries[i].city === city) {
-      arrayOfBreweries[i].isCityChecked = input.checked;
+  for (const brewery of arrayOfBreweries) {
+    if (brewery.city === city) {
+      brewery.isCityChecked = input.checked;
     }
   }
 }
@@ -153,11 +156,7 @@ function renderCities(arrayOfBreweries = state.breweries) {
 }
 
 function isCityAlreadyChecked(city) {
-  for (let i = 0; i < state.breweries.length; i++) {
-    if (state.breweries[i].city === city) {
-      return state.breweries[i].isCityChecked;
-    }
-  }
+  return state.breweries.find((brewery) => brewery.city === city).isCityChecked;
 }
 
 //Pagination functions
