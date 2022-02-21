@@ -66,13 +66,13 @@ function retrieveBreweryData(apiEndpoint) {
         breweryTypes.includes(brewery.brewery_type)
       );
       state.breweries.forEach((brewery) => (brewery.isCityChecked = true));
-      addCities();
-      render();
+      renderCities();
+      renderBreweries();
       searchCurrentBreweries.reset();
     });
 }
 
-function render(arrayOfBreweries = state.breweries) {
+function renderBreweries(arrayOfBreweries = state.breweries) {
   breweriesList.innerHTML = "";
   arrayOfBreweries
     .filter((brewery) => brewery.isCityChecked === true)
@@ -87,21 +87,21 @@ function render(arrayOfBreweries = state.breweries) {
 //Extension 1 and 2 criteria
 
 searchCurrentBreweries.addEventListener("input", function (event) {
-  state.page = 1
+  state.page = 1;
   breweriesList.innerHTML = "";
   state.brewerySearch = state.breweries.filter((brewery) =>
     brewery.name.toLowerCase().includes(event.target.value.toLowerCase())
   );
-  render(state.brewerySearch);
-  addCities(state.brewerySearch)
+  renderBreweries(state.brewerySearch);
+  renderCities(state.brewerySearch);
 });
 
 clearAll.addEventListener("click", function () {
   const checkboxes = filterByCity.querySelectorAll("input");
-  checkboxes.forEach(checkbox => checkbox.checked = false)
+  checkboxes.forEach((checkbox) => (checkbox.checked = false));
   state.breweries.forEach((brewery) => (brewery.isCityChecked = false));
   state.brewerySearch.forEach((brewery) => (brewery.isCityChecked = false));
-  render();
+  renderBreweries();
 });
 
 function addCity(city) {
@@ -115,20 +115,21 @@ function addCity(city) {
   label.setAttribute("for", city.toLowerCase());
   label.innerText = city;
 
-  if(isCityAlreadyChecked(city)) {
-  input.checked = true;
+  if (isCityAlreadyChecked(city)) {
+    input.checked = true;
   }
 
   input.addEventListener("change", function () {
-    console.log(searchCurrentBreweries.value)
-    checkboxEvent(state.brewerySearch, city, input)
-    checkboxEvent(state.breweries, city, input)
+    checkboxEvent(state.brewerySearch, city, input);
+    checkboxEvent(state.breweries, city, input);
 
-    if(state.brewerySearch.length > 0 && state.brewerySearch.length !== state.breweries.length) {
-      render(state.brewerySearch)
-    }
-    else{
-      render()
+    if (
+      state.brewerySearch.length > 0 &&
+      state.brewerySearch.length !== state.breweries.length
+    ) {
+      renderBreweries(state.brewerySearch);
+    } else {
+      renderBreweries();
     }
   });
 
@@ -143,21 +144,20 @@ function checkboxEvent(arrayOfBreweries, city, input) {
   }
 }
 
-function addCities(arrayOfBreweries = state.breweries) {
+function renderCities(arrayOfBreweries = state.breweries) {
   filterByCity.innerHTML = "";
-  let cities = [] 
-  arrayOfBreweries.forEach(brewery => cities.push(brewery.city))
-  let citySet = [...new Set(cities)].sort()
+  let cities = [];
+  arrayOfBreweries.forEach((brewery) => cities.push(brewery.city));
+  let citySet = [...new Set(cities)].sort();
   citySet.forEach((city) => addCity(city));
-
 }
 
 function isCityAlreadyChecked(city) {
- for(let i = 0; i < state.breweries.length; i++) {
-   if(state.breweries[i].city === city) {
-     return state.breweries[i].isCityChecked
-   }
- }
+  for (let i = 0; i < state.breweries.length; i++) {
+    if (state.breweries[i].city === city) {
+      return state.breweries[i].isCityChecked;
+    }
+  }
 }
 
 //Pagination functions
@@ -177,14 +177,14 @@ function addPaginationButtons(arrayOfBreweries) {
     if (howManyPages(arrayOfBreweries) > state.page) {
       state.page++;
     }
-    render(arrayOfBreweries);
+    renderBreweries(arrayOfBreweries);
   });
 
   subtractButton.addEventListener("click", function () {
     if (state.page > 1) {
       state.page--;
     }
-    render(arrayOfBreweries);
+    renderBreweries(arrayOfBreweries);
   });
 
   breweriesList.prepend(subtractButton, pageNumber, addButton);
