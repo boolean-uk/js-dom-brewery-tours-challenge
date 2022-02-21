@@ -22,10 +22,11 @@ const breweryTypes = ["micro", "regional", "brewpub"];
 stateSearch.addEventListener("submit", function (event) {
   event.preventDefault();
 
+  resetFilterBrewery.value = "";
+  showVisitList.innerHTML = "show visit list"
+
   const apiEndpoint = `https://api.openbrewerydb.org/breweries?by_state=${stateSearch["select-state"].value}`;
   retrieveBreweryData(apiEndpoint + FIFTY_PER_PAGE);
-
-  resetFilterBrewery.value = "";
 
   filterBrewery.addEventListener("change", function (event) {
     if (event.target.value === "") {
@@ -107,7 +108,8 @@ clearAll.addEventListener("click", function () {
   const checkboxes = filterByCity.querySelectorAll("input");
   checkboxes.forEach((checkbox) => (checkbox.checked = false));
   state.breweries.forEach((brewery) => (brewery.isCityChecked = false));
-  state.brewerySearch.forEach((brewery) => (brewery.isCityChecked = false));
+  state.brewerySearch.forEach((brewery) => (brewery.isCityChecked = false))
+  state.visitBreweryList.forEach((brewery) => (brewery.isCityChecked = false));
   renderBreweries();
 });
 
@@ -129,8 +131,12 @@ function addCity(city) {
   input.addEventListener("change", function () {
     checkboxEvent(state.brewerySearch, city, input);
     checkboxEvent(state.breweries, city, input);
+    checkboxEvent(state.visitBreweryList, city, input)
 
-    if (isInputInSearchBreweries()) {
+    if(showVisitList.innerHTML = "show state breweries") {
+      renderBreweries(state.visitBreweryList)
+    }
+    else if (isInputInSearchBreweries()) {
       renderBreweries(state.brewerySearch);
     } else {
       renderBreweries();
@@ -164,7 +170,10 @@ function renderCities(arrayOfBreweries = state.breweries) {
 }
 
 function isCityAlreadyChecked(city) {
+  if(state.breweries.find((brewery) => brewery.city === city) !== undefined) {
   return state.breweries.find((brewery) => brewery.city === city).isCityChecked;
+  }
+  return true
 }
 
 //Pagination functions
@@ -218,11 +227,11 @@ function howManyPages(arrayOfBreweries) {
 // ext 4 showing bookmarked mreweries to visit
 
 showVisitList.addEventListener('click', function(){
-  createVisitList()
   if(showVisitList.innerHTML === "show visit list") {
       showVisitList.innerHTML = "show state breweries"
         renderBreweries(state.visitBreweryList)
         renderCities(state.visitBreweryList)
+
   }
   else if(showVisitList.innerHTML === "show state breweries") {
     showVisitList.innerHTML = "show visit list"
@@ -240,22 +249,19 @@ function addAndDeleteVisitListButton(visitList, brewery) {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(brewery)
-  }).then(function() {
-
-  fetch(`http://localhost:3000/visit-list/${brewery.id}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({isCityChecked: true})
   })
- visitList.innerHTML = "delete from visit list"
+  .then(function() {
+    updateVisitList()
+ visitList.innerHTML = "remove from visit list"
  } )
     }
 else {
   fetch(`http://localhost:3000/visit-list/${brewery.id}`, {
     method: "DELETE"})
-    visitList.innerHTML = "Add to Visit List"
+    .then(function() {
+      updateVisitList()
+      visitList.innerHTML = "Add to Visit List"
+      } )
 }
 })
 }
@@ -269,13 +275,12 @@ return false
 
 function visitListButtonText(brewery) {
   if(isInVisitList(brewery)) {
-    return `delete from visit list`
+    return `remove from visit list`
   }
   return `Add to Visit List`
 }
 
-//todo find out why stuff is disappearing
-function createVisitList() {
+function updateVisitList() {
 fetch("http://localhost:3000/visit-list")
 .then(function (response) {
   return response.json();
@@ -285,5 +290,5 @@ fetch("http://localhost:3000/visit-list")
   })
 }
 
-createVisitList()
+updateVisitList()
 
