@@ -60,7 +60,7 @@ For this extension, you will have to consider:
 - How are you going to store the list of breweries to visit in json-server? What information will you need to capture?:
 - When rendering the list of breweries from search results, how can you tell if the brewery is already in the list of breweries to visit?
 
-**For this extension, if you are using the Live Server plugin, you must also remember to exclude the db.json file of json-server from triggering a page reload. You can do this by creating a folder called `.vscode` at the root of your project. In there, you need to add a settings.json file with the below contents:
+For this extension, if you are using the Live Server plugin, you must also remember to exclude the db.json file of json-server from triggering a page reload. You can do this by creating a folder called `.vscode` at the root of your project. In there, you need to add a settings.json file with the below contents:
 
 ```json
 {
