@@ -199,6 +199,46 @@
       "updated_at": "2021-10-23T02:24:55.243Z",
       "created_at": "2021-10-23T02:24:55.243Z",
       "isCityChecked": true
+    },
+    {
+      "id": "2-tones-brewing-co-whitehall",
+      "name": "2 Tones Brewing Co.",
+      "brewery_type": "micro",
+      "street": "4539 E Broad St",
+      "address_2": null,
+      "address_3": null,
+      "city": "Whitehall",
+      "state": "Ohio",
+      "county_province": null,
+      "postal_code": "43213-1308",
+      "country": "United States",
+      "longitude": "-82.9118174",
+      "latitude": "40.0030689",
+      "phone": null,
+      "website_url": "http://www.2tonesbrewingco.com",
+      "updated_at": "2021-10-23T02:24:55.243Z",
+      "created_at": "2021-10-23T02:24:55.243Z",
+      "isCityChecked": true
+    },
+    {
+      "id": "4kd-crick-brewery-defiance",
+      "name": "4kd Crick Brewery",
+      "brewery_type": "brewpub",
+      "street": "211 Carpenter Rd",
+      "address_2": null,
+      "address_3": null,
+      "city": "Defiance",
+      "state": "Ohio",
+      "county_province": null,
+      "postal_code": "43512-1718",
+      "country": "United States",
+      "longitude": "-84.341647",
+      "latitude": "41.296252",
+      "phone": "4199562863",
+      "website_url": "http://Www.4kdcrickbrewery.com",
+      "updated_at": "2021-10-23T02:24:55.243Z",
+      "created_at": "2021-10-23T02:24:55.243Z",
+      "isCityChecked": true
     }
   ]
 }

@@ -1,30 +1,32 @@
 const state = {
   breweries: [],
   brewerySearch: [],
+  visitBreweryList: [],
   page: 1,
   breweriesPerPage: 10,
-  visitBreweryList: []
 };
 
 //core criteria
 
 const breweriesList = document.querySelector("#breweries-list");
 const stateSearch = document.querySelector("#select-state-form");
-const filterBrewery = document.querySelector("#filter-by-type-form");
-const resetFilterBrewery = document.querySelector("#filter-by-type");
 const searchCurrentBreweries = document.querySelector("#search-breweries-form");
 const filterByCity = document.querySelector("#filter-by-city-form");
-const clearAll = document.querySelector(".clear-all-btn");
 const showVisitList = document.querySelector('.visit-list')
-const breweryHeading = document.querySelector('h1')
-const FIFTY_PER_PAGE = `&per_page=50`;
 const breweryTypes = ["micro", "regional", "brewpub"];
 
+function stateSearchEvent() {
 stateSearch.addEventListener("submit", function (event) {
   event.preventDefault();
 
+  const FIFTY_PER_PAGE = `&per_page=50`
+  const filterBrewery = document.querySelector("#filter-by-type-form");
+  const resetFilterBrewery = document.querySelector("#filter-by-type");
+
   resetFilterBrewery.value = "";
   showVisitList.innerHTML = "show visit list"
+
+  //error as press search without entering value it still searcvhs (across all states). will work for partial states too. 
 
   const apiEndpoint = `https://api.openbrewerydb.org/breweries?by_state=${stateSearch["select-state"].value}`;
   retrieveBreweryData(apiEndpoint + FIFTY_PER_PAGE);
@@ -39,6 +41,7 @@ stateSearch.addEventListener("submit", function (event) {
     }
   });
 });
+}
 
 function addBrewery(brewery) {
   const liElement = document.createElement("li");
@@ -76,8 +79,7 @@ function retrieveBreweryData(apiEndpoint) {
         breweryTypes.includes(brewery.brewery_type)
       );
       state.breweries.forEach((brewery) => (brewery.isCityChecked = true));
-      renderCities();
-      renderBreweries();
+      render();
       searchCurrentBreweries.reset();
     });
 }
@@ -94,8 +96,21 @@ function renderBreweries(arrayOfBreweries = state.breweries) {
   }
 }
 
+function initEventListeners() {
+  stateSearchEvent()
+  clearAllEvent()
+  brewerySearchEvent()
+  visitListEvent()
+}
+
+function render(arrayOfBreweries = state.breweries) {
+  renderCities(arrayOfBreweries);
+  renderBreweries(arrayOfBreweries)
+}
+
 //Extension 1 and 2 criteria
 
+function brewerySearchEvent() {
 searchCurrentBreweries.addEventListener("input", function (event) {
   state.page = 1;
   if(showVisitList.innerHTML === "show state breweries") {
@@ -106,18 +121,27 @@ searchCurrentBreweries.addEventListener("input", function (event) {
     state.brewerySearch = state.breweries.filter((brewery) =>
     brewery.name.toLowerCase().includes(event.target.value.toLowerCase()));
   }
-  renderBreweries(state.brewerySearch);
-  renderCities(state.brewerySearch);
+  render(state.brewerySearch);
 });
+}
 
+
+function clearAllEvent() {
+const clearAll = document.querySelector(".clear-all-btn");
 clearAll.addEventListener("click", function () {
   const checkboxes = filterByCity.querySelectorAll("input");
   checkboxes.forEach((checkbox) => (checkbox.checked = false));
   state.breweries.forEach((brewery) => (brewery.isCityChecked = false));
   state.brewerySearch.forEach((brewery) => (brewery.isCityChecked = false))
   state.visitBreweryList.forEach((brewery) => (brewery.isCityChecked = false));
-  renderBreweries();
+  render();
 });
+}
+
+
+
+
+
 
 function addCity(city) {
   const input = document.createElement("input");
@@ -231,6 +255,8 @@ function howManyPages(arrayOfBreweries) {
 }
 
 // ext 4 showing bookmarked breweries to visit
+function visitListEvent() {
+const breweryHeading = document.querySelector('h1')
 
 showVisitList.addEventListener('click', function(){
   searchCurrentBreweries.reset()
@@ -248,6 +274,7 @@ showVisitList.addEventListener('click', function(){
     renderCities(state.breweries)
   }
 })
+}
 
 function addAndDeleteVisitListButton(visitList, brewery) {
   visitList.addEventListener('click', function() {
@@ -300,4 +327,4 @@ fetch("http://localhost:3000/visit-list")
 }
 
 updateVisitList()
-
+initEventListeners()
