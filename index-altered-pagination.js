@@ -5,7 +5,8 @@ const state = {
     filterValue: "",
     page: 1,
     visitBreweryList: [],
-    searchValue: ""
+    searchValue: "",
+    state: ""
   };
   
   //core criteria
@@ -22,6 +23,7 @@ const state = {
   stateSearch.addEventListener("submit", function (event) {
     event.preventDefault();
   
+    state.state = stateSearch["select-state"].value
     state.page = 1
     resetFilterBrewery.value = "";
     showVisitList.innerHTML = "show visit list"
@@ -104,10 +106,10 @@ const state = {
       renderBreweries(visitListSearch);
     } 
     else if (state.filterValue === "") {
-      retrieveDataAndRenderBreweries(`https://api.openbrewerydb.org/breweries?by_state=${state.breweries[0].state}&by_name=${event.target.value}&page=${state.page}`) 
+      retrieveDataAndRenderBreweries(`https://api.openbrewerydb.org/breweries?by_state=${state.state}&by_name=${event.target.value}&page=${state.page}`) 
         }
         else {
-            retrieveDataAndRenderBreweries(`https://api.openbrewerydb.org/breweries?by_state=${state.breweries[0].state}&by_type=${state.filterValue}&by_name=${event.target.value}&page=${state.page}`)  
+            retrieveDataAndRenderBreweries(`https://api.openbrewerydb.org/breweries?by_state=${state.state}&by_type=${state.filterValue}&by_name=${event.target.value}&page=${state.page}`)  
         }
     
   });
@@ -133,19 +135,7 @@ const state = {
         if(arrayOfBreweries.length === 20) {
         state.page++;
         pageNumber.innerText = state.page
-
-        if(state.searchValue !== "" && state.filterValue === "" ){
-          retrieveDataAndRenderBreweries(`https://api.openbrewerydb.org/breweries?by_state=${state.breweries[0].state}&by_name=${state.searchValue}&page=${state.page}`) 
-            }
-        else if(state.searchValue !== "" && state.filterValue !== "" ) {
-                retrieveDataAndRenderBreweries(`https://api.openbrewerydb.org/breweries?by_state=${state.breweries[0].state}&by_type=${state.filterValue}&by_name=${state.searchValue}&page=${state.page}`)  
-            }
-        else if (state.filterValue === "") {
-      retrieveDataAndRenderBreweries(`https://api.openbrewerydb.org/breweries?by_state=${arrayOfBreweries[0].state}&page=${state.page}`) 
-        }
-        else {
-            retrieveDataAndRenderBreweries(`https://api.openbrewerydb.org/breweries?by_state=${arrayOfBreweries[0].state}&by_type=${state.filterValue}&page=${state.page}`)  
-        }
+        retrieveCorrectDataAndRender()
     }
     });
   
@@ -153,23 +143,25 @@ const state = {
       if (state.page > 1) {
         state.page--;
         pageNumber.innerText = state.page
-
-        if(searchCurrentBreweries.value !== "" && state.filterValue === "" ){
-          retrieveDataAndRenderBreweries(`https://api.openbrewerydb.org/breweries?by_state=${state.breweries[0].state}&by_name=${state.searchValue}&page=${state.page}`) 
-            }
-        else if(searchCurrentBreweries.value !== "" && state.filterValue !== "" ) {
-                retrieveDataAndRenderBreweries(`https://api.openbrewerydb.org/breweries?by_state=${state.breweries[0].state}&by_type=${state.filterValue}&by_name=${state.searchValue}&page=${state.page}`)  
-            }
-        else if (state.filterValue === "") {
-      retrieveDataAndRenderBreweries(`https://api.openbrewerydb.org/breweries?by_state=${arrayOfBreweries[0].state}&page=${state.page}`) 
-        }
-        else {
-            retrieveDataAndRenderBreweries(`https://api.openbrewerydb.org/breweries?by_state=${arrayOfBreweries[0].state}&by_type=${state.filterValue}&page=${state.page}`)  
-        }
-    }
-    });
+        retrieveCorrectDataAndRender()
+    }});
   
     breweriesList.prepend(subtractButton, pageNumber, addButton);
+  }
+
+  function retrieveCorrectDataAndRender() {
+    if(searchCurrentBreweries.value !== "" && state.filterValue === "" ){
+      retrieveDataAndRenderBreweries(`https://api.openbrewerydb.org/breweries?by_state=${state.state}&by_name=${state.searchValue}&page=${state.page}`) 
+        }
+    else if(searchCurrentBreweries.value !== "" && state.filterValue !== "" ) {
+            retrieveDataAndRenderBreweries(`https://api.openbrewerydb.org/breweries?by_state=${state.state}&by_type=${state.filterValue}&by_name=${state.searchValue}&page=${state.page}`)  
+        }
+    else if (state.filterValue === "") {
+  retrieveDataAndRenderBreweries(`https://api.openbrewerydb.org/breweries?by_state=${state.state}&page=${state.page}`) 
+    }
+    else {
+        retrieveDataAndRenderBreweries(`https://api.openbrewerydb.org/breweries?by_state=${state.state}&by_type=${state.filterValue}&page=${state.page}`)  
+    }
   }
   
   // ext 4 showing bookmarked breweries to visit
@@ -180,14 +172,12 @@ const state = {
         showVisitList.innerHTML = "show state breweries"
         breweryHeading.innerHTML = "My Visit List"
           renderBreweries(state.visitBreweryList)
-          renderCities(state.visitBreweryList)
   
     }
     else if(showVisitList.innerHTML === "show state breweries") {
       showVisitList.innerHTML = "show visit list"
       breweryHeading.innerHTML = "List of Breweries"
       renderBreweries(state.breweries) 
-      renderCities(state.breweries)
     }
   })
   
