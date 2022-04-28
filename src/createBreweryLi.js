@@ -40,6 +40,7 @@ const createBreweryLi = (brewery) => {
 
   const breweryLink = document.createElement("a");
   breweryLink.href = brewery.website_url;
+  breweryLink.target = "_blank";
   breweryLink.innerText = "Visit Website";
 
   // append
