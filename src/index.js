@@ -1,4 +1,4 @@
-import createBreweryLi from "./createBreweryLi.js";
+import renderBreweryUl from "./renderbreweryUl.js";
 
 const selectStateForm = document.querySelector("#select-state-form");
 
@@ -9,13 +9,8 @@ selectStateForm.addEventListener("submit", (e) => {
   fetch("https://api.openbrewerydb.org/breweries")
     .then((res) => res.json())
     .then((breweries) => {
-      const targetBreweries = breweries.filter(
-        (brewery) => brewery.state === stateInput
-      );
-
-      const breweriesUl = document.querySelector("#breweries-list");
-      targetBreweries.forEach((brewery) => {
-        breweriesUl.append(createBreweryLi(brewery));
-      });
+      renderBreweryUl(breweries, stateInput);
     });
+
+  e.target.reset();
 });

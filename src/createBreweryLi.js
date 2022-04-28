@@ -1,13 +1,17 @@
 const createBreweryLi = (brewery) => {
+  // li
   const breweryLi = document.createElement("li");
 
+  // name
   const breweryName = document.createElement("h2");
   breweryName.innerText = brewery.name;
 
+  // type
   const breweryType = document.createElement("div");
   breweryType.classList.add("type");
   breweryType.innerText = brewery.brewery_type;
 
+  // adress
   const addressSection = document.createElement("section");
   addressSection.classList.add("address");
 
@@ -20,6 +24,7 @@ const createBreweryLi = (brewery) => {
   const breweryCityPostal = document.createElement("p");
   breweryCityPostal.innerHTML = `<strong>${brewery.city}, ${brewery.postal_code}`;
 
+  // phone
   const phoneSection = document.createElement("section");
   phoneSection.classList.add("phone");
 
@@ -29,6 +34,7 @@ const createBreweryLi = (brewery) => {
   const breweryPhone = document.createElement("p");
   breweryPhone.innerText = brewery.phone;
 
+  // link
   const linkSection = document.createElement("section");
   linkSection.classList.add("link");
 
@@ -36,6 +42,7 @@ const createBreweryLi = (brewery) => {
   breweryLink.href = brewery.website_url;
   breweryLink.innerText = "Visit Website";
 
+  // append
   addressSection.append(addressTitle, breweryStreet, breweryCityPostal);
   phoneSection.append(phoneTitle, breweryPhone);
   linkSection.append(breweryLink);
