@@ -8,6 +8,7 @@ function fetchByType(type) {
   .then(data => {
     render(data)
   })
+  .catch(() => console.log('Choose a state first.'))
 }
 
 export default fetchByType
