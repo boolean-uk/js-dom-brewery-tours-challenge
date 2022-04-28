@@ -1,10 +1,13 @@
 const breweriesList = document.querySelector(".breweries-list");
 const selectStateForm = document.getElementById("select-state-form");
 const filterByTypeForm = document.getElementById("filter-by-type-form");
+const searchBreweriesForm = document.getElementById("search-breweries-form");
+const searchBreweriesInput = document.getElementById("search-breweries");
 
 const state = {
   state: "",
   breweryType: "",
+  breweryName: "",
 };
 
 const validBreweryTypes = ["micro", "regional", "brewpub"];
@@ -21,11 +24,16 @@ filterByTypeForm.addEventListener("change", (e) => {
   getAndRenderBreweries();
 });
 
+searchBreweriesInput.addEventListener("input", (e) => {
+  state.breweryName = e.target.value;
+  getAndRenderBreweries();
+});
+
 function getAndRenderBreweries() {
   fetch(
     `https://api.openbrewerydb.org/breweries?by_state=${state.state}${
       state.breweryType ? "&by_type=" + state.breweryType : ""
-    }`
+    }${state.breweryName ? "&by_name=" + state.breweryName : ""}`
   )
     .then((res) => res.json())
     .then((data) => {
