@@ -1,5 +1,6 @@
 const state = {
-  currentUrl: ''
+  currentUrl: '',
+  typeExtension: ''
 }
 
 export default state

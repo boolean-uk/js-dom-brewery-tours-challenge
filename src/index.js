@@ -1,10 +1,10 @@
 import state from "./state.js";
 import fetchByState from "./fetchByState.js";
 import fetchByType from "./fetchByType.js";
+import fetchByName from "./fetchByName.js";
 
 const searchBtn = document.getElementById('select-state-form')
 const filterBtn = document.getElementById('filter-by-type')
-const searchBarForm = document.getElementById('search-breweries-form')
 const searchBar = document.getElementById('search-breweries')
 
 searchBtn.addEventListener('submit', (e) => {
@@ -20,14 +20,9 @@ filterBtn.addEventListener('change', (e) => {
   fetchByType(typeFilter, e)
 })
 
-searchBarForm.addEventListener('change', (e) => {
+searchBar.addEventListener('input', (e) => {
   e.preventDefault()
-  console.log('happened in form')
-})
+  const name = e.target.value
 
-searchBar.addEventListener('', (e) => {
-  e.preventDefault()
-  debugger
-  console.log('hello')
-  console.log(e.target.value)
+  fetchByName(name)
 })
