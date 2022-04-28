@@ -1,6 +1,8 @@
 const state = {
   currentUrl: '',
-  typeExtension: ''
+  typeExtension: '',
+  nameExtension: '',
+  cityFilters: new Set()
 }
 
 export default state

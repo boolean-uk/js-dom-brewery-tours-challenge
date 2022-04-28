@@ -1,11 +1,13 @@
-import state from "./state.js";
 import fetchByState from "./fetchByState.js";
 import fetchByType from "./fetchByType.js";
 import fetchByName from "./fetchByName.js";
+import handleChangeCityFilters from "./handleChangeCityFilters.js";
 
 const searchBtn = document.getElementById('select-state-form')
 const filterBtn = document.getElementById('filter-by-type')
 const searchBar = document.getElementById('search-breweries')
+const cityFilters = document.getElementById('filter-by-city-form')
+const cityFiltersClearBtn = document.querySelector('.clear-all-btn')
 
 searchBtn.addEventListener('submit', (e) => {
   e.preventDefault()
@@ -26,3 +28,5 @@ searchBar.addEventListener('input', (e) => {
 
   fetchByName(name)
 })
+
+cityFilters.addEventListener('change', handleChangeCityFilters)
