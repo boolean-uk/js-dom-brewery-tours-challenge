@@ -9,7 +9,6 @@ selectStateForm.addEventListener("submit", (e) => {
   e.preventDefault();
   getRequest(stateInput);
   selectState = stateInput;
-  e.target.reset();
 });
 
 filterByType.addEventListener("change", (e) => {
