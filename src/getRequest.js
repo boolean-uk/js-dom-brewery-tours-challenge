@@ -1,10 +1,10 @@
 import renderBreweryUl from "./renderbreweryUl.js";
 
-const getRequest = (stateInput, targetBreweryType = "") => {
+const getRequest = (selectState, selectBreweryType = "") => {
   fetch("https://api.openbrewerydb.org/breweries")
     .then((res) => res.json())
     .then((breweries) => {
-      renderBreweryUl(breweries, stateInput, targetBreweryType);
+      renderBreweryUl(breweries, selectState, selectBreweryType);
     });
 };
 

@@ -1,14 +1,14 @@
 import createBreweryUl from "./createBreweryUl.js";
 
-const renderBreweryUl = (breweries, stateInput, targetBreweryType = "") => {
+const renderBreweryUl = (breweries, selectState, selectBreweryType = "") => {
   const targetBreweries = breweries.filter(
-    (brewery) => brewery.state === stateInput
+    (brewery) => brewery.state === selectState
   );
-  if (!targetBreweryType) {
+  if (!selectBreweryType) {
     createBreweryUl(targetBreweries);
   } else {
     const targetBreweriesByType = targetBreweries.filter(
-      (brewery) => brewery.brewery_type === targetBreweryType
+      (brewery) => brewery.brewery_type === selectBreweryType
     );
     createBreweryUl(targetBreweriesByType);
   }
