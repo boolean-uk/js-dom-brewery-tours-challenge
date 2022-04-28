@@ -146,7 +146,7 @@ article {
   padding: 1rem;
 }
 
-.breweries-list > * + * {
+.breweries-list>*+* {
   margin-top: 1rem;
 }
 

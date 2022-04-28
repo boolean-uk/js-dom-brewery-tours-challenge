@@ -1,7 +1,10 @@
-import breweryLi from "./components/breweryLi.js";
-import breweries from "../templates/breweryObject.js";
+import fetchByState from "./fetchByState.js";
 
-const breweriesList = document.getElementById('breweries-list')
-const brewery = breweries[0]
+const searchBtn = document.getElementById('select-state-form')
 
-breweriesList.append(breweryLi(brewery))
+searchBtn.addEventListener('submit', (e) => {
+  e.preventDefault()
+  const state = e.target[0].value.split(' ').join('_')
+
+  fetchByState(state)
+})
