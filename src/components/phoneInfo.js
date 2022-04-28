@@ -6,7 +6,7 @@ function phoneInfo(phoneNumber) {
   heading.innerText = 'Phone:'
 
   const phone = document.createElement('p')
-  phone.innerText = phoneNumber
+  phone.innerText = phoneNumber ? phoneNumber : 'N/a'
 
   section.append(heading, phone)
   return section
