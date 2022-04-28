@@ -1,9 +1,8 @@
 const formatState = (selectState) => {
   const lowerCaseState = selectState.toLowerCase();
-  if (lowerCaseState.includes(" ")) {
-    return lowerCaseState.replace(" ", "_");
-  }
-  return lowerCaseState;
+  return lowerCaseState.includes(" ")
+    ? lowerCaseState.replace(" ", "_")
+    : lowerCaseState;
 };
 
 export default formatState;
