@@ -7,7 +7,7 @@ const getRequest = (selectState, selectBreweryType = "") => {
   fetch(url + formatState(selectState))
     .then((res) => res.json())
     .then((breweries) => {
-      renderBreweryUl(breweries, selectState, selectBreweryType);
+      renderBreweryUl(breweries, selectBreweryType);
     })
     .catch((error) => {
       console.error("Error:", error);
