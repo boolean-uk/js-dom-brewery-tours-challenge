@@ -2,27 +2,59 @@ const brewList = document.getElementById("breweries-list");
 const searchForm = document.getElementById("select-state-form");
 const breweryTypes = ["micro", "regional", "brewpub"];
 
+const state = {
+  searchState: "",
+  breweryType: "",
+};
+
+let formattedInput;
+
 searchForm.addEventListener("submit", (event) => {
   event.preventDefault();
   let searchInput = event.target.querySelector("#select-state").value;
-  formattedInput = searchInput.toLowerCase().replace(" ", "_");
+  state.searchState = searchInput.toLowerCase().replace(" ", "_");
   searchForm.reset();
-
-  renderList(formattedInput);
+  //   const url = `https://api.openbrewerydb.org/breweries?by_state=${formattedInput}`;
+  renderList();
 });
 
 const selectForm = document.querySelector("#filter-by-type-form");
 selectForm.addEventListener("click", (event) => {
   if (event.target.value) {
     console.log(event.target.value);
+    state.breweryType = event.target.value;
+    renderList();
   }
   selectForm.reset();
 });
 
-function renderList(input) {
-  // get url generate url based on current application state
+function createUrl() {
+  if (state.searchState === "") return "";
 
-  fetch(`https://api.openbrewerydb.org/breweries?by_state=${input}`)
+  let url = `https://api.openbrewerydb.org/breweries?by_state=${state.searchState}`;
+
+  switch (state.breweryType) {
+    case "micro":
+      url = url + `&by_type=micro`;
+      break;
+    case "regional":
+      url = url + `&by_type=regional`;
+
+      break;
+    case "brewpub":
+      url = url + `&by_type=brewpub`;
+
+      break;
+  }
+  return url;
+}
+
+function renderList() {
+  const url = createUrl();
+
+  if (url === "") return;
+
+  fetch(url)
     .then((res) => res.json())
     .then((data) => {
       data.forEach((el) => {
