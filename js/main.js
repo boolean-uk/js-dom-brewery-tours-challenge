@@ -41,9 +41,10 @@ function renderList(data) {
             <h3>Phone:</h3>
             <p>${data[i].phone ?? `---`}</p>
         </section>
+        ${data[i].website_url ? `
         <section class="link">
             <a href="${data[i].website_url}" target="_blank">Visit Website</a>
-        </section>
+        </section>` : ``}
         </li>`;
   }
   $("#breweries-list").innerHTML = output;
@@ -51,7 +52,7 @@ function renderList(data) {
 
 async function searchBreweries(state) {
   const req = await fetch(
-    "https://api.openbrewerydb.org/breweries?by_state=" + state + (filterType ? `&by_type=${filterType}` : ``)
+    "https://api.openbrewerydb.org/breweries?per_page=50&by_state=" + state + (filterType ? `&by_type=${filterType}` : ``)
   );
   return req.json();
 }
