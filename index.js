@@ -5,27 +5,30 @@ const breweryTypes = ["micro", "regional", "brewpub"];
 const state = {
   searchState: "",
   breweryType: "",
+  data: [],
 };
-
-let formattedInput;
 
 searchForm.addEventListener("submit", (event) => {
   event.preventDefault();
   let searchInput = event.target.querySelector("#select-state").value;
   state.searchState = searchInput.toLowerCase().replace(" ", "_");
   searchForm.reset();
-  //   const url = `https://api.openbrewerydb.org/breweries?by_state=${formattedInput}`;
-  renderList();
+  // fetchData();
+  fetchData().then((data) => {
+    state.data = data;
+    renderList(state.data);
+  });
 });
 
 const selectForm = document.querySelector("#filter-by-type-form");
 selectForm.addEventListener("click", (event) => {
   if (event.target.value) {
-    console.log(event.target.value);
     state.breweryType = event.target.value;
-    renderList();
+    fetchData().then((data) => {
+      state.data = data;
+      renderList(data);
+    });
   }
-  selectForm.reset();
 });
 
 function createUrl() {
@@ -49,35 +52,51 @@ function createUrl() {
   return url;
 }
 
-function renderList() {
+async function fetchData() {
   const url = createUrl();
-
   if (url === "") return;
 
-  fetch(url)
-    .then((res) => res.json())
-    .then((data) => {
-      data.forEach((el) => {
-        if (breweryTypes.includes(el.brewery_type)) {
-          const html = `<li>
-            <h2>${el.name}</h2>
-            <div class="type">${el.brewery_type}</div>
-            <section class="address">
-              <h3>Address:</h3>
-              <p>${el.street}</p>
-              <p><strong>${el.city}, ${el.postal_code}</strong></p>
-            </section>
-            <section class="phone">
-              <h3>Phone:</h3>
-              <p>N/A</p>
-            </section>
-            <section class="link">
-              <a href="${el.website_url}" target="_blank">Visit Website</a>
-            </section>
-            </li>`;
-
-          brewList.insertAdjacentHTML("afterbegin", html);
-        }
-      });
-    });
+  const res = await fetch(url);
+  return await res.json();
 }
+
+function renderList(data) {
+  brewList.innerHTML = "";
+  data.forEach((el) => {
+    if (breweryTypes.includes(el.brewery_type)) {
+      const html = `<li>
+        <h2>${el.name}</h2>
+        <div class="type">${el.brewery_type}</div>
+        <section class="address">
+          <h3>Address:</h3>
+          <p>${el.street}</p>
+          <p><strong>${el.city}, ${el.postal_code}</strong></p>
+        </section>
+        <section class="phone">
+          <h3>Phone:</h3>
+          <p>N/A</p>
+        </section>
+        <section class="link">
+          <a href="${el.website_url}" target="_blank">Visit Website</a>
+        </section>
+        </li>`;
+
+      brewList.insertAdjacentHTML("afterbegin", html);
+    }
+  });
+}
+
+// function fetchData() {
+//   const url = createUrl();
+
+//   if (url === "") return;
+
+//   return fetch(url).then((res) => res.json());
+
+//   // return fetch(url)
+//   //   .then((res) => res.json())
+//   //   .then((data) => {
+//   //     state.data = data;
+//   //     renderList(state.data);
+//   //   });
+// }
