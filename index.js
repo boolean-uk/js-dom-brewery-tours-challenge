@@ -1,14 +1,18 @@
 // let variable declared named state to store the object (which starts off blank)
-let state = {};
+let state = {
+  searchState: "",
+  breweryType: "",
+};
 
 // const variable declared to store the getBreweries arrow function
 const getBreweries = () => {
-    // The API link used to fetch the data required for the website & database
-  fetch(`https://api.openbrewerydb.org/breweries/`)
-  // Once the API is found then it is converted to json to be used with javascript
+  // The API link used to fetch the data required for the website & database
+  fetch(`https://api.openbrewerydb.org/breweries?by_state=${state.searchState}`)
+    // Once the API is found then it is converted to json to be used with javascript
     .then((res) => res.json())
     // once converted then the breweries are found on the state & rendered using the render() function
-    .then((res) => {state.breweries: breweries
+    .then((breweries) => {
+      state.breweries = breweries;
       render();
     });
 };
@@ -22,11 +26,11 @@ const createBreweryLink = (link) => {
   // const variable called section declared to store the element created "a" (anchor) within the section element as shown in the standard-list-items.html template
   const a = document.createElement("a");
   // the link for the brewery
-  anchor.href = link;
+  a.href = link;
   // Opens the linke in a new window
-  anchor.target = "_blank";
+  a.target = "_blank";
   // text inserted for the a link
-  anchor.innerText = "Visit Website";
+  a.innerText = "Visit Website";
   // append a within the section element
   section.append(a);
   // return the section
@@ -35,20 +39,20 @@ const createBreweryLink = (link) => {
 
 // Arrow function created and stored in the const variable createBrewery, the brewery used in the parameter
 const createBrewery = (brewery) => {
-    // li element created in the document (HTML), stored in createBrewery
+  // li element created in the document (HTML), stored in createBrewery
   const breweryContainer = document.createElement("li");
 
-// Arrow function created and stored in the const variable createBreweryTitle, title of brewery used in the parameter
+  // Arrow function created and stored in the const variable createBreweryTitle, title of brewery used in the parameter
   const createBreweryTitle = (title) => {
     // h2 element created in the document (HTML), stored in createBrewery
     const brewerytitle = document.createElement("h2");
     // The inner text for the h2
     brewerytitle.innerText = title;
-// the brewerytitle returned from the function when called (to be appended)
+    // the brewerytitle returned from the function when called (to be appended)
     return brewerytitle;
   };
 
-// Arrow function created and stored in the const variable createBreweryType, type of brewery used in the parameter
+  // Arrow function created and stored in the const variable createBreweryType, type of brewery used in the parameter
   const createBreweryType = (type) => {
     // div element created in the document (HTML), stored in div
     const div = document.createElement("div");
@@ -56,11 +60,11 @@ const createBrewery = (brewery) => {
     div.className = "type";
     // the text inserted for this elelment
     div.innerText = type;
-// the div is returned from the function when called (to be appended)
+    // the div is returned from the function when called (to be appended)
     return div;
   };
 
-// Arrow function created and stored in the const variable createBreweryAddress, the brewery used in the parameter
+  // Arrow function created and stored in the const variable createBreweryAddress, the brewery used in the parameter
   const createBreweryAddress = (brewery) => {
     // section element created in the document (HTML), stored in section
     const section = document.createElement("section");
@@ -88,9 +92,9 @@ const createBrewery = (brewery) => {
     return section;
   };
 
- // Arrow function created and stored in the const variable createBreweryPhone, phone used in the parameter
+  // Arrow function created and stored in the const variable createBreweryPhone, phone used in the parameter
   const createBreweryPhone = (phone) => {
-      // Number to store either the number from ${phone} or n/a if there isn't one, hence the ?
+    // Number to store either the number from ${phone} or n/a if there isn't one, hence the ?
     const Number = phone ? `+${phone}` : "N/A";
     // creating the element section stored in const variable section
     const section = document.createElement("section");
@@ -99,11 +103,11 @@ const createBrewery = (brewery) => {
     // creating element h3, stored in variable phoneHeading
     const phoneHeading = document.createElement("h3");
     // the text inserted on the page "Phone:"... hardcoded
-    phoneTitle.innerText = "Phone:";
+    phoneHeading.innerText = "Phone:";
     // creating element p, stored in variable phoneNumber
     const phoneNumber = document.createElement("p");
     // inserting the number for each brewery
-    phoneNumber.innerText = number;
+    phoneNumber.innerText = phone;
     // appending the phoneHeading & phoneNumber within the section
     section.append(phoneHeading, phoneNumber);
     // returns the section when createBreweryPhone() is called (when appended)
@@ -118,18 +122,16 @@ const createBrewery = (brewery) => {
     createBreweryPhone(brewery.phone),
     createBreweryLink(brewery.website_url)
   );
-// returns the appended container with all the elements included via the functions
+  // returns the appended container with all the elements included via the functions
   return breweryContainer;
 };
 
 // renderBreweries arrow function created and stored in a const variable
 const renderBreweries = () => {
-    // Getting access to #breweries-list within the index.html by using querySelector & it stored under breweriesList
+  // Getting access to #breweries-list within the index.html by using querySelector & it stored under breweriesList
   const breweriesList = document.querySelector("#breweries-list");
   // const variable declared to store the breweries where .map() creates a new array containing the breweries which go to the li created on the createBrewery() function
-  const breweries = state.breweries.map((brewery) =>
-    createBrewery(brewery)
-  );
+  const breweries = state.breweries.map((brewery) => createBrewery(brewery));
   // the breweriesList appended showing all the breweries
   breweriesList.append(...breweries);
 };
@@ -137,13 +139,13 @@ const renderBreweries = () => {
 // render() used to render the breweries by calling the  renderBreweries() function
 // clear() called when render() is called.  This ensures the list is clear before rendering & doesn't create duplicates
 const render = () => {
-    clear()
+  clear();
   renderBreweries();
 };
 
 // clearBreweries arrow function created and stored in a const variable
 const clearBreweries = () => {
-    // Getting access to #breweries-list within the index.html by using querySelector & it stored under breweryList
+  // Getting access to #breweries-list within the index.html by using querySelector & it stored under breweryList
   const breweryList = document.querySelector("#breweries-list");
   // A const variable declared to store the breweries being cleared via from() locating the brewery list, the children selected within that (the brewery) & then for each brewery it is removed using remove()
   const breweries = Array.from(breweryList.children);
@@ -154,3 +156,17 @@ const clearBreweries = () => {
 const clear = () => {
   clearBreweries();
 };
+
+//  arrow function created and stored in a const variable
+const eventListener = () => {
+  const form = document.querySelector("#select-state-form");
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const requestedState = document.querySelector("#select-state").value;
+    state.state = requestedState;
+    getBreweries();
+  });
+};
+
+// Calls the eventListener() function
+eventListener();
