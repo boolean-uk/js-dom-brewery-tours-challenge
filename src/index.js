@@ -20,19 +20,18 @@ const breweries = [
     website_url: "http://10barrel.com",
   },
 ];
+/* Here are the Standard Requirements for the Brewery Challenge:
 
-// Step 1: Loop through breweries
+1. A user can enter a US state and view a list of breweries in that state
+2. The list should only shows the types of breweries that offer brewery tours: (Micro, Regional, Brewpub)
+3.  From the list of breweries, a user can view the following details about each brewery: (Name, Type of brewery, Address, Phone Number)
+4. From the list of breweries, a user can visit the website of a brewery
+5. From the 'filter by type of brewery' section, a user can filter by type of brewery. */
+
 const breweryUl = document.getElementById("breweries-list");
 for (let i = 0; i < breweries.length; i++) {
   const brewery = breweries[i];
-
-  /* Step 2: Create a brewery list with child elements 
-  (h2, div, sectionAddress, h3, p, p, sectionPhone, h3, p, sectionLink, a) 
-  using the HTML provided in templates/standard-list-items.html */
 }
-
-// Step 3: GET data and POST data from API link
-// addEventListener the search button
 
 function getAndRenderBrewery() {
   fetch("https://api.openbrewerydb.org/breweries?by_state=ohio")
