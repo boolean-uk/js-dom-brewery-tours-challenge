@@ -1,6 +1,7 @@
 import renderBreweryUl from "./renderbreweryUl.js";
 import renderSearchBar from "./renderSearchBar.js";
 import formatState from "./formatState.js";
+import createCityCheckBox from "./createCityCheckBox.js";
 
 const getRequest = (selectState, selectBreweryType = "") => {
   const url = "https://api.openbrewerydb.org/breweries?by_state=";
@@ -10,6 +11,7 @@ const getRequest = (selectState, selectBreweryType = "") => {
     .then((breweries) => {
       renderBreweryUl(breweries, selectBreweryType);
       renderSearchBar(breweries);
+      createCityCheckBox(breweries);
     })
     .catch((error) => {
       console.error("Error:", error);
