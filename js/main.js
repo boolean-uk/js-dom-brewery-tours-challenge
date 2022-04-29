@@ -2,6 +2,7 @@ let typingTime = 0;
 
 let filterType = undefined;
 let state = "";
+let bName = "";
 
 function getTypingTime() {
   return Date.now() - typingTime;
@@ -50,9 +51,9 @@ function renderList(data) {
   $("#breweries-list").innerHTML = output;
 }
 
-async function searchBreweries(state) {
+async function searchBreweries() {
   const req = await fetch(
-    "https://api.openbrewerydb.org/breweries?per_page=50&by_state=" + state + (filterType ? `&by_type=${filterType}` : ``)
+    "https://api.openbrewerydb.org/breweries?per_page=50&"+ (state ? `by_state=${state}` : ``) + (filterType ? `&by_type=${filterType}` : ``) + (bName ? `&by_name=${bName}` : ``)
   );
   return req.json();
 }
@@ -68,8 +69,19 @@ $("#select-state").on("input", function () {
   typingTime = Date.now();
   debounce(() => {
     if (getTypingTime() > 290) {
-      searchBreweries(state).then((data) => renderList(data));
+      searchBreweries().then((data) => renderList(data));
     }
   }, 300);
 });
 
+
+$("#search-breweries").on("input", function () {
+    bName = this.val();
+    if (bName && state.length < 1) return;
+    typingTime = Date.now();
+    debounce(() => {
+      if (getTypingTime() > 290) {
+        searchBreweries().then((data) => renderList(data));
+      }
+    }, 300);
+  });
