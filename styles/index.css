@@ -207,6 +207,10 @@ article {
   grid-area: address;
 }
 
+.breweries-list .bold {
+  font-weight: bold;
+}
+
 .breweries-list li .phone {
   grid-area: phone;
 }
