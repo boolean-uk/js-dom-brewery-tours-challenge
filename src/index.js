@@ -2,16 +2,22 @@ import getRequest from "./getRequest.js";
 
 const selectStateForm = document.querySelector("#select-state-form");
 const filterByType = document.querySelector("#filter-by-type");
-let selectState = "";
+
+let state = {
+  selectState: "",
+  selectBreweryType: "",
+};
 
 selectStateForm.addEventListener("submit", (e) => {
   const stateInput = e.target[0].value;
   e.preventDefault();
   getRequest(stateInput);
-  selectState = stateInput;
+  state.selectState = stateInput;
 });
 
 filterByType.addEventListener("change", (e) => {
-  const selectBreweryType = e.target.value;
-  getRequest(selectState, selectBreweryType);
+  state.selectBreweryType = e.target.value;
+  getRequest(state.selectState, state.selectBreweryType);
 });
+
+export default state;

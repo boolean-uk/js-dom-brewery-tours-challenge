@@ -1,6 +1,5 @@
 import renderBreweryUl from "./renderbreweryUl.js";
 import renderSearchBar from "./renderSearchBar.js";
-
 import formatState from "./formatState.js";
 
 const getRequest = (selectState, selectBreweryType = "") => {
@@ -10,7 +9,7 @@ const getRequest = (selectState, selectBreweryType = "") => {
     .then((res) => res.json())
     .then((breweries) => {
       renderBreweryUl(breweries, selectBreweryType);
-      renderSearchBar(breweries, selectBreweryType);
+      renderSearchBar(breweries);
     })
     .catch((error) => {
       console.error("Error:", error);

@@ -1,6 +1,8 @@
+// import searchBrewery from "./searchBrewery.js";
 import searchBrewery from "./searchBrewery.js";
+import state from "./index.js";
 
-const createSearchBar = (breweries, selectBreweryType) => {
+const createSearchBar = (breweries) => {
   // header
   const header = document.createElement("header");
   header.classList.add("search-bar");
@@ -26,7 +28,7 @@ const createSearchBar = (breweries, selectBreweryType) => {
   header.append(searchForm);
 
   searchFormInput.addEventListener("input", (e) => {
-    searchBrewery(e, breweries, selectBreweryType);
+    searchBrewery(e, breweries, state.selectBreweryType);
   });
   return header;
 };
