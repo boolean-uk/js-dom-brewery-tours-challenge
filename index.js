@@ -3,14 +3,15 @@ const state = {
   breweryType: "",
   byName: "",
   data: [],
+  cityList: [],
 };
 
 const brewList = document.getElementById("breweries-list");
 const breweryTypes = ["micro", "regional", "brewpub"];
 
 const filterByCityForm = document.getElementById("filter-by-city-form");
-
 const searchBreweriesForm = document.getElementById("search-breweries-form");
+
 searchBreweriesForm.addEventListener("input", (event) => {
   state.byName = event.target.value;
   fetch(`https://api.openbrewerydb.org/breweries?by_name=${state.byName}`)
@@ -114,11 +115,24 @@ function renderList(data) {
 }
 
 function renderCityList(cityList) {
+  filterByCityForm.innerHTML = "";
+
   cityList.forEach((city) => {
-    const htmlCityList = `<input type="checkbox" name="${city.toLowerCase()}" value="${city.toLowerCase()}" />
+    const htmlCityList = `<input id='${city}item-list' type="checkbox" name="${city.toLowerCase()}" value="${city.toLowerCase()}" />
     <label for="${city.toLowerCase()}">${city}</label>`;
+
     filterByCityForm.insertAdjacentHTML("afterbegin", htmlCityList);
+
+    const listItem = document.getElementById(`${city}item-list`);
+    listItem.addEventListener("change", (event) => {
+      console.log(event.target.value);
+    });
   });
+  console.log(state.cityList);
+  state.cityList = cityList.map((city) => {
+    return city.toLowerCase();
+  });
+  console.log(state.cityList);
 }
 
 // function fetchData() {
