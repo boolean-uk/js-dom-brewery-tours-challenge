@@ -10,7 +10,7 @@ const getRequest = (selectState, selectBreweryType = "") => {
     .then((res) => res.json())
     .then((breweries) => {
       renderBreweryUl(breweries, selectBreweryType);
-      renderSearchBar();
+      renderSearchBar(breweries, selectBreweryType);
     })
     .catch((error) => {
       console.error("Error:", error);
