@@ -55,3 +55,78 @@ function renderBreweries() {
     breweriesList.append(breweryListEl);
   }
 }
+
+function renderBreweries2() {
+  for (const breweryTwo of state.breweries) {
+    const breweryListEl2 = document.createElement("li");
+
+    const h2El = document.createElement("h2");
+    h2El.innerText = `${breweryTwo.name}`;
+    breweriesList.append(breweryListEl2);
+
+    const divEl = document.createElement("div");
+    divEl.setAttribute("class", "type");
+    divEl.innerText = `${breweryTwo.brewery_type}`;
+
+    const sectionAddress = document.createElement("section");
+    sectionAddress.setAttribute("class", "address");
+
+    const h3ElAddress = document.createElement("h3");
+    h3ElAddress.innerText = "Address:";
+
+    const pElStreet = document.createElement("p");
+    pElStreet.innerText = `${breweryTwo.street}`;
+
+    const pElCityPostal = document.createElement("p");
+    const strongEl = document.createElement("strong");
+    strongEl.innerText = `${breweryTwo.city}, ${breweryTwo.postal_code}`;
+    pElCityPostal.appendChild(strongEl);
+
+    const sectionPhone = document.createElement("section");
+    sectionPhone.setAttribute("class", "phone");
+
+    const h3ElPhone = document.createElement("h3");
+    h3ElPhone.innerText = "Phone:";
+
+    const pElPhone = document.createElement("p");
+    pElPhone.innerText = `${breweryTwo.phone}`;
+
+    const sectionLink = document.createElement("section");
+    sectionLink.setAttribute("class", "link");
+
+    const anchorLink = document.createElement("a");
+    Object.assign(anchorLink, {
+      href: `${breweryTwo.website_url}`,
+      target: "_blank",
+    });
+    anchorLink.innerText = "Visit Website";
+    breweryListEl2.append(
+      h2El,
+      divEl,
+      sectionAddress,
+      sectionPhone,
+      sectionLink
+    );
+    sectionAddress.append(h3ElAddress, pElStreet, pElCityPostal);
+    sectionPhone.append(h3ElPhone, pElPhone);
+    sectionLink.append(anchorLink);
+  }
+}
+
+const breweriesTypeFilter = document.querySelector("#filter-by-type");
+let urlType = `${formInputEl.value}&by_type=`;
+
+breweriesTypeFilter.addEventListener("change", function () {
+  console.log("You selected this: ", this.value);
+  const selectedValue = this.value;
+  fetch(url + urlType + selectedValue)
+    .then(function (response) {
+      console.log(response);
+      return response.json();
+    })
+    .then(function (breweries) {
+      state.breweries = breweries;
+      console.log(state.breweries);
+      render();
+    });
+});
