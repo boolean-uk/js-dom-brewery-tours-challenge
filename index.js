@@ -118,6 +118,7 @@ const createBrewery = (brewery) => {
   breweryContainer.append(
     createBreweryTitle(brewery.name),
     createBreweryType(brewery.brewery_type),
+    // Why just brewery?
     createBreweryAddress(brewery),
     createBreweryPhone(brewery.phone),
     createBreweryLink(brewery.website_url)
@@ -159,14 +160,63 @@ const clear = () => {
 
 //  arrow function created and stored in a const variable
 const eventListener = () => {
+  // const variable declared called form which gives access to the ID #select-state-form in index.html
   const form = document.querySelector("#select-state-form");
+  // an event listerner added to the form, so when a user submits then the following code is carried out
   form.addEventListener("submit", (event) => {
+    // used to stop refreshing or any default behaviour on the form
     event.preventDefault();
+    // Not sure
     const requestedState = document.querySelector("#select-state").value;
     state.state = requestedState;
     getBreweries();
   });
 };
 
-// Calls the eventListener() function
+//  arrow function created and stored in a const variable BreweriesFilter, with one parameter (breweries)
+const BreweriesFilter = (breweries) => {
+  // const variable declared breweriesType to store the types of breweries in an array []
+  const breweriesType = ["micro", "regional", "brewpub"];
+  // returns a new array from the breweries object which includes the brewery type
+  return breweries.filter((brewery) =>
+    breweriesType.includes(brewery.brewery_type)
+  );
+};
+
+//  arrow function created and stored in a const variable filteredBreweries
+const filteredBreweries = () => {
+  // filters variable created to store the filter by state, 50 results per page
+  let filters = `?by_state=${state.state}&per_page=50`;
+  // if condition - if the state.type is not equal to the blank "", then add the state type
+  if (state.type !== "") {
+    filters += `&by_type=${state.type}`;
+  }
+  // if not not a state - return nothing
+  if (!state.state) {
+    return;
+  }
+  // fetch the api data to be filtered
+  fetch(`https://api.openbrewerydb.org/breweries/${filters}`)
+    // Once the API is found then it is converted to json to be used with javascript
+    .then((res) => res.json())
+    // once converted then the fitlered breweries are found on the state & rendered using the render() function
+    .then((res) => {
+      state.breweries = BreweriesFilter(res);
+      render();
+    });
+};
+
+//const variable declared to store the arrow function filterForm
+const filterForm = () => {
+  // const variable declared named filterByType to store the access to the ID #filter-by-type
+  const filterByType = document.querySelector("#filter-by-type");
+  // an event listener added when the filter change occurs then the brewery type gets actioned & the filterBreweries() called to show the types of breweries (micro etc)
+  filterByType.addEventListener("change", (event) => {
+    state.type = event.target.value;
+    filteredBreweries();
+  });
+};
+
+// Calls the eventListener() & filterForm() functions
 eventListener();
+filterForm();
