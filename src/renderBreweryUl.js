@@ -1,6 +1,6 @@
 import createBreweryUl from "./createBreweryUl.js";
 
-const renderBreweryUl = (breweries, selectBreweryType) => {
+const renderBreweryUl = (breweries, selectBreweryType = "") => {
   if (!selectBreweryType) {
     createBreweryUl(breweries);
   } else {
