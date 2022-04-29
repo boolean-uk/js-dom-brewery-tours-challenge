@@ -2,7 +2,7 @@ const breweries = [
   {
     address_2: null,
     address_3: null,
-    brewery_type: "large",
+    brewery_type: "micro",
     city: "San Diego",
     country: "United States",
     county_province: null,
@@ -21,15 +21,42 @@ const breweries = [
   },
 ];
 
-// Loop through breweries
+// Step 1: Loop through breweries
 const breweryUl = document.getElementById("breweries-list");
 for (let i = 0; i < breweries.length; i++) {
   const brewery = breweries[i];
 
-  /* Create a brewery list with child elements 
+  /* Step 2: Create a brewery list with child elements 
   (h2, div, sectionAddress, h3, p, p, sectionPhone, h3, p, sectionLink, a) 
   using the HTML provided in templates/standard-list-items.html */
+}
 
+// Step 3: GET data and POST data from API link
+// addEventListener the search button
+
+function getAndRenderBrewery() {
+  fetch("https://api.openbrewerydb.org/breweries?by_state=ohio")
+    .then((res) => res.json())
+    .then((data) => {
+      renderBreweries(data);
+    });
+}
+
+const tourBreweryTypes = ["micro", "brewpub", "regional"];
+
+function renderBreweries(breweries) {
+  breweryUl.innerHTML = "";
+
+  breweries.forEach((brewery) => {
+    if (tourBreweryTypes.includes(brewery.brewery_type)) {
+      renderBrewery(brewery);
+    } else {
+      console.log(`Not to rendering ${brewery.brewery_type}`);
+    }
+  });
+}
+
+function renderBrewery(brewery) {
   const breweryLi = document.createElement("li");
   breweryUl.append(breweryLi);
 
@@ -80,3 +107,5 @@ for (let i = 0; i < breweries.length; i++) {
   breweryA.innerText = "Visit Website";
   breweryLink.append(breweryA);
 }
+
+getAndRenderBrewery();
