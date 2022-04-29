@@ -2,6 +2,7 @@
 let state = {
   searchState: "",
   breweryType: "",
+  cities: [],
 };
 
 // const variable declared to store the getBreweries arrow function
@@ -158,21 +159,6 @@ const clear = () => {
   clearBreweries();
 };
 
-//  arrow function created and stored in a const variable
-const eventListener = () => {
-  // const variable declared called form which gives access to the ID #select-state-form in index.html
-  const form = document.querySelector("#select-state-form");
-  // an event listerner added to the form, so when a user submits then the following code is carried out
-  form.addEventListener("submit", (event) => {
-    // used to stop refreshing or any default behaviour on the form
-    event.preventDefault();
-    // Not sure
-    const requestedState = document.querySelector("#select-state").value;
-    state.state = requestedState;
-    getBreweries();
-  });
-};
-
 //  arrow function created and stored in a const variable BreweriesFilter, with one parameter (breweries)
 const BreweriesFilter = (breweries) => {
   // const variable declared breweriesType to store the types of breweries in an array []
@@ -183,18 +169,17 @@ const BreweriesFilter = (breweries) => {
   );
 };
 
-//  arrow function created and stored in a const variable filteredBreweries
 const filteredBreweries = () => {
-  // filters variable created to store the filter by state, 50 results per page
-  let filters = `?by_state=${state.state}&per_page=50`;
-  // if condition - if the state.type is not equal to the blank "", then add the state type
-  if (state.type !== "") {
-    filters += `&by_type=${state.type}`;
+  let filters = `?per_page=50`;
+  console.log(state);
+  if (state.state.length > 0) {
+    filters += `&by_state=${state.state}`;
   }
-  // if not not a state - return nothing
-  if (!state.state) {
-    return;
+
+  if (state.breweryType.length > 0) {
+    filters += `&by_type=${state.breweryType}`;
   }
+
   // fetch the api data to be filtered
   fetch(`https://api.openbrewerydb.org/breweries/${filters}`)
     // Once the API is found then it is converted to json to be used with javascript
@@ -212,7 +197,22 @@ const filterForm = () => {
   const filterByType = document.querySelector("#filter-by-type");
   // an event listener added when the filter change occurs then the brewery type gets actioned & the filterBreweries() called to show the types of breweries (micro etc)
   filterByType.addEventListener("change", (event) => {
-    state.type = event.target.value;
+    state.breweryType = event.target.value;
+    filteredBreweries();
+  });
+};
+
+//  arrow function created and stored in a const variable
+const eventListener = () => {
+  // const variable declared called form which gives access to the ID #select-state-form in index.html
+  const form = document.querySelector("#select-state-form");
+  // an event listerner added to the form, so when a user submits then the following code is carried out
+  form.addEventListener("submit", (event) => {
+    // used to stop refreshing or any default behaviour on the form
+    event.preventDefault();
+    // requestedState stores access to the ID #select-state & the value is what is requested by the user eg Ohio
+    const requestedState = document.querySelector("#select-state").value;
+    state.state = requestedState;
     filteredBreweries();
   });
 };
