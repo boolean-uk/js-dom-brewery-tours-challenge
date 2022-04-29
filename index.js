@@ -8,7 +8,7 @@ const state = {
 const brewList = document.getElementById("breweries-list");
 const breweryTypes = ["micro", "regional", "brewpub"];
 
-// https://api.openbrewerydb.org/breweries?by_name=modern_times
+const filterByCityForm = document.getElementById("filter-by-city-form");
 
 const searchBreweriesForm = document.getElementById("search-breweries-form");
 searchBreweriesForm.addEventListener("input", (event) => {
@@ -81,9 +81,12 @@ async function fetchData() {
 
 function renderList(data) {
   brewList.innerHTML = "";
+
+  const cityList = [];
+
   data.forEach((el) => {
     if (breweryTypes.includes(el.brewery_type)) {
-      const html = `<li>
+      const htmlBrewery = `<li>
         <h2>${el.name}</h2>
         <div class="type">${el.brewery_type}</div>
         <section class="address">
@@ -99,23 +102,36 @@ function renderList(data) {
           <a href="${el.website_url}" target="_blank">Visit Website</a>
         </section>
         </li>`;
+      brewList.insertAdjacentHTML("afterbegin", htmlBrewery);
 
-      brewList.insertAdjacentHTML("afterbegin", html);
+      if (!cityList.includes(el.city)) {
+        cityList.push(el.city);
+        cityList.sort().reverse();
+      }
     }
+  });
+  renderCityList(cityList);
+}
+
+function renderCityList(cityList) {
+  cityList.forEach((city) => {
+    const htmlCityList = `<input type="checkbox" name="${city.toLowerCase()}" value="${city.toLowerCase()}" />
+    <label for="${city.toLowerCase()}">${city}</label>`;
+    filterByCityForm.insertAdjacentHTML("afterbegin", htmlCityList);
   });
 }
 
-function fetchData() {
-  const url = createUrl();
+// function fetchData() {
+//   const url = createUrl();
 
-  if (url === "") return;
+//   if (url === "") return;
 
-  return fetch(url).then((res) => res.json());
+//   return fetch(url).then((res) => res.json());
 
-  // return fetch(url)
-  //   .then((res) => res.json())
-  //   .then((data) => {
-  //     state.data = data;
-  //     renderList(state.data);
-  //   });
-}
+//   // return fetch(url)
+//   //   .then((res) => res.json())
+//   //   .then((data) => {
+//   //     state.data = data;
+//   //     renderList(state.data);
+//   //   });
+// }
