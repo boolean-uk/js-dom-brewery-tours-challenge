@@ -1,22 +1,34 @@
-const brewList = document.getElementById("breweries-list");
-const searchForm = document.getElementById("select-state-form");
-const breweryTypes = ["micro", "regional", "brewpub"];
-
 const state = {
   searchState: "",
   breweryType: "",
+  byName: "",
   data: [],
 };
 
+const brewList = document.getElementById("breweries-list");
+const breweryTypes = ["micro", "regional", "brewpub"];
+
+// https://api.openbrewerydb.org/breweries?by_name=modern_times
+
+const searchBreweriesForm = document.getElementById("search-breweries-form");
+searchBreweriesForm.addEventListener("input", (event) => {
+  state.byName = event.target.value;
+  fetch(`https://api.openbrewerydb.org/breweries?by_name=${state.byName}`)
+    .then((res) => res.json())
+    .then((data) => {
+      renderList(data);
+    });
+});
+
+const searchForm = document.getElementById("select-state-form");
 searchForm.addEventListener("submit", (event) => {
   event.preventDefault();
   let searchInput = event.target.querySelector("#select-state").value;
   state.searchState = searchInput.toLowerCase().replace(" ", "_");
   searchForm.reset();
-  // fetchData();
   fetchData().then((data) => {
     state.data = data;
-    renderList(state.data);
+    renderList(data);
   });
 });
 
@@ -34,22 +46,29 @@ selectForm.addEventListener("click", (event) => {
 function createUrl() {
   if (state.searchState === "") return "";
 
-  let url = `https://api.openbrewerydb.org/breweries?by_state=${state.searchState}`;
+  if (state.searchState) {
+    let url = `https://api.openbrewerydb.org/breweries?by_state=${state.searchState}`;
 
-  switch (state.breweryType) {
-    case "micro":
-      url = url + `&by_type=micro`;
-      break;
-    case "regional":
-      url = url + `&by_type=regional`;
+    switch (state.breweryType) {
+      case "micro":
+        url = url + `&by_type=micro`;
+        break;
+      case "regional":
+        url = url + `&by_type=regional`;
 
-      break;
-    case "brewpub":
-      url = url + `&by_type=brewpub`;
+        break;
+      case "brewpub":
+        url = url + `&by_type=brewpub`;
 
-      break;
+        break;
+    }
+    return url;
+  } else if (state.byName) {
+    console.log(state.byName);
+    let url = `https://api.openbrewerydb.org/breweries?by_name=${state.byName}`;
+    console.log(url);
+    return url;
   }
-  return url;
 }
 
 async function fetchData() {
@@ -86,17 +105,17 @@ function renderList(data) {
   });
 }
 
-// function fetchData() {
-//   const url = createUrl();
+function fetchData() {
+  const url = createUrl();
 
-//   if (url === "") return;
+  if (url === "") return;
 
-//   return fetch(url).then((res) => res.json());
+  return fetch(url).then((res) => res.json());
 
-//   // return fetch(url)
-//   //   .then((res) => res.json())
-//   //   .then((data) => {
-//   //     state.data = data;
-//   //     renderList(state.data);
-//   //   });
-// }
+  // return fetch(url)
+  //   .then((res) => res.json())
+  //   .then((data) => {
+  //     state.data = data;
+  //     renderList(state.data);
+  //   });
+}
