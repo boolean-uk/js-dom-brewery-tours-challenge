@@ -9,9 +9,12 @@ const state = {
 
 const brewList = document.getElementById("breweries-list");
 const breweryTypes = ["micro", "regional", "brewpub"];
-
 const filterByCityForm = document.getElementById("filter-by-city-form");
 const searchBreweriesForm = document.getElementById("search-breweries-form");
+const clearAllCheckboxes = document.querySelector(".clear-all-btn");
+clearAllCheckboxes.addEventListener("click", (event) => {
+  clearCheckedBoxes();
+});
 
 searchBreweriesForm.addEventListener("input", (event) => {
   state.byName = event.target.value;
@@ -27,7 +30,7 @@ searchForm.addEventListener("submit", (event) => {
   event.preventDefault();
   let searchInput = event.target.querySelector("#select-state").value;
   state.searchState = searchInput.toLowerCase().replace(" ", "_");
-  searchForm.reset();
+  // searchForm.reset();
   fetchData().then((data) => {
     state.data = data;
     renderList(data);
@@ -112,7 +115,6 @@ function renderList(data) {
       }
     }
   });
-
   renderCityList(cityList);
 }
 
@@ -120,7 +122,7 @@ function renderCityList(cityList) {
   filterByCityForm.innerHTML = "";
 
   cityList.forEach((city) => {
-    const htmlCityList = `<input id='${city}item-list' type="checkbox" name="${city.toLowerCase()}" value="${city.toLowerCase()}" />
+    const htmlCityList = `<input class='city-list' id='${city}item-list' type="checkbox" name="${city.toLowerCase()}" value="${city.toLowerCase()}" />
     <label for="${city.toLowerCase()}">${city}</label>`;
 
     filterByCityForm.insertAdjacentHTML("afterbegin", htmlCityList); // ohio
@@ -148,16 +150,15 @@ function toggleSelectedCities(event) {
     );
     state.selectedCityList = filteredCityList;
   }
-
   renderFromArrayNames(state.selectedCityList);
+
+  if (state.selectedCityList.length === 0) renderList(state.data);
 }
 
 function renderFromArrayNames(namesArray) {
   brewList.innerHTML = "";
 
   state.data.forEach((el) => {
-    console.log(el.city);
-    console.log(state.selectedCityList);
     if (state.selectedCityList.includes(el.city.toLowerCase())) {
       const htmlBrewery = `<li>
         <h2>${el.name}</h2>
@@ -180,17 +181,10 @@ function renderFromArrayNames(namesArray) {
   });
 }
 
-// function fetchData() {
-//   const url = createUrl();
-
-//   if (url === "") return;
-
-//   return fetch(url).then((res) => res.json());
-
-//   // return fetch(url)
-//   //   .then((res) => res.json())
-//   //   .then((data) => {
-//   //     state.data = data;
-//   //     renderList(state.data);
-//   //   });
-// }
+function clearCheckedBoxes() {
+  const citiesList = document.querySelectorAll(".city-list");
+  citiesList.forEach((city) => {
+    city.checked = false;
+  });
+  renderList(state.data);
+}
