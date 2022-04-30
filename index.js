@@ -4,6 +4,7 @@ const state = {
   byName: "",
   data: [],
   cityList: [],
+  selectedCityList: [],
 };
 
 const brewList = document.getElementById("breweries-list");
@@ -111,6 +112,7 @@ function renderList(data) {
       }
     }
   });
+
   renderCityList(cityList);
 }
 
@@ -121,18 +123,61 @@ function renderCityList(cityList) {
     const htmlCityList = `<input id='${city}item-list' type="checkbox" name="${city.toLowerCase()}" value="${city.toLowerCase()}" />
     <label for="${city.toLowerCase()}">${city}</label>`;
 
-    filterByCityForm.insertAdjacentHTML("afterbegin", htmlCityList);
+    filterByCityForm.insertAdjacentHTML("afterbegin", htmlCityList); // ohio
 
     const listItem = document.getElementById(`${city}item-list`);
     listItem.addEventListener("change", (event) => {
-      console.log(event.target.value);
+      toggleSelectedCities(event);
     });
   });
-  console.log(state.cityList);
+
   state.cityList = cityList.map((city) => {
     return city.toLowerCase();
   });
-  console.log(state.cityList);
+}
+
+function toggleSelectedCities(event) {
+  if (event.target.checked) {
+    state.selectedCityList.push(event.target.value);
+  } else if (
+    !event.target.checked &&
+    state.selectedCityList.includes(event.target.value)
+  ) {
+    filteredCityList = state.selectedCityList.filter(
+      (el) => el !== event.target.value
+    );
+    state.selectedCityList = filteredCityList;
+  }
+
+  renderFromArrayNames(state.selectedCityList);
+}
+
+function renderFromArrayNames(namesArray) {
+  brewList.innerHTML = "";
+
+  state.data.forEach((el) => {
+    console.log(el.city);
+    console.log(state.selectedCityList);
+    if (state.selectedCityList.includes(el.city.toLowerCase())) {
+      const htmlBrewery = `<li>
+        <h2>${el.name}</h2>
+        <div class="type">${el.brewery_type}</div>
+        <section class="address">
+          <h3>Address:</h3>
+          <p>${el.street}</p>
+          <p><strong>${el.city}, ${el.postal_code}</strong></p>
+        </section>
+        <section class="phone">
+          <h3>Phone:</h3>
+          <p>N/A</p>
+        </section>
+        <section class="link">
+          <a href="${el.website_url}" target="_blank">Visit Website</a>
+        </section>
+        </li>`;
+      brewList.insertAdjacentHTML("afterbegin", htmlBrewery);
+    }
+  });
 }
 
 // function fetchData() {
