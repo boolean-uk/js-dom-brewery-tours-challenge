@@ -88,6 +88,8 @@ main {
   background-color: transparent;
   color: #1565c0;
 
+  cursor: pointer;
+
   text-decoration: underline;
   font-size: 0.725rem;
 }
@@ -234,4 +236,30 @@ article {
   text-align: center;
   text-decoration: none;
   font-weight: bold;
+}
+
+/* pagination */
+
+.container {
+}
+
+.tabs {
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  display: grid;
+  text-align: center;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid black;
+  border-radius: 3px;
+}
+
+.first:hover,
+.previous:hover,
+.next:hover,
+.last:hover {
+  border: 1px solid rgb(255, 136, 0);
+  border-radius: 10px;
+  pointer-events: cursor;
+  background: #fbc02d;
+  color: #000;
 }
