@@ -111,9 +111,7 @@ function createUrl() {
       url = url + `&by_type=${state.breweryType.toLowerCase()}`;
     return url;
   } else if (state.byName) {
-    console.log(state.byName);
     let url = `https://api.openbrewerydb.org/breweries?by_name=${state.byName}`;
-    console.log(url);
     return url;
   }
 }
@@ -147,14 +145,14 @@ function renderListOfBreweriesFromFetchedData(data) {
 
       addBreweryToVisitList.addEventListener("click", () => {
         updateLocalServer(el);
-
         removeBreweryFromVisitList.classList.remove("display-none");
+        addBreweryToVisitList.classList.add("display-none");
       });
 
       removeBreweryFromVisitList.addEventListener("click", () => {
         deleteFromLocalServer(el);
-
         removeBreweryFromVisitList.classList.add("display-none");
+        addBreweryToVisitList.classList.remove("display-none");
       });
 
       if (!cityList.includes(el.city)) {
@@ -261,8 +259,8 @@ function getBreweryHtml(el) {
     <p>N/A</p>
   </section>
   <section class='add-remove-json-server'>
-  <button class="button-88-add" role="button">ADD TO VISIT LIST</button>
-  <button class="button-88-remove display-none" role="button">REMOVE FROM VISIT LIST</button>
+  <button class="button-88-add" role="button">ADD TO BREWERIES YOU WANT TO VISIT</button>
+  <button class="button-88-remove display-none" role="button">REMOVE FROM BREWERIES YOU WANT TO VISIT</button>
   </section>
    </li>`;
 

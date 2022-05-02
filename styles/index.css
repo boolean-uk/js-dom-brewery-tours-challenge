@@ -95,7 +95,8 @@ main {
   cursor: pointer;
 
   text-decoration: underline;
-  font-size: 0.725rem;
+  font-size: 1.2rem;
+  text-transform: uppercase;
 }
 
 #filter-by-type-form {
@@ -146,7 +147,7 @@ h1 {
   align-items: center;
 
   border-radius: 0.5rem;
-  background-color: #ffe082;
+  background-color: #fbc02d;
 }
 
 #search-breweries-form h2 {
@@ -238,8 +239,8 @@ article {
   padding: 0.5rem 1rem;
 
   border-radius: 10px;
-  background-color: #1565c0;
-  color: #fff;
+  background-color: #fbc02d;
+  color: rgb(0, 0, 0);
 
   text-transform: uppercase;
   text-align: center;
@@ -248,9 +249,6 @@ article {
 }
 
 /* pagination */
-
-.container {
-}
 
 .tabs {
   padding: 0.5rem;
@@ -279,7 +277,7 @@ article {
   text-align: center;
   font-family: inherit;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 20px;
   padding: 0.7em 1.4em 0.7em 1.1em;
   color: rgb(0, 0, 0);
   background: #fbc02d;
@@ -306,7 +304,7 @@ article {
   text-align: center;
   font-family: inherit;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 20px;
   padding: 0.7em 1.4em 0.7em 1.1em;
   color: rgb(0, 0, 0);
   background: #ff4800;
@@ -327,4 +325,19 @@ article {
 
 .button-88-remove:active {
   box-shadow: 0 0.3em 1em -0.5em #a7141498;
+}
+
+a {
+  text-decoration: none;
+  text-transform: uppercase;
+  color: #000;
+  font-size: 2rem;
+  background-color: #cccccc;
+  padding: 0rem 0.8rem;
+  border-radius: 6px;
+  margin-top: 2rem;
+}
+
+a:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16), 0 3px 12px rgba(0, 0, 0, 0.08);
 }

@@ -1,5 +1,6 @@
 body {
   font-family: sans-serif;
+  margin: 0 0.2rem 0.2rem 0.2rem;
 }
 
 .main-header {
@@ -17,7 +18,7 @@ body {
 }
 
 .select-state-section h2 {
-  width: 200px;
+  width: 300px;
   margin-bottom: 1.5rem;
 
   border: 6px dashed #000;
@@ -29,112 +30,10 @@ main {
   display: grid;
   grid-template-areas:
     " title"
-    " search-bar"
     " article";
 
   grid-template-columns: 1fr;
-  grid-template-rows: auto auto 1fr;
-}
-
-.filters-section {
-  grid-area: sidebar;
-
-  padding-left: 1rem;
-}
-
-.filters-section h2 {
-  padding: 1rem;
-
-  border-radius: 0.25rem 0.25rem 0 0;
-  border: 1px solid #000;
-  border-bottom: none;
-}
-
-.filters-section h3 {
-  color: #424242;
-  font-size: 1rem;
-}
-
-.city-filter {
-  margin-top: 2rem;
-}
-
-.filter-by-city-heading {
-  padding: 1rem 1rem 0;
-
-  display: grid;
-
-  grid-template-columns: 1fr auto;
-
-  border: 1px solid #000;
-  border-radius: 0.25rem 0.25rem 0 0;
-  border-bottom: none;
-}
-
-.clear-all-btn {
-  border: none;
-  background-color: transparent;
-  color: #1565c0;
-
-  cursor: pointer;
-
-  text-decoration: underline;
-  font-size: 0.725rem;
-}
-
-#filter-by-type-form {
-  padding: 1rem;
-
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 1rem;
-
-  border: 1px solid #000;
-  border-radius: 0 0 0.25rem 0.25rem;
-}
-
-#filter-by-type-form label {
-  font-weight: bold;
-}
-
-#filter-by-city-form {
-  padding: 1rem;
-
-  display: grid;
-  grid-template-columns: 24px auto;
-  align-items: center;
-
-  border-radius: 0 0 0.25rem 0.25rem;
-  border: 1px solid #000;
-  border-top: none;
-}
-
-h1 {
-  grid-area: title;
-
-  padding-left: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-.search-bar {
-  grid-area: search-bar;
-
-  padding: 0 1rem;
-}
-
-#search-breweries-form {
-  padding: 0.25rem 1rem;
-
-  display: grid;
-  grid-template-columns: 1fr 3fr;
-  align-items: center;
-
-  border-radius: 0.5rem;
-  background-color: #ffe082;
-}
-
-#search-breweries-form h2 {
-  font-size: 1rem;
+  grid-template-rows: auto 1fr;
 }
 
 article {
@@ -155,10 +54,10 @@ article {
   display: grid;
   grid-template-areas:
     "heading heading type"
-    "address phone buttons"
+    "address phone ."
     "link . buttons";
   grid-template-columns: repeat(3, 1fr) minmax(20px, auto);
-  grid-template-rows: repeat(3, auto);
+  grid-template-rows: repeat(6, auto);
 
   border-radius: 0.25rem;
   border: 1px solid #000;
@@ -222,8 +121,8 @@ article {
   padding: 0.5rem 1rem;
 
   border-radius: 10px;
-  background-color: #1565c0;
-  color: #fff;
+  background-color: #fbc02d;
+  color: rgb(0, 0, 0);
 
   text-transform: uppercase;
   text-align: center;
@@ -231,40 +130,15 @@ article {
   font-weight: bold;
 }
 
-/* pagination */
-
-.container {
-}
-
-.tabs {
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  display: grid;
-  text-align: center;
-  grid-template-columns: repeat(3, 1fr);
-  border: 1px solid black;
-  border-radius: 3px;
-}
-
-.first:hover,
-.previous:hover,
-.next:hover,
-.last:hover {
-  border: 1px solid rgb(255, 136, 0);
-  border-radius: 10px;
-  pointer-events: cursor;
-  background: #fbc02d;
-  color: #000;
-}
-
 /* ADD REMOVE BUTTONS */
 
 .button-88-remove {
   /* display: none; */
+
   text-align: center;
   font-family: inherit;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 20px;
   padding: 0.7em 1.4em 0.7em 1.1em;
   color: rgb(0, 0, 0);
   background: #ff4800;
@@ -285,4 +159,19 @@ article {
 
 .button-88-remove:active {
   box-shadow: 0 0.3em 1em -0.5em #a7141498;
+}
+
+a {
+  text-decoration: none;
+  text-transform: uppercase;
+  color: #000;
+  font-size: 2rem;
+  background-color: #d5d5d5;
+  padding: 0rem 0.8rem;
+  border-radius: 6px;
+  margin-top: 2rem;
+}
+
+a:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16), 0 3px 12px rgba(0, 0, 0, 0.08);
 }

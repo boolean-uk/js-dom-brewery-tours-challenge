@@ -1,6 +1,6 @@
 const breweriesToVisit = document.getElementById("breweries-we-want-to-visit");
 
-function renderListOfBreweriesFromFetchedData(data) {
+function renderListOfBreweriesToVisit(data) {
   breweriesToVisit.innerHTML = "";
 
   data.forEach((el) => {
@@ -34,7 +34,6 @@ function getBreweryHtml(el) {
       <p>N/A</p>
     </section>
     <section class='add-remove-json-server'>
-    
     <button id='remove-from-list' class="button-88-remove display-none" role="button">REMOVE FROM VISIT LIST</button>
     </section>
      </li>`;
@@ -47,7 +46,7 @@ function fetchFromLocalServer() {
   fetch("http://localhost:3000/breweries")
     .then((res) => res.json())
     .then((data) => {
-      renderListOfBreweriesFromFetchedData(data);
+      renderListOfBreweriesToVisit(data);
     });
 }
 
