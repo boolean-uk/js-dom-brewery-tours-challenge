@@ -64,6 +64,8 @@ const searchForBreweryByNameForm = document.getElementById(
   "search-breweries-form"
 );
 searchForBreweryByNameForm.addEventListener("input", (event) => {
+  brewList.innerHTML = "";
+  filterByCityForm.innerHTML = "";
   state.byName = event.target.value;
   fetch(`https://api.openbrewerydb.org/breweries?by_name=${state.byName}`)
     .then((res) => res.json())
@@ -220,12 +222,10 @@ function renderListOfBreweriesFromSelectedCities() {
         document.querySelector(".button-88-remove");
 
       addBreweryToVisitList.addEventListener("click", (el) => {
-        addUpdateBreweriesToVisitList(el);
         removeBreweryFromVisitList.classList.remove("display-none");
       });
 
       removeBreweryFromVisitList.addEventListener("click", (el) => {
-        removeUpdateBreweriesToVisitList(el);
         removeBreweryFromVisitList.classList.add("display-none");
       });
     }
@@ -269,7 +269,6 @@ function getBreweryHtml(el) {
   return htmlBrewery;
 }
 
-// FETCH DATA FROM SERVER
 function fetchFromLocalServer() {
   fetch("http://localhost:3000/breweries")
     .then((res) => res.json())
@@ -277,8 +276,6 @@ function fetchFromLocalServer() {
       renderListOfBreweriesFromFetchedData(data);
     });
 }
-
-// fetchFromLocalServer();
 
 // UPDATE LOCAL SERVER
 function updateLocalServer(el) {
@@ -301,7 +298,3 @@ function deleteFromLocalServer(el) {
     method: "DELETE",
   });
 }
-
-// RENDER visit.html ONLOAD
-
-window.onload = fetchFromLocalServer();

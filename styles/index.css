@@ -268,7 +268,7 @@ article {
 .last:hover {
   border: 1px solid rgb(255, 136, 0);
   border-radius: 10px;
-  pointer-events: cursor;
+  cursor: pointer;
   background: #fbc02d;
   color: #000;
 }
