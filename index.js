@@ -6,19 +6,19 @@ const state = {
   cityList: [],
   selectedCityList: [],
   pageNumber: 1,
+  dataOnPageLoad: [],
 };
 
 const brewList = document.getElementById("breweries-list");
 const breweryTypes = ["micro", "regional", "brewpub"];
 const filterByCityForm = document.getElementById("filter-by-city-form");
-
 const clearAllCheckboxes = document.querySelector(".clear-all-btn");
 
+// PAGINATION
 const firstPage = document.querySelector(".first");
 const nextPage = document.querySelector(".next");
 const previousPage = document.querySelector(".previous");
 
-// PAGINATION
 firstPage.addEventListener("click", (event) => {
   state.pageNumber = 1;
   fetch(
@@ -139,6 +139,22 @@ function renderListOfBreweriesFromFetchedData(data) {
 
       brewList.insertAdjacentHTML("afterbegin", htmlBrewery);
 
+      const addBreweryToVisitList = document.querySelector(".button-88-add");
+      const removeBreweryFromVisitList =
+        document.querySelector(".button-88-remove");
+
+      addBreweryToVisitList.addEventListener("click", () => {
+        updateLocalServer(el);
+
+        removeBreweryFromVisitList.classList.remove("display-none");
+      });
+
+      removeBreweryFromVisitList.addEventListener("click", () => {
+        deleteFromLocalServer(el);
+
+        removeBreweryFromVisitList.classList.add("display-none");
+      });
+
       if (!cityList.includes(el.city)) {
         cityList.push(el.city);
         cityList.sort().reverse();
@@ -198,6 +214,20 @@ function renderListOfBreweriesFromSelectedCities() {
       const htmlBrewery = getBreweryHtml(el);
 
       brewList.insertAdjacentHTML("afterbegin", htmlBrewery);
+
+      const addBreweryToVisitList = document.querySelector(".button-88-add");
+      const removeBreweryFromVisitList =
+        document.querySelector(".button-88-remove");
+
+      addBreweryToVisitList.addEventListener("click", (el) => {
+        addUpdateBreweriesToVisitList(el);
+        removeBreweryFromVisitList.classList.remove("display-none");
+      });
+
+      removeBreweryFromVisitList.addEventListener("click", (el) => {
+        removeUpdateBreweriesToVisitList(el);
+        removeBreweryFromVisitList.classList.add("display-none");
+      });
     }
   });
 }
@@ -223,14 +253,55 @@ function getBreweryHtml(el) {
     <p>${el.street}</p>
     <p><strong>${el.city}, ${el.postal_code}</strong></p>
   </section>
+  <section class="link">
+  <a href="${el.website_url}" target="_blank">Visit Website</a>
+  </section>
   <section class="phone">
     <h3>Phone:</h3>
     <p>N/A</p>
   </section>
-  <section class="link">
-    <a href="${el.website_url}" target="_blank">Visit Website</a>
+  <section class='add-remove-json-server'>
+  <button class="button-88-add" role="button">ADD TO VISIT LIST</button>
+  <button class="button-88-remove display-none" role="button">REMOVE FROM VISIT LIST</button>
   </section>
-  </li>`;
+   </li>`;
 
   return htmlBrewery;
 }
+
+// FETCH DATA FROM SERVER
+function fetchFromLocalServer() {
+  fetch("http://localhost:3000/breweries")
+    .then((res) => res.json())
+    .then((data) => {
+      renderListOfBreweriesFromFetchedData(data);
+    });
+}
+
+// fetchFromLocalServer();
+
+// UPDATE LOCAL SERVER
+function updateLocalServer(el) {
+  const opts = {
+    method: "POST",
+    headers: { "Content-type": "application/json" },
+    body: JSON.stringify({ ...el }),
+  };
+
+  fetch(`http://localhost:3000/breweries`, opts)
+    .then((res) => res.json())
+    .then(() => {
+      console.log("update server");
+    });
+}
+
+// DELETE ITEM FROM LOCAL SERVER
+function deleteFromLocalServer(el) {
+  fetch(`http://localhost:3000/breweries/${el.id}`, {
+    method: "DELETE",
+  });
+}
+
+// RENDER visit.html ONLOAD
+
+window.onload = fetchFromLocalServer();

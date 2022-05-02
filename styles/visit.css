@@ -2,10 +2,6 @@ body {
   font-family: sans-serif;
 }
 
-.display-none {
-  display: none;
-}
-
 .main-header {
   padding: 1rem;
   margin-bottom: 2rem;
@@ -29,26 +25,14 @@ body {
   text-align: center;
 }
 
-#select-state-form label {
-  display: block;
-  margin-bottom: 0.25rem;
-  text-align: center;
-  font-size: 1rem;
-  font-weight: bold;
-}
-
-#select-state-form input {
-  border-radius: 0.25rem;
-}
-
 main {
   display: grid;
   grid-template-areas:
-    "sidebar title"
-    "sidebar search-bar"
-    "sidebar article";
+    " title"
+    " search-bar"
+    " article";
 
-  grid-template-columns: 1fr 3fr;
+  grid-template-columns: 1fr;
   grid-template-rows: auto auto 1fr;
 }
 
@@ -274,32 +258,6 @@ article {
 }
 
 /* ADD REMOVE BUTTONS */
-.button-88-add {
-  margin: 10px 0;
-  text-align: center;
-  font-family: inherit;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 0.7em 1.4em 0.7em 1.1em;
-  color: rgb(0, 0, 0);
-  background: #fbc02d;
-  border: none;
-
-  letter-spacing: 0.05em;
-  border-radius: 10px;
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-}
-
-.button-88-add:hover {
-  box-shadow: 0 0.5em 1.5em -0.5em #a78a1498;
-}
-
-.button-88-add:active {
-  box-shadow: 0 0.3em 1em -0.5em #a7761498;
-}
 
 .button-88-remove {
   /* display: none; */

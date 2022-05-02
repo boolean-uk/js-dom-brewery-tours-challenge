@@ -1,0 +1,61 @@
+{
+  "breweries": [
+    {
+      "id": "2-tones-brewing-co-whitehall",
+      "name": "2 Tones Brewing Co.",
+      "brewery_type": "micro",
+      "street": "4539 E Broad St",
+      "address_2": null,
+      "address_3": null,
+      "city": "Whitehall",
+      "state": "Ohio",
+      "county_province": null,
+      "postal_code": "43213-1308",
+      "country": "United States",
+      "longitude": "-82.9118174",
+      "latitude": "40.0030689",
+      "phone": null,
+      "website_url": "http://www.2tonesbrewingco.com",
+      "updated_at": "2021-10-23T02:24:55.243Z",
+      "created_at": "2021-10-23T02:24:55.243Z"
+    },
+    {
+      "id": "lockport-brewery-bolivar",
+      "name": "Lockport Brewery",
+      "brewery_type": "brewpub",
+      "street": "10891 OH-212",
+      "address_2": null,
+      "address_3": null,
+      "city": "Bolivar",
+      "state": "Ohio",
+      "county_province": null,
+      "postal_code": "44612-8664",
+      "country": "United States",
+      "longitude": null,
+      "latitude": null,
+      "phone": "3308746037",
+      "website_url": "http://www.lockportbeer.com",
+      "updated_at": "2021-10-23T02:24:55.243Z",
+      "created_at": "2021-10-23T02:24:55.243Z"
+    },
+    {
+      "id": "snow-belt-brew-chardon",
+      "name": "Snow Belt Brew",
+      "brewery_type": "micro",
+      "street": "9511 Kile Rd",
+      "address_2": null,
+      "address_3": null,
+      "city": "Chardon",
+      "state": "Ohio",
+      "county_province": null,
+      "postal_code": "44024",
+      "country": "United States",
+      "longitude": null,
+      "latitude": null,
+      "phone": null,
+      "website_url": null,
+      "updated_at": "2021-10-23T02:24:55.243Z",
+      "created_at": "2021-10-23T02:24:55.243Z"
+    }
+  ]
+}
