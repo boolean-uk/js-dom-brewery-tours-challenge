@@ -1,0 +1,19 @@
+{
+  "name": "js-dom-brewery-tours-challenge",
+  "version": "1.0.0",
+  "description": "![BreweryTours](images/brewery.jpg)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SeanRichhh/js-dom-brewery-tours-challenge.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SeanRichhh/js-dom-brewery-tours-challenge/issues"
+  },
+  "homepage": "https://github.com/SeanRichhh/js-dom-brewery-tours-challenge#readme"
+}
