@@ -8,7 +8,7 @@ import { renderCheckboxes } from "./checkboxes.js";
 
 function fetchFromAPI(state) {
   breweriesListUL.innerHTML = "";
-  fetch("https://api.openbrewerydb.org/breweries?by_state=" + state)
+  fetch("https://api.openbrewerydb.org/breweries?per_page=50&by_state=" + state)
     .then((res) => res.json())
     .then((breweries) => {
       breweries.forEach((element) => {
