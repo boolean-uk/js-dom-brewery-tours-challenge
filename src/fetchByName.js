@@ -7,7 +7,8 @@ function fetchByName(name) {
   .then(res => res.json())
   .then(data => {
     state.nameExtension = nameExtension
-    render(data)
+    state.data = data
+    render()
   })
 }
 

@@ -10,11 +10,7 @@ function handleChangeCityFilters(event) {
     if (checked) state.cityFilters.add(city)
   });
 
-  fetch(`${state.currentUrl}${state.typeExtension}${state.nameExtension}`)
-  .then(res => res.json())
-  .then(data => {
-    render(data)
-  })
+  render()
 }
 
 export default handleChangeCityFilters

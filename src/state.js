@@ -1,4 +1,6 @@
 const state = {
+  data: [],
+  targetBreweryTypes: ['micro', 'regional', 'brewpub'],
   currentUrl: '',
   typeExtension: '',
   nameExtension: '',

@@ -7,7 +7,8 @@ function fetchByType(type) {
   .then(res => res.json())
   .then(data => {
     state.typeExtension = urlExtension
-    render(data)
+    state.data = data
+    render()
   })
   .catch(() => console.log('Choose a state first.'))
 }

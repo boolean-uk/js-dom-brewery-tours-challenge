@@ -2,6 +2,8 @@ import fetchByState from "./fetchByState.js";
 import fetchByType from "./fetchByType.js";
 import fetchByName from "./fetchByName.js";
 import handleChangeCityFilters from "./handleChangeCityFilters.js";
+import render from "./render.js";
+import state from "./state.js";
 
 const searchBtn = document.getElementById('select-state-form')
 const filterBtn = document.getElementById('filter-by-type')
@@ -30,3 +32,9 @@ searchBar.addEventListener('input', (e) => {
 })
 
 cityFilters.addEventListener('change', handleChangeCityFilters)
+
+cityFiltersClearBtn.addEventListener('click', () => {
+  cityFilters.reset()
+  state.cityFilters.clear()
+  render()
+})
