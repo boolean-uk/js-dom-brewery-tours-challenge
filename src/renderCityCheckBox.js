@@ -1,6 +1,8 @@
 import createCityArr from "./createCityArr.js";
-import searchBrewery from "./searchBrewery.js";
+import renderBreweryUl from "./renderBreweryUl.js";
 import state from "./index.js";
+
+const checkedCities = [];
 
 const clearAllCheckBox = (cityCheckBox) => {
   const clearAllBtn = document.querySelector(".clear-all-btn");
@@ -26,8 +28,8 @@ const renderCityCheckBox = (breweries) => {
     cityLabel.setAttribute("for", city);
     cityLabel.innerText = city;
 
-    cityCheckBox.addEventListener("click", () => {
-      // searchBrewery(city, breweries, state.selectBreweryType);
+    cityCheckBox.addEventListener("click", (e) => {
+      checkedCities.push(e.target.value);
     });
 
     clearAllCheckBox(cityCheckBox);
