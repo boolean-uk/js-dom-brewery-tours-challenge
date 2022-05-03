@@ -1,132 +1,98 @@
 const state = {
   breweries: [],
+  type: [],
 };
 
-let url = "https://api.openbrewerydb.org/breweries?by_state=";
-
+const container = document.querySelector("#breweries-list");
+const ulEl = document.querySelector("#breweries-list");
 const formEl = document.querySelector("#select-state-form");
-const formInputEl = document.querySelector("#select-state");
+const inputEl = document.querySelector("#select-state");
+const filterEl = document.querySelector("#filter-by-type");
+const stateEl = document.querySelector("#select-state");
 
-formEl.addEventListener("submit", function (event) {
-  event.preventDefault();
-  const inputSearchValue = formInputEl.value;
-  console.log(inputSearchValue);
-  fetch(url + inputSearchValue)
-    .then(function (response) {
-      console.log(response);
-      return response.json();
-    })
-    .then(function (breweries) {
-      state.breweries = breweries;
-      console.log(state.breweries);
-      render();
-    });
-});
+function renderBrewList() {
+  for (const choice of state.breweries) {
+    const xBrewery = document.createElement("li");
+    xBrewery.innerHTML = `<h2>${choice.name}</h2>
+    <div class="type">${choice.brewery_type}</div>
+    <section class="address">
+      <h3>Address:</h3>
+      <p>${choice.street}</p>
+      <p><strong>${choice.city}, ${choice.postal_code}</p>
+    </section>
+    <section class="phone">
+      <h3>Phone:</h3>
+      <p>${choice.phone}</p>
+    </section>
+    <section class="link">
+      <a href=${choice.website_url}>Visit Website</a>
+    </section>
+      `;
+    ulEl.append(xBrewery);
+  }
+}
 
 function render() {
   clear();
-  renderBreweries();
+  renderBrewList();
 }
 
 function clear() {
-  breweriesList.innerHTML = "";
-  formInputEl.value = "";
-}
-
-function renderBreweries() {
-  for (const brewery of state.breweries) {
-    console.log(brewery);
-    const breweryListEl = document.createElement("li");
-    console.log(breweriesList);
-    breweryListEl.innerHTML = `<h2>${brewery.name}</h2>
-        <div class="type">${brewery.brewery_type}</div>
-        <section class="address">
-            <h3>Address:</h3>
-            <p>${brewery.street}</p>
-            <p><strong>${brewery.city}, ${brewery.postal_code}</strong></p>
-        </section>
-        <section class="phone">
-            <h3>Phone:</h3>
-            <p>${brewery.phone}</p>
-        </section>
-        <section class="link">
-            <a href=${brewery.website_url} target="_blank">Visit Website</a>
-        </section>`;
-    breweriesList.append(breweryListEl);
+  inputEl.innerHTML = "";
+  inputEl.value = "";
+  while (ulEl.hasChildNodes()) {
+    ulEl.removeChild(ulEl.firstChild);
   }
 }
 
-function renderBreweries2() {
-  for (const breweryTwo of state.breweries) {
-    const breweryListEl2 = document.createElement("li");
-
-    const h2El = document.createElement("h2");
-    h2El.innerText = `${breweryTwo.name}`;
-    breweriesList.append(breweryListEl2);
-
-    const divEl = document.createElement("div");
-    divEl.setAttribute("class", "type");
-    divEl.innerText = `${breweryTwo.brewery_type}`;
-
-    const sectionAddress = document.createElement("section");
-    sectionAddress.setAttribute("class", "address");
-
-    const h3ElAddress = document.createElement("h3");
-    h3ElAddress.innerText = "Address:";
-
-    const pElStreet = document.createElement("p");
-    pElStreet.innerText = `${breweryTwo.street}`;
-
-    const pElCityPostal = document.createElement("p");
-    const strongEl = document.createElement("strong");
-    strongEl.innerText = `${breweryTwo.city}, ${breweryTwo.postal_code}`;
-    pElCityPostal.appendChild(strongEl);
-
-    const sectionPhone = document.createElement("section");
-    sectionPhone.setAttribute("class", "phone");
-
-    const h3ElPhone = document.createElement("h3");
-    h3ElPhone.innerText = "Phone:";
-
-    const pElPhone = document.createElement("p");
-    pElPhone.innerText = `${breweryTwo.phone}`;
-
-    const sectionLink = document.createElement("section");
-    sectionLink.setAttribute("class", "link");
-
-    const anchorLink = document.createElement("a");
-    Object.assign(anchorLink, {
-      href: `${breweryTwo.website_url}`,
-      target: "_blank",
-    });
-    anchorLink.innerText = "Visit Website";
-    breweryListEl2.append(
-      h2El,
-      divEl,
-      sectionAddress,
-      sectionPhone,
-      sectionLink
-    );
-    sectionAddress.append(h3ElAddress, pElStreet, pElCityPostal);
-    sectionPhone.append(h3ElPhone, pElPhone);
-    sectionLink.append(anchorLink);
-  }
+function formList() {
+  formEl.addEventListener("submit", function (event) {
+    event.preventDefault();
+    fetch("https://api.openbrewerydb.org/breweries?by_state=" + inputEl.value)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (breweries) {
+        console.log(breweries);
+        state.breweries = breweries;
+        render();
+      });
+  });
 }
 
-const breweriesTypeFilter = document.querySelector("#filter-by-type");
-let urlType = `${formInputEl.value}&by_type=`;
+function filter() {
+  formEl.addEventListener("change", function () {
+    const typeFilter = filterEl.value;
+    console.log("Hello", typeFilter);
+    let url = `https://api.openbrewerydb.org/breweries?by_state=${stateEl.value}`;
+    if (typeFilter != "") {
+      url += `&by_type=${typeFilter}`;
+    }
+    fetch(url)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (type) {
+        console.log(type);
+        state.breweries = type;
+        render();
+        console.log(typeFilter);
+      });
+  });
+}
+formList();
+filter();
 
-breweriesTypeFilter.addEventListener("change", function () {
-  console.log("You selected this: ", this.value);
-  const selectedValue = this.value;
-  fetch(url + urlType + selectedValue)
-    .then(function (response) {
-      console.log(response);
-      return response.json();
-    })
-    .then(function (breweries) {
-      state.breweries = breweries;
-      console.log(state.breweries);
-      render();
-    });
-});
+const searchEl = document.querySelector("#search-breweries");
+const collection = ulEl.getElementsByTagName("li");
+
+function searchBrew() {
+  searchEl.addEventListener("input", function (event) {
+    event.preventDefault();
+    for (names of choice.name) {
+      if (names.indexOf(innerText)) render();
+    }
+  });
+}
+
+//
