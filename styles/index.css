@@ -2,6 +2,10 @@ body {
   font-family: sans-serif;
 }
 
+.display-none {
+  display: none;
+}
+
 .main-header {
   padding: 1rem;
   margin-bottom: 2rem;
@@ -43,6 +47,7 @@ main {
     "sidebar title"
     "sidebar search-bar"
     "sidebar article";
+
   grid-template-columns: 1fr 3fr;
   grid-template-rows: auto auto 1fr;
 }
@@ -66,13 +71,19 @@ main {
   font-size: 1rem;
 }
 
+.city-filter {
+  margin-top: 2rem;
+}
+
 .filter-by-city-heading {
   padding: 1rem 1rem 0;
 
   display: grid;
+
   grid-template-columns: 1fr auto;
 
   border: 1px solid #000;
+  border-radius: 0.25rem 0.25rem 0 0;
   border-bottom: none;
 }
 
@@ -81,8 +92,11 @@ main {
   background-color: transparent;
   color: #1565c0;
 
+  cursor: pointer;
+
   text-decoration: underline;
-  font-size: 0.725rem;
+  font-size: 1.2rem;
+  text-transform: uppercase;
 }
 
 #filter-by-type-form {
@@ -133,7 +147,7 @@ h1 {
   align-items: center;
 
   border-radius: 0.5rem;
-  background-color: #ffe082;
+  background-color: #fbc02d;
 }
 
 #search-breweries-form h2 {
@@ -158,13 +172,18 @@ article {
   display: grid;
   grid-template-areas:
     "heading heading type"
-    "address phone ."
-    ". . link";
-  grid-template-columns: repeat(2, 1fr) minmax(140px, auto);
+    "address phone buttons"
+    "link . buttons";
+  grid-template-columns: repeat(3, 1fr) minmax(20px, auto);
   grid-template-rows: repeat(3, auto);
 
   border-radius: 0.25rem;
   border: 1px solid #000;
+}
+
+.add-remove-json-server {
+  display: grid;
+  grid-area: buttons;
 }
 
 .breweries-list li h2 {
@@ -219,12 +238,106 @@ article {
   display: block;
   padding: 0.5rem 1rem;
 
-  border-radius: 0.25rem;
-  background-color: #1565c0;
-  color: #fff;
+  border-radius: 10px;
+  background-color: #fbc02d;
+  color: rgb(0, 0, 0);
 
   text-transform: uppercase;
   text-align: center;
   text-decoration: none;
   font-weight: bold;
+}
+
+/* pagination */
+
+.tabs {
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  display: grid;
+  text-align: center;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid black;
+  border-radius: 3px;
+}
+
+.first:hover,
+.previous:hover,
+.next:hover,
+.last:hover {
+  border: 1px solid rgb(255, 136, 0);
+  border-radius: 10px;
+  cursor: pointer;
+  background: #fbc02d;
+  color: #000;
+}
+
+/* ADD REMOVE BUTTONS */
+.button-88-add {
+  margin: 10px 0;
+  text-align: center;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 20px;
+  padding: 0.7em 1.4em 0.7em 1.1em;
+  color: rgb(0, 0, 0);
+  background: #fbc02d;
+  border: none;
+
+  letter-spacing: 0.05em;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-88-add:hover {
+  box-shadow: 0 0.5em 1.5em -0.5em #a78a1498;
+}
+
+.button-88-add:active {
+  box-shadow: 0 0.3em 1em -0.5em #a7761498;
+}
+
+.button-88-remove {
+  /* display: none; */
+  text-align: center;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 20px;
+  padding: 0.7em 1.4em 0.7em 1.1em;
+  color: rgb(0, 0, 0);
+  background: #ff4800;
+
+  border: none;
+
+  letter-spacing: 0.05em;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-88-remove:hover {
+  box-shadow: 0 0.5em 1.5em -0.5em #a7141498;
+}
+
+.button-88-remove:active {
+  box-shadow: 0 0.3em 1em -0.5em #a7141498;
+}
+
+a {
+  text-decoration: none;
+  text-transform: uppercase;
+  color: #000;
+  font-size: 2rem;
+  background-color: #cccccc;
+  padding: 0rem 0.8rem;
+  border-radius: 6px;
+  margin-top: 2rem;
+}
+
+a:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16), 0 3px 12px rgba(0, 0, 0, 0.08);
 }

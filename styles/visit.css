@@ -1,0 +1,177 @@
+body {
+  font-family: sans-serif;
+  margin: 0 0.2rem 0.2rem 0.2rem;
+}
+
+.main-header {
+  padding: 1rem;
+  margin-bottom: 2rem;
+
+  background-color: #fbc02d;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16), 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+.select-state-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+}
+
+.select-state-section h2 {
+  width: 300px;
+  margin-bottom: 1.5rem;
+
+  border: 6px dashed #000;
+
+  text-align: center;
+}
+
+main {
+  display: grid;
+  grid-template-areas:
+    " title"
+    " article";
+
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+}
+
+article {
+  grid-area: article;
+
+  padding: 1rem;
+}
+
+.breweries-list > * + * {
+  margin-top: 1rem;
+}
+
+.breweries-list li {
+  list-style-type: none;
+
+  padding: 1rem 2rem;
+
+  display: grid;
+  grid-template-areas:
+    "heading heading type"
+    "address phone ."
+    "link . buttons";
+  grid-template-columns: repeat(3, 1fr) minmax(20px, auto);
+  grid-template-rows: repeat(6, auto);
+
+  border-radius: 0.25rem;
+  border: 1px solid #000;
+}
+
+.add-remove-json-server {
+  display: grid;
+  grid-area: buttons;
+}
+
+.breweries-list li h2 {
+  grid-area: heading;
+
+  margin-bottom: 1rem;
+}
+
+.breweries-list li h3 {
+  margin-bottom: 0.25rem;
+
+  color: #424242;
+}
+
+.breweries-list li h3,
+.breweries-list li p {
+  padding-left: 0.5rem;
+}
+
+.breweries-list li .type {
+  grid-area: type;
+  justify-self: end;
+
+  height: max-content;
+  width: 100px;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+
+  border-radius: 0.25rem;
+  border: 3px dashed #002171;
+  color: #002171;
+
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 0.825rem;
+  font-weight: bold;
+}
+
+.breweries-list li .address {
+  grid-area: address;
+}
+
+.breweries-list li .phone {
+  grid-area: phone;
+}
+
+.breweries-list li .link {
+  grid-area: link;
+}
+
+.breweries-list li .link a {
+  display: block;
+  padding: 0.5rem 1rem;
+
+  border-radius: 10px;
+  background-color: #fbc02d;
+  color: rgb(0, 0, 0);
+
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* ADD REMOVE BUTTONS */
+
+.button-88-remove {
+  /* display: none; */
+
+  text-align: center;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 20px;
+  padding: 0.7em 1.4em 0.7em 1.1em;
+  color: rgb(0, 0, 0);
+  background: #ff4800;
+
+  border: none;
+
+  letter-spacing: 0.05em;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-88-remove:hover {
+  box-shadow: 0 0.5em 1.5em -0.5em #a7141498;
+}
+
+.button-88-remove:active {
+  box-shadow: 0 0.3em 1em -0.5em #a7141498;
+}
+
+a {
+  text-decoration: none;
+  text-transform: uppercase;
+  color: #000;
+  font-size: 2rem;
+  background-color: #d5d5d5;
+  padding: 0rem 0.8rem;
+  border-radius: 6px;
+  margin-top: 2rem;
+}
+
+a:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16), 0 3px 12px rgba(0, 0, 0, 0.08);
+}
