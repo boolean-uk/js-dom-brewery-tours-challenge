@@ -20,30 +20,28 @@ function fetchFromAPI(state) {
           breweriesInCurrentState.push(element);
         }
       });
-      //i want to pass through a parameter ARRAY to renderList()
-      renderList();
+      renderList(breweriesInCurrentState);
       renderCheckboxes();
     });
 }
 
 let currentPageNr = 1;
 
-// TODO: LITTLE BUG: this function should take in a input ARRAY...and work with it only...instead of "breweriesInCurrentState".
-function renderList() {
+function renderList(breweries) {
   breweriesListUL.innerHTML = "";
   const itemPerPage = 5;
-  const NrOfPages = Math.ceil(breweriesInCurrentState.length / itemPerPage);
+  const NrOfPages = Math.ceil(breweries.length / itemPerPage);
   let start = itemPerPage * (currentPageNr - 1);
   let end = start + itemPerPage;
-  let displayedItems = breweriesInCurrentState.slice(start, end);
+  let displayedItems = breweries.slice(start, end);
   displayedItems.forEach((brewery) => {
     const newBrewery = createLI(brewery);
     breweriesListUL.append(newBrewery);
   });
-  renderPaginationButtons(NrOfPages);
+  renderPaginationButtons(NrOfPages, breweries);
 }
 
-function renderPaginationButtons(NrOfPages) {
+function renderPaginationButtons(NrOfPages, breweries) {
   pageButtons.innerHTML = "";
   for (let i = 1; i <= NrOfPages; i++) {
     const button = document.createElement("button");
@@ -53,8 +51,7 @@ function renderPaginationButtons(NrOfPages) {
     }
     button.addEventListener("click", () => {
       currentPageNr = button.innerText;
-      //i want to pass through a parameter ARRAY to renderList()
-      renderList();
+      renderList(breweries);
     });
     pageButtons.append(button);
   }

@@ -1,32 +1,27 @@
-import {
-  breweriesInCurrentState,
-  breweriesByType,
-  breweriesListUL,
-} from "./index.js";
-import { createLI } from "./createBreweryLI.js";
+import { breweriesInCurrentState, breweriesListUL } from "./index.js";
 import { renderCheckboxes } from "./checkboxes.js";
+import { renderList } from "./handlePage.js";
+
+let breweriesByType = [];
 
 function filterByType(type) {
-  breweriesListUL.innerHTML = "";
+  breweriesByType = [];
   breweriesInCurrentState.forEach((brewery) => {
     if (brewery.brewery_type === type) {
-      // TODO: LITTLE BUG: i want to use renderList() here...and pass a array of breweries as a parameter.
-      const newBrewery = createLI(brewery);
-      breweriesListUL.append(newBrewery);
       breweriesByType.push(brewery);
     }
   });
+  breweriesListUL.innerHTML = "";
+  renderList(breweriesByType);
 }
 
 function filterByName(input) {
-  breweriesListUL.innerHTML = "";
+  const breweriesByName = [];
   if (breweriesByType.length !== 0) {
     breweriesByType.forEach((brewery) => {
       const breweryNameLowercase = brewery.name.toLowerCase();
       if (breweryNameLowercase.includes(input)) {
-        // TODO: LITTLE BUG: i want to use renderList() here...and pass a array of breweries as a parameter.
-        const newBrewery = createLI(brewery);
-        breweriesListUL.append(newBrewery);
+        breweriesByName.push(brewery);
       }
     });
   }
@@ -34,40 +29,36 @@ function filterByName(input) {
     breweriesInCurrentState.forEach((brewery) => {
       const breweryNameLowercase = brewery.name.toLowerCase();
       if (breweryNameLowercase.includes(input)) {
-        // TODO: LITTLE BUG: i want to use renderList() here...and pass a array of breweries as a parameter.
-        const newBrewery = createLI(brewery);
-        breweriesListUL.append(newBrewery);
+        breweriesByName.push(brewery);
       }
     });
   }
+  breweriesListUL.innerHTML = "";
+  renderList(breweriesByName);
 }
 
 function filterByCity() {
   let chosenCities = [];
+  let breweriesByCity = [];
   let checkboxes = document.getElementsByName("city");
   checkboxes.forEach((box) => {
     if (box.checked === true) {
       chosenCities.push(box.value);
     }
   });
-  breweriesListUL.innerHTML = "";
   breweriesInCurrentState.forEach((brewery) => {
     if (chosenCities.includes(brewery.city)) {
-      // TODO: LITTLE BUG: i want to use renderList() here...and pass a array of breweries as a parameter.
-      const newBrewery = createLI(brewery);
-      breweriesListUL.append(newBrewery);
+      breweriesByCity.push(brewery);
     }
   });
+  breweriesListUL.innerHTML = "";
+  renderList(breweriesByCity);
 }
 
 function clearFilter() {
   renderCheckboxes();
   breweriesListUL.innerHTML = "";
-  breweriesInCurrentState.forEach((brewery) => {
-    // TODO: LITTLE BUG: i want to use renderList() here...and pass a array of breweries as a parameter.
-    const newBrewery = createLI(brewery);
-    breweriesListUL.append(newBrewery);
-  });
+  renderList(breweriesInCurrentState);
 }
 
 export { filterByType, filterByName, filterByCity, clearFilter };

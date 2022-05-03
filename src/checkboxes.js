@@ -10,7 +10,6 @@ function renderCheckboxes() {
   cities.forEach((city) => {
     const newCheckbox = createCheckbox(city);
     cityListForm.append(newCheckbox);
-    hiddenButton.style.display = "block";
   });
 }
 

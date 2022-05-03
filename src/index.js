@@ -12,13 +12,10 @@ const filter = document.querySelector("#filter-by-type");
 const searchBreweries = document.querySelector("#search-breweries-form");
 const cityListForm = document.querySelector("#filter-by-city-form");
 const hiddenButton = document.querySelector(".hidden");
-const buttonShow = document.querySelector("#buttonShow");
 const clearButton = document.querySelector(".clear-all-btn");
 const pageButtons = document.querySelector(".page-buttons");
 
 let breweriesInCurrentState = [];
-let breweriesByType = [];
-let breweriesByCity = [];
 
 searchState.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -37,7 +34,7 @@ searchBreweries.addEventListener("input", (event) => {
   filterByName(input);
 });
 
-buttonShow.addEventListener("click", () => {
+cityListForm.addEventListener("change", () => {
   filterByCity();
 });
 
@@ -48,8 +45,6 @@ clearButton.addEventListener("click", () => {
 export {
   breweriesInCurrentState,
   breweriesListUL,
-  breweriesByType,
-  breweriesByCity,
   cityListForm,
   hiddenButton,
   pageButtons,
