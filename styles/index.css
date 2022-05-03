@@ -228,3 +228,23 @@ article {
   text-decoration: none;
   font-weight: bold;
 }
+
+.btn-add-to-visit {
+  background-color: #fbc02d;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.visit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-right: 3rem;
+}
+
+.breweries-to-visit {
+  background-color: #fbc02d;
+  margin-right: 1rem;
+  font-size: 1.3rem;
+  cursor: pointer;
+}

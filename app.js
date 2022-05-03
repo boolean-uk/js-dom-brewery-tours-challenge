@@ -3,8 +3,9 @@ const search = document.querySelector("#search-breweries");
 const filterForm = document.querySelector("#filter-by-type-form");
 const filterCityForm = document.querySelector("#filter-by-city-form");
 const stateForm = document.querySelector("#select-state-form");
-
+let addBtn;
 const paginationContainer = document.querySelector(".pagination-container");
+const visitBreweries = document.querySelector(".breweries-to-visit");
 
 const state = {
   search: null,
@@ -80,14 +81,11 @@ function renderBrewers(brewers, citiesReset = false) {
 
   state.brewers = brewersArr;
   renderPaginationButtons();
-  // const from = state.currPage * 19;
-  // const to = from + 19;
-
-  // console.log(from, to);
 
   brewersArr.slice(0, 19).forEach((brewer) => {
     state.brewersInState.push(brewer);
-    const html = `<li>
+    console.log(brewer);
+    const html = `<li data-id=${brewer.id}>
       <h2>${brewer.name}</h2>
       <div class="type">${brewer.brewery_type}</div>
       <section class="address">
@@ -106,7 +104,7 @@ function renderBrewers(brewers, citiesReset = false) {
           Visit Website
         </a>
       </section>
-    </li>`;
+    </li><button class="btn-add-to-visit">Add to visit</button>`;
 
     breweriesContainer.insertAdjacentHTML("afterbegin", html);
   });
@@ -196,7 +194,7 @@ function pagination() {
           Visit Website
         </a>
       </section>
-    </li>`;
+    </li><button class="btn-add-to-visit">Add to visit</button>`;
 
     breweriesContainer.insertAdjacentHTML("afterbegin", html);
   });
@@ -246,3 +244,24 @@ function renderPaginationButtons() {
       renderPaginationButtons();
     });
 }
+
+breweriesContainer.addEventListener("click", (e) => {
+  if (!e.target.classList.contains("btn-add-to-visit")) return;
+  const currBrewery = e.target.previousSibling.dataset.id;
+  state.brewers.forEach((brewer) => {
+    if (brewer.id === currBrewery) {
+      const options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(brewer),
+      };
+
+      fetch("http://localhost:3000/breweries", options);
+    }
+  });
+});
+
+visitBreweries.addEventListener("click", async () => {
+  const brewers = await getJSON("http://localhost:3000/breweries");
+  renderBrewers(brewers);
+});
