@@ -26,11 +26,11 @@ const state = {
 function initialiseSearchListener() {
   const searchButton = document.querySelector("#select-state-form");
 
-  searchButton.addEventListener("submit", (ev) => {
-    ev.preventDefault();
+  searchButton.addEventListener("submit", (event) => {
+    event.preventDefault();
 
-    state.state = ev.target[0].value;
-    ev.target.reset();
+    state.state = event.target[0].value;
+    event.target.reset();
 
     fetchAndRender();
   });
@@ -39,8 +39,8 @@ function initialiseSearchListener() {
 function initialiseFilterByTypeListener() {
   const filter = document.querySelector("#filter-by-type");
 
-  filter.addEventListener("change", (ev) => {
-    state.filters.breweryType = ev.target.value;
+  filter.addEventListener("change", (event) => {
+    state.filters.breweryType = event.target.value;
 
     fetchAndRender();
   });
@@ -88,7 +88,7 @@ function renderBrewery(brewery) {
       <a href="${brewery.website_url}" target="_blank">Visit Website</a>
     </section>`;
 
-  state.breweriesListEl.appendChild(li);
+  state.breweriesListEl.append(li);
 }
 
 function render() {
@@ -125,8 +125,7 @@ function getBreweriesHeading() {
   }
 
   if (state.filters.breweryType !== "") {
-    breweriesHeading =
-      breweriesHeading + ` [type='${state.filters.breweryType}']`;
+    breweriesHeading = breweriesHeading + ` ${state.filters.breweryType}`;
   }
 
   return breweriesHeading;
@@ -138,8 +137,7 @@ function fetchAndRender() {
   state.breweriesHeadingEl.innerText = getBreweriesHeading();
 
   if (state.state === "") {
-    state.breweriesListEl.innerHTML =
-      '<p class="no-state-selected">No state selected</p>';
+    state.breweriesListEl.innerHTML = "<p><em>No state selected</em></p>";
     return;
   }
 
