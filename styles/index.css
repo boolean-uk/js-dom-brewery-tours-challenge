@@ -248,3 +248,16 @@ article {
   font-size: 1.3rem;
   cursor: pointer;
 }
+
+.hide {
+  display: none;
+}
+li {
+  position: relative;
+}
+
+.btn-delete {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 1rem;
+}
