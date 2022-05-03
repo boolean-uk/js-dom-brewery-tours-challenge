@@ -1,40 +1,21 @@
-import fetchByState from "./fetchByState.js";
-import fetchByType from "./fetchByType.js";
-import fetchByName from "./fetchByName.js";
+import handleSubmitSearchByState from "./handleSubmitSearchByState.js";
+import handleChangeFilterByTypeBtn from "./handleChangeFilterByTypeBtn.js";
+import handleInputSearchBar from "./handleInputSearchBar.js";
 import handleChangeCityFilters from "./handleChangeCityFilters.js";
-import render from "./render.js";
-import state from "./state.js";
+import handleClickCityFiltersClearBtn from "./handleClickCityFiltersClearBtn.js";
 
-const searchBtn = document.getElementById('select-state-form')
-const filterBtn = document.getElementById('filter-by-type')
-const searchBar = document.getElementById('search-breweries')
+const searchByStateBtn = document.getElementById('select-state-form')
+const filterByTypeBtn = document.getElementById('filter-by-type')
+const nameSearchBar = document.getElementById('search-breweries')
 const cityFilters = document.getElementById('filter-by-city-form')
 const cityFiltersClearBtn = document.querySelector('.clear-all-btn')
 
-searchBtn.addEventListener('submit', (e) => {
-  e.preventDefault()
-  const USState = e.target[0].value.split(' ').join('_')
+searchByStateBtn.addEventListener('submit', handleSubmitSearchByState)
 
-  fetchByState(USState)
-})
+filterByTypeBtn.addEventListener('change', handleChangeFilterByTypeBtn)
 
-filterBtn.addEventListener('change', (e) => {
-  const typeFilter = e.target.value
-
-  fetchByType(typeFilter, e)
-})
-
-searchBar.addEventListener('input', (e) => {
-  e.preventDefault()
-  const name = e.target.value
-
-  fetchByName(name)
-})
+nameSearchBar.addEventListener('input', handleInputSearchBar)
 
 cityFilters.addEventListener('change', handleChangeCityFilters)
 
-cityFiltersClearBtn.addEventListener('click', () => {
-  cityFilters.reset()
-  state.cityFilters.clear()
-  render()
-})
+cityFiltersClearBtn.addEventListener('click', handleClickCityFiltersClearBtn)

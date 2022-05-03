@@ -24,7 +24,7 @@ function render() {
     if (targetBreweryTypes.includes(type)) breweriesList.append(breweryLi(element))
   });
 
-  renderCityCheckBoxes(state.data, targetBreweryTypes)
+  renderCityCheckBoxes()
 }
 
 export default render

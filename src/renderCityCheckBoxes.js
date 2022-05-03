@@ -1,14 +1,16 @@
 import cityCheckbox from "./components/cityCheckbox.js";
 import cityLabel from "./components/cityLabel.js";
+import state from "./state.js";
 
-function renderCityCheckBoxes(data, targetTypes) {
+
+function renderCityCheckBoxes() {
   const citiesList = document.getElementById('filter-by-city-form')
   citiesList.innerHTML = ''
   const citiesSet = new Set()
   
-  data.forEach(brewery => {
+  state.data.forEach(brewery => {
     const { city, brewery_type: type} = brewery
-    if (targetTypes.includes(type)) citiesSet.add(city)
+    if (state.targetBreweryTypes.includes(type)) citiesSet.add(city)
   });
 
   citiesSet.forEach(city => {
