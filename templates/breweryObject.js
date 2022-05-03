@@ -20,3 +20,5 @@ const breweries = [
     website_url: "http://10barrel.com"
   }
 ];
+
+export default breweries
