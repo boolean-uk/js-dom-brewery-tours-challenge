@@ -1,0 +1,23 @@
+{
+  "breweries": [
+    {
+      "id": "lager-heads-smokehouse-medina",
+      "name": "Lager Heads Smokehouse",
+      "brewery_type": "brewpub",
+      "street": "2832 Abbeyville Rd",
+      "address_2": null,
+      "address_3": null,
+      "city": "Medina",
+      "state": "Ohio",
+      "county_province": null,
+      "postal_code": "44256",
+      "country": "United States",
+      "longitude": "-81.88755054",
+      "latitude": "41.19980605",
+      "phone": "3307251947",
+      "website_url": null,
+      "updated_at": "2021-10-23T02:24:55.243Z",
+      "created_at": "2021-10-23T02:24:55.243Z"
+    }
+  ]
+}

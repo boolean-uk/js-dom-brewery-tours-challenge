@@ -4,8 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://kit.fontawesome.com/f9c0780752.js"
+      crossorigin="anonymous"
+    ></script>
     <link rel="stylesheet" href="styles/reset.css" />
     <link rel="stylesheet" href="styles/index.css" />
+    <script type="module" defer src="app.js"></script>
     <title>Brewery Tours</title>
   </head>
   <body>
@@ -19,7 +24,9 @@
         </form>
       </section>
     </header>
+
     <main>
+      <button class="hide go-back">Go Back</button>
       <aside class="filters-section">
         <aside class="filters-section">
           <h2>Filter By:</h2>
@@ -32,9 +39,29 @@
               <option value="brewpub">Brewpub</option>
             </select>
           </form>
+          <div class="filter-by-city-heading">
+            <h3>Cities</h3>
+            <button class="clear-all-btn">clear all</button>
+          </div>
+          <form id="filter-by-city-form">
+            <!-- 
+              For each city, generate a checkbox and label like below 
+            -->
+
+            <!-- // More checkboxes -->
+          </form>
         </aside>
       </aside>
-      <h1>List of Breweries</h1>
+      <div class="visit">
+        <h1>List of Breweries</h1>
+        <button class="breweries-to-visit">Breweries to visit</button>
+      </div>
+      <header class="search-bar">
+        <form id="search-breweries-form" autocomplete="off">
+          <label for="search-breweries"><h2>Search breweries:</h2></label>
+          <input id="search-breweries" name="search-breweries" type="text" />
+        </form>
+      </header>
       <article>
         <ul id="breweries-list" class="breweries-list">
           <!--
@@ -43,8 +70,14 @@
           in templates/standard-list-items.html
           -->
         </ul>
+        <div class="pagination-container"></div>
+        <!-- <button class="prev-page">
+          <i class="fa-solid fa-circle-arrow-left"></i>
+        </button>
+        <button class="next-page">
+          <i class="fa-solid fa-circle-arrow-right"></i>
+        </button> -->
       </article>
     </main>
-    <script src="index.js"></script>
   </body>
 </html>
