@@ -39,12 +39,13 @@
         </div>
 
         <form id="filter-by-city-form">
-          <input type="checkbox" name="chardon" value="chardon" />
-          <label for="chardon">Chardon</label>
-
-          <input type="checkbox" name="chardon" value="chardon" />
-          <label for="chardon">Chardon</label>
+          <!--
+         here i am injecting checkboxes
+          -->
         </form>
+        <div class="show-button hidden">
+          <button id="buttonShow">Show</button>
+        </div>
       </aside>
       <h1>List of Breweries</h1>
       <header class="search-bar">
@@ -61,6 +62,7 @@
           in templates/standard-list-items.html
           -->
         </ul>
+        <div class="page-buttons"></div>
       </article>
     </main>
     <script type="module" src="src/index.js"></script>

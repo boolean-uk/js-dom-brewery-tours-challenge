@@ -1,23 +1,30 @@
-import { renderList } from "./renderList.js";
-import { filterByType, filterByName } from "./filter.js";
-import { renderCheckboxes } from "./renderCheckboxes.js";
+import { fetchFromAPI } from "./handlePage.js";
+import {
+  filterByType,
+  filterByName,
+  filterByCity,
+  clearFilter,
+} from "./filters.js";
 
 const breweriesListUL = document.querySelector("#breweries-list");
 const searchState = document.querySelector("#select-state-form");
 const filter = document.querySelector("#filter-by-type");
 const searchBreweries = document.querySelector("#search-breweries-form");
 const cityListForm = document.querySelector("#filter-by-city-form");
+const hiddenButton = document.querySelector(".hidden");
+const buttonShow = document.querySelector("#buttonShow");
+const clearButton = document.querySelector(".clear-all-btn");
+const pageButtons = document.querySelector(".page-buttons");
 
 let breweriesInCurrentState = [];
-let filteredBreweries = [];
+let breweriesByType = [];
+let breweriesByCity = [];
 
 searchState.addEventListener("submit", (event) => {
   event.preventDefault();
   const state = event.target[0].value;
   breweriesInCurrentState = [];
-  //render the list AND render the filter city list
-  renderList(state);
-  renderCheckboxes();
+  fetchFromAPI(state);
 });
 
 filter.addEventListener("change", () => {
@@ -26,15 +33,24 @@ filter.addEventListener("change", () => {
 });
 
 searchBreweries.addEventListener("input", (event) => {
-  const input = event.target.value;
+  const input = event.target.value.toLowerCase();
   filterByName(input);
 });
 
-// TODO: make sure the input text works for capital or small letters too, and make sure double barrel state names would be accepted too, eg new york, New YORK, NEW_york...
+buttonShow.addEventListener("click", () => {
+  filterByCity();
+});
+
+clearButton.addEventListener("click", () => {
+  clearFilter();
+});
 
 export {
   breweriesInCurrentState,
   breweriesListUL,
-  filteredBreweries,
+  breweriesByType,
+  breweriesByCity,
   cityListForm,
+  hiddenButton,
+  pageButtons,
 };
