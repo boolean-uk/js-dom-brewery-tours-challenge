@@ -103,13 +103,28 @@ main {
 #filter-by-city-form {
   padding: 1rem;
 
-  display: grid;
-  grid-template-columns: 24px auto;
-  align-items: center;
-
   border-radius: 0 0 0.25rem 0.25rem;
   border: 1px solid #000;
   border-top: none;
+
+  list-style: none;
+}
+
+.hidden{
+  display: none;
+  padding: 1rem;
+  border-radius: 0 0 0.25rem 0.25rem;
+  border: 1px solid #000;
+  border-top: none;
+}
+
+.page-buttons {
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.active {
+  background-color: #fbc02d
 }
 
 h1 {
@@ -205,6 +220,10 @@ article {
 
 .breweries-list li .address {
   grid-area: address;
+}
+
+.breweries-list .bold {
+  font-weight: bold;
 }
 
 .breweries-list li .phone {
