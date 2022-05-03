@@ -1,25 +1,3 @@
-const breweries = [
-  {
-    address_2: null,
-    address_3: null,
-    brewery_type: "micro",
-    city: "San Diego",
-    country: "United States",
-    county_province: null,
-    created_at: "2018-07-24T00:00:00.000Z",
-    id: 8041,
-    latitude: "32.714813",
-    longitude: "-117.129593",
-    name: "10 Barrel Brewing Co",
-    obdb_id: "10-barrel-brewing-co-san-diego",
-    phone: "6195782311",
-    postal_code: "92101-6618",
-    state: "California",
-    street: "1501 E St",
-    updated_at: "2018-08-23T00:00:00.000Z",
-    website_url: "http://10barrel.com",
-  },
-];
 /* Here are the Standard Requirements for the Brewery Challenge:
 
 1. A user can enter a US state and view a list of breweries in that state
@@ -28,12 +6,164 @@ const breweries = [
 4. From the list of breweries, a user can visit the website of a brewery
 5. From the 'filter by type of brewery' section, a user can filter by type of brewery. */
 
-const breweryUl = document.getElementById("breweries-list");
-for (let i = 0; i < breweries.length; i++) {
-  const brewery = breweries[i];
+// Step 1
+
+const tourBreweryTypes = ["micro", "brewpub", "regional"];
+
+const state = {
+  state: "",
+  breweriesHeadingEl: "",
+  breweriesListEl: "",
+  breweriesData: [],
+  filters: {
+    breweryType: "",
+  },
+  status: "Idle",
+};
+
+// Step 2
+
+function initialiseSearchListener() {
+  const searchButton = document.querySelector("#select-state-form");
+
+  searchButton.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+
+    state.state = ev.target[0].value;
+    ev.target.reset();
+
+    fetchAndRender();
+  });
 }
 
-function getAndRenderBrewery() {
+function initialiseFilterByTypeListener() {
+  const filter = document.querySelector("#filter-by-type");
+
+  filter.addEventListener("change", (ev) => {
+    state.filters.breweryType = ev.target.value;
+
+    fetchAndRender();
+  });
+}
+
+// Step 3
+
+function initialise() {
+  state.breweriesHeadingEl = document.querySelector("#breweries-heading");
+  state.breweriesListEl = document.querySelector("#breweries-list");
+
+  initialiseSearchListener();
+  initialiseFilterByTypeListener();
+
+  fetchAndRender();
+}
+
+// Step 4
+
+function renderBreweries() {
+  state.breweriesData.forEach((brewery) => renderBrewery(brewery));
+}
+
+function renderPhoneNumber(phoneNumber) {
+  if (phoneNumber === null) {
+    return "N/A";
+  }
+  return phoneNumber;
+}
+
+function renderBrewery(brewery) {
+  const li = document.createElement("li");
+  li.innerHTML = `<h2>${brewery.name}</h2>
+    <div class="type">${brewery.brewery_type}</div>
+    <section class="address">
+      <h3>Address:</h3>
+      <p>${brewery.street}</p>
+      <p><strong>${brewery.city}, ${brewery.postal_code}</strong></p>
+    </section>
+    <section class="phone">
+      <h3>Phone:</h3>
+      <p>${renderPhoneNumber(brewery.phone)}</p>
+    </section>
+    <section class="link">
+      <a href="${brewery.website_url}" target="_blank">Visit Website</a>
+    </section>`;
+
+  state.breweriesListEl.appendChild(li);
+}
+
+function render() {
+  renderBreweries();
+}
+
+// Step 5
+
+function getUrl() {
+  let url = `https://api.openbrewerydb.org/breweries?by_state=${state.state}`;
+
+  if (state.filters.breweryType !== "") {
+    url = url + `&by_type=${state.filters.breweryType}`;
+  }
+
+  return url;
+}
+
+function setBreweryData(rawData) {
+  let breweriesWithTours = [];
+
+  breweriesWithTours = rawData.filter((b) =>
+    tourBreweryTypes.includes(b.brewery_type)
+  );
+
+  state.breweriesData = breweriesWithTours;
+}
+
+function getBreweriesHeading() {
+  let breweriesHeading = "List of Breweries";
+
+  if (state.state !== "") {
+    breweriesHeading = breweriesHeading + ` for '${state.state}'`;
+  }
+
+  if (state.filters.breweryType !== "") {
+    breweriesHeading =
+      breweriesHeading + ` [type='${state.filters.breweryType}']`;
+  }
+
+  return breweriesHeading;
+}
+
+function fetchAndRender() {
+  state.breweriesListEl.innerHTML = "";
+
+  state.breweriesHeadingEl.innerText = getBreweriesHeading();
+
+  if (state.state === "") {
+    state.breweriesListEl.innerHTML =
+      '<p class="no-state-selected">No state selected</p>';
+    return;
+  }
+
+  // Step 6
+
+  const url = getUrl();
+
+  fetch(url)
+    .then((resp) => resp.json())
+    .then((data) => {
+      setBreweryData(data);
+      //   console.log(data)
+      render();
+    });
+}
+
+// Step 7
+
+initialise();
+
+// ------------- Below is my old code snippet ------------------ //
+/* const breweryUl = document.getElementById("breweries-list");
+
+function getAndRenderBreweries() {
   fetch("https://api.openbrewerydb.org/breweries?by_state=ohio")
     .then((res) => res.json())
     .then((data) => {
@@ -49,8 +179,6 @@ function renderBreweries(breweries) {
   breweries.forEach((brewery) => {
     if (tourBreweryTypes.includes(brewery.brewery_type)) {
       renderBrewery(brewery);
-    } else {
-      console.log(`Not to rendering ${brewery.brewery_type}`);
     }
   });
 }
@@ -107,4 +235,4 @@ function renderBrewery(brewery) {
   breweryLink.append(breweryA);
 }
 
-getAndRenderBrewery();
+getAndRenderBreweries(); */
