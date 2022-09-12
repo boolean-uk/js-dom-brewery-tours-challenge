@@ -2,13 +2,11 @@ const BREWERIES_BASE_URL = 'https://api.openbrewerydb.org/breweries'
 
 const BREWERY_LIST = document.querySelector('.breweries-list')
 const STATE_SEARCH_INPUT = document.querySelector('#select-state-form')
+const TYPE_FILTER = document.querySelector('#filter-by-type')
 
-let appState = []
-
-function getBreweries(category, term) {
+function getBreweries(firstCategory, firstTerm, secondCategory, secondTerm) {
     BREWERY_LIST.innerHTML = ''
-    console.log('In getBreweries')
-    fetch(BREWERIES_BASE_URL + '?' + category + '=' + term)
+    fetch(BREWERIES_BASE_URL + '?' + firstCategory + '=' + firstTerm + '&' + secondCategory + '=' + secondTerm)
         .then(res => res.json())
         .then(breweries => breweries.forEach(brewery => renderBreweryListItems(brewery)))
 }
@@ -66,12 +64,16 @@ function renderBreweryListItems(singleBrewery) {
 }
 
 function setup() {
-    getBreweries(null, null)
+    getBreweries(null, null, null, null)
 
     STATE_SEARCH_INPUT.addEventListener('submit', function (event) {
         event.preventDefault()
         const searchedState = STATE_SEARCH_INPUT.querySelector('#select-state').value
         getBreweries('by_state', searchedState)
+    })
+
+    TYPE_FILTER.addEventListener('change', function (event) {
+        getBreweries('by_type', TYPE_FILTER.value)
     })
 }
 
