@@ -17,11 +17,7 @@ body {
 }
 
 .select-state-section h2 {
-  width: 200px;
-  margin-bottom: 1.5rem;
-
-  border: 6px dashed #000;
-
+  width: 230px;
   text-align: center;
 }
 
@@ -234,5 +230,24 @@ article {
 }
 
 #pagination button {
-  margin: 0 0.5rem 0 0.5rem
+  margin: 0 0.5rem 0 0.5rem;
+  padding: 0.6rem;
+  background-color: #fbc02d;
+  border: 1px #fbc02d;
+  color: brown;
+  border-radius: 0.6rem;
+}
+
+#pagination button:hover {
+  color: white;
+  background-color: brown;
+  border: 1px brown;
+}
+
+.pleaseNote {
+  padding: 1rem;
+  margin: 0.5rem 0 0.5rem 0;
+  background-color: lightyellow;
+  border: 1px solid white;
+  border-radius: 0.4rem;
 }
