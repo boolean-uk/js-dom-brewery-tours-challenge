@@ -6,9 +6,22 @@ const TYPE_FILTER = document.querySelector('#filter-by-type')
 
 function getBreweries(firstCategory, firstTerm, secondCategory, secondTerm) {
     BREWERY_LIST.innerHTML = ''
+
     fetch(BREWERIES_BASE_URL + '?' + firstCategory + '=' + firstTerm + '&' + secondCategory + '=' + secondTerm)
         .then(res => res.json())
-        .then(breweries => breweries.forEach(brewery => renderBreweryListItems(brewery)))
+        .then((breweries) => {
+            BREWERY_LIST.innerHTML = ''
+            if (breweries.length === 0) {
+                const BREWERY_LI = document.createElement('li')
+                const BREWERY_H2 = document.createElement('h2')
+                BREWERY_H2.innerText = 'No breweries found for this search term'
+                BREWERY_LI.appendChild(BREWERY_H2)
+                BREWERY_LIST.appendChild(BREWERY_LI)
+            } else {
+                breweries.forEach(brewery => renderBreweryListItems(brewery))
+            }
+
+        })
 }
 
 function renderBreweryListItems(singleBrewery) {
