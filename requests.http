@@ -1,1 +1,1 @@
-GET https://api.openbrewerydb.org/breweries?by_state=&by_type=micro
+GET https://api.openbrewerydb.org/breweries?per_page=6&page=1&

@@ -4,10 +4,22 @@ const BREWERY_LIST = document.querySelector('.breweries-list')
 const STATE_SEARCH_INPUT = document.querySelector('#select-state-form')
 const TYPE_FILTER = document.querySelector('#filter-by-type')
 
-function getBreweries(firstCategory, firstTerm, secondCategory, secondTerm) {
-    BREWERY_LIST.innerHTML = ''
+let state = []
 
-    fetch(BREWERIES_BASE_URL + '?' + firstCategory + '=' + firstTerm + '&' + secondCategory + '=' + secondTerm)
+const REQUIRED_TYPES = ['micro', 'regional', 'brewpub']
+
+let currentSearchCriteria = {
+    by_state: '',
+    by_type: '',
+    per_page: 6,
+    page: 1
+}
+
+function getBreweries() {
+    BREWERY_LIST.innerHTML = ''
+    const CURRENT_SEARCH_CRITERIA = getCurrentSearchFilter(currentSearchCriteria)
+
+    fetch(BREWERIES_BASE_URL + CURRENT_SEARCH_CRITERIA)
         .then(res => res.json())
         .then((breweries) => {
             BREWERY_LIST.innerHTML = ''
@@ -18,16 +30,16 @@ function getBreweries(firstCategory, firstTerm, secondCategory, secondTerm) {
                 BREWERY_LI.appendChild(BREWERY_H2)
                 BREWERY_LIST.appendChild(BREWERY_LI)
             } else {
-                breweries.forEach(brewery => renderBreweryListItems(brewery))
+                state = [...breweries]
             }
-
+        })
+        .then(() => {
+            renderBreweryListItems()
         })
 }
 
-function renderBreweryListItems(singleBrewery) {
-    if (singleBrewery.brewery_type === 'micro' ||
-    singleBrewery.brewery_type === 'regional' ||
-    singleBrewery.brewery_type === 'brewpub' ) {
+function renderBreweryListItems() {
+    state.forEach(singleBrewery => {
         const BREWERY_LI = document.createElement('li')
 
         const BREWERY_H2 = document.createElement('h2')
@@ -76,20 +88,33 @@ function renderBreweryListItems(singleBrewery) {
         BREWERY_LI.appendChild(BREWERY_URL_SECTION)
 
         BREWERY_LIST.appendChild(BREWERY_LI)
+    })
+}
+
+function getCurrentSearchFilter() {
+    queryString = '?'
+    for (const TERM in currentSearchCriteria) {
+        if (currentSearchCriteria[TERM]) {
+            queryString += TERM + '='
+            queryString += currentSearchCriteria[TERM] + '&'
+        }
     }
+    return queryString
 }
 
 function setup() {
-    getBreweries(null, null, null, null)
+    getBreweries()
 
     STATE_SEARCH_INPUT.addEventListener('submit', function (event) {
         event.preventDefault()
         const searchedState = STATE_SEARCH_INPUT.querySelector('#select-state').value
-        getBreweries('by_state', searchedState)
+        currentSearchCriteria.by_state = searchedState
+        getBreweries()
     })
 
     TYPE_FILTER.addEventListener('change', function (event) {
-        getBreweries('by_type', TYPE_FILTER.value)
+        currentSearchCriteria.by_type = TYPE_FILTER.value
+        getBreweries()
     })
 }
 
