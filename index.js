@@ -1,16 +1,28 @@
 let state = [];
+let url = "https://api.openbrewerydb.org/breweries/random?size=1"
 
 console.log("script started");
 
-const fetchAndRender = () => {
-  fetch("https://api.openbrewerydb.org/breweries/random?size=2") // Change the URL based on filter and search results
+const addEventListeners = () => {
+    document.querySelector("#select-state-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const input = document.querySelector('#select-state').value;
+        url = `https://api.openbrewerydb.org/breweries?by_state=${input}&per_page=20`
+        console.log(url);
+        fetchAndRender(url);
+        })
+    }
+
+const fetchAndRender = (url) => {
+  fetch(url) // Change the URL based on filter and search results
     .then(function (response) {
       console.log(response);
       return response.json();
     })
     .then((breweries) => {
       const newState = [...breweries];
-      state = newState;
+      console.log(newState);
+      state = newState
       render();
     });
 };
@@ -63,7 +75,8 @@ const createElements = (state) => {
 };
 
 const init = () => {
-    fetchAndRender();
+    addEventListeners();
+    fetchAndRender(url);
 };
 
 init();
