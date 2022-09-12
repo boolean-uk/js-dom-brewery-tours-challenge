@@ -6,8 +6,6 @@ const TYPE_FILTER = document.querySelector('#filter-by-type')
 
 let state = []
 
-const REQUIRED_TYPES = ['micro', 'regional', 'brewpub']
-
 let currentSearchCriteria = {
     by_state: '',
     by_type: '',
