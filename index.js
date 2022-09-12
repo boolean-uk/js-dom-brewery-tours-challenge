@@ -1,34 +1,44 @@
 let state = [];
-let url = "https://api.openbrewerydb.org/breweries/random?size=1"
-
-console.log("script started");
+let url = "";
+let allowedTypes = ["micro", "regional", "brewpub"];
 
 const addEventListeners = () => {
-    document.querySelector("#select-state-form").addEventListener("submit", (event) => {
-        event.preventDefault();
-        const input = document.querySelector('#select-state').value;
-        url = `https://api.openbrewerydb.org/breweries?by_state=${input}&per_page=20`
-        console.log(url);
-        fetchAndRender(url);
-        })
-    }
+  document
+    .querySelector("#select-state-form")
+    .addEventListener("submit", (event) => {
+      event.preventDefault();
+      const input = document
+        .querySelector("#select-state")
+        .value.replace(" ", "_")
+        .toLowerCase();
+      url = `https://api.openbrewerydb.org/breweries?by_state=${input}&per_page=50`;
+      fetchAndRender(url);
+    });
+
+  document
+    .querySelector("#filter-by-type-form")
+    .addEventListener("change", (event) => {
+      allowedTypes = event.target.value;
+      fetchAndRender(url);
+    });
+};
 
 const fetchAndRender = (url) => {
   fetch(url) // Change the URL based on filter and search results
     .then(function (response) {
-      console.log(response);
       return response.json();
     })
     .then((breweries) => {
-      const newState = [...breweries];
-      console.log(newState);
-      state = newState
+      const newState = [...breweries]; // Could be refactored with .includes() ?
+      state = newState.filter((item) =>
+        allowedTypes.includes(item.brewery_type)
+      );
       render();
     });
 };
 
 const render = () => {
-  document.querySelector("#breweries-list").innerHTML = "";  
+  document.querySelector("#breweries-list").innerHTML = "";
   for (let i = 0; i < state.length; i++) {
     createElements(state[i]);
   }
@@ -60,25 +70,21 @@ const createElements = (state) => {
   liDiv.className = "type";
   liDiv.innerHTML = state.brewery_type;
   liSecAddress.className = "address";
-  firstSecH3.innerHTML = 'Address:'
-  firstSecParagraphOne.innerHTML = state.street
+  firstSecH3.innerHTML = "Address:";
+  firstSecParagraphOne.innerHTML = state.street;
   firstSecParagraphTwoStrong.innerHTML = `${state.city}, ${state.postal_code}`;
-  liSecPhone.className = 'phone'
-  secondSecH3.innerHTML = 'Phone:'
-  secondSecParagraphOne.innerHTML = state.phone
-  liSecLink.className = 'link'
-  thirdSecAnchor.setAttribute('href', state.website_url)
-  thirdSecAnchor.setAttribute('target', '_blank')
-  thirdSecAnchor.innerHTML = 'Visit Website'
-
-
+  liSecPhone.className = "phone";
+  secondSecH3.innerHTML = "Phone:";
+  secondSecParagraphOne.innerHTML = state.phone;
+  liSecLink.className = "link";
+  thirdSecAnchor.setAttribute("href", state.website_url);
+  thirdSecAnchor.setAttribute("target", "_blank");
+  thirdSecAnchor.innerHTML = "Visit Website";
 };
 
 const init = () => {
-    addEventListeners();
-    fetchAndRender(url);
+  addEventListeners();
+  fetchAndRender(url);
 };
 
 init();
-
-console.log(state);
