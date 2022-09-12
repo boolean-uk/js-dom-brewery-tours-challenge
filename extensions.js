@@ -4,8 +4,9 @@ const BREWERY_LIST = document.querySelector('.breweries-list')
 const SEARCH_FORM = document.querySelector('#search-breweries-form')
 const SEARCH_BREWERIES_BY_NAME = document.querySelector('#search-breweries')
 const TYPE_FILTER = document.querySelector('#filter-by-type')
+const CITIES_FILTER = document.querySelector('#filter-by-city-form')
 
-let BrewerieName = []
+let state = []
 
 let currentSearchCriteria = {
     by_name: '',
@@ -29,9 +30,9 @@ function getBreweries() {
                 BREWERY_H2.innerText = 'No breweries found for this search term'
                 BREWERY_LI.appendChild(BREWERY_H2)
                 BREWERY_LIST.appendChild(BREWERY_LI)
-                BrewerieName = []
+                state = []
             } else {
-                BrewerieName = [...onlyIncludeBreweryTypes(breweries)]
+                state = [...onlyIncludeBreweryTypes(breweries)]
             }
         })
         .then(() => {
@@ -41,7 +42,7 @@ function getBreweries() {
 }
 
 function renderBreweryListItems() {
-    BrewerieName.forEach(singleBrewery => {
+    state.forEach(singleBrewery => {
         const BREWERY_LI = document.createElement('li')
 
         const BREWERY_H2 = document.createElement('h2')
@@ -58,7 +59,7 @@ function renderBreweryListItems() {
 
         const BREWERY_ADDRESS_CITY_PC = document.createElement('p')
         const BREWERY_ADDRESS_CITY_PC_STRONG = document.createElement('strong')
-        BREWERY_ADDRESS_CITY_PC_STRONG.innerText = `${singleBrewery.city}, ${singleBrewery.postal_code}, ${singleBrewery.BrewerieName}`
+        BREWERY_ADDRESS_CITY_PC_STRONG.innerText = `${singleBrewery.city}, ${singleBrewery.postal_code}, ${singleBrewery.state}`
         BREWERY_ADDRESS_CITY_PC.appendChild(BREWERY_ADDRESS_CITY_PC_STRONG)
         BREWERY_ADDRESS_SECTION.appendChild(BREWERY_ADDRESS_CITY_PC)
 
@@ -133,7 +134,7 @@ function createPagination() {
         })
     }
 
-    if (BrewerieName.length > 0) {
+    if (state.length > 0) {
         const BUTTON_FORWARD = document.createElement('button')
         BUTTON_FORWARD.innerText = 'Next Page →'
         BUTTON_FORWARD.addEventListener('click', function (event) {
@@ -154,6 +155,31 @@ function movePageForward(pageNumber) {
 function movePageBack(pageNumber) {
     currentSearchCriteria.page = pageNumber
     getBreweries()
+}
+
+function generateCityList() {
+    // This constant is from the file cities.js
+    for (const CITY of LARGEST_US_CITIES) {
+        const CITY_VALUE = CITY.replaceAll(' ', '_').toLowerCase()
+
+        const CITY_FORM_INPUT = document.createElement('input')
+        CITY_FORM_INPUT.setAttribute('type', 'checkbox')
+        CITY_FORM_INPUT.setAttribute('name', CITY_VALUE)
+        CITY_FORM_INPUT.setAttribute('value', CITY_VALUE)
+
+        const CITY_FORM_LABEL = document.createElement('label')
+        CITY_FORM_LABEL.setAttribute('for', CITY_VALUE)
+        const LABEL_TEXT = document.createTextNode(CITY)
+        CITY_FORM_LABEL.appendChild(LABEL_TEXT)
+
+        CITIES_FILTER.appendChild(CITY_FORM_INPUT)
+        CITIES_FILTER.appendChild(CITY_FORM_LABEL)
+
+        CITY_FORM_INPUT.addEventListener('change', function (event) {
+            console.log(CITY_FORM_INPUT.value)
+        })        
+    }
+
 }
 
 function setup() {
@@ -178,3 +204,5 @@ function setup() {
 }
 
 setup()
+
+generateCityList()
