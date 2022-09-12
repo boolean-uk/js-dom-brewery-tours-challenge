@@ -1,7 +1,7 @@
 const BREWERIES_BASE_URL = 'https://api.openbrewerydb.org/breweries'
 
 const BREWERY_LIST = document.querySelector('.breweries-list')
-const STATE_SEARCH_INPUT = document.querySelector('#select-state-form')
+const US_STATE_SEARCH_INPUT = document.querySelector('#select-state-form')
 const TYPE_FILTER = document.querySelector('#filter-by-type')
 
 let state = []
@@ -11,8 +11,8 @@ const REQUIRED_TYPES = ['micro', 'regional', 'brewpub']
 let currentSearchCriteria = {
     by_state: '',
     by_type: '',
-    per_page: 6,
-    page: 1
+    per_page: 100,
+    page: 3
 }
 
 function getBreweries() {
@@ -29,8 +29,9 @@ function getBreweries() {
                 BREWERY_H2.innerText = 'No breweries found for this search term'
                 BREWERY_LI.appendChild(BREWERY_H2)
                 BREWERY_LIST.appendChild(BREWERY_LI)
+                state = []
             } else {
-                state = [...breweries]
+                state = [...onlyIncludeBreweryTypes(breweries)]
             }
         })
         .then(() => {
@@ -91,6 +92,19 @@ function renderBreweryListItems() {
     })
 }
 
+function onlyIncludeBreweryTypes(breweries) {
+    let FILTERED_BREWERIES = []
+
+    FILTERED_BREWERIES = breweries.filter(function (brewery) {
+        return brewery.brewery_type == 'micro' || brewery.brewery_type == 'brewpub' || brewery.brewery_type == 'regional'
+    });
+
+    FILTERED_BREWERIES.sort((a, b) => (a.name > b.name) ? 1 : -1)
+
+    return FILTERED_BREWERIES
+}
+
+
 function getCurrentSearchFilter() {
     queryString = '?'
     for (const TERM in currentSearchCriteria) {
@@ -105,15 +119,18 @@ function getCurrentSearchFilter() {
 function setup() {
     getBreweries()
 
-    STATE_SEARCH_INPUT.addEventListener('submit', function (event) {
+    US_STATE_SEARCH_INPUT.addEventListener('submit', function (event) {
         event.preventDefault()
-        const searchedState = STATE_SEARCH_INPUT.querySelector('#select-state').value
+        const searchedState = US_STATE_SEARCH_INPUT.querySelector('#select-state').value
         currentSearchCriteria.by_state = searchedState
         getBreweries()
     })
 
     TYPE_FILTER.addEventListener('change', function (event) {
+        console.log(TYPE_FILTER.value)
         currentSearchCriteria.by_type = TYPE_FILTER.value
+        console.log('currentSearchCriteria.by_type')
+        console.log(currentSearchCriteria.by_type)
         getBreweries()
     })
 }
