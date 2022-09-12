@@ -228,3 +228,11 @@ article {
   text-decoration: none;
   font-weight: bold;
 }
+
+#pagination {
+  padding: 2rem;
+}
+
+#pagination button {
+  margin: 0 0.5rem 0 0.5rem
+}

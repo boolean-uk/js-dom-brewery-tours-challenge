@@ -10,7 +10,7 @@ let currentSearchCriteria = {
     by_state: '',
     by_type: '',
     per_page: 100,
-    page: 3
+    page: 1
 }
 
 function getBreweries() {
@@ -34,6 +34,7 @@ function getBreweries() {
         })
         .then(() => {
             renderBreweryListItems()
+            createPagination()
         })
 }
 
@@ -114,21 +115,59 @@ function getCurrentSearchFilter() {
     return queryString
 }
 
+function createPagination() {
+    const PAGINATION = document.querySelector('#pagination')
+    PAGINATION.innerHTML = ''
+
+    if (currentSearchCriteria.page > 1) {
+        const BUTTON_BACK = document.createElement('button')
+        BUTTON_BACK.innerText = '← Previous Page'
+
+        PAGINATION.appendChild(BUTTON_BACK)
+
+        BUTTON_BACK.addEventListener('click', function (event) {
+            currentSearchCriteria.page--
+            getBreweries()
+        })
+    }
+
+    if (state.length > 0) {
+        const BUTTON_FORWARD = document.createElement('button')
+        BUTTON_FORWARD.innerText = 'Next Page →'
+        BUTTON_FORWARD.addEventListener('click', function (event) {
+            currentSearchCriteria.page++
+            getBreweries()
+        })
+
+        PAGINATION.appendChild(BUTTON_FORWARD)
+    }
+
+}
+
+function movePageForward(pageNumber) {
+    currentSearchCriteria.page = pageNumber
+    getBreweries()
+}
+
+function movePageBack(pageNumber) {
+    currentSearchCriteria.page = pageNumber
+    getBreweries()
+}
+
 function setup() {
     getBreweries()
 
     US_STATE_SEARCH_INPUT.addEventListener('submit', function (event) {
         event.preventDefault()
         const searchedState = US_STATE_SEARCH_INPUT.querySelector('#select-state').value
+        currentSearchCriteria.page = 1
         currentSearchCriteria.by_state = searchedState
         getBreweries()
     })
 
     TYPE_FILTER.addEventListener('change', function (event) {
-        console.log(TYPE_FILTER.value)
+        currentSearchCriteria.page = 1
         currentSearchCriteria.by_type = TYPE_FILTER.value
-        console.log('currentSearchCriteria.by_type')
-        console.log(currentSearchCriteria.by_type)
         getBreweries()
     })
 }
