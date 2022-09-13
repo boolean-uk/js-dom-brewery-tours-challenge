@@ -113,7 +113,7 @@ h1 {
   grid-area: title;
 
   margin-bottom: 0.5rem;
-  text-align: center;  
+  text-align: center;
 }
 
 .search-bar {
@@ -226,7 +226,7 @@ article {
   font-weight: bold;
 }
 
-#pagination button {
+.pagination button {
   margin: 0 0.5rem 0 0.5rem;
   padding: 0.6rem;
   background-color: #fbc02d;
@@ -235,18 +235,10 @@ article {
   border-radius: 0.6rem;
 }
 
-#pagination button:hover {
+.pagination button:hover {
   color: white;
   background-color: brown;
   border: 1px brown;
-}
-
-.pleaseNote {
-  padding: 1rem;
-  margin: 0.5rem 0 0.5rem 0;
-  background-color: lightyellow;
-  border: 1px solid white;
-  border-radius: 0.4rem;
 }
 
 .progressIndicator {
@@ -262,6 +254,8 @@ article {
 
 .paginationNumbering {
   text-align: center;
-  width: 30rem;
-  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  place-items: center;
 }

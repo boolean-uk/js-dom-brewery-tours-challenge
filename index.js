@@ -3,15 +3,19 @@ const BREWERIES_BASE_URL = 'https://api.openbrewerydb.org/breweries'
 const BREWERY_LIST = document.querySelector('.breweries-list')
 const US_STATE_SEARCH_INPUT = document.querySelector('#select-state-form')
 const TYPE_FILTER = document.querySelector('#filter-by-type')
+const CITIES_FILTER = document.querySelector('#filter-by-city-form')
 
 const REQUIRED_BREWERY_TYPES = ['micro', 'regional', 'brewpub']
 
 let allData = []
 let state = []
+let availableCities = []
 
 let currentSearchCriteria = {
-    us_state: '',
-    brewery_type: '',
+    by_name: '',
+    by_city: '',
+    by_us_state: '',
+    by_brewery_type: '',
     per_page: 50,
     page: 1
 }
@@ -68,22 +72,13 @@ function renderBreweries(listOfBreweries) {
         return
     }
 
-    // calculateRange('start', listOfBreweries.length)
     let maxIndex = listOfBreweries.length
-
     let startingIndex = currentSearchCriteria.per_page * (currentSearchCriteria.page - 1)
     let endingIndex = currentSearchCriteria.per_page * currentSearchCriteria.page - 1
-
-    if (maxIndex < endingIndex) {
-        endingIndex = maxIndex
-    }
-
-    if (startingIndex >= maxIndex) {
-        startingIndex = maxIndex
-    }
+    if (maxIndex < endingIndex) { endingIndex = maxIndex }
+    if (startingIndex >= maxIndex) { startingIndex = maxIndex }
 
     for (let breweryIndex = startingIndex; breweryIndex <= endingIndex; breweryIndex++) {
-
         if (listOfBreweries[breweryIndex]) {
             const BREWERY_LI = document.createElement('li')
 
@@ -138,8 +133,7 @@ function renderBreweries(listOfBreweries) {
 
     const STARTING_PAGE_NUMBER = startingIndex + 1
     let endingPageNumber = endingIndex + 1
-
-    if (endingPageNumber > maxIndex) { endingPageNumber = maxIndex}
+    if (endingPageNumber > maxIndex) { endingPageNumber = maxIndex }
 
     document.querySelector('#currentShowing').innerText = ' (' + STARTING_PAGE_NUMBER + ' to ' + endingPageNumber + ' of ' + maxIndex + ')'
     createPagination(maxIndex - STARTING_PAGE_NUMBER)
@@ -159,14 +153,17 @@ function sortItemsByName(dataSet) {
 }
 
 function createPagination(itemsRemaining) {
-    const PAGINATION = document.querySelector('#pagination')
-    PAGINATION.innerHTML = ''
+    const PAGINATION_BACK = document.querySelector('#pagination-back')
+    const PAGINATION_FORWARD = document.querySelector('#pagination-forward')
+
+    PAGINATION_BACK.innerHTML = ''
+    PAGINATION_FORWARD.innerHTML = ''
 
     if (currentSearchCriteria.page > 1) {
         const BUTTON_BACK = document.createElement('button')
         BUTTON_BACK.innerText = '← Previous Page'
 
-        PAGINATION.appendChild(BUTTON_BACK)
+        PAGINATION_BACK.appendChild(BUTTON_BACK)
 
         BUTTON_BACK.addEventListener('click', function () {
             currentSearchCriteria.page--
@@ -174,7 +171,7 @@ function createPagination(itemsRemaining) {
         })
     }
 
-    if (itemsRemaining > currentSearchCriteria.per_page ) {
+    if (itemsRemaining > currentSearchCriteria.per_page) {
         const BUTTON_FORWARD = document.createElement('button')
         BUTTON_FORWARD.innerText = 'Next Page →'
         BUTTON_FORWARD.addEventListener('click', function () {
@@ -182,30 +179,36 @@ function createPagination(itemsRemaining) {
             renderBreweries(state)
         })
 
-        PAGINATION.appendChild(BUTTON_FORWARD)
+        PAGINATION_FORWARD.appendChild(BUTTON_FORWARD)
     }
 }
 
 function filterStateByCriteria() {
 
-    if (currentSearchCriteria.brewery_type && currentSearchCriteria.us_state) {
+    console.log('' + currentSearchCriteria.by_brewery_type)
+
+    if (currentSearchCriteria.by_brewery_type && currentSearchCriteria.by_us_state) {
         let filteredData = state.filter(function (thisBrewery) {
-            return thisBrewery.state === currentSearchCriteria.us_state && thisBrewery.brewery_type === currentSearchCriteria.brewery_type
+            return thisBrewery.state === currentSearchCriteria.by_us_state && thisBrewery.brewery_type === currentSearchCriteria.by_brewery_type
         })
         return filteredData
     }
 
-    if (currentSearchCriteria.brewery_type) {
+    if (currentSearchCriteria.by_brewery_type) {
         let filteredData = state.filter(function (thisBrewery) {
-            return thisBrewery.brewery_type === currentSearchCriteria.brewery_type
+            return thisBrewery.brewery_type === currentSearchCriteria.by_brewery_type
         })
         return filteredData
     }
 
-    let filteredData = state.filter(function (thisBrewery) {
-        return thisBrewery.state === currentSearchCriteria.us_state
-    })
-    return filteredData
+    if (currentSearchCriteria.by_us_state) {
+        let filteredData = state.filter(function (thisBrewery) {
+            return thisBrewery.state === currentSearchCriteria.by_us_state
+        })
+        return filteredData
+    }
+
+    return state
 }
 
 function capitalizeFirstLetter(text) {
@@ -218,11 +221,60 @@ function capitalizeEachWord(words) {
     let combinedCapitalizedWord = ''
 
     individualWords.forEach((thisWord, index) => {
-        if(index > 0) { combinedCapitalizedWord += ' '}
+        if (index > 0) { combinedCapitalizedWord += ' ' }
         combinedCapitalizedWord += capitalizeFirstLetter(thisWord)
     })
 
     return combinedCapitalizedWord
+}
+
+function getCityListFromData(dataSet) {
+    dataSet.forEach((dataItem) => {
+        if (!findExistingCity(dataItem.city)) {
+            availableCities.push(dataItem.city)
+        }
+    })
+}
+
+function generateCityList(dataSet) {
+
+    getCityListFromData(dataSet)
+
+    CITIES_FILTER.innerHTML = ''
+
+    for (const CITY of availableCities) {
+        const CITY_VALUE = CITY.replaceAll(' ', '_').toLowerCase()
+
+        const CITY_FORM_INPUT = document.createElement('input')
+        CITY_FORM_INPUT.setAttribute('type', 'checkbox')
+        CITY_FORM_INPUT.setAttribute('name', CITY_VALUE)
+        CITY_FORM_INPUT.setAttribute('value', CITY_VALUE)
+
+        const CITY_FORM_LABEL = document.createElement('label')
+        CITY_FORM_LABEL.setAttribute('for', CITY_VALUE)
+        const LABEL_TEXT = document.createTextNode(CITY)
+        CITY_FORM_LABEL.appendChild(LABEL_TEXT)
+
+        CITIES_FILTER.appendChild(CITY_FORM_INPUT)
+        CITIES_FILTER.appendChild(CITY_FORM_LABEL)
+
+        CITY_FORM_INPUT.addEventListener('change', function (event) {
+            if (selectedCities.indexOf(CITY_FORM_INPUT.value) >= 0 ) {
+                let indexCount = selectedCities.indexOf(CITY_FORM_INPUT.value)
+                selectedCities.splice(indexCount, 1)
+            } else {
+                selectedCities.push(CITY_FORM_INPUT.value)
+            }
+            console.log(selectedCities)
+        })        
+    }
+}
+
+function findExistingCity(city) {
+    if (availableCities.find(element => element === city)) {
+        return true
+    }
+    return false
 }
 
 function setup() {
@@ -235,7 +287,7 @@ function setup() {
         let searchedState = US_STATE_SEARCH_INPUT.querySelector('#select-state').value
         searchedState = capitalizeEachWord(searchedState)
         currentSearchCriteria.page = 1
-        currentSearchCriteria.us_state = searchedState
+        currentSearchCriteria.by_us_state = searchedState
         state = [...filterStateByCriteria()]
         renderBreweries(state)
     })
@@ -243,7 +295,7 @@ function setup() {
     TYPE_FILTER.addEventListener('change', () => {
         state = sortItemsByName(allData)
         currentSearchCriteria.page = 1
-        currentSearchCriteria.brewery_type = TYPE_FILTER.value
+        currentSearchCriteria.by_brewery_type = TYPE_FILTER.value
         state = [...filterStateByCriteria()]
         renderBreweries(state)
     })
