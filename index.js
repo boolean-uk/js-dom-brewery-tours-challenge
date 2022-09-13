@@ -114,7 +114,6 @@ const searchFunction = (event) => {
   const newState = state.filter((item) =>
     item.name.toLowerCase().includes(input)
   );
-  console.log(state, newState);
   render(newState);
 };
 
@@ -129,21 +128,18 @@ const createCityElements = (input) => {
   cityListInput.setAttribute("name", "city-checkbox");
   cityListInput.setAttribute("value", input);
   cityListInput.addEventListener("change", (event) => {
-    // event.preventDefault();
-    // console.log(event.target.checked, event.target.value);
+    event.preventDefault();
     if (event.target.checked) {
       let checkedCity = event.target.value.toLowerCase();
-      // console.log(checkedCity);
       allowedCities.push(checkedCity);
-      // console.log(allowedCities);
     }
     if (!event.target.checked) {
       let unCheckedCity = event.target.value.toLowerCase();
-      // console.log(unCheckedCity);
       allowedCities = allowedCities.filter((city) => city !== unCheckedCity);
-      console.log(allowedCities);
+      if (!document.querySelector("#filter-by-city-checkbox").checked) {
+        fetchAndRender(url);
+      }
     }
-    console.log(allowedCities);
     const newState = state.filter((item) =>
       allowedCities.includes(item.city.toLowerCase())
     );
@@ -157,3 +153,11 @@ const createCityElements = (input) => {
     .querySelector("#filter-by-city-form")
     .append(cityListInput, cityListLabel);
 };
+
+const clearAll = () => {
+  document.querySelector("#filter-by-city-checkbox").checked = false;
+  allowedCities = [];
+  fetchAndRender(url);
+
+  // renderCities(state)
+}
