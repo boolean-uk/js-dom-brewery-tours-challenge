@@ -14,17 +14,10 @@
   <header class="main-header">
     <section class="select-state-section">
       <h2>Welcome to Brewery Tours</h2>
-      <section class="pleaseNote">
-        <ul>
-          <li>This page shows: <strong>Assignment Extensions I (II is still in progress)</strong></li>
-          <li>Go to: <a href="index_core.html">Core Assignment</a></li>
-        </ul>
-      </section>
-      <form id="search-breweries-form" autocomplete="off">
-        <label for="search-breweries">
-          <h2>Search breweries by Name:</h2>
-        </label>
-        <input id="search-breweries" name="search-breweries" type="text">
+      <form id="select-state-form" autocomplete="off">
+        <label for="select-state">Which state are you visiting?</label>
+        <input id="select-state" name="select-state" type="text" />
+        <input type="submit" value="State search" />
       </form>
     </section>
   </header>
@@ -42,18 +35,12 @@
           <option value="brewpub">Brewpub</option>
         </select>
       </form>
-      <div class="filter-by-city-heading">
-        <h3>Cities</h3>
-        <button class="clear-all-btn">clear all</button>
-      </div>
-      <form id="filter-by-city-form">
-        <!-- 
-            For each city, generate a checkbox and label like below 
-          -->
-      </form>
     </aside>
     <h1>List of Breweries</h1>
-    <div id="pagination"></div>
+    <div class="paginationNumbering">
+      <p id="currentShowing"></p>
+      <div id="pagination"></div>
+    </div>
     <article>
       <ul id="breweries-list" class="breweries-list">
         <!--
@@ -64,8 +51,7 @@
       </ul>
     </article>
   </main>
-  <script src="cities.js"></script>
-  <script src="extensions.js"></script>
+  <script src="index.js"></script>
 </body>
 
 </html>

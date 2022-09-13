@@ -1,5 +1,5 @@
 const LARGEST_US_CITIES = [
-    "New York City",
+    "New York",
     "Los Angeles",
     "Chicago",
     "Houston",

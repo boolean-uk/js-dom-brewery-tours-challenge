@@ -112,8 +112,8 @@ main {
 h1 {
   grid-area: title;
 
-  padding-left: 1rem;
   margin-bottom: 0.5rem;
+  text-align: center;  
 }
 
 .search-bar {
@@ -226,10 +226,6 @@ article {
   font-weight: bold;
 }
 
-#pagination {
-  padding: 2rem;
-}
-
 #pagination button {
   margin: 0 0.5rem 0 0.5rem;
   padding: 0.6rem;
@@ -251,4 +247,21 @@ article {
   background-color: lightyellow;
   border: 1px solid white;
   border-radius: 0.4rem;
+}
+
+.progressIndicator {
+  font-size: large;
+  color: brown;
+  background-color: #ffe082;
+}
+
+#currentShowing {
+  color: lightgray;
+  margin: 0.4rem;
+}
+
+.paginationNumbering {
+  text-align: center;
+  width: 30rem;
+  margin: 0 auto;
 }

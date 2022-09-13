@@ -1,0 +1,1 @@
+GET https://api.openbrewerydb.org/breweries?per_page=100&page=1&by_state=alaska&by_type=brewpub
