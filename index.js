@@ -33,14 +33,14 @@ const fetchAndRender = (url) => {
       state = newState.filter((item) =>
         allowedTypes.includes(item.brewery_type)
       );
-      render();
+      render(state);
     });
 };
 
-const render = () => {
+const render = (input) => {
   document.querySelector("#breweries-list").innerHTML = "";
-  for (let i = 0; i < state.length; i++) {
-    createElements(state[i]);
+  for (let i = 0; i < input.length; i++) {
+    createElements(input[i]);
   }
 };
 
@@ -81,6 +81,13 @@ const createElements = (state) => {
   thirdSecAnchor.setAttribute("target", "_blank");
   thirdSecAnchor.innerHTML = "Visit Website";
 };
+
+const searchFunction = (event) => {
+  let input = event.target.value.toLowerCase();
+  const newState = state.filter(item => item.name.toLowerCase().includes(input))
+  console.log(state,newState);
+  render(newState);
+}
 
 const init = () => {
   addEventListeners();

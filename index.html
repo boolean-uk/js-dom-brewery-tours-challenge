@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles/reset.css" />
     <link rel="stylesheet" href="styles/index.css" />
+    <script defer src="index.js"></script>
     <title>Brewery Tours</title>
   </head>
   <body>
@@ -16,7 +17,6 @@
           <label for="select-state">Which state are you visiting?</label>
           <input id="select-state" name="select-state" type="text" />
           <input type="submit" value="Search" />
-          <script defer src="index.js"></script>
         </form>
       </section>
     </header>
@@ -36,6 +36,10 @@
         </aside>
       </aside>
       <h1>List of Breweries</h1>
+      <form id="search-breweries-form" autocomplete="off">
+        <label for="search-breweries"><h2>Search breweries:</h2></label>
+        <input id="search-breweries" name="search-breweries" type="text" value="" oninput="searchFunction(event)"/>
+      </form>
       <article>
         <ul id="breweries-list" class="breweries-list">
           <!--
