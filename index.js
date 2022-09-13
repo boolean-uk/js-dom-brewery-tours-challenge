@@ -37,17 +37,28 @@ const fetchAndRender = (url) => {
         allowedTypes.includes(item.brewery_type)
       );
       render(state);
+      renderCities(state);
     });
 };
 
 const render = (input) => {
   document.querySelector("#breweries-list").innerHTML = "";
-  document.querySelector("#filter-by-city-form").innerHTML = "";
   for (let i = 0; i < input.length; i++) {
     createElements(input[i]);
-    createCityElements(input[i]);
   }
 };
+
+const renderCities = input  => {
+  document.querySelector("#filter-by-city-form").innerHTML = "";
+  let cities = [];
+  for (let i = 0; i < input.length; i++) {
+    cities.push(input[i].city);
+  }
+  let uniqueCities = [...new Set(cities)];
+  for (let i = 0; i < uniqueCities.length; i++) {
+    createCityElements(uniqueCities[i]);
+  }
+}
 
 const createElements = (state) => {
   const list = document.querySelector("#breweries-list");
@@ -116,31 +127,31 @@ const createCityElements = (input) => {
   cityListInput.setAttribute("type", "checkbox");
   cityListInput.setAttribute("id", "filter-by-city-checkbox");
   cityListInput.setAttribute("name", "city-checkbox");
-  cityListInput.setAttribute("value", input.city);
+  cityListInput.setAttribute("value", input);
   cityListInput.addEventListener("change", (event) => {
-    console.log(event.target.checked, event.target.value);
+    // event.preventDefault();
+    // console.log(event.target.checked, event.target.value);
     if (event.target.checked) {
       let checkedCity = event.target.value.toLowerCase();
-      console.log(checkedCity);
+      // console.log(checkedCity);
       allowedCities.push(checkedCity);
-      console.log(allowedCities);
+      // console.log(allowedCities);
     }
     if (!event.target.checked) {
       let unCheckedCity = event.target.value.toLowerCase();
-      console.log(unCheckedCity);
+      // console.log(unCheckedCity);
       allowedCities = allowedCities.filter((city) => city !== unCheckedCity);
       console.log(allowedCities);
     }
     console.log(allowedCities);
     const newState = state.filter((item) =>
-      item.city.toLowerCase().includes(allowedCities)
+      allowedCities.includes(item.city.toLowerCase())
     );
-    console.log(state, newState);
-    // render(newState);
+    render(newState);
   });
 
   cityListLabel.setAttribute("for", "filter-by-city-checkbox");
-  cityListLabel.innerHTML = input.city;
+  cityListLabel.innerHTML = input;
 
   document
     .querySelector("#filter-by-city-form")

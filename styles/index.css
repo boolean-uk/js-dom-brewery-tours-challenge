@@ -66,15 +66,7 @@ main {
   font-size: 1rem;
 }
 
-.filter-by-city-heading {
-  padding: 1rem 1rem 0;
 
-  display: grid;
-  grid-template-columns: 1fr auto;
-
-  border: 1px solid #000;
-  border-bottom: none;
-}
 
 .clear-all-btn {
   border: none;
@@ -110,6 +102,16 @@ main {
   border-radius: 0 0 0.25rem 0.25rem;
   border: 1px solid #000;
   border-top: none;
+}
+
+.filter-by-city-heading {
+  padding: 1rem 1rem 0;
+
+  display: grid;
+  grid-template-columns: 1fr auto;
+
+  border: 1px solid #000;
+  border-bottom: none;
 }
 
 h1 {
