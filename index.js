@@ -12,7 +12,10 @@ const REQUIRED_BREWERY_TYPES = ['micro', 'regional', 'brewpub']
 let allData = []
 let state = []
 let availableCities = []
-let selectedCities = [ ]
+/*
+// Remnant of attempt at Extension II
+let selectedCities = [ 'Chicago', 'Austin' ]
+*/
 
 let currentSearchCriteria = {
     by_name: '',
@@ -187,7 +190,7 @@ function createPagination(itemsRemaining) {
     }
 }
 
-function filterStateByCriteria() {
+function filterByCriteria() {
 
     let filteredData = state
 
@@ -237,6 +240,8 @@ function getCityListFromData(dataSet) {
     })
 }
 
+/*
+// Remnant of attempt at Extension II
 function generateCityList(dataSet) {
 
     getCityListFromData(dataSet)
@@ -271,12 +276,14 @@ function generateCityList(dataSet) {
     }
 }
 
+
 function findExistingCity(city) {
     if (availableCities.find(element => element === city)) {
         return true
     }
     return false
 }
+*/
 
 function setup() {
     setProgressIndicator()
@@ -289,7 +296,7 @@ function setup() {
         searchedState = capitalizeEachWord(searchedState)
         currentSearchCriteria.page = 1
         currentSearchCriteria.by_us_state = searchedState
-        state = [...filterStateByCriteria()]
+        state = [...filterByCriteria()]
         renderBreweries(state)
     })
 
@@ -297,7 +304,7 @@ function setup() {
         state = sortItemsByName(allData)
         currentSearchCriteria.page = 1
         currentSearchCriteria.by_brewery_type = TYPE_FILTER.value
-        state = [...filterStateByCriteria()]
+        state = [...filterByCriteria()]
         renderBreweries(state)
     })
 
@@ -305,7 +312,7 @@ function setup() {
         event.preventDefault()
         state = sortItemsByName(allData)
         currentSearchCriteria.by_name = SEARCH_BREWERIES_BY_NAME.value
-        state = [...filterStateByCriteria()]
+        state = [...filterByCriteria()]
         renderBreweries(state)
     })
 }

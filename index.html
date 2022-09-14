@@ -17,16 +17,10 @@
       <h2>Welcome to Brewery Tours</h2>
       <form id="select-state-form" autocomplete="off">
         <label for="select-state">Which state are you visiting?</label>
-        <input id="select-state" name="select-state" type="text" />
+        <input id="select-state" name="select-state" onfocus="this.value=''" type="text" />
         <input type="submit" value="State search" />
       </form>
     </section>
-  </header>
-  <header class="search-bar">
-    <form id="search-breweries-form" autocomplete="off">
-      <label for="search-breweries"><h2>Search breweries by name (case sensitive):</h2></label>
-      <input id="search-breweries" name="search-breweries" type="text">
-    </form>
   </header>
   <main>
     <aside class="filters-section">
@@ -52,12 +46,19 @@
       -->
     </aside>
     <h1>List of Breweries</h1>
-
-    <div class="paginationNumbering">
+    <header class="search-bar">
+      <form id="search-breweries-form" autocomplete="off">
+        <label for="search-breweries">
+          <h2>Search breweries by name<br />(case sensitive):</h2>
+        </label>
+        <input id="search-breweries" name="search-breweries" onfocus="this.value=''" type="text">
+      </form>
+    </header>
+    <header class="paginationNumbering">
       <div id="pagination-back" class="pagination"></div>
       <div id="currentShowing"></div>
       <div id="pagination-forward" class="pagination"></div>
-    </div>
+    </header>
     <article>
       <ul id="breweries-list" class="breweries-list">
       </ul>
