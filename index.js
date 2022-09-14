@@ -4,6 +4,8 @@ const BREWERY_LIST = document.querySelector('.breweries-list')
 const US_STATE_SEARCH_INPUT = document.querySelector('#select-state-form')
 const TYPE_FILTER = document.querySelector('#filter-by-type')
 const CITIES_FILTER = document.querySelector('#filter-by-city-form')
+const SEARCH_BREWERIES_BY_NAME = document.querySelector('#search-breweries')
+
 
 const REQUIRED_BREWERY_TYPES = ['micro', 'regional', 'brewpub']
 
@@ -52,15 +54,15 @@ function getAllRequiredTypesOfBreweries() {
 
 function setProgressIndicator() {
     BREWERY_LIST.innerHTML = ''
-    const PROGRESS_LI = document.createElement('li')
-    PROGRESS_LI.setAttribute('class', 'progressIndicator')
-    const PROGRESS_LI_STRONG = document.createElement('strong')
-    PROGRESS_LI_STRONG.innerText = 'Getting fresh brewery data.'
-    PROGRESS_LI.appendChild(PROGRESS_LI_STRONG)
+    const PROGRESS_MESSAGE = document.createElement('p')
+    PROGRESS_MESSAGE.setAttribute('class', 'progressIndicator')
+    const PROGRESS_MESSAGE_STRONG = document.createElement('strong')
+    PROGRESS_MESSAGE_STRONG.innerText = 'Getting fresh brewery data.'
+    PROGRESS_MESSAGE.appendChild(PROGRESS_MESSAGE_STRONG)
     const BREWERY_SPINNER_DIV = document.createElement('div')
     BREWERY_SPINNER_DIV.setAttribute('class', 'loader')
-    PROGRESS_LI.appendChild(BREWERY_SPINNER_DIV)
-    BREWERY_LIST.appendChild(PROGRESS_LI)
+    PROGRESS_MESSAGE.appendChild(BREWERY_SPINNER_DIV)
+    BREWERY_LIST.appendChild(PROGRESS_MESSAGE)
 }
 
 function removeProgressIndicator() {
@@ -147,7 +149,6 @@ function showNothingFound() {
     const BREWERY_H2 = document.createElement('h2')
     BREWERY_H2.innerText = 'No breweries found for this search term'
     BREWERY_LI.appendChild(BREWERY_H2)
-    BREWERY_LI.appendChild(BREWERY_SPINNER_DIV)
     BREWERY_LIST.appendChild(BREWERY_LI)
 }
 
@@ -189,30 +190,27 @@ function createPagination(itemsRemaining) {
 
 function filterStateByCriteria() {
 
-    console.log('' + currentSearchCriteria.by_brewery_type)
+    let filteredData = state
 
-    if (currentSearchCriteria.by_brewery_type && currentSearchCriteria.by_us_state) {
-        let filteredData = state.filter(function (thisBrewery) {
-            return thisBrewery.state === currentSearchCriteria.by_us_state && thisBrewery.brewery_type === currentSearchCriteria.by_brewery_type
+    if (currentSearchCriteria.by_name) {
+        filteredData = filteredData.filter(function (thisBrewery) {
+            return thisBrewery.name.includes(currentSearchCriteria.by_name)
         })
-        return filteredData
     }
 
     if (currentSearchCriteria.by_brewery_type) {
-        let filteredData = state.filter(function (thisBrewery) {
+        filteredData = filteredData.filter(function (thisBrewery) {
             return thisBrewery.brewery_type === currentSearchCriteria.by_brewery_type
         })
-        return filteredData
     }
 
     if (currentSearchCriteria.by_us_state) {
-        let filteredData = state.filter(function (thisBrewery) {
+        filteredData = filteredData.filter(function (thisBrewery) {
             return thisBrewery.state === currentSearchCriteria.by_us_state
         })
-        return filteredData
     }
 
-    return state
+    return filteredData
 }
 
 function capitalizeFirstLetter(text) {
@@ -300,6 +298,13 @@ function setup() {
         state = sortItemsByName(allData)
         currentSearchCriteria.page = 1
         currentSearchCriteria.by_brewery_type = TYPE_FILTER.value
+        state = [...filterStateByCriteria()]
+        renderBreweries(state)
+    })
+
+    SEARCH_BREWERIES_BY_NAME.addEventListener('keyup', () => {
+        state = sortItemsByName(allData)
+        currentSearchCriteria.by_name = SEARCH_BREWERIES_BY_NAME.value
         state = [...filterStateByCriteria()]
         renderBreweries(state)
     })
