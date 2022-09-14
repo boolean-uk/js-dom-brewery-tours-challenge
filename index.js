@@ -12,11 +12,10 @@ const REQUIRED_BREWERY_TYPES = ['micro', 'regional', 'brewpub']
 let allData = []
 let state = []
 let availableCities = []
-let selectedCities = []
+let selectedCities = [ ]
 
 let currentSearchCriteria = {
     by_name: '',
-    by_city: false,
     by_us_state: '',
     by_brewery_type: '',
     per_page: 50,
@@ -302,7 +301,8 @@ function setup() {
         renderBreweries(state)
     })
 
-    SEARCH_BREWERIES_BY_NAME.addEventListener('keyup', () => {
+    SEARCH_BREWERIES_BY_NAME.addEventListener('keyup', (event) => {
+        event.preventDefault()
         state = sortItemsByName(allData)
         currentSearchCriteria.by_name = SEARCH_BREWERIES_BY_NAME.value
         state = [...filterStateByCriteria()]
