@@ -10,10 +10,11 @@ const REQUIRED_BREWERY_TYPES = ['micro', 'regional', 'brewpub']
 let allData = []
 let state = []
 let availableCities = []
+let selectedCities = []
 
 let currentSearchCriteria = {
     by_name: '',
-    by_city: '',
+    by_city: false,
     by_us_state: '',
     by_brewery_type: '',
     per_page: 50,
@@ -56,6 +57,9 @@ function setProgressIndicator() {
     const PROGRESS_LI_STRONG = document.createElement('strong')
     PROGRESS_LI_STRONG.innerText = 'Getting fresh brewery data.'
     PROGRESS_LI.appendChild(PROGRESS_LI_STRONG)
+    const BREWERY_SPINNER_DIV = document.createElement('div')
+    BREWERY_SPINNER_DIV.setAttribute('class', 'loader')
+    PROGRESS_LI.appendChild(BREWERY_SPINNER_DIV)
     BREWERY_LIST.appendChild(PROGRESS_LI)
 }
 
@@ -64,7 +68,6 @@ function removeProgressIndicator() {
 }
 
 function renderBreweries(listOfBreweries) {
-
     BREWERY_LIST.innerHTML = ''
 
     if (listOfBreweries.length === 0) {
@@ -144,6 +147,7 @@ function showNothingFound() {
     const BREWERY_H2 = document.createElement('h2')
     BREWERY_H2.innerText = 'No breweries found for this search term'
     BREWERY_LI.appendChild(BREWERY_H2)
+    BREWERY_LI.appendChild(BREWERY_SPINNER_DIV)
     BREWERY_LIST.appendChild(BREWERY_LI)
 }
 
