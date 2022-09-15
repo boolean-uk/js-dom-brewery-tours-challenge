@@ -6,24 +6,25 @@ const TYPE_FILTER = document.querySelector('#filter-by-type')
 const CITIES_FILTER = document.querySelector('#filter-by-city-form')
 const SEARCH_BREWERIES_BY_NAME = document.querySelector('#search-breweries')
 
-
-const REQUIRED_BREWERY_TYPES = ['micro', 'regional', 'brewpub']
-
 let allData = []
-let state = []
-let availableCities = []
-/*
+
+let state = {
+    breweries: [],
+    requiredBreweryTypes: ['micro', 'regional', 'brewpub'],
+    currentSearchCriteria: {
+        by_name: '',
+        by_us_state: '',
+        by_brewery_type: '',
+        per_page: 50,
+        page: 1
+    }
+}
+
 // Remnant of attempt at Extension II
+/*
+let availableCities = []
 let selectedCities = [ 'Chicago', 'Austin' ]
 */
-
-let currentSearchCriteria = {
-    by_name: '',
-    by_us_state: '',
-    by_brewery_type: '',
-    per_page: 50,
-    page: 1
-}
 
 function requestAllBreweries(breweryType, pageNo, lastType) {
     fetch(BREWERIES_BASE_URL + '?by_type=' + breweryType + '&per_page=50&page=' + pageNo)
@@ -37,16 +38,16 @@ function requestAllBreweries(breweryType, pageNo, lastType) {
 
             if (breweries.length == 0 && lastType) {
                 removeProgressIndicator()
-                state = sortItemsByName(allData)
-                renderBreweries(state)
+                state.breweries = sortItemsByName(allData)
+                renderBreweries(state.breweries)
             }
         })
 }
 
 function getAllRequiredTypesOfBreweries() {
     let lastType = false
-    REQUIRED_BREWERY_TYPES.forEach((breweryType, index) => {
-        if (index === REQUIRED_BREWERY_TYPES.length - 1) {
+    state.requiredBreweryTypes.forEach((breweryType, index) => {
+        if (index === state.requiredBreweryTypes.length - 1) {
             lastType = true
         }
         pageNo = 1
@@ -80,8 +81,8 @@ function renderBreweries(listOfBreweries) {
     }
 
     let maxIndex = listOfBreweries.length
-    let startingIndex = currentSearchCriteria.per_page * (currentSearchCriteria.page - 1)
-    let endingIndex = currentSearchCriteria.per_page * currentSearchCriteria.page - 1
+    let startingIndex = state.currentSearchCriteria.per_page * (state.currentSearchCriteria.page - 1)
+    let endingIndex = state.currentSearchCriteria.per_page * state.currentSearchCriteria.page - 1
     if (maxIndex < endingIndex) { endingIndex = maxIndex }
     if (startingIndex >= maxIndex) { startingIndex = maxIndex }
 
@@ -147,11 +148,28 @@ function renderBreweries(listOfBreweries) {
 }
 
 function showNothingFound() {
-    const BREWERY_LI = document.createElement('li')
+    const BREWERY_NOTHING_FOUND_P = document.createElement('p')
     const BREWERY_H2 = document.createElement('h2')
+    const BREWERY_SEARCHCRITERIA_P = document.createElement('p')
     BREWERY_H2.innerText = 'No breweries found for this search term'
-    BREWERY_LI.appendChild(BREWERY_H2)
-    BREWERY_LIST.appendChild(BREWERY_LI)
+
+    BREWERY_SEARCHCRITERIA_P.innerText = 'Your search criteria are: '
+
+    if (state.currentSearchCriteria.by_us_state) {
+        BREWERY_SEARCHCRITERIA_P.innerText += ' breweries in the state of "' + state.currentSearchCriteria.by_us_state + '" '
+    }
+
+    if (state.currentSearchCriteria.by_brewery_type) {
+        BREWERY_SEARCHCRITERIA_P.innerText += ' Breweries of the type "' + state.currentSearchCriteria.by_brewery_type + '" '
+    }
+
+    if (state.currentSearchCriteria.by_name) {
+        BREWERY_SEARCHCRITERIA_P.innerText += ' breweries containing "' + state.currentSearchCriteria.by_name + '" in their name'
+    }
+
+    BREWERY_NOTHING_FOUND_P.appendChild(BREWERY_H2)
+    BREWERY_NOTHING_FOUND_P.appendChild(BREWERY_SEARCHCRITERIA_P)
+    BREWERY_LIST.appendChild(BREWERY_NOTHING_FOUND_P)
 }
 
 function sortItemsByName(dataSet) {
@@ -166,24 +184,24 @@ function createPagination(itemsRemaining) {
     PAGINATION_BACK.innerHTML = ''
     PAGINATION_FORWARD.innerHTML = ''
 
-    if (currentSearchCriteria.page > 1) {
+    if (state.currentSearchCriteria.page > 1) {
         const BUTTON_BACK = document.createElement('button')
         BUTTON_BACK.innerText = '← Previous Page'
 
         PAGINATION_BACK.appendChild(BUTTON_BACK)
 
         BUTTON_BACK.addEventListener('click', function () {
-            currentSearchCriteria.page--
-            renderBreweries(state)
+            state.currentSearchCriteria.page--
+            renderBreweries(state.breweries)
         })
     }
 
-    if (itemsRemaining > currentSearchCriteria.per_page) {
+    if (itemsRemaining > state.currentSearchCriteria.per_page) {
         const BUTTON_FORWARD = document.createElement('button')
         BUTTON_FORWARD.innerText = 'Next Page →'
         BUTTON_FORWARD.addEventListener('click', function () {
-            currentSearchCriteria.page++
-            renderBreweries(state)
+            state.currentSearchCriteria.page++
+            renderBreweries(state.breweries)
         })
 
         PAGINATION_FORWARD.appendChild(BUTTON_FORWARD)
@@ -192,25 +210,36 @@ function createPagination(itemsRemaining) {
 
 function filterByCriteria() {
 
-    let filteredData = state
+    let filteredData = state.breweries
 
-    if (currentSearchCriteria.by_name) {
+    if (state.currentSearchCriteria.by_name) {
         filteredData = filteredData.filter(function (thisBrewery) {
-            return thisBrewery.name.includes(currentSearchCriteria.by_name)
+            return thisBrewery.name.includes(state.currentSearchCriteria.by_name)
         })
     }
 
-    if (currentSearchCriteria.by_brewery_type) {
+    if (state.currentSearchCriteria.by_brewery_type) {
         filteredData = filteredData.filter(function (thisBrewery) {
-            return thisBrewery.brewery_type === currentSearchCriteria.by_brewery_type
+            return thisBrewery.brewery_type === state.currentSearchCriteria.by_brewery_type
         })
     }
 
-    if (currentSearchCriteria.by_us_state) {
+    if (state.currentSearchCriteria.by_us_state) {
         filteredData = filteredData.filter(function (thisBrewery) {
-            return thisBrewery.state === currentSearchCriteria.by_us_state
+            return thisBrewery.state === state.currentSearchCriteria.by_us_state
         })
     }
+
+    // Remnant of attempt at Extension II
+    /*
+    if (selectedCities.length > 0) {
+        for (let selectedCity of selectedCities) {
+            filteredData = filteredData.filter(function (thisBrewery) {
+                return thisBrewery.city === selectedCity
+            })
+        }
+    }
+    */
 
     return filteredData
 }
@@ -291,29 +320,29 @@ function setup() {
 
     US_STATE_SEARCH_INPUT.addEventListener('submit', (event) => {
         event.preventDefault()
-        state = sortItemsByName(allData)
+        state.breweries = sortItemsByName(allData)
         let searchedState = US_STATE_SEARCH_INPUT.querySelector('#select-state').value
         searchedState = capitalizeEachWord(searchedState)
-        currentSearchCriteria.page = 1
-        currentSearchCriteria.by_us_state = searchedState
-        state = [...filterByCriteria()]
-        renderBreweries(state)
+        state.currentSearchCriteria.page = 1
+        state.currentSearchCriteria.by_us_state = searchedState
+        state.breweries = [...filterByCriteria()]
+        renderBreweries(state.breweries)
     })
 
     TYPE_FILTER.addEventListener('change', () => {
-        state = sortItemsByName(allData)
-        currentSearchCriteria.page = 1
-        currentSearchCriteria.by_brewery_type = TYPE_FILTER.value
-        state = [...filterByCriteria()]
-        renderBreweries(state)
+        state.breweries = sortItemsByName(allData)
+        state.currentSearchCriteria.page = 1
+        state.currentSearchCriteria.by_brewery_type = TYPE_FILTER.value
+        state.breweries = [...filterByCriteria()]
+        renderBreweries(state.breweries)
     })
 
     SEARCH_BREWERIES_BY_NAME.addEventListener('keyup', (event) => {
         event.preventDefault()
-        state = sortItemsByName(allData)
-        currentSearchCriteria.by_name = SEARCH_BREWERIES_BY_NAME.value
-        state = [...filterByCriteria()]
-        renderBreweries(state)
+        state.breweries = sortItemsByName(allData)
+        state.currentSearchCriteria.by_name = SEARCH_BREWERIES_BY_NAME.value
+        state.breweries = [...filterByCriteria()]
+        renderBreweries(state.breweries)
     })
 }
 
