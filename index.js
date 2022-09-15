@@ -99,6 +99,7 @@ const createElements = (state) => {
 };
 
 const init = () => {
+  console.log("starting");
   addEventListeners();
   fetchAndRender(url);
 };
@@ -161,3 +162,26 @@ const clearAll = () => {
 
   // renderCities(state)
 }
+
+// Load all data into state and render
+
+const newState = [];
+const loadDataToState = () => {
+  console.log("Loading data");
+  for (let i = 1; i < 407; i++) {
+    fetch(`https://api.openbrewerydb.org/breweries?page=${i}`)
+    .then(function (response) {
+      return response.json();
+    })
+    .then((breweries) => {
+      const importedData = [...breweries];
+      console.log("Imported data:", importedData);
+      newState.push(...importedData.filter((item) =>
+      allowedTypes.includes(item.brewery_type)
+    ))
+    console.log("new state:", newState) 
+    })
+
+}}
+
+loadDataToState()
