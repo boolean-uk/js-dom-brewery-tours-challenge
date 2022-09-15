@@ -1,5 +1,6 @@
 // Core criteria for brewery challenge:
 
+let dataImport = [];
 let state = [];
 let url = "";
 let allowedTypes = ["micro", "regional", "brewpub"];
@@ -10,41 +11,31 @@ const addEventListeners = () => {
     .querySelector("#select-state-form")
     .addEventListener("submit", (event) => {
       event.preventDefault();
-      const input = document
-        .querySelector("#select-state")
-        .value.replace(" ", "_")
+      const stateName = document
+        .querySelector("#select-state").value
         .toLowerCase();
-      url = `https://api.openbrewerydb.org/breweries?by_state=${input}&per_page=50`;
-      fetchAndRender(url);
+      renderState(stateName);
     });
 
   document
     .querySelector("#filter-by-type-form")
     .addEventListener("change", (event) => {
       allowedTypes = event.target.value;
-      fetchAndRender(url);
     });
 };
 
-const fetchAndRender = (url) => {
-  fetch(url)
-    .then(function (response) {
-      return response.json();
-    })
-    .then((breweries) => {
-      const newState = [...breweries];
-      state = newState.filter((item) =>
-        allowedTypes.includes(item.brewery_type)
-      );
-      render(state);
-      renderCities(state);
-    });
-};
 
-const render = (input) => {
+
+const renderState = (stateName) => {
+  console.log(typeof stateName, typeof dataImport[0].state);
   document.querySelector("#breweries-list").innerHTML = "";
-  for (let i = 0; i < input.length; i++) {
-    createElements(input[i]);
+  // console.log("dataImport: ", dataImport.forEach((dataItem) => console.log(dataItem.state))); 
+
+  state = [...dataImport.filter((item) =>
+    item.state === stateName[0].toUpperCase() + stateName.slice(1).toLowerCase()
+  )];
+  for (brewery in state) {
+    createElements(state[brewery]);
   }
 };
 
@@ -60,7 +51,8 @@ const renderCities = input  => {
   }
 }
 
-const createElements = (state) => {
+const createElements = (brewery) => {
+  console.log(brewery);
   const list = document.querySelector("#breweries-list");
   const liEl = document.createElement("li");
   list.appendChild(liEl);
@@ -82,18 +74,18 @@ const createElements = (state) => {
   liSecLink.append(thirdSecAnchor);
   liEl.append(liH2, liDiv, liSecAddress, liSecPhone, liSecLink);
 
-  liH2.innerHTML = state.name;
+  liH2.innerHTML = brewery.name;
   liDiv.className = "type";
-  liDiv.innerHTML = state.brewery_type;
+  liDiv.innerHTML = brewery.brewery_type;
   liSecAddress.className = "address";
   firstSecH3.innerHTML = "Address:";
-  firstSecParagraphOne.innerHTML = state.street;
-  firstSecParagraphTwoStrong.innerHTML = `${state.city}, ${state.postal_code}`;
+  firstSecParagraphOne.innerHTML = brewery.street;
+  firstSecParagraphTwoStrong.innerHTML = `${brewery.city}, ${brewery.postal_code}, ${brewery.state}`;
   liSecPhone.className = "phone";
   secondSecH3.innerHTML = "Phone:";
-  secondSecParagraphOne.innerHTML = state.phone;
+  secondSecParagraphOne.innerHTML = brewery.phone;
   liSecLink.className = "link";
-  thirdSecAnchor.setAttribute("href", state.website_url);
+  thirdSecAnchor.setAttribute("href", brewery.website_url);
   thirdSecAnchor.setAttribute("target", "_blank");
   thirdSecAnchor.innerHTML = "Visit Website";
 };
@@ -101,7 +93,6 @@ const createElements = (state) => {
 const init = () => {
   console.log("starting");
   addEventListeners();
-  fetchAndRender(url);
 };
 
 init();
@@ -115,7 +106,7 @@ const searchFunction = (event) => {
   const newState = state.filter((item) =>
     item.name.toLowerCase().includes(input)
   );
-  render(newState);
+  renderState(newState);
 };
 
 // Extension 2:
@@ -144,7 +135,7 @@ const createCityElements = (input) => {
     const newState = state.filter((item) =>
       allowedCities.includes(item.city.toLowerCase())
     );
-    render(newState);
+    renderState(newState);
   });
 
   cityListLabel.setAttribute("for", "filter-by-city-checkbox");
@@ -165,7 +156,6 @@ const clearAll = () => {
 
 // Load all data into state and render
 
-const newState = [];
 const loadDataToState = () => {
   console.log("Loading data");
   for (let i = 1; i < 407; i++) {
@@ -175,11 +165,11 @@ const loadDataToState = () => {
     })
     .then((breweries) => {
       const importedData = [...breweries];
-      console.log("Imported data:", importedData);
-      newState.push(...importedData.filter((item) =>
+      // console.log("Imported data:", importedData);
+      dataImport.push(...importedData.filter((item) =>
       allowedTypes.includes(item.brewery_type)
     ))
-    console.log("new state:", newState) 
+    // console.log("new state:", dataImport) 
     })
 
 }}
