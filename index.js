@@ -1,15 +1,20 @@
 const idBreweriesList = document.querySelector("#breweries-list");
 const IdSelectState = document.querySelector("#select-state-form")
-const data = "https://api.openbrewerydb.org/breweries?by_state=";
+const data = "https://api.openbrewerydb.org/breweries?by_state=[state]";
 
-fetch(data)
-console.log('addPubsToList ', data)
-.then(res => res.json())
-.then(data => { 
-    addPubsToList(data)
-})
+const breweriesURL = "https://api.openbrewerydb.org/breweries";
+console.log('url ', breweriesURL)
+fetch(breweriesURL)
+    .then(res => res.json())
+    .then(data => { 
+        console.log('my data', data)
+        addPubsToList(data)
+    })
 
-function addPubsToList(pubs) {   
+
+
+function addPubsToList(pubs) {  
+    idBreweriesList.innerHTML = '' 
     pubs.forEach((pub) => addPub(pub));
 }
   
@@ -41,7 +46,7 @@ function addPub (pub) {
     phoneSection.className = "phone"
     phoneH3.innerText = "Phone:"
     phoneNumberP.innerText = pub.phone
-    console.log('help needed', phoneNumberP)
+    // console.log('help needed', phoneNumberP)
     linkSection.className = "link"
     webLinkA.href = pub.website_url
     webLinkA.innerText = "Visit Website";
@@ -66,18 +71,18 @@ function addPub (pub) {
 
 
 
-function render() {
-    state.breweries.forEach(brewery => {
-        //update Dom with each brewery
-    })
-}
-function brewery(breweries){
-    state.breweries = breweries
-    render()
-    console.log('herererere')
-}
-function getData(state) {}
-// searchByState(state)
+// function render() {
+//     state.breweries.forEach(brewery => {
+//         //update Dom with each brewery
+//     })
+// }
+// function brewery(breweries){
+//     state.breweries = breweries
+//     render()
+//     console.log('herererere')
+// }
+// function getData(state) {}
+// // searchByState(state)
 
 function addInputListener() {
     // const myForm = document.querySelector("#select-state-form");
@@ -91,23 +96,50 @@ function addInputListener() {
         .value.replace(" ", "_")
         .toLowerCase();
       
-      const selectedState = data+myState
+      const selectedState = breweriesURL+'?by_state='+myState
       fetch(selectedState)
     //   console.log('full data from here', selectedState)
       .then(res => res.json())
       .then(data => { 
-        console.log('data  from herer',data)
-        addPubsToList(data)
+        console.log('data  from bottom',data)
+          addPubsToList(data)
+          
       })
   
     });
-  }
-  
-  addInputListener()
-
-const filter = document.querySelector('#filter-by-type')
-function filtering (pubs) {
-    const micro = document.getElementById('filter-by-type').value='micro'
-    const regional = document.getElementById('filter-by-type').value='regional'
-    const brewpub = document.getElementById('filter-by-type').value='brewpub'
 }
+
+addInputListener()
+
+// function filtering () {
+    
+    //     const micro = document.getElementById('filter-by-type').value='micro'
+    //     const regional = document.getElementById('filter-by-type').value='regional'
+    //     const brewpub = document.getElementById('filter-by-type').value='brewpub'
+    //     console.log(micro, 'soosososoos')
+    // }
+
+function filtering () {
+   
+    const filter = document.querySelector('#filter-by-type')
+  
+    filter.addEventListener("change", (e) => {
+      e.preventDefault();
+      
+      console.log('filter changed', filter.value);
+  
+      const newData =
+        "https://api.openbrewerydb.org/breweries?by_type=" +
+        filter.value;
+        // console.log('URL To fetch for filter:', newData)
+      fetch(newData)
+        .then(res => res.json())
+        .then(pubs => {
+          idBreweriesList.innerHTML = "";
+          console.log(pubs, 'jsjsjjsjjsjjs');
+          return addPubsToList(pubs);
+        });
+    });
+}
+
+filtering ()
