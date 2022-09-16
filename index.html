@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles/reset.css" />
     <link rel="stylesheet" href="styles/index.css" />
+    <script defer src="index.js"></script>
     <title>Brewery Tours</title>
   </head>
   <body>
@@ -30,11 +31,24 @@
               <option value="micro">Micro</option>
               <option value="regional">Regional</option>
               <option value="brewpub">Brewpub</option>
+              <option value="['brewpub', 'micro', 'regional]">All</option>
             </select>
+          </form>
+          <div class="filter-by-city-heading">
+            <h3>Cities</h3>
+            <button class="clear-all-button" onclick="clearAll()">clear all</button>
+          </div>
+          <form id="filter-by-city-form">
+            <!-- <input type="checkbox" id="filter-by-city-checkbox" name="city-checkbox" value="Example">
+            <label for="filter-by-city-checkbox">Example</label> -->
           </form>
         </aside>
       </aside>
       <h1>List of Breweries</h1>
+      <form id="search-breweries-form" autocomplete="off">
+        <label for="search-breweries"><h2>Search breweries:</h2></label>
+        <input id="search-breweries" name="search-breweries" type="text" value="" oninput="searchFunction(event)"/>
+      </form>
       <article>
         <ul id="breweries-list" class="breweries-list">
           <!--
@@ -45,6 +59,5 @@
         </ul>
       </article>
     </main>
-    <script src="index.js"></script>
   </body>
 </html>
