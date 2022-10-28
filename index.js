@@ -38,47 +38,51 @@ function renderBreweries() {
   mainList.innerHTML = "";
 
   state.breweries.forEach((brewery) => {
-    const li = document.createElement("li");
-
-    const h2 = document.createElement("h2");
-    h2.innerText = brewery.name;
-
-    const div = document.createElement("div");
-    div.classList.add("type");
-    div.innerText = brewery.brewery_type;
-
-    const sectionAddress = document.createElement("section");
-    sectionAddress.classList.add("address");
-    const address = document.createElement("h3");
-    address.innerText = "Address:";
-    const street = document.createElement("p");
-    street.innerText = brewery.street;
-    const city = document.createElement("p");
-    const strong = document.createElement("strong");
-    strong.textContent = `${brewery.city}, ${brewery.postal_code}`;
-
-    const sectionPhone = document.createElement("section");
-    const phone = document.createElement("h3");
-    phone.innerText = "Phone:";
-    const number = document.createElement("p");
-    number.innerText = brewery.phone;
-
-    const sectionLink = document.createElement("section");
-    sectionLink.classList.add("link");
-
-    const siteLink = document.createElement("a");
-    siteLink.innerText = "Visit Website";
-    siteLink.setAttribute("href", brewery.website_url);
-    siteLink.setAttribute("target", "_blank");
-
-    city.append(strong);
-    sectionAddress.append(address, street, city);
-    sectionPhone.append(phone, number);
-    sectionLink.append(siteLink);
-
-    li.append(h2, div, sectionAddress, sectionPhone, sectionLink);
-    mainList.appendChild(li);
+    createBreweryCard(brewery);
   });
+}
+
+function createBreweryCard(brewery) {
+  const li = document.createElement("li");
+
+  const h2 = document.createElement("h2");
+  h2.innerText = brewery.name;
+
+  const div = document.createElement("div");
+  div.classList.add("type");
+  div.innerText = brewery.brewery_type;
+
+  const sectionAddress = document.createElement("section");
+  sectionAddress.classList.add("address");
+  const address = document.createElement("h3");
+  address.innerText = "Address:";
+  const street = document.createElement("p");
+  street.innerText = brewery.street;
+  const city = document.createElement("p");
+  const strong = document.createElement("strong");
+  strong.textContent = `${brewery.city}, ${brewery.postal_code}`;
+
+  const sectionPhone = document.createElement("section");
+  const phone = document.createElement("h3");
+  phone.innerText = "Phone:";
+  const number = document.createElement("p");
+  number.innerText = brewery.phone;
+
+  const sectionLink = document.createElement("section");
+  sectionLink.classList.add("link");
+
+  const siteLink = document.createElement("a");
+  siteLink.innerText = "Visit Website";
+  siteLink.setAttribute("href", brewery.website_url);
+  siteLink.setAttribute("target", "_blank");
+
+  city.append(strong);
+  sectionAddress.append(address, street, city);
+  sectionPhone.append(phone, number);
+  sectionLink.append(siteLink);
+
+  li.append(h2, div, sectionAddress, sectionPhone, sectionLink);
+  mainList.appendChild(li);
 }
 
 // Get data and put into state
@@ -90,7 +94,8 @@ function getBreweries() {
     .then((data) => {
       // Basic error message if 0 items in array
       if (data.length < 1) {
-        mainList.innerText = "Please enter a US state";
+        mainList.innerText = "Please enter a valid US state";
+        return;
       }
 
       // Need to reset the breweries array between searches
