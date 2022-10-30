@@ -13,24 +13,32 @@
 
 // Selections
 const search = document.querySelector("#select-state");
-const stateForm = document.querySelector("#select-state-form");
 const mainList = document.querySelector(".breweries-list");
+const stateForm = document.querySelector("#select-state-form");
+const filterSelect = document.querySelector("#filter-by-type");
 
 // State
 const state = {
   userSearch: "",
   breweries: [],
+  filterType: "",
 };
 
 // Event listeners
 stateForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
+  resetFilters();
   const searchTerm = search.value.toLowerCase().trim();
   state.userSearch = searchTerm;
   search.value = "";
 
   getBreweries();
+});
+
+filterSelect.addEventListener("change", () => {
+  state.filterType = filterSelect.value;
+  filterByType();
 });
 
 // Render
@@ -116,3 +124,28 @@ function getBreweries() {
       renderBreweries();
     });
 }
+
+// function to filter brewery types
+function filterByType() {
+  // save a copy of the breweries
+  const breweries = state.breweries;
+
+  // run a filter with saved filterType
+  state.breweries = state.breweries.filter((brewery) => {
+    return brewery.brewery_type === state.filterType;
+  });
+
+  // rerender the list
+  renderBreweries();
+
+  // revert breweries back to the full list
+  state.breweries = breweries;
+}
+
+// reset the filter select value
+function resetFilters() {
+  filterSelect.value = "";
+}
+
+// init
+resetFilters();
