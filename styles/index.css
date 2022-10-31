@@ -34,7 +34,11 @@ body {
 }
 
 #select-state-form input {
-  border-radius: 0.25rem;
+  border-radius: 0.5rem;
+}
+
+#select-per-page {
+  width: 40px;
 }
 
 main {

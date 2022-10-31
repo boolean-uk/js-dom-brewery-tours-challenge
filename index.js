@@ -43,9 +43,9 @@ function renderListOfBreweries() {
         const h3Address = document.createElement('h3');
         h3Address.innerText = 'Address:';
         const pStreet = document.createElement('p'); 
-        pStreet.innerText = brewery.street || 'N/A';
+        pStreet.innerText = brewery.street || 'Street N/A';
         const pCityPostcode = document.createElement('p');
-        pCityPostcode.innerText = `${brewery.city || 'N/A'}, ${brewery.postal_code || 'N/A'}`;
+        pCityPostcode.innerText = `${brewery.city || 'City N/A'}, ${brewery.postal_code || 'Postal Code N/A'}`;
         pCityPostcode.style.fontWeight = 'bold';
         const secPhone = document.createElement('section');
         secPhone.setAttribute('class', 'phone');
@@ -86,18 +86,19 @@ function createEventListeners() {
     // Form
     const form = document.querySelector('#select-state-form');
     const input = document.querySelector('#select-state');
+    const perPage = document.querySelector('#select-per-page')
     form.addEventListener('submit', (event) => {
         event.preventDefault(); // Avoid Page Refresh
         
         // Remove Whitespaces
         const valueTrimmed = input.value.trim();
         input.value = valueTrimmed;
-    
+        
         // Return if Input empty
         if (valueTrimmed === '') return input.placeholder = "Type a state first.";
     
         // Call get Breweries with the form Input
-        getBreweriesByState(valueTrimmed);
+        getBreweriesByState(valueTrimmed, perPage.value);
     
         // Clears text from Input
         input.value = ''; 
@@ -107,10 +108,9 @@ function createEventListeners() {
 }
 
 // Called when form Submit.
-function getBreweriesByState(state) {
+function getBreweriesByState(state, perPage) {
     // Replaces space with underline and lower case it
     const underlinedState = state.split(' ').join('_').toLowerCase();
-    const perPage = 50;
     const uri = `https://api.openbrewerydb.org/breweries?by_state=${underlinedState}&per_page=${perPage}`;
 
     // Fetch Breweries based on the State given to Function
