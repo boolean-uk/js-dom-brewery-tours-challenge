@@ -90,9 +90,26 @@ function createPubInfo(pub) {
     phoneSection.append(phoneH3, phoneNumberP);
     linkSection.append(webLinkA);
 }
-function filter (){
-    
+function filterByType (){
+    const filterByType = document.querySelector("#filter-by-type")
+    console.log("hoooray its working", filterByType)
+    filterByType.addEventListener("change", (event) => {
+        event.preventDefault();
+        
+        console.log("events", event)
+        siteState.typeOfPub = filterByType.value
+        console.log(siteState.typeOfPub)
+        console.log("here must show URL", breweriesURL + "?by_state=" + siteState.state + "&by_type=" + siteState.typeOfPub)
+
+        if(filterByType.value === breweriesURL + "?by_state=" + siteState.state + "&by_type=" + siteState.typeOfPub){
+            console.log("here i am!!!")
+        }
+        // console.log("type of pub", siteState.typeOfPub)
+
+    })
 }
+
+    // const filteredURL = breweriesURL + ""
 //  1. make data available globally. by fetching brewery data
 //  2. save required data in state, in state we can filter by type.
 //  3. create DOM for the list to render by state inside required data of that brewery
@@ -101,6 +118,6 @@ function filter (){
 //  6. render the state accordingly to user search
 function init(){
     searchSubmit ()
-    
+    filterByType()
 }
 init()
