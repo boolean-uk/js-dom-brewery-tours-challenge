@@ -49,15 +49,15 @@ filterSelect.addEventListener("change", () => {
 });
 
 searchBreweries.addEventListener("keyup", () => {
-  state.filterTitle = searchBreweries.value;
+  state.filterTitle = searchBreweries.value.toLowerCase().trim();
   filterByTitle();
 });
 
 // Render
-function renderBreweries() {
+function renderBreweries(breweries) {
   mainList.innerHTML = "";
 
-  state.breweries.forEach((brewery) => {
+  breweries.forEach((brewery) => {
     createBreweryCard(brewery);
   });
 }
@@ -133,36 +133,45 @@ function getBreweries() {
         }
       });
 
-      renderBreweries();
+      renderBreweries(state.breweries);
     });
 }
 
 // function to filter brewery types
 function filterByType() {
-  // save a copy of the breweries
-  const breweries = state.breweries;
+  if (state.filterType === "") {
+    renderBreweries(state.breweries);
+  } else {
+    // save a copy of the breweries
+    let breweries = state.breweries;
 
-  // run a filter with saved filterType
-  state.breweries = state.breweries.filter((brewery) => {
-    return brewery.brewery_type === state.filterType;
-  });
+    // run a filter with saved filterType
+    breweries = state.breweries.filter((brewery) => {
+      return brewery.brewery_type === state.filterType;
+    });
 
-  // rerender the list
-  renderBreweries();
+    // rerender the list
+    renderBreweries(breweries);
 
-  // revert breweries back to the full list
-  state.breweries = breweries;
+    // revert breweries back to the full list
+    breweries = state.breweries;
+  }
 }
 
 // function to filter brewery titles
 function filterByTitle() {
-  // const breweries = state.breweries;
+  let breweries = state.breweries;
 
-  state.breweries = state.breweries.filter((brewery) => {
-    return brewery.name.includes(state.filterTitle);
+  if (breweries.length < 1) {
+    mainList.innerText = "Please enter a state first!";
+    return;
+  }
+
+  breweries = state.breweries.filter((brewery) => {
+    return brewery.name.toLowerCase().includes(state.filterTitle);
   });
 
-  renderBreweries();
+  renderBreweries(breweries);
 
   // state.breweries = breweries;
 }
