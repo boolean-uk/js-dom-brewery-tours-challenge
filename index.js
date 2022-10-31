@@ -1,37 +1,24 @@
-// PLANNING....
-
-// A user can enter a US state and view a list of breweries in that state
-// The list should only shows the types of breweries that offer brewery tours:
-// Micro
-// Regional
-// Brewpub
-// Do not show the other types of breweries
-// From the list of breweries, a user can view the following details about each brewery:
-// Name
-// Type of brewery
-// Address
-// Phone Number
-// From the list of breweries, a user can visit the website of a brewery
-// From the 'filter by type of brewery' section, a user can filter by type of brewery.
-
-// things that need to get done by this afternoon 28/10/22
-// + refer to templates in the templates folder for guidance
-//
+const state = {
+  types: ['micro', 'regional', 'brewpub'],
+  breweries: [],
+  filterByType: ''
+}
+const renderBreweryList = document.querySelector('#breweries-list')
+const uri = 'https://api.openbrewerydb.org/breweries'
 // Set up Fetch function to get my data from the correct url/uri
-// link that data to my renderBreweryyList
+
 function getBreweryData() {
-  // below is the template you will roughly follow to get the data
-  //     const uri = 'http://localhost:3000/todos'
-  //   // Get the Todo from Local Server
-  //   fetch(uri)
-  //     .then((response) => {
-  //       return response.json() // turns the respone into a Json format
-  //     })
-  //     .then((wholeList) => {
-  //       state.todos = wholeList
-  //       renderTodo()
-  //     })
-  // }
+  //
+  //
+  fetch(uri)
+    .then((response) => {
+      return response.json() // turns the respone into a Json format
+    })
+    .then((breweries) => {
+      state.breweries = breweries
+
+      renderedBreweyInfo()
+    })
 }
 
 //
@@ -40,13 +27,10 @@ function getBreweryData() {
 //  - break down the steps as much as possible
 //  - dont cry
 //  - open a file that you can post questions to as they arise.
-const state = {
-  types: ['micro', 'regional', 'brewpub'],
-  breweries: [],
-  filterByType: ''
-}
+
+// link that data to my renderBreweryyList
 // querySelect the UL in the html
-const renderBreweryList = document.querySelector('#breweries-list')
+
 // step 1:
 // implement my lists and render them
 
@@ -54,66 +38,64 @@ const renderBreweryList = document.querySelector('#breweries-list')
 // withtin function
 // --
 function renderedBreweyInfo() {
-  // see default template below
-  // <li>
   renderBreweryList.innerText = ''
-
-  const li = document.createElement('li')
-  renderBreweryList.appendChild(li)
-
   console.log('hello')
 
-  //   <h2>Snow Belt Brew</h2>
-  const h2 = document.createElement('h2')
-  h2.innerText = ''
-  //   <div class="type">micro</div>
-  const div = document.createElement('div')
-  div.setAttribute('class', 'type')
-  div.innerText = ''
-  li.appendChild(div)
-  //   <section class="address">
-  const section1 = document.createElement('section')
-  section1.setAttribute('class', 'address')
+  state.breweries.forEach((brewery) => {
+    const li = document.createElement('li')
+    renderBreweryList.appendChild(li)
 
-  //     <h3>Address:</h3>
-  const h3address = document.createElement('h3')
-  h3address.innerText = 'Address:'
+    const h2 = document.createElement('h2')
+    h2.innerText = brewery.name
+    li.appendChild(h2)
 
-  //     <p>9511 Kile Rd</p>
-  const p1 = document.createElement('p')
-  p1.innerText = ''
+    const div = document.createElement('div')
+    div.setAttribute('class', 'type')
+    div.innerText = brewery.brewery_type
+    li.appendChild(div)
 
-  //     <p><strong>Chardon, 44024</strong></p>
-  const p2 = document.createElement('p')
-  p2.innerText = ''
-  section1.appendChild(h3address, p1, p2)
-  //   </section>
-  // <section class="phone">
-  const section2 = document.createElement('section')
-  section2.setAttribute('class', 'phone')
+    const section1 = document.createElement('section')
+    section1.setAttribute('class', 'address')
+    li.appendChild(section1)
 
-  //    <h3>Phone:</h3>
-  const h3phone = document.createElement('h3')
-  h3phone.innerText = 'Phone:'
-  //     <p>N/A</p>
-  const p3 = document.createElement('p')
-  p3.innerText = ''
-  section1.appendChild(h3phone, p3)
-  //   </section>
-  //   <section class="link">
-  const section3 = document.createElement('section')
-  section3.setAttribute('class', 'link')
-  //     <a href="null" target="_blank">Visit Website</a>
-  const aWebLink = document.createElement('a')
-  aWebLink.setAttribute('href', '')
-  aWebLink.setAttribute('target', '_blank')
-  aWebLink.innerText = 'Visit Website'
-  section3.appendChild(aWebLink)
-  //   </section>
-  // </li>
-  li.appendChild(h2, div, section1, section2, section3)
-  renderBreweryList.appendChild(li)
-  console.log('hello')
+    const h3address = document.createElement('h3')
+    h3address.innerText = 'Address:'
+    section1.appendChild(h3address)
+
+    const p1 = document.createElement('p')
+    p1.innerText = brewery.street
+    section1.appendChild(p1)
+
+    const p2 = document.createElement('p')
+    p2.innerText = brewery.city + ' ' + brewery.postal_code
+    p2.setAttribute('style', ' bold')
+    section1.appendChild(p2)
+
+    const section2 = document.createElement('section')
+    section2.setAttribute('class', 'phone')
+    li.appendChild(section2)
+
+    const h3phone = document.createElement('h3')
+    h3phone.innerText = 'Phone:'
+    section2.appendChild(h3phone)
+
+    const p3 = document.createElement('p')
+    p3.innerText = brewery.phone
+    section2.appendChild(p3)
+
+    const section3 = document.createElement('section')
+    section3.setAttribute('class', 'link')
+    li.appendChild(section3)
+
+    const a = document.createElement('a')
+    a.setAttribute('href', '')
+    a.setAttribute('target', '_blank')
+    a.innerText = 'Visit Website'
+    section3.appendChild(a)
+
+    renderBreweryList.appendChild(li)
+    console.log('test')
+  })
 }
 renderedBreweyInfo()
 // ensure li is linked to the Json files and 'getting' the correct data.
@@ -137,3 +119,4 @@ renderedBreweyInfo()
 
 // do not cry
 // get it finished and drink a beer
+getBreweryData()
