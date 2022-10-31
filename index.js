@@ -16,11 +16,20 @@
 // 2) We filter the breweries each time a key is pressed - we can use the includes array method to check if the user's searched value appears in the title
 // 3) Rerender the list
 
+// Extension 2 - Cities filter
+// 1) Add city form to HTML
+// 2) Create a function where we loop through the state breweries and generate a checkbox for each featured city
+// 3) Add an event listener to the cities form + check which boxes have been selected
+// 4) Add the selected cities to a cities array in state
+// 5) Filter the state breweries so only the selected cities are included
+// 6) Rerender the main list
+
 // Selections
 const search = document.querySelector("#select-state");
 const mainList = document.querySelector(".breweries-list");
 const stateForm = document.querySelector("#select-state-form");
 const filterSelect = document.querySelector("#filter-by-type");
+const filterCity = document.querySelector("#filter-by-city-form");
 const searchBreweries = document.querySelector("#search-breweries");
 
 // State
@@ -134,6 +143,7 @@ function getBreweries() {
       });
 
       renderBreweries(state.breweries);
+      generateCities();
     });
 }
 
@@ -143,42 +153,70 @@ function filterByType() {
     renderBreweries(state.breweries);
   } else {
     // save a copy of the breweries
-    let breweries = state.breweries;
+    let filteredBreweries = state.breweries;
 
     // run a filter with saved filterType
-    breweries = state.breweries.filter((brewery) => {
+    filteredBreweries = state.breweries.filter((brewery) => {
       return brewery.brewery_type === state.filterType;
     });
 
     // rerender the list
-    renderBreweries(breweries);
+    renderBreweries(filteredBreweries);
 
     // revert breweries back to the full list
-    breweries = state.breweries;
+    filteredBreweries = state.breweries;
   }
 }
 
 // function to filter brewery titles
 function filterByTitle() {
-  let breweries = state.breweries;
+  let filteredBreweries = state.breweries;
 
-  if (breweries.length < 1) {
+  if (filteredBreweries.length < 1) {
     mainList.innerText = "Please enter a state first!";
     return;
   }
 
-  breweries = state.breweries.filter((brewery) => {
+  filteredBreweries = state.breweries.filter((brewery) => {
     return brewery.name.toLowerCase().includes(state.filterTitle);
   });
 
-  renderBreweries(breweries);
-
-  // state.breweries = breweries;
+  renderBreweries(filteredBreweries);
 }
 
 // reset the filter select value
 function resetFilters() {
   filterSelect.value = "";
+}
+
+function generateCities() {
+  // Clear the checkboxes each time a new state is searched for
+  filterCity.innerHTML = "";
+
+  let uniqueCities = [];
+
+  state.breweries.forEach((brewery) => {
+    uniqueCities.push(brewery.city);
+  });
+
+  // Using set + spread operator syntax to remove duplicate values
+  uniqueCities = [...new Set(uniqueCities)];
+
+  uniqueCities.forEach((city) => {
+    const cityLower = city.toLowerCase();
+    const input = document.createElement("input");
+    input.setAttribute("type", "checkbox");
+    input.setAttribute("name", cityLower);
+    input.setAttribute("value", cityLower);
+
+    const label = document.createElement("label");
+    label.setAttribute("for", cityLower);
+    label.innerText = city;
+
+    filterCity.append(input, label);
+  });
+
+  uniqueCities = [];
 }
 
 // init
