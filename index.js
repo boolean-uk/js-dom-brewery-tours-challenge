@@ -31,6 +31,7 @@ const stateForm = document.querySelector("#select-state-form");
 const filterSelect = document.querySelector("#filter-by-type");
 const filterCity = document.querySelector("#filter-by-city-form");
 const searchBreweries = document.querySelector("#search-breweries");
+const clearCityBtn = document.querySelector(".clear-all-btn");
 
 // State
 const state = {
@@ -60,6 +61,14 @@ filterSelect.addEventListener("change", () => {
 searchBreweries.addEventListener("keyup", () => {
   state.filterTitle = searchBreweries.value.toLowerCase().trim();
   filterByTitle();
+});
+
+clearCityBtn.addEventListener("click", () => {
+  // Turns HTML Collection into JS array
+  const inputs = [...document.getElementsByTagName("input")];
+  inputs.forEach((input) => {
+    input.checked = false;
+  });
 });
 
 // Render
@@ -215,8 +224,6 @@ function generateCities() {
 
     filterCity.append(input, label);
   });
-
-  uniqueCities = [];
 }
 
 // init
