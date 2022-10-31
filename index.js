@@ -21,6 +21,7 @@ function searchSubmit (){
         siteState.state = stateInput;
         // converting data to varieble to fetch
         const searchedState = breweriesURL + "?by_state=" + siteState.state;
+        
         // fetching data
         fetch(searchedState)
         // sending request to api receiving json file and converting to readable file
@@ -28,7 +29,7 @@ function searchSubmit (){
         // here is converted data
         .then((data) => {siteState.pubs = data;
             // copying data to the state
-            console.log("everysingle pub", data)
+            // console.log("everysingle pub", data)
             // invoking this function will put all data into required DOM
             attachPubsToList()
         })
@@ -38,7 +39,7 @@ function attachPubsToList(){
 
     listOfBreweries.innerHTML = " ";
     siteState.pubs.forEach((pub) => {
-        console.log("pub must appear", pub)
+        
         // once i got the all info from API on each pub i can filter them
         if (pub.brewery_type === "micro" || pub.brewery_type === "regional" || pub.brewery_type === "brewpub"){
 
@@ -50,8 +51,7 @@ function attachPubsToList(){
         }
     })
 }  
-// attachPubsToList
-// console.log(siteState.pubs)
+
 // this is DOM, info for every pub.
 function createPubInfo(pub) {
     const li = document.createElement("li");
@@ -91,18 +91,28 @@ function createPubInfo(pub) {
     linkSection.append(webLinkA);
 }
 function filterByType (){
+    // query selecting id=filter by type
     const filterByType = document.querySelector("#filter-by-type")
-    console.log("hoooray its working", filterByType)
+
+    
+    // on that selected id applying event listener
     filterByType.addEventListener("change", (event) => {
+        // preventing default behaviour
         event.preventDefault();
         
         console.log("events", event)
+        // copying the value of the DOM to the state
         siteState.typeOfPub = filterByType.value
-        console.log(siteState.typeOfPub)
-        console.log("here must show URL", breweriesURL + "?by_state=" + siteState.state + "&by_type=" + siteState.typeOfPub)
-
-        if(filterByType.value === breweriesURL + "?by_state=" + siteState.state + "&by_type=" + siteState.typeOfPub){
-            console.log("here i am!!!")
+        // console.log(siteState.typeOfPub, filterByType.value)
+        // console.log("here must show URL", breweriesURL + "?by_state=" + siteState.state + "&by_type=" + siteState.typeOfPub)
+        // making concise the URL easy to filter
+        console.log("state coming from here", siteState.state)
+        const filterURL = breweriesURL + "?by_state=" + siteState.state
+        console.log("state where is that", filterURL)
+        if (siteState.state !== ""){
+        }
+        if(siteState.typeOfPub !== ""){
+            console.log(filterURL + "&by_type=" + siteState.typeOfPub)
         }
         // console.log("type of pub", siteState.typeOfPub)
 
