@@ -3,10 +3,13 @@ const state = {
     currentlyFilteredBreweries: []
 }
 
+userInputState = ''
+
 init()
 
 function init() {
     mainStateSearch()
+    filterListening ()
 }
 
 function mainStateSearch(){
@@ -14,29 +17,26 @@ function mainStateSearch(){
     const mainInputField = document.querySelector("#select-state")
     mainSearchForm.addEventListener("submit", (event) =>{
         event.preventDefault()
-        console.log("Form submitted with data", mainInputField.value)
-        sendAPICall(mainInputField.value) 
+        userInputState = mainInputField.value
+        sendAPICall() 
     })
 }
 
-function sendAPICall(userInput) {
-    fetch(`https://api.openbrewerydb.org/breweries?by_state=${userInput}&?per_page=50`)
+function sendAPICall() {
+    fetch(`https://api.openbrewerydb.org/breweries?by_state=${userInputState}&per_page=50`)
         .then((response) =>  {
             return response.json();
         })
         .then((breweries) => {
             state.breweries = breweries
             filterToMicroRegionalBrewpub()
-            renderPage()
+            renderPage(state.breweries)
         })
 }
 
 function filterToMicroRegionalBrewpub() {
-    console.log("before: ", state)
     state.breweries = state.breweries.filter((brewery) => {
-        console.log(brewery.brewery_type)
         if (brewery.brewery_type !== "micro" && brewery.brewery_type && "regional" && brewery.brewery_type !== "brewpub") {
-            console.log("This is not any of them!")
             return false
         }
         else {
@@ -45,11 +45,10 @@ function filterToMicroRegionalBrewpub() {
     })
 }
 
-function renderPage() {
+function renderPage(listToRender) {
     breweriesUL = document.querySelector("#breweries-list")
     breweriesUL.innerHTML = ''
-
-    state.breweries.forEach((brewery) => {
+    listToRender.forEach((brewery) => {
         renderCards(brewery)
     })
 }
@@ -110,14 +109,24 @@ function renderCards(brewery) {
 }
 
 function filterListening () {
-    const filterForm = document.addEventListener("#filter-by-type-form")
+    const filterForm = document.querySelector("#filter-by-type")
+    filterForm.addEventListener("click", (event) => {
+        event.preventDefault()
+        if (filterForm.value) { newAPICallWithFilters(filterForm.value) }
+    })
 }
 
-
-// API CALLS 
-// https://api.openbrewerydb.org/breweries?by_state=new_york&by_type=micro
-// https://api.openbrewerydb.org/breweries?by_state=new_york&by_type=regional
-// https://api.openbrewerydb.org/breweries?by_state=new_york&by_type=brewpub
+function newAPICallWithFilters(filter) {
+    fetch(`https://api.openbrewerydb.org/breweries?by_state=${userInputState}&per_page=50&by_type=${filter}`)
+        .then((response) =>  {
+            return response.json();
+        })
+        .then((breweries) => {
+            state.currentlyFilteredBreweries = breweries
+            renderPage(state.currentlyFilteredBreweries)
+        })
+    console.log(state)
+}
 
 // ACCEPTANCE CRITERIA:
 // 1. Connect to Open Brewery DB using Insomnia to figure out how to get the data
