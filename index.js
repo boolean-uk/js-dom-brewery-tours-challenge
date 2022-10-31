@@ -39,9 +39,13 @@ const state = {
   breweries: [],
   filterType: "",
   filterTitle: "",
+  filterCities: [],
 };
 
-// Event listeners
+//////////////////////////////////////////////////////
+// Event listeners //
+//////////////////////////////////////////////////////
+
 stateForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -69,9 +73,17 @@ clearCityBtn.addEventListener("click", () => {
   inputs.forEach((input) => {
     input.checked = false;
   });
+
+  // remove any cities in the filter list
+  state.filterCities = [];
+  // rerender full list so the user still has something
+  renderBreweries(state.breweries);
 });
 
-// Render
+//////////////////////////////////////////////////////
+// Render functions //
+//////////////////////////////////////////////////////
+
 function renderBreweries(breweries) {
   mainList.innerHTML = "";
 
@@ -123,7 +135,10 @@ function createBreweryCard(brewery) {
   mainList.appendChild(li);
 }
 
-// Get data and put into state
+//////////////////////////////////////////////////////
+// Fetch functions //
+//////////////////////////////////////////////////////
+
 function getBreweries() {
   const url = `https://api.openbrewerydb.org/breweries?by_state=${state.userSearch}`;
 
@@ -156,7 +171,10 @@ function getBreweries() {
     });
 }
 
-// function to filter brewery types
+//////////////////////////////////////////////////////
+// Filter functions //
+//////////////////////////////////////////////////////
+
 function filterByType() {
   if (state.filterType === "") {
     renderBreweries(state.breweries);
@@ -177,7 +195,6 @@ function filterByType() {
   }
 }
 
-// function to filter brewery titles
 function filterByTitle() {
   let filteredBreweries = state.breweries;
 
@@ -191,6 +208,34 @@ function filterByTitle() {
   });
 
   renderBreweries(filteredBreweries);
+}
+
+function filterByCity() {
+  const checkboxes = [...document.querySelectorAll("input[type=checkbox]")];
+
+  checkboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", () => {
+      const city = checkbox.value;
+      if (checkbox.checked === true) {
+        state.filterCities.push(city);
+      } else {
+        const match = state.filterCities.find(
+          (filtereredCity) => filtereredCity === city
+        );
+        state.filterCities.splice(state.filterCities.indexOf(match), 1);
+      }
+
+      let filteredBreweries = state.breweries.filter((brewery) =>
+        state.filterCities.includes(brewery.city.toLowerCase())
+      );
+
+      if (filteredBreweries.length < 1) {
+        renderBreweries(state.breweries);
+      } else {
+        renderBreweries(filteredBreweries);
+      }
+    });
+  });
 }
 
 // reset the filter select value
@@ -224,6 +269,9 @@ function generateCities() {
 
     filterCity.append(input, label);
   });
+
+  // moved everything to its own filter function
+  filterByCity();
 }
 
 // init
