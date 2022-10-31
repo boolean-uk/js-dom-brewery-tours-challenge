@@ -24,6 +24,12 @@
 // 5) Filter the state breweries so only the selected cities are included
 // 6) Rerender the main list
 
+// Extension 3 - Pagination
+// 1) Add prev + next buttons - only to appear when the user searches for a state
+// 2) Update fetch URL with some kind of state value- which page we're on
+// 3) Set event listeners on the buttons that increase or decrease page in state depending on which button clicked
+// 4) Send another fetch request with new page number?
+
 // Selections
 const search = document.querySelector("#select-state");
 const mainList = document.querySelector(".breweries-list");
@@ -32,6 +38,7 @@ const filterSelect = document.querySelector("#filter-by-type");
 const filterCity = document.querySelector("#filter-by-city-form");
 const searchBreweries = document.querySelector("#search-breweries");
 const clearCityBtn = document.querySelector(".clear-all-btn");
+const btnContainer = document.querySelector(".btn-container");
 
 // State
 const state = {
@@ -90,6 +97,8 @@ function renderBreweries(breweries) {
   breweries.forEach((brewery) => {
     createBreweryCard(brewery);
   });
+
+  createButtons();
 }
 
 function createBreweryCard(brewery) {
@@ -135,12 +144,27 @@ function createBreweryCard(brewery) {
   mainList.appendChild(li);
 }
 
+function createButtons() {
+  // Ensures we don't add the buttons every time the list is rerendered
+  if (btnContainer.hasChildNodes()) {
+    return;
+  }
+  const prevBtn = document.createElement("button");
+  prevBtn.classList.add("page-btn");
+  prevBtn.innerText = "Previous";
+  const nextBtn = document.createElement("button");
+  nextBtn.classList.add("page-btn");
+  nextBtn.innerText = "Next";
+
+  btnContainer.append(prevBtn, nextBtn);
+}
+
 //////////////////////////////////////////////////////
 // Fetch functions //
 //////////////////////////////////////////////////////
 
 function getBreweries() {
-  const url = `https://api.openbrewerydb.org/breweries?by_state=${state.userSearch}`;
+  const url = `https://api.openbrewerydb.org/breweries?by_state=${state.userSearch}&per_page=50`;
 
   fetch(url)
     .then((res) => res.json())
@@ -233,6 +257,11 @@ function filterByCity() {
         renderBreweries(state.breweries);
       } else {
         renderBreweries(filteredBreweries);
+      }
+
+      // removes the buttons if the user has a city selected
+      if (state.filterCities.length > 0) {
+        btnContainer.innerHTML = "";
       }
     });
   });
