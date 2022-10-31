@@ -11,17 +11,24 @@
 // 2) In our render or separate function, we filter the currently displayed breweries to only include a selected type
 // 3) We rerender the list
 
+// Extension 1 - Search bar
+// 1) Select new search bar and add keyup event listener
+// 2) We filter the breweries each time a key is pressed - we can use the includes array method to check if the user's searched value appears in the title
+// 3) Rerender the list
+
 // Selections
 const search = document.querySelector("#select-state");
 const mainList = document.querySelector(".breweries-list");
 const stateForm = document.querySelector("#select-state-form");
 const filterSelect = document.querySelector("#filter-by-type");
+const searchBreweries = document.querySelector("#search-breweries");
 
 // State
 const state = {
   userSearch: "",
   breweries: [],
   filterType: "",
+  filterTitle: "",
 };
 
 // Event listeners
@@ -39,6 +46,11 @@ stateForm.addEventListener("submit", (e) => {
 filterSelect.addEventListener("change", () => {
   state.filterType = filterSelect.value;
   filterByType();
+});
+
+searchBreweries.addEventListener("keyup", () => {
+  state.filterTitle = searchBreweries.value;
+  filterByTitle();
 });
 
 // Render
@@ -140,6 +152,19 @@ function filterByType() {
 
   // revert breweries back to the full list
   state.breweries = breweries;
+}
+
+// function to filter brewery titles
+function filterByTitle() {
+  // const breweries = state.breweries;
+
+  state.breweries = state.breweries.filter((brewery) => {
+    return brewery.name.includes(state.filterTitle);
+  });
+
+  renderBreweries();
+
+  // state.breweries = breweries;
 }
 
 // reset the filter select value
