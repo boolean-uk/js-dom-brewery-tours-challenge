@@ -228,3 +228,6 @@ article {
   text-decoration: none;
   font-weight: bold;
 }
+#select-breweries-form {
+  background-color: #ffe082;
+}

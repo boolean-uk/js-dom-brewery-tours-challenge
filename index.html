@@ -7,7 +7,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="styles/reset.css" />
   <link rel="stylesheet" href="styles/index.css" />
-  <script src="brewery.js" defer></script>
   <title>Brewery Tours</title>
 </head>
 
@@ -36,10 +35,22 @@
             <option value="regional">Regional</option>
             <option value="brewpub">Brewpub</option>
           </select>
+
+        </form>
+        <div class="filter-by-city-heading">
+          <h3>Cities</h3>
+          <button class="clear-all-btn">clear all</button>
+        </div>
+        <form id="filter-by-city-form">
         </form>
       </aside>
     </aside>
     <h1>List of Breweries</h1>
+    <form id="select-breweries-form" autocomplete="off">
+      <label for="select-breweries">Search breweries</label>
+      <input id="select-breweries" name="select-breweries" type="text" />
+      <input type="submit" value="Search" />
+    </form>
     <article>
       <ul id="breweries-list" class="breweries-list">
         <!--
