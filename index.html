@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles/reset.css" />
     <link rel="stylesheet" href="styles/index.css" />
     <title>Brewery Tours</title>
+    <script src="index.js" defer></script>
   </head>
   <body>
     <header class="main-header">
@@ -32,10 +33,26 @@
               <option value="brewpub">Brewpub</option>
             </select>
           </form>
+
+          
         </aside>
+        <aside class="filters-section">
+          <div class="filter-by-city-heading">
+              <h3>Cities</h3>
+              <button class="clear-all-btn">clear all</button>
+          </div>
+          <form id="filter-by-city-form">  
+            
+          </form>
+        </aside>  
       </aside>
       <h1>List of Breweries</h1>
+      
       <article>
+        <form id="search-breweries-form">
+          <h2>Search by name:</h2>
+          <input type="text" id="search-breweries">
+        </form>
         <ul id="breweries-list" class="breweries-list">
           <!--
           For each brewery returned in the search, 
@@ -45,6 +62,6 @@
         </ul>
       </article>
     </main>
-    <script src="index.js"></script>
+    <!-- <script src="index.js"></script> -->
   </body>
 </html>
