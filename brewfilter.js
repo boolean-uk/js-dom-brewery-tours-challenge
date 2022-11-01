@@ -1,6 +1,6 @@
 state = {
     breweries:[
-        {name: 'badbrewer',
+        {name: 'badbrewer good beer',
          type: 'micro'
     },
         {name: 'otherbeer',
@@ -15,10 +15,20 @@ let typeFilteredList = state.breweries.filter((brew)=> {
     }
 })
 
-arr = ['badbrewer']
+let brewName = state.breweries[0].name
 
+function reRenderCaps(name){
 
-const myFish = ['angel', 'clown', 'drum', 'mandarin', 'sturgeon'];
-const removed = myFish.splice(3, 1);
+name = name.split(' ')
 
-console.log(myFish)
+let finalWordArr = []
+
+newBrewNameArray = name.forEach((word)=>{
+    const capLet = word[0].toUpperCase()
+    const rest = word.substring(1)
+    finalWordArr.push (capLet + rest)
+})
+    return finalWordArr.join(' ')
+}
+
+console.log(reRenderCaps(brewName))

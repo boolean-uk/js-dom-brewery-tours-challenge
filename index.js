@@ -85,12 +85,26 @@ submit.addEventListener('click', (event)=>{
     })
     }
 )
+
+function reRenderCaps(name){
+
+    name = name.split(' ')
+    
+    let finalWordArr = []
+    
+    newBrewNameArray = name.forEach((word)=>{
+        const capLet = word[0].toUpperCase()
+        const rest = word.substring(1)
+        finalWordArr.push (capLet + rest)
+    })
+        return finalWordArr.join(' ')
+    }
 function renderBrews (brew){
     const brewCard = document.createElement('li')
         breweryUl.appendChild(brewCard)
 
         const brewName = document.createElement('h2')
-        brewName.innerText = brew.name
+        brewName.innerText = reRenderCaps(brew.name)
         brewCard.appendChild(brewName)
 
         const brewType = document.createElement('div')
