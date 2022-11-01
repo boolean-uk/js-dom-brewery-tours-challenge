@@ -6,7 +6,8 @@ const searchInput = document.querySelector("#select-state")
 
 const state = {
     breweries: [],
-    userStateSearch : ""
+    userStateSearch : "",
+    selectedType : ""
 }
 
 
@@ -102,8 +103,7 @@ loadBreweryData()
 
 stateSearch.addEventListener("click", (event) =>{
 
-    event.preventDefault()
-
+     event.preventDefault()
 
      const search = searchInput.value.toLowerCase().trim()
      state.userStateSearch = search
@@ -124,21 +124,26 @@ stateSearch.addEventListener("click", (event) =>{
 
 })
 
+typeSelector.addEventListener("change", (event) => {
+
+    event.preventDefault()
+
+    state.selectedType = typeSelector.value
+    fetch(`https://api.openbrewerydb.org/breweries?by_type=${state.selectedType}&per_page=5`)
+    .then((response) => {
+        return response.json()
+
+    })
+    .then((breweries) => {
+        state.breweries = filterBreweries(breweries)
+        renderBreweries()
+      
+    })
+
+})
 
 
-
-// (filter by state using search bar)
-// add event listener on sumbit button
-// need to create filter for state of Brewery
-// use url where last section inputs state that user inputs
-
-
-//(filter by type w/drop down menu)
-// link html in js that links drop down to html
-// select correct type in js 
-// add event listener with change to each drop down item 
-// with each item use fetch method and url = ?by_type=micro/regional/brewpub&per_page=5
-
-// cry, cry then cry some more!!!
+// TO-DO
+// code, cry, code, have a mental breakdown, code then cry some more!!!
 
 
