@@ -19,18 +19,97 @@ const data = {
             // updated_at:"2022-10-30T06:11:39.514Z"
             // website_url:"http://www.12gatesbrewing.com"
         // }
-    ]
+    ],
+    filteredBreweries: []
 }
 
+function filterListOfBreweries() {
+    // Clear Filtered Breweries
+    data.filteredBreweries = [];
 
-function renderListOfBreweries() {
+    // Put 15 breweries inside breweries list
+    // and call the sort function
+    for (brewery of data.breweries) {
+        const type = brewery.brewery_type;
+
+        // Filters Micro and store in data
+        if (type == 'micro' || type == 'regional' || type == 'brewpub') {
+            // TODO: Keep wanted brewery on data
+            // console.log("==- ",brewery.name, " is type: ", type);
+            data.filteredBreweries.push(brewery);
+        } 
+        else {
+            // TODO: Remove not wanted Brewery from data
+            console.log(`Not the wanted type, ${brewery.name} of type ${type}`);
+
+            // const index = data.breweries.indexOf(brewery);
+            // data.breweries.splice(index, 1);
+            // console.log(data.breweries)
+        }
+    }
+}
+
+function renderListOfBreweries(renderPerPage) {
     // Breweries Wrapper
     const ul = document.querySelector('#breweries-list');
 
     // Clears before Rendering new.
     clearListOfBreweries();
 
-    for (brewery of data.breweries) {
+    // Returns if empty filteredBreweries
+    if (data.filteredBreweries.length === 0) return;
+
+    // Render only the amount set by Per Page
+    for (let num = 0; num < renderPerPage; num++) {
+        // Individual Brewery
+        const brewery = data.filteredBreweries[num];
+
+        const li = document.createElement('li');
+        const h2 = document.createElement('h2');
+        h2.innerText = brewery.name;
+        const div = document.createElement('div');
+        div.setAttribute('class', 'type');
+        div.innerText = brewery.brewery_type;
+        const secAddress = document.createElement('section');
+        secAddress.setAttribute('class', 'address');
+        const h3Address = document.createElement('h3');
+        h3Address.innerText = 'Address:';
+        const pStreet = document.createElement('p'); 
+        pStreet.innerText = brewery.street || 'Street N/A';
+        const pCityPostcode = document.createElement('p');
+        pCityPostcode.innerText = `${brewery.city || 'City N/A'}, ${brewery.postal_code || 'Postal Code N/A'}`;
+        pCityPostcode.style.fontWeight = 'bold';
+        const secPhone = document.createElement('section');
+        secPhone.setAttribute('class', 'phone');
+        const h3Phone = document.createElement('h3');
+        h3Phone.innerText = 'Phone:';
+        const pPhone = document.createElement('p');
+        pPhone.innerText = brewery.phone || 'N/A';
+        const secLink = document.createElement('section');
+        secLink.setAttribute('class', 'link');
+        const a = document.createElement('a');
+        brewery.website_url ? a.setAttribute('href', brewery.website_url): null
+        a.setAttribute('target', '_blank');
+        a.innerText = brewery.website_url ? 'Visit Website': 'No Website found'
+   
+        // Append it to Page
+        ul.appendChild(li);
+        li.appendChild(h2);
+        li.appendChild(div);
+        li.appendChild(secAddress);
+        secAddress.appendChild(h3Address);
+        secAddress.appendChild(pStreet);
+        secAddress.appendChild(pCityPostcode);
+        li.appendChild(secPhone);
+        secPhone.appendChild(h3Phone);
+        secPhone.appendChild(pPhone);
+        li.appendChild(secLink);
+        secLink.appendChild(a);
+
+    }
+
+    return
+    for (brewery of data.filteredBreweries) {
         // Individual Brewery
         const li = document.createElement('li');
         const h2 = document.createElement('h2');
@@ -108,10 +187,12 @@ function createEventListeners() {
 }
 
 // Called when form Submit.
+// Gets 15 Breweries to later filter it
 function getBreweriesByState(state, perPage) {
     // Replaces space with underline and lower case it
     const underlinedState = state.split(' ').join('_').toLowerCase();
-    const uri = `https://api.openbrewerydb.org/breweries?by_state=${underlinedState}&per_page=${perPage}`;
+    const breweriesPerPage = 15; // Always get 15
+    const uri = `https://api.openbrewerydb.org/breweries?by_state=${underlinedState}&per_page=${breweriesPerPage}`;
 
     // Fetch Breweries based on the State given to Function
     fetch(uri)
@@ -123,8 +204,11 @@ function getBreweriesByState(state, perPage) {
         // Save to Local Data
         data.breweries = breweriesJson;
 
-        // Render Breweries to Page
-        renderListOfBreweries()
+        // Filter Breweries before render
+        filterListOfBreweries();
+
+        // Render Breweries to Page, render only the value the user inputed
+        renderListOfBreweries(perPage);
     });
 }
 
