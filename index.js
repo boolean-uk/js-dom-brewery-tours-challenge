@@ -4,6 +4,7 @@ const stateSearch = document.querySelector('#select-state-form')
 const filterByType = document.querySelector('#filter-by-type')
 const filterByName = document.querySelector('#search-breweries')
 const filterByCity = document.querySelector('#filter-by-city-form')
+const filterByCityClear = document.querySelector('.clear-all-btn')
 
 
 // Local state
@@ -179,7 +180,6 @@ filterByName.addEventListener('input', event => {
 })
 
 // Ext. 2
-
 // cityFilter function
 function renderByCities() {
   // create cities array
@@ -201,6 +201,7 @@ function renderByCities() {
     checkbox.setAttribute('type', 'checkbox')
     checkbox.setAttribute('value', 'city')
     checkbox.setAttribute('name', 'city')
+    checkbox.setAttribute('class', 'checkbox')
   
     checkbox.addEventListener('change', event => {
       // when a checkbox is changed check if a city needs adding or removing
@@ -223,7 +224,12 @@ function renderByCities() {
   // function end
 }
 
-  
+filterByCityClear.addEventListener('click', event => {
+  state.filterByCities = []
+  filterByCity.reset()
+
+  render()
+})
 
 // Ext. 3
 

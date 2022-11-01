@@ -81,10 +81,18 @@ main {
 .clear-all-btn {
   border: none;
   background-color: transparent;
-  color: #1565c0;
+  color: #0039be;
 
   text-decoration: underline;
   font-size: 0.725rem;
+}
+
+.clear-all-btn:hover {
+  cursor: pointer;
+}
+
+.checkbox:hover {
+  cursor: pointer;
 }
 
 #filter-by-type-form {
@@ -100,6 +108,10 @@ main {
 
 #filter-by-type-form label {
   font-weight: bold;
+}
+
+#filter-by-type:hover {
+  cursor: pointer;
 }
 
 #filter-by-city-form {
