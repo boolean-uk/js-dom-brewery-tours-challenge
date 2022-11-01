@@ -1,15 +1,16 @@
 const state = {
     breweries: [],
-    currentlyFilteredBreweries: []
+    breweriesInputSearch: [],
+    userInputState: '',
+    userInputSearch: '',
 }
-
-userInputState = ''
 
 init()
 
 function init() {
     mainStateSearch()
-    filterListening ()
+    filterListening()
+    breweriesSearch()
 }
 
 function mainStateSearch(){
@@ -17,13 +18,13 @@ function mainStateSearch(){
     const mainInputField = document.querySelector("#select-state")
     mainSearchForm.addEventListener("submit", (event) =>{
         event.preventDefault()
-        userInputState = mainInputField.value
+        state.userInputState = mainInputField.value
         sendAPICall() 
     })
 }
 
 function sendAPICall() {
-    fetch(`https://api.openbrewerydb.org/breweries?by_state=${userInputState}&per_page=50`)
+    fetch(`https://api.openbrewerydb.org/breweries?by_state=${state.userInputState}&per_page=50`)
         .then((response) =>  {
             return response.json();
         })
@@ -110,23 +111,50 @@ function renderCards(brewery) {
 
 function filterListening () {
     const filterForm = document.querySelector("#filter-by-type")
-    filterForm.addEventListener("click", (event) => {
+    filterForm.addEventListener("change", (event) => {
         event.preventDefault()
         if (filterForm.value) { newAPICallWithFilters(filterForm.value) }
+        else {sendAPICall()}
     })
 }
 
 function newAPICallWithFilters(filter) {
-    fetch(`https://api.openbrewerydb.org/breweries?by_state=${userInputState}&per_page=50&by_type=${filter}`)
+    fetch(`https://api.openbrewerydb.org/breweries?by_state=${state.userInputState}&per_page=50&by_type=${filter}`)
         .then((response) =>  {
             return response.json();
         })
         .then((breweries) => {
-            state.currentlyFilteredBreweries = breweries
-            renderPage(state.currentlyFilteredBreweries)
+            state.breweries = breweries
+            renderPage(state.breweries)
         })
     console.log(state)
 }
+
+function breweriesSearch() {
+    breweriesSearchForm = document.querySelector("#search-breweries")
+    breweriesSearchForm.addEventListener('keydown', (event) => {
+
+        if (event.key === "Backspace") {
+            state.userInputSearch = state.userInputSearch.slice(0, -1)
+        } else if (event.key === "Shift" || event.key === "Control" || event.key === "Enter" || event.key === "Alt") {
+        } else {
+            state.userInputSearch += event.key
+        }
+
+        state.breweriesInputSearch = state.breweries.filter((brewery) => {
+            if (brewery.name.toLowerCase().includes(state.userInputSearch.toLowerCase())) {
+                return true
+            }
+            else {
+                return false
+            }
+        })
+
+        renderPage(state.breweriesInputSearch)
+    })
+}
+
+
 
 // ACCEPTANCE CRITERIA:
 // 1. Connect to Open Brewery DB using Insomnia to figure out how to get the data
