@@ -83,6 +83,7 @@ main {
 
   text-decoration: underline;
   font-size: 0.725rem;
+  cursor: pointer;
 }
 
 #filter-by-type-form {

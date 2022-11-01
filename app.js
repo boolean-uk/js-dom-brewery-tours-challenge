@@ -1,6 +1,9 @@
 const state = {
     breweries: [],
     breweriesInputSearch: [],
+    cities: [],
+    selectedCities: [],
+    breweriesFilteredByCity: [],
     userInputState: '',
     userInputSearch: '',
 }
@@ -32,6 +35,7 @@ function sendAPICall() {
             state.breweries = breweries
             filterToMicroRegionalBrewpub()
             renderPage(state.breweries)
+            citiesGenerator(state.breweries)
         })
 }
 
@@ -49,60 +53,75 @@ function filterToMicroRegionalBrewpub() {
 function renderPage(listToRender) {
     breweriesUL = document.querySelector("#breweries-list")
     breweriesUL.innerHTML = ''
+    if (listToRender == false) {
+        noBreweriesErrorMessage()
+    } else {
     listToRender.forEach((brewery) => {
         renderCards(brewery)
     })
+    }
+}
+
+function noBreweriesErrorMessage() {
+    const li = document.createElement('li')
+    breweriesUL.appendChild(li)
+    const h2 = document.createElement('h2')
+    h2.innerText = "Nothing to display"
+    li.appendChild(h2)
+    const div = document.createElement('div')
+    div.innerText = "Are you searching for a correct state name?"
+    li.appendChild(div)
 }
 
 function renderCards(brewery) {
-    li = document.createElement('li')
+    const li = document.createElement('li')
     breweriesUL.appendChild(li)
 
-    h2 = document.createElement('h2')
+    const h2 = document.createElement('h2')
     h2.innerText = brewery.name
     li.appendChild(h2)
 
-    div = document.createElement('div')
+    const div = document.createElement('div')
     div.setAttribute('class', 'type')
     div.innerText = brewery.brewery_type
     li.appendChild(div)
 
-    section = document.createElement('section')
+    const section = document.createElement('section')
     section.setAttribute('class', 'address')
     li.appendChild(section)
 
-    h3 = document.createElement('h3')
+    const h3 = document.createElement('h3')
     h3.innerText = "Address:"
     section.appendChild(h3)
 
-    p1 = document.createElement('p')
+    const p1 = document.createElement('p')
     p1.innerText = brewery.street
     section.appendChild(p1)
 
-    p2 = document.createElement('p')
+    const p2 = document.createElement('p')
     section.appendChild(p2)
 
-    strong = document.createElement('strong')
+    const strong = document.createElement('strong')
     strong.innerText = `${brewery.city}, ${brewery.postal_code}`
     p2.appendChild(strong)
 
-    section2 = document.createElement('section')
+    const section2 = document.createElement('section')
     section2.setAttribute('class', 'phone')
     li.appendChild(section2)
 
-    h3Phone = document.createElement('h3')
+    const h3Phone = document.createElement('h3')
     h3Phone.innerText = "Phone"
     section2.appendChild(h3Phone)
 
-    pPhone = document.createElement('p')
+    const pPhone = document.createElement('p')
     pPhone.innerText = brewery.phone || "N/A"
     section2.appendChild(pPhone)
 
-    section3 = document.createElement('section')
+    const section3 = document.createElement('section')
     section3.setAttribute('class', 'link')
     li.appendChild(section3)
 
-    a = document.createElement('a')
+    const a = document.createElement('a')
     a.setAttribute('href', brewery.website_url)
     a.setAttribute('target', '_blank')
     a.innerText = 'Visit Website'
@@ -126,12 +145,13 @@ function newAPICallWithFilters(filter) {
         .then((breweries) => {
             state.breweries = breweries
             renderPage(state.breweries)
+            citiesGenerator(state.breweries)
         })
     console.log(state)
 }
 
 function breweriesSearch() {
-    breweriesSearchForm = document.querySelector("#search-breweries")
+    const breweriesSearchForm = document.querySelector("#search-breweries")
     breweriesSearchForm.addEventListener('keydown', (event) => {
 
         if (event.key === "Backspace") {
@@ -154,7 +174,74 @@ function breweriesSearch() {
     })
 }
 
+function citiesGenerator(breweryList) {
 
+    breweryList.forEach((brewery) => {
+        state.cities.push(brewery.city)
+    })
+
+    // Removing duplicate cities using internet magic
+    // https://www.javascripttutorial.net/array/javascript-remove-duplicates-from-array/
+    state.cities = [... new Set(state.cities)]
+    
+    renderCities()
+}
+
+function renderCities() {
+    const cityForm = document.querySelector("#filter-by-city-form")
+    cityForm.innerText = ""
+    state.cities.forEach((city) => {
+        const cityInput = document.createElement('input')
+        cityInput.setAttribute('type', 'checkbox')
+        cityInput.setAttribute('name', `${city}`)
+        cityInput.setAttribute('value', `${city}`)
+        cityInput.setAttribute('id', `${city}`)
+        cityForm.appendChild(cityInput)
+
+        const cityLabel = document.createElement('label')
+        cityLabel.setAttribute('for', `${city}`)
+        cityLabel.innerText = city
+        cityForm.appendChild(cityLabel)
+        
+        cityFilterEventListener(city, cityInput)
+    })
+    clearAll()
+}
+
+function cityFilterEventListener(city, cityInput) {
+    cityInput.addEventListener("change", () => {
+        if (state.selectedCities.includes(city)) {
+            const index = state.selectedCities.indexOf(city)
+            state.selectedCities.splice(index, 1)
+        } else {
+            state.selectedCities.push(city)
+        }
+        filterCities()
+    })
+}
+
+function clearAll() {
+    const clearAll = document.querySelector(".clear-all-btn")
+    clearAll.addEventListener("click", () => {
+        renderPage(state.breweries)
+        citiesGenerator(state.breweries)
+    })
+}
+
+function filterCities() {
+    state.breweriesFilteredByCity = state.breweries.filter((brewery) => {
+        if (state.selectedCities.includes(brewery.city)) {
+            return true
+        } else {
+            return false
+        }
+    })
+    if (state.selectedCities == false) {
+        renderPage(state.breweries)
+    } else {
+        renderPage(state.breweriesFilteredByCity)
+    }
+}
 
 // ACCEPTANCE CRITERIA:
 // 1. Connect to Open Brewery DB using Insomnia to figure out how to get the data
