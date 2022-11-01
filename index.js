@@ -28,7 +28,19 @@
 // 1) Add prev + next buttons - only to appear when the user searches for a state
 // 2) Update fetch URL with some kind of state value- which page we're on
 // 3) Set event listeners on the buttons that increase or decrease page in state depending on which button clicked
-// 4) Send another fetch request with new page number?
+// 4) Send another fetch request with new page number
+// 5) Add state value that tracks whether there's more results to display or not
+// 6) If that value is true, return out of increment event listener
+
+// Extension 4 - add visit list
+// 1) Add 'add to visit' button to each brewery card
+// 2) Set up json server
+// 3) Add event listener to button- when clicked, we make a POST request to the server, sending an object of details about the chosen brewery. Push that brewery to a state visit list
+// 4) Create a separate page to display visit list - render the breweries in the state visit list array
+// 5) On this page, each displayed brewery has a remove from visit list button
+// 6) Add event listener to this button - if clicked, we make a delete request to the server then rerender page
+// 7) If the brewery is already in the visit list, prevent from adding + maybe display some kind of message
+// 8) On page reload, we need to send a GET request to the json server and then load the visit list
 
 // Selections
 const search = document.querySelector("#select-state");
@@ -128,7 +140,7 @@ function createBreweryCard(brewery) {
   const phone = document.createElement("h3");
   phone.innerText = "Phone:";
   const number = document.createElement("p");
-  number.innerText = brewery.phone;
+  number.innerText = brewery.phone || "N/A";
 
   const sectionLink = document.createElement("section");
   sectionLink.classList.add("link");
@@ -137,11 +149,13 @@ function createBreweryCard(brewery) {
   siteLink.innerText = "Visit Website";
   siteLink.setAttribute("href", brewery.website_url);
   siteLink.setAttribute("target", "_blank");
+  const visitLink = document.createElement("button");
+  visitLink.innerText = "Add to visit list";
 
   city.append(strong);
   sectionAddress.append(address, street, city);
   sectionPhone.append(phone, number);
-  sectionLink.append(siteLink);
+  sectionLink.append(visitLink, siteLink);
 
   li.append(h2, div, sectionAddress, sectionPhone, sectionLink);
   mainList.appendChild(li);
@@ -206,10 +220,12 @@ function getBreweries() {
       // Basic error message if 0 items in array
       if (data.length < 1) {
         mainList.innerText = "Sorry, there are no results to display";
+        // Change state variable so we can stop pagination from functioning when there's no results to display
         state.noResults = true;
         return;
       }
 
+      // If data received, we reset this noResults variable
       state.noResults = false;
       // Need to reset the breweries array between searches
       state.breweries = [];
