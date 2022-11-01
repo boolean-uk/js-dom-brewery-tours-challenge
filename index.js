@@ -2,13 +2,15 @@
 const breweriesList = document.querySelector('.breweries-list')
 const stateSearch = document.querySelector('#select-state-form')
 const filterByType = document.querySelector('#filter-by-type')
+const filterByName = document.querySelector('#search-breweries')
 
 
 // Local state
 const state = {
   types: ["regional", "micro", "brewpub"],
   breweries: [],
-  filterByType: ""
+  filterByType: "",
+  filterByName: "",
 }
 
 // RENDERING
@@ -22,7 +24,6 @@ function render() {
 
 // Breweries function
 function renderBreweries() {
-  console.log('Breweries rendering started')
   // clear html
   breweriesList.innerHTML = ''
 
@@ -45,6 +46,10 @@ function applyFilters() {
   }
 
   // Ext. 1 - filter breweries by name
+  if(state.filterByName !== "") {
+    console.log('Filtering by name')
+    filteredBreweries = filteredBreweries.filter(brewery => brewery.name.includes(state.filterByName))
+  }
 
   // Ext. 2 - filter breweries by city
   
@@ -143,20 +148,24 @@ stateSearch.addEventListener('submit', event => {
   // EL end
 })
 
+// Event listener for filtering by brewery type
 filterByType.addEventListener('change', event => {
+  // update type filter within state based on selection
   state.filterByType = event.target.value
 
   render()
+  // EL end
 })
-
-// Event listener for filtering by brwery type
-  // update city filter within state
-// EL end
-
 
 // Ext. 1
 // function to search by name
+filterByName.addEventListener('input', event => {
+  // update name filter when there's any input in the search bar
+  state.filterByName = event.target.value
 
+  render()
+  // EL end
+})
 
 // Ext. 2
 
