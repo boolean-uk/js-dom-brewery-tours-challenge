@@ -1,25 +1,38 @@
-const uri = "https://api.openbrewerydb.org/breweries"
+const defaultUri = "https://api.openbrewerydb.org/breweries"
+// work out how to only get 3 types to show
 const breweriesList = document.querySelector(".breweries-list")
 
 const state = {
-    breweries: []
+    breweries: [],
 }
 
+// This function makes sure only micro,brewpub and regional pubs display on the page
+function filterBreweries (breweries) {
+    const types = ['micro', 'regional', 'brewpub']
+    return breweries.filter((breweries) =>
+      types.includes(breweries.brewery_type)
+    )
+  }
+
+  console.log(filterBreweries)
+
+// This function uses the GET method to collect all brewery data
 function loadBreweryData () {
 
-    fetch(uri)
+    fetch(defaultUri)
     .then((response) => {
         return response.json()
 
     })
     .then((breweries) => {
-        state.breweries = breweries
+        state.breweries = filterBreweries(breweries)
         renderBreweries()
       
     })
 
 }
 
+// This function renders all the brewery cards onto the page using the data that was fetched 
 function renderBreweries() {
     breweriesList.innerHTML = ""
 
@@ -34,6 +47,7 @@ function renderBreweries() {
         const div = document.createElement("div")
         div.setAttribute("class","type")
         div.innerText = brewery.brewery_type
+
         li.appendChild(div)
 
         const section1 = document.createElement("section")
@@ -50,7 +64,7 @@ function renderBreweries() {
 
         const p2 = document.createElement("p")
         p2.innerText = brewery.city + "  " + brewery.postal_code 
-        // p2.setAttribute("style","strong") => need to re-check how to use style css in js
+        // p2.setAttribute("style", "bolder") => need to re-check how to use style css in js
         section1.appendChild(p2)
 
         const section2 = document.createElement("section")
@@ -79,8 +93,18 @@ function renderBreweries() {
 
 }
 
-// console.log(loadBreweryData())
-// console.log(renderBreweries())
+// button => event listener => what function/functions => name function + call it => write function
+
+
+// (filter by state using search bar)
+// add event listener on sumbit button
+// need to create filter for state of Brewery
+
+
+//(filter by type)
+// create html in js that links drop down to html
+// add event listener to each drop down item 
+// with each item use fetch meathod and url = ?by_type=micro/regional/brewpub&per_page=5
 
 loadBreweryData()
 
