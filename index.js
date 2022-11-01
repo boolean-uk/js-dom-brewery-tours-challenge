@@ -61,6 +61,7 @@ const state = {
   filterCities: [],
   page: 1,
   noResults: false,
+  visitList: [],
 };
 
 //////////////////////////////////////////////////////
@@ -151,6 +152,19 @@ function createBreweryCard(brewery) {
   siteLink.setAttribute("target", "_blank");
   const visitLink = document.createElement("button");
   visitLink.innerText = "Add to visit list";
+  const successMessage = document.createElement("p");
+  successMessage.innerText = "Added to visit list!";
+  successMessage.style.color = "#6bd040";
+
+  // Can also add error message - if item is already in state visit list, say something like 'item already in list'
+
+  visitLink.addEventListener("click", () => {
+    postToVisitList(brewery);
+    sectionLink.prepend(successMessage);
+    setTimeout(() => {
+      successMessage.remove();
+    }, 1500);
+  });
 
   city.append(strong);
   sectionAddress.append(address, street, city);
@@ -258,6 +272,12 @@ function filterByType() {
     // save a copy of the breweries
     let filteredBreweries = state.breweries;
 
+    // Just stops the buttons being added if a user bizarrely decides to filter nothing
+    if (filteredBreweries.length < 1) {
+      btnContainer.innerHTML = "";
+      return;
+    }
+
     // run a filter with saved filterType
     filteredBreweries = state.breweries.filter((brewery) => {
       return brewery.brewery_type === state.filterType;
@@ -334,8 +354,8 @@ function generateCities() {
     uniqueCities.push(brewery.city);
   });
 
-  // Using set + spread operator syntax to remove duplicate values
-  uniqueCities = [...new Set(uniqueCities)];
+  // Using set + spread operator syntax to remove duplicate values. Sort makes the list alphabetical
+  uniqueCities = [...new Set(uniqueCities)].sort();
 
   uniqueCities.forEach((city) => {
     const cityLower = city.toLowerCase();
@@ -357,3 +377,59 @@ function generateCities() {
 
 // init
 resetFilters();
+
+//////////////////////////////////////////////////////
+// Visit List functions //
+//////////////////////////////////////////////////////
+
+function postToVisitList({
+  name,
+  brewery_type,
+  street,
+  city,
+  postal_code,
+  phone,
+  website_url,
+  state,
+}) {
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name,
+      brewery_type,
+      street,
+      city,
+      postal_code,
+      phone,
+      website_url,
+      state,
+    }),
+  };
+
+  fetch("http://localhost:3000/breweries", options)
+    .then((res) => res.json())
+    .then((brewery) => {
+      getVistList();
+    });
+}
+
+function getVistList() {
+  fetch("http://localhost:3000/breweries")
+    .then((res) => res.json())
+    .then((data) => {
+      state.visitList = [];
+
+      data.forEach((brewery) => {
+        // Checks to see if brewery is already in the visit list- if so, will skip pushing it so the use can't add multiple of the same brewery
+        const found = state.visitList.find(
+          (breweryVisit) => breweryVisit.name === brewery.name
+        );
+        // maybe in below if condition I can also invoke a delete function that will also remove repeated elements from the server json data
+        if (found) return;
+        state.visitList.push(brewery);
+      });
+    });
+}
