@@ -57,7 +57,10 @@ function renderListOfBreweries(renderPerPage) {
     clearListOfBreweries();
 
     // Returns if empty filteredBreweries
-    if (data.filteredBreweries.length === 0) return;
+    if (data.filteredBreweries.length === 0) {
+        searchNotFound();
+        return
+    }
 
     // Render only the amount set by Per Page
     for (let num = 0; num < renderPerPage; num++) {
@@ -184,6 +187,19 @@ function createEventListeners() {
     })
 
     // Other EventListeners here...
+}
+
+function searchNotFound() {
+    // Breweries Wrapper
+    const ul = document.querySelector('#breweries-list');
+
+    // Clears before creating h3 warning
+    clearListOfBreweries();
+
+    const h3 = document.createElement('h3');
+    h3.innerText = "Sorry, search not Found."
+
+    ul.appendChild(h3);
 }
 
 // Called when form Submit.
