@@ -163,22 +163,26 @@ function createButtons() {
   pageNumber.innerText = state.page;
 
   prevBtn.addEventListener("click", () => {
-    if (state.page === 1) return;
-    state.page--;
-    getBreweries();
-    pageNumber.innerText = state.page;
+    handlePageButtons("decrement", pageNumber);
   });
 
   nextBtn.addEventListener("click", () => {
-    if (state.noResults) {
-      return;
-    }
-    state.page++;
-    getBreweries();
-    pageNumber.innerText = state.page;
+    handlePageButtons("increment", pageNumber);
   });
 
   btnContainer.append(prevBtn, pageNumber, nextBtn);
+}
+
+function handlePageButtons(operation, pageNumber) {
+  if (operation === "decrement") {
+    if (state.page === 1) return;
+    state.page--;
+  } else if (operation === "increment") {
+    if (state.noResults) return;
+    state.page++;
+  }
+  getBreweries();
+  pageNumber.innerText = state.page;
 }
 
 function resetPageNumber() {
