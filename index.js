@@ -5,7 +5,7 @@ const state = {
   search: ''
 }
 const renderBreweryList = document.querySelector('#breweries-list')
-const filterByType = document.querySelector('#filter-by-type')
+const byType = document.querySelector('#filter-by-type')
 const input = document.querySelector('#select-state')
 const stateForm = document.querySelector('#select-state-form')
 
@@ -35,16 +35,50 @@ function getBreweryData() {
           state.breweries.push(brewery)
           // eslint-disable-next-line no-empty
         }
+        if (byType.value !== '') {
+          state.filterByType = state.breweries.filter((brewery) => {
+            return byType.value === brewery.brewery_type
+          })
+          renderBreweryList(state.byType)
+        } else {
+          // renderBreweryList(state.breweries)
+        }
+        console.log('filtered list:', state.breweries) // filter function is working but the render is not.
       })
 
-      renderedBreweyInfo()
+      renderedBreweyInfo(state.breweries)
     })
 
   // add the filter for the type of breweries here
   state.breweries = []
 }
 
-function renderedBreweyInfo() {
+// filterBytype.addEventListener('change', function)
+// array filter function
+
+byType.addEventListener('change', (event) => {
+  state.filterByType = state.breweries.filter((brewery) => {
+    return byType.value === '' || brewery.brewery_type === byType.value
+  })
+  console.log('by type:', state.filterByType)
+  renderedBreweyInfo(state.filterByType)
+})
+
+// //const selectElement = document.querySelector('.ice-cream');
+
+// selectElement.addEventListener('change', (event) => {
+//   const result = document.querySelector('.result');
+//   result.textContent = `You like ${event.target.value}`;
+// });
+//
+//
+//
+//
+//
+//
+//
+
+function renderedBreweyInfo(brewey) {
   renderBreweryList.innerText = ''
 
   state.breweries.forEach((brewery) => {
