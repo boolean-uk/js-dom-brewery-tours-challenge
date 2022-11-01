@@ -31,33 +31,23 @@ function renderBreweries() {
   // for each brewery create a card (point to card rendering function)
 
   breweries.forEach(renderBreweryCard)
-
-  // breweries.forEach((brewery) => {
-  //   renderBreweryCard(brewery)
-  // })
-
-  // for (let i = 0; i < state.breweries.length; i++) {
-  //   renderBreweryCard(i, breweries)
-  // }
 }
 
 // Filters function
 function applyFilters() {
   // variable for state.breweries
-  console.log(state.breweries)
   let filteredBreweries = state.breweries
-  console.log(`Breweries retrieved, 1st Brewery name: ${filteredBreweries[0].name}`)
 
   // filter breweries by type
-  // if(state.filterByType !== null) {
-  //   filteredBreweries = filteredBreweries.filter(brewery => brewery.type === state.filterByType)
-  // }
+  if(state.filterByType !== "") {
+    console.log('Filtering by type')
+    filteredBreweries = filteredBreweries.filter(brewery => brewery.brewery_type === state.filterByType)
+  }
 
   // Ext. 1 - filter breweries by name
 
   // Ext. 2 - filter breweries by city
-  console.log(`Filters applied: ${filteredBreweries}`)
-  console.log(filteredBreweries)
+  
   return filteredBreweries
   // function end
 }
@@ -65,7 +55,6 @@ function applyFilters() {
 // Card rendering function
 function renderBreweryCard(brewery) {
   console.log('Card rendering')
-  console.log(brewery)
   // create li
   const li = document.createElement('li')
   // create h2 for title
