@@ -61,6 +61,12 @@ const select = document.getElementsByTagName("select")[0]
 // add eventlistener on submit 
 submit.addEventListener('click', (event)=>{
     event.preventDefault()
+    state.breweries = []
+    state.filterByName = []
+    state.filterByBrewType = []
+    state.cities = []
+    state.citiesChecked = []
+    state.filterByCity = []
 
 // click interpolates url & users input at select-state
     const uri = 
@@ -122,13 +128,18 @@ function renderBrews (brew){
         link.innerText = 'Visit Website'
         link.href = brew.website_url
         linkSec.appendChild(link)
-// create city list with possible duplicates
-        state.cities.push(brew.city)
+// create city lists
+        if (state.cities.length === state.citiesChecked.length){
+        if (state.cities.includes(brew.city)===false){
+            state.cities.push(brew.city)
+            state.citiesChecked.push(brew.city)
+            state.filterByCity.push(brew)
+        }
+    }
 }
 function checkFilters (){
     breweryUl.innerHTML = ''
     form.innerHTML = ''
-    // state.cities = []
 // implement initial type filter
     let filteredList = state.breweries.filter((brew)=> {
         if (state.acceptedBrewType.includes(brew.brewery_type)){
@@ -136,28 +147,22 @@ function checkFilters (){
         }
     })
 // implement other filters
+    if (state.cities.length > state.citiesChecked.length){
+        filteredList = state.filterByCity
+    }
     if (state.filterByBrewType.length > 0){
         filteredList = state.filterByBrewType
     }
     if (state.filterByName.length > 0){
         filteredList = state.filterByName
     }
-
-    if (state.filterByCity.length > 0){
-        console.log(state.filterByCity)
-
-        filteredList = state.filterByCity
-    }
 // create filtered state brewery list
     filteredList.forEach((brew)=> {
 
         renderBrews(brew)
     })
-// render city list without duplicates
-    let filteredCities = state.cities.filter((element, index) => {
-            return state.cities.indexOf(element) === index;
-        });
-        filteredCities.forEach((city)=>{
+// render city lists
+        state.cities.forEach((city)=>{
 
             const checkbox = document.createElement('input')
             checkbox.type = 'checkbox'
@@ -177,26 +182,27 @@ function checkFilters (){
                 checkbox.checked = false
             }
 
-            checkbox.addEventListener('change',() => {
+            checkbox.addEventListener('change',(event) => {
+                event.preventDefault()
 
-                state.filterByCity = state.breweries.filter((brew)=>{
-                if (checkbox.checked === true) {
-                    
-                    if (brew.city === checkbox.name){
-                        state.citiesChecked.push(brew.city)
-                        // console.log(state.citiesChecked.indexOf(brew.city))
-                        // console.log(state.citiesChecked)
-                        return brew
-                    }
-
-                    checkFilters()
+                if (checkbox.checked === true){
+                    state.citiesChecked.push(city)
+                    console.log('checked', checkbox.name)
+                    console.log('city list with added city', state.citiesChecked)
                 }
                 else {
-                    const index = state.citiesChecked.indexOf(brew.city)
+                    const index = state.citiesChecked.indexOf(city)
                     state.citiesChecked.splice(index, 1)
+                    console.log('unchecked', checkbox.name)
+                    console.log('city list with removed city', state.citiesChecked)
                 }
-                    checkFilters()
-              })
+                state.filterByCity = state.breweries.filter((brew) => {
+                    if (state.citiesChecked.includes(brew.city)){
+                        return brew
+                    }
+                })
+                console.log(state.filterByCity)
+                checkFilters()
             })
         })
 }

@@ -15,3 +15,10 @@ let typeFilteredList = state.breweries.filter((brew)=> {
     }
 })
 
+arr = ['badbrewer']
+
+
+const myFish = ['angel', 'clown', 'drum', 'mandarin', 'sturgeon'];
+const removed = myFish.splice(3, 1);
+
+console.log(myFish)
