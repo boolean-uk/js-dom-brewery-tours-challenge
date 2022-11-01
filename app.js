@@ -68,9 +68,6 @@ function noBreweriesErrorMessage() {
     const h2 = document.createElement('h2')
     h2.innerText = "Nothing to display"
     li.appendChild(h2)
-    const div = document.createElement('div')
-    div.innerText = "Are you searching for a correct state name?"
-    li.appendChild(div)
 }
 
 function renderCards(brewery) {
