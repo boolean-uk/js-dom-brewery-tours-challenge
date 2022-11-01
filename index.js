@@ -1,15 +1,28 @@
 const state = {
   types: ['micro', 'regional', 'brewpub'],
   breweries: [],
-  filterByType: ''
+  filterByType: '',
+  search: ''
 }
 const renderBreweryList = document.querySelector('#breweries-list')
-const uri = 'https://api.openbrewerydb.org/breweries'
-// Set up Fetch function to get my data from the correct url/uri
+const filterByType = document.querySelector('#filter-by-type')
+const input = document.querySelector('#select-state')
+const stateForm = document.querySelector('#select-state-form')
+const uri = `https://api.openbrewerydb.org/breweries?by_state=${state.search}`
 
 function getBreweryData() {
   //
   //
+  //
+  stateForm.addEventListener('submit', (event) => {
+    event.preventDefault()
+
+    const searchInput = input.value.toLowerCase().trim()
+    state.search = searchInput
+    searchInput.value = ''
+    console.log(state.search)
+  })
+
   fetch(uri)
     .then((response) => {
       return response.json() // turns the respone into a Json format
@@ -19,24 +32,13 @@ function getBreweryData() {
 
       renderedBreweyInfo()
     })
+
+  // add the filter for the type of breweries here
+  // breweries.forEach((brewery)= >{
+
+  // })
 }
 
-//
-//  - get insomnia working and able to show the breweries FileList.
-//  - have a detailed plan of the things that you will need to do.
-//  - break down the steps as much as possible
-//  - dont cry
-//  - open a file that you can post questions to as they arise.
-
-// link that data to my renderBreweryyList
-// querySelect the UL in the html
-
-// step 1:
-// implement my lists and render them
-
-// set function
-// withtin function
-// --
 function renderedBreweyInfo() {
   renderBreweryList.innerText = ''
   console.log('hello')
@@ -105,6 +107,9 @@ renderedBreweyInfo()
 
 // begin filter research
 // list will be filtered by the state
+// function filter brewey type.state.types[i]
+// if  type.state.types[i] != t0  micro, regional or brewpub then return li inner.html = ''
+//
 // Micro
 // Regional
 // Brewpub
