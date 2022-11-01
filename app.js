@@ -180,6 +180,8 @@ function citiesGenerator(breweryList) {
     // Removing duplicate cities using internet magic
     // https://www.javascripttutorial.net/array/javascript-remove-duplicates-from-array/
     state.cities = [... new Set(state.cities)]
+
+    state.cities = state.cities.sort()
     
     renderCities()
 }
