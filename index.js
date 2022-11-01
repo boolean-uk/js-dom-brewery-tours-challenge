@@ -8,40 +8,44 @@ const renderBreweryList = document.querySelector('#breweries-list')
 const filterByType = document.querySelector('#filter-by-type')
 const input = document.querySelector('#select-state')
 const stateForm = document.querySelector('#select-state-form')
-const uri = `https://api.openbrewerydb.org/breweries?by_state=${state.search}`
+
+stateForm.addEventListener('submit', (event) => {
+  event.preventDefault()
+
+  const searchInput = input.value.toLowerCase().trim()
+  state.search = searchInput
+  searchInput.value = ''
+  console.log(state.search)
+  getBreweryData()
+})
 
 function getBreweryData() {
-  //
-  //
-  //
-  stateForm.addEventListener('submit', (event) => {
-    event.preventDefault()
-
-    const searchInput = input.value.toLowerCase().trim()
-    state.search = searchInput
-    searchInput.value = ''
-    console.log(state.search)
-  })
-
+  const uri = `https://api.openbrewerydb.org/breweries?by_state=${state.search}`
   fetch(uri)
     .then((response) => {
       return response.json() // turns the respone into a Json format
     })
     .then((breweries) => {
-      state.breweries = breweries
+      breweries.forEach((brewery) => {
+        if (
+          brewery.brewery_type === 'brewpub' ||
+          brewery.brewery_type === 'micro' ||
+          brewery.brewery_type === 'regional'
+        ) {
+          state.breweries.push(brewery)
+          // eslint-disable-next-line no-empty
+        }
+      })
 
       renderedBreweyInfo()
     })
 
   // add the filter for the type of breweries here
-  // breweries.forEach((brewery)= >{
-
-  // })
+  state.breweries = []
 }
 
 function renderedBreweyInfo() {
   renderBreweryList.innerText = ''
-  console.log('hello')
 
   state.breweries.forEach((brewery) => {
     const li = document.createElement('li')
@@ -99,7 +103,8 @@ function renderedBreweyInfo() {
     console.log('test')
   })
 }
-renderedBreweyInfo()
+// renderedBreweyInfo()
+// getBreweryData()
 // ensure li is linked to the Json files and 'getting' the correct data.
 // link the search button to the li above.
 // get to the point where a search will render a list in the above format.
@@ -124,4 +129,3 @@ renderedBreweyInfo()
 
 // do not cry
 // get it finished and drink a beer
-getBreweryData()
