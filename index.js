@@ -47,6 +47,8 @@ const state = {
   filterType: "",
   filterTitle: "",
   filterCities: [],
+  page: 1,
+  noResults: false,
 };
 
 //////////////////////////////////////////////////////
@@ -60,6 +62,7 @@ stateForm.addEventListener("submit", (e) => {
   const searchTerm = search.value.toLowerCase().trim();
   state.userSearch = searchTerm;
   search.value = "";
+  resetPageNumber();
 
   getBreweries();
 });
@@ -155,8 +158,35 @@ function createButtons() {
   const nextBtn = document.createElement("button");
   nextBtn.classList.add("page-btn");
   nextBtn.innerText = "Next";
+  const pageNumber = document.createElement("p");
+  pageNumber.classList.add("page-number");
+  pageNumber.innerText = state.page;
 
-  btnContainer.append(prevBtn, nextBtn);
+  prevBtn.addEventListener("click", () => {
+    if (state.page === 1) return;
+    state.page--;
+    getBreweries();
+    pageNumber.innerText = state.page;
+  });
+
+  nextBtn.addEventListener("click", () => {
+    if (state.noResults) {
+      return;
+    }
+    state.page++;
+    getBreweries();
+    pageNumber.innerText = state.page;
+  });
+
+  btnContainer.append(prevBtn, pageNumber, nextBtn);
+}
+
+function resetPageNumber() {
+  const pageNumber = document.querySelector(".page-number");
+  if (pageNumber !== null) {
+    state.page = 1;
+    pageNumber.innerText = state.page;
+  }
 }
 
 //////////////////////////////////////////////////////
@@ -164,17 +194,19 @@ function createButtons() {
 //////////////////////////////////////////////////////
 
 function getBreweries() {
-  const url = `https://api.openbrewerydb.org/breweries?by_state=${state.userSearch}&per_page=50`;
+  const url = `https://api.openbrewerydb.org/breweries?by_state=${state.userSearch}&per_page=50&page=${state.page}`;
 
   fetch(url)
     .then((res) => res.json())
     .then((data) => {
       // Basic error message if 0 items in array
       if (data.length < 1) {
-        mainList.innerText = "Please enter a valid US state";
+        mainList.innerText = "Sorry, there are no results to display";
+        state.noResults = true;
         return;
       }
 
+      state.noResults = false;
       // Need to reset the breweries array between searches
       state.breweries = [];
 
