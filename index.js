@@ -197,6 +197,7 @@ function renderByCities() {
   filterByCity.innerHTML = ''
 
   cities.forEach(city => {
+    //for each city create a checkbox
     const checkbox = document.createElement('input')
     checkbox.setAttribute('type', 'checkbox')
     checkbox.setAttribute('value', 'city')
@@ -215,17 +216,22 @@ function renderByCities() {
       renderBreweries()
     })
 
+    // create a label with the city name alongside the checkbox
     const label = document.createElement('label')
     label.setAttribute('for', city)
     label.innerText = city
 
+    // append elements to where they should be
     filterByCity.append(checkbox, label)
   })  
   // function end
 }
 
 filterByCityClear.addEventListener('click', event => {
+  // click event for when clear button is selected
+  // clear filterByCities
   state.filterByCities = []
+  //restores the form to it's default value
   filterByCity.reset()
 
   render()
