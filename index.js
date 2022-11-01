@@ -5,12 +5,12 @@ const breweriesURL = "https://api.openbrewerydb.org/breweries"
 
 // creating local state
 const siteState = {
-    pubs : [ ],
-    state: " ",
-    typeOfPub: " "
+    pubs : [],
+    state: "",
+    typeOfPub: ""
 }
 
-
+console.log()
 // getting data from API
 function searchSubmit (){
     searchByState.addEventListener("submit", event => {
@@ -28,8 +28,8 @@ function searchSubmit (){
         .then((respond) => respond.json())
         // here is converted data
         .then((data) => {siteState.pubs = data;
-            // copying data to the state
-            // console.log("everysingle pub", data)
+            // copying data to the state above code
+            console.log("everysingle pub", siteState.pubs)
             // invoking this function will put all data into required DOM
             attachPubsToList()
         })
@@ -90,30 +90,52 @@ function createPubInfo(pub) {
     phoneSection.append(phoneH3, phoneNumberP);
     linkSection.append(webLinkA);
 }
-function filterByType (){
+function filterType (){
     // query selecting id=filter by type
+    
     const filterByType = document.querySelector("#filter-by-type")
-
     
     // on that selected id applying event listener
     filterByType.addEventListener("change", (event) => {
         // preventing default behaviour
         event.preventDefault();
         
-        console.log("events", event)
-        // copying the value of the DOM to the state
+        // console.log("events", event)
+        // copying the value (which user chose) of the DOM to the state
         siteState.typeOfPub = filterByType.value
+        // console.log("state", siteState.typeOfPub, "second line", siteState.pubs[1].brewery_type)
+        // console.log("state", filterByType.value, siteState.pubs)
+        // siteState.pubs.forEach((pub) => {
+            // console.log("pubs", pub.brewery_type.micro)
+        //     if (siteState.typeOfPub === pub.brewery_type.micro) {
+        //         console.log("perfect match")
+        //         createPubInfo(pub)
+        //     }
+        // })
+
+        let filteredPubs = siteState.pubs.filter(
+            (pub) => pub.brewery_type === filterByType.value
+          );
+        // attachPubsToList(filteredPubs)
+        createPubInfo()
+        // console.log("array working", filteringArray)
+        // if (siteState.typeOfPub === filteringArray){
+        //     console.log("its matching!!!")
+        //     // attachPubsToList()
+        // }
+        console.log("should appear pubs", filteredPubs)
         // console.log(siteState.typeOfPub, filterByType.value)
         // console.log("here must show URL", breweriesURL + "?by_state=" + siteState.state + "&by_type=" + siteState.typeOfPub)
         // making concise the URL easy to filter
-        console.log("state coming from here", siteState.state)
-        const filterURL = breweriesURL + "?by_state=" + siteState.state
-        console.log("state where is that", filterURL)
-        if (siteState.state !== ""){
-        }
-        if(siteState.typeOfPub !== ""){
-            console.log(filterURL + "&by_type=" + siteState.typeOfPub)
-        }
+        
+        // console.log("state coming from here", siteState.state)
+        // const filterURL = breweriesURL + "?by_state=" + siteState.state
+        // console.log("state where is that", filterURL)
+        // if (siteState.state !== ""){
+        // }
+        // if(siteState.typeOfPub !== ""){
+        //     console.log(filterURL + "&by_type=" + siteState.typeOfPub)
+        // }
         // console.log("type of pub", siteState.typeOfPub)
 
     })
@@ -128,6 +150,6 @@ function filterByType (){
 //  6. render the state accordingly to user search
 function init(){
     searchSubmit ()
-    filterByType()
+    filterType()
 }
 init()
