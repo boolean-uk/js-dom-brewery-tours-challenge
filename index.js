@@ -48,7 +48,12 @@ function applyFilters() {
   // Ext. 1 - filter breweries by name
   if(state.filterByName !== "") {
     console.log('Filtering by name')
-    filteredBreweries = filteredBreweries.filter(brewery => brewery.name.includes(state.filterByName))
+    filteredBreweries = filteredBreweries.filter( brewery => {
+      const globalNameToLC = brewery.name.toLowerCase()
+      const localNameToLC = state.filterByName.toLowerCase()
+      const returnValue = globalNameToLC.includes(localNameToLC)
+      return returnValue
+    })
   }
 
   // Ext. 2 - filter breweries by city
