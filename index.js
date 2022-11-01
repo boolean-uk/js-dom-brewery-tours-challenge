@@ -3,6 +3,7 @@ const breweriesList = document.querySelector('.breweries-list')
 const stateSearch = document.querySelector('#select-state-form')
 const filterByType = document.querySelector('#filter-by-type')
 const filterByName = document.querySelector('#search-breweries')
+const filterByCity = document.querySelector('#filter-by-city-form')
 
 
 // Local state
@@ -11,6 +12,7 @@ const state = {
   breweries: [],
   filterByType: "",
   filterByName: "",
+  filterByCities: []
 }
 
 // RENDERING
@@ -20,6 +22,7 @@ function render() {
   renderBreweries()
 
   // call Ext. 2 render function
+  renderByCities()
 }
 
 // Breweries function
@@ -57,7 +60,10 @@ function applyFilters() {
   }
 
   // Ext. 2 - filter breweries by city
-  
+  if(state.filterByCities.length !== 0) {
+    filteredBreweries = filteredBreweries.filter(brewery => state.filterByCities.includes(brewery.city))
+  }
+
   return filteredBreweries
   // function end
 }
@@ -175,10 +181,49 @@ filterByName.addEventListener('input', event => {
 // Ext. 2
 
 // cityFilter function
+function renderByCities() {
   // create cities array
-  // search through the array for the requested cities
-  // make sure it only finds micro, regional or brewpub breweries
-// function end
+  const breweries = applyFilters()
+  const cities = []
+  // for each brewery check if the city array doesn't include 
+  // brewery.city, if it doesn't add it to the cities array
+  breweries.forEach(brewery => {
+    if (!cities.includes(brewery.city)) {
+      cities.push(brewery.city)
+    }
+  })
+
+  // rendering
+  filterByCity.innerHTML = ''
+
+  cities.forEach(city => {
+    const checkbox = document.createElement('input')
+    checkbox.setAttribute('type', 'checkbox')
+    checkbox.setAttribute('value', 'city')
+    checkbox.setAttribute('name', 'city')
+  
+    checkbox.addEventListener('change', event => {
+      // when a checkbox is changed check if a city needs adding or removing
+      if (event.target.checked) {
+        state.filterByCities.push(city)
+      } else {
+        const found = state.filterByCities.find(filterCity => filterCity === city)
+        state.filterByCities.splice(state.filterByCities.indexOf(found), 1)
+      }
+
+      renderBreweries()
+    })
+
+    const label = document.createElement('label')
+    label.setAttribute('for', city)
+    label.innerText = city
+
+    filterByCity.append(checkbox, label)
+  })  
+  // function end
+}
+
+  
 
 // Ext. 3
 
