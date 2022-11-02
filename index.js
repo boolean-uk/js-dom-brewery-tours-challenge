@@ -1,30 +1,11 @@
 const data = {
-    //threeFilter, micro, region, brewpub
+    // threeFilter, micro, region, brewpub
     filter: 'threeFilter', 
     perPage: 3,
     state: null,
-    breweries: [
-        // {
-            // address_2: null
-            // address_3: null
-            // brewery_type: "brewpub"
-            // city: "Williamsville"
-            // country:"United States"
-            // county_province:null
-            // created_at:"2022-10-30T06:11:39.514Z"
-            // id:"12-gates-brewing-company-williamsville"
-            // latitude:null
-            // longitude:null
-            // name:"12 Gates Brewing Company"
-            // phone:"7169066600"
-            // postal_code:"14221-7804"
-            // state:"New York"
-            // street:"80 Earhart Dr Ste 20"
-            // updated_at:"2022-10-30T06:11:39.514Z"
-            // website_url:"http://www.12gatesbrewing.com"
-        // }
-    ],
-    threeFilterBreweries: [],
+
+    breweries: [], // Filled by the first return
+    threeFilterBreweries: [], // Filled in Filter
     microBreweries: [],
     regionalBreweries: [],
     brewpubBreweries: []
@@ -65,6 +46,7 @@ function filterListOfBreweries() {
 }
 
 function renderListOfBreweries(filter, renderPerPage) {
+    // renderPerPage will always be 10
     // Filter: micro - regional - brewpub - threeFilter (allThree)
 
     // Breweries Wrapper
@@ -133,7 +115,6 @@ function renderListOfBreweries(filter, renderPerPage) {
         secPhone.appendChild(pPhone);
         li.appendChild(secLink);
         secLink.appendChild(a);
-
     }
 }
 
@@ -144,11 +125,11 @@ function clearListOfBreweries() {
 }
 
 // Called when form Submit.
-// Gets 15 Breweries to later filter it
-function getBreweriesByState(state, perPage) {
+// Gets 50 Breweries to later filter it
+function getBreweriesByState(state) {
     // Replaces space with underline and lower case it
     const underlinedState = state.split(' ').join('_').toLowerCase();
-    const breweriesPerPage = 100; // Always get 100
+    const breweriesPerPage = 50; // Always get 50 - Max from DB
     const uri = `https://api.openbrewerydb.org/breweries?by_state=${underlinedState}&per_page=${breweriesPerPage}`;
 
     // Fetch Breweries based on the State given to Function
@@ -165,7 +146,33 @@ function getBreweriesByState(state, perPage) {
         filterListOfBreweries();
 
         // Render Breweries to Page, render only the value the user inputed
-        renderListOfBreweries(data.filter, perPage);
+        renderListOfBreweries(data.filter, 10); // 10 is per page render
+    });
+}
+
+// Called when Search Bar value is changed
+// Gets 50 Breweries to later filter it
+function getBreweriesByName(name) {
+    // Replaces space with underline and lower case it
+    const underlinedName = name.split(' ').join('_').toLowerCase();
+    const breweriesPerPage = 50; // Always get 50 - Max from DB
+    const uri = `https://api.openbrewerydb.org/breweries?by_name=${underlinedName}&per_page=${breweriesPerPage}`;
+
+    // Fetch Breweries based on the State given to Function
+    fetch(uri)
+    .then((promise) => {
+        // Converts promise response to Json
+        return promise.json();
+    })
+    .then((breweriesJson) => {
+        // Save to Local Data
+        data.breweries = breweriesJson;
+
+        // Filter Breweries before render
+        filterListOfBreweries();
+
+        // Render Breweries to Page, render only the value the user inputed
+        renderListOfBreweries(data.filter, 10); // 10 is per page render
     });
 }
 
@@ -174,7 +181,6 @@ function createEventListeners() {
     // Form
     const form = document.querySelector('#select-state-form');
     const input = document.querySelector('#select-state');
-    const perPage = document.querySelector('#select-per-page');
     form.addEventListener('submit', (event) => {
         event.preventDefault(); // Avoid Page Refresh
         
@@ -182,21 +188,23 @@ function createEventListeners() {
         const valueTrimmed = input.value.trim();
         input.value = valueTrimmed;
         
-        // Save perPage and state to Data
-        data.perPage = perPage.value;
+        // Save state to Data
         data.state = valueTrimmed;
 
         // Return if Input empty
         if (valueTrimmed === '') return input.placeholder = "Type a state first.";
     
         // Call get Breweries with the form Input
-        getBreweriesByState(valueTrimmed, perPage.value);
+        getBreweriesByState(valueTrimmed);
     
         // Clears text from Input
         input.value = ''; 
+
+        // Clears Search bar
+        searchBar.value = '';
     })
 
-    // Other EventListeners here...
+    // Aside Filter
     const select = document.querySelector('#filter-by-type');
     select.addEventListener('change', (event) => {
         // If nothing selected, show all three filters
@@ -209,7 +217,26 @@ function createEventListeners() {
         data.filter = select.value;
 
         // Update List
-        getBreweriesByState(data.state, data.perPage);
+        getBreweriesByState(data.state);
+    })
+
+    // Search bar
+    const searchBar = document.querySelector('#search-breweries');
+    searchBar.addEventListener('input', (event) => {
+        // Called on every value change
+        event.preventDefault(); // Avoid Page Refresh
+        
+        // Remove Whitespaces - State
+        const valueTrimmed = searchBar.value.trim();
+        // searchBar.value = valueTrimmed;
+
+        // Return if Input empty
+        if (valueTrimmed === '') return searchBar.placeholder = "Type a name first.";
+    
+        // Call get Breweries with the form Input
+        getBreweriesByName(valueTrimmed);
+
+        // Search bar value is set to empty on var input submit
     })
 }
 
