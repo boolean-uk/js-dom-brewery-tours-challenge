@@ -28,10 +28,8 @@ function loadBreweryData () {
         return response.json()
 
     })
-    .then((breweries) => {
-        state.breweries =  filterBreweries(breweries)
-        // could be state.breweries = [] => empty display at first ?
-        renderBreweries()
+    .then(() => {
+        state.breweries = []
       
     })
 
@@ -98,10 +96,8 @@ function renderBreweries() {
 
 }
 
-loadBreweryData()
-
-
-stateSearch.addEventListener("click", (event) =>{
+// This event listener takes users state input then using the new url fetches the data from the API
+stateSearch.addEventListener("submit", (event) =>{
 
      event.preventDefault()
 
@@ -116,14 +112,15 @@ stateSearch.addEventListener("click", (event) =>{
     .then((breweries) => {
         state.breweries = filterBreweries(breweries)
         renderBreweries()
-      
+    
     })
-
-    searchInput.value = ""
    
+    searchInput.value = ""
+    
 
 })
 
+// This event listener displays the type of brewery the user has selected from the drop down menu
 typeSelector.addEventListener("change", (event) => {
 
     event.preventDefault()
@@ -142,8 +139,12 @@ typeSelector.addEventListener("change", (event) => {
 
 })
 
+loadBreweryData()
 
-// TO-DO
+// need to find a way to make sure these 2 are implement at the same time, so when user is on a state they can THEN filter for type + vice versa
+// https://api.openbrewerydb.org/breweries?by_type=${state.selectedType}&by_state=${state.userStateSearch}&per_page=5
+// ^ this link takes into account the state and the type
+
 // code, cry, code, have a mental breakdown, code then cry some more!!!
 
 
