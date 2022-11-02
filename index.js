@@ -3,6 +3,7 @@ const state = {
   userSearch: "",
   breweryList: [],
   filterByBreweryType: "",
+  filterTitle: "",
 };
 
 // create a function to make a GET request with fetch to recieve data from server
@@ -104,11 +105,12 @@ searchState.addEventListener("submit", (event) => {
 // function for filter
 function filterBrew() {
   //  brewery filter: whether brewery_type === state.filterByBreweryType
-  if ( state.filterByBreweryType === ""){
-    createBreweryList(state.breweryList)
+  if (state.filterByBreweryType === "") {
+    createBreweryList(state.breweryList);
   } else {
     let filteredList = state.breweryList.filter((item) => {
-      if (item.brewery_type === state.filterByBreweryType) return true; // keep it
+      if (item.brewery_type === state.filterByBreweryType)
+        return true; // keep it
       else return false; //reject item
     });
     createBreweryList(filteredList);
@@ -118,8 +120,27 @@ function filterBrew() {
 // add an eventListener for filter for brewery type
 const changeBrewType = document.querySelector("#filter-by-type");
 changeBrewType.addEventListener("change", (event) => {
-  event.preventDefault();
   state.filterByBreweryType = event.target.value;
-  console.log(state.filterByBreweryType);
   filterBrew();
 });
+
+// EXTENSION 1
+// add an event listener for inputting value for search breweries in the search bar
+const searchBreweries = document.querySelector(".search-bar");
+searchBreweries.addEventListener("keyup", (event) => {
+  state.filterTitle = event.target.value;
+  filterByTitle();
+});
+ // create a funtion that search the brewery list after searching a particular state and then narrow down it to particular brewery
+ // call back the the function in evebtlistener to render the data
+function filterByTitle() {
+  let filteredBreweries = state.breweryList;
+  if (filteredBreweries.length < 1) {
+    console.log(filteredBreweries);
+    return;
+  }
+  filteredBreweries = state.breweryList.filter((brewery) => {
+    return brewery.name.toLowerCase().includes(state.filterTitle);
+  });
+  createBreweryList(filteredBreweries);// re-render brewerylist by calling rendering creatBreweryList function to update it.
+}
