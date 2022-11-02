@@ -51,6 +51,9 @@ const filterCity = document.querySelector("#filter-by-city-form");
 const searchBreweries = document.querySelector("#search-breweries");
 const clearCityBtn = document.querySelector(".clear-all-btn");
 const btnContainer = document.querySelector(".btn-container");
+const visitBtn = document.querySelector(".visit-btn");
+const heading = document.querySelector(".list-heading");
+const searchBar = document.querySelector(".search-bar");
 
 // State
 const state = {
@@ -71,11 +74,10 @@ const state = {
 stateForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  resetFilters();
   const searchTerm = search.value.toLowerCase().trim();
   state.userSearch = searchTerm;
-  search.value = "";
-  resetPageNumber();
+  resetFilters();
+  resetSettings();
 
   getBreweries();
 });
@@ -101,6 +103,13 @@ clearCityBtn.addEventListener("click", () => {
   state.filterCities = [];
   // rerender full list so the user still has something
   renderBreweries(state.breweries);
+});
+
+visitBtn.addEventListener("click", () => {
+  renderBreweries(state.visitList);
+  btnContainer.innerHTML = "";
+  heading.innerText = "Visit list";
+  searchBar.style.display = "none";
 });
 
 //////////////////////////////////////////////////////
@@ -219,6 +228,13 @@ function resetPageNumber() {
     state.page = 1;
     pageNumber.innerText = state.page;
   }
+}
+
+function resetSettings() {
+  search.value = "";
+  heading.innerText = "List of Breweries";
+  searchBar.style.display = "block";
+  resetPageNumber();
 }
 
 //////////////////////////////////////////////////////
@@ -375,9 +391,6 @@ function generateCities() {
   filterByCity();
 }
 
-// init
-resetFilters();
-
 //////////////////////////////////////////////////////
 // Visit List functions //
 //////////////////////////////////////////////////////
@@ -433,3 +446,9 @@ function getVistList() {
       });
     });
 }
+
+//////////////////////////////////////////////////////
+// Init functions //
+//////////////////////////////////////////////////////
+resetFilters();
+getVistList();

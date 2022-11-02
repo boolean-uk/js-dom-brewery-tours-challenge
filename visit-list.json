@@ -1,3 +1,26 @@
 {
-  "breweries": []
+  "breweries": [
+    {
+      "name": "Under the Rose Brewing Company",
+      "brewery_type": "micro",
+      "street": "559 E 4th St",
+      "city": "Reno",
+      "postal_code": "89512-3317",
+      "phone": "7756576619",
+      "website_url": null,
+      "state": "Nevada",
+      "id": 1
+    },
+    {
+      "name": "Beer Tree Brew Co",
+      "brewery_type": "micro",
+      "street": "197 Rte 369",
+      "city": "Port Crane",
+      "postal_code": "13833",
+      "phone": null,
+      "website_url": "http://www.beertreebrew.com",
+      "state": "New York",
+      "id": 2
+    }
+  ]
 }
