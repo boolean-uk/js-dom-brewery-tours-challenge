@@ -38,22 +38,18 @@ function getBreweryData() {
           state.filterByType = state.breweries.filter((brewery) => {
             return byType.value === brewery.brewery_type
           })
-          renderedBreweyInfo(state.byType)
+          console.log('test1', state.filterByType)
+          renderedBreweyInfo(state.filterByType)
         } else {
-          renderedBreweyInfo(state.brewery)
+          console.log('test2', state.breweries)
+          renderedBreweyInfo(state.breweries)
         }
         console.log('filtered list:', state.breweries) // filter function is working but the render is not.
       })
-
-      renderedBreweyInfo(state.breweries)
     })
 
-  // add the filter for the type of breweries here
   state.breweries = []
 }
-
-// filterBytype.addEventListener('change', function)
-// array filter function
 
 byType.addEventListener('change', (event) => {
   state.filterByType = state.breweries.filter((brewery) => {
@@ -63,10 +59,14 @@ byType.addEventListener('change', (event) => {
   renderedBreweyInfo(state.filterByType)
 })
 
-function renderedBreweyInfo(brewey) {
+//
+
+function renderedBreweyInfo(breweries) {
   renderBreweryList.innerText = ''
 
-  state.breweries.forEach((brewery) => {
+  console.log('this is the breweries:', breweries)
+  // had to change my forEach()
+  breweries.forEach((brewery) => {
     const li = document.createElement('li')
     renderBreweryList.appendChild(li)
 
@@ -119,25 +119,8 @@ function renderedBreweyInfo(brewey) {
     section3.appendChild(a)
 
     renderBreweryList.appendChild(li)
-    console.log('is rendering')
   })
+  console.log('is rendering:2')
 }
-getBreweryData()
+
 renderedBreweyInfo()
-// function filter brewey type.state.types[i]
-// if  type.state.types[i] != t0  micro, regional or brewpub then return li inner.html = ''
-//
-// Micro
-// Regional
-// Brewpub
-// if brewery not among those then do not show!
-
-// filter data that a user can see and ensure it isthe following Name
-// Type of brewery
-// Address
-// Phone Number
-// From the list of breweries, a user can visit the website of a brewery
-// From the 'filter by type of brewery' section, a user can filter by type of brewery.
-
-// do not cry
-// get it finished and drink a beer
