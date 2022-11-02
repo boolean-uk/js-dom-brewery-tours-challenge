@@ -49,6 +49,7 @@ cityFilter.innerHTML =
 aside.appendChild(cityFilter)
 
 const form = document.getElementById('filter-by-city-form')
+const clearAll = document.querySelector('.clear-all-btn')
 
 // query select-state & submit & breweries-list
 const stateInput = document.getElementsByTagName("input")[0]
@@ -147,7 +148,7 @@ function renderBrews (brew){
         if (state.cities.includes(brew.city)===false){
             state.cities.push(brew.city)
             state.citiesChecked.push(brew.city)
-            state.filterByCity.push(brew)
+            // state.filterByCity.push(brew)
         }
     }
 }
@@ -161,18 +162,30 @@ function checkFilters (){
         }
     })
 // implement other filters
-    if (state.cities.length > state.citiesChecked.length){
-        filteredList = state.filterByCity
+    if (state.filterByBrewType.length > 0 || select.value === 'regional'){
+        console.log(state.filterByBrewType)
+        filteredList = filteredList.filter((brew)=>{
+            if (state.filterByBrewType.includes(brew)){
+                return brew
+            }
+        })
     }
-    if (state.filterByBrewType.length > 0){
-        filteredList = state.filterByBrewType
+    if (state.cities.length !== state.citiesChecked.length){
+        filteredList = filteredList.filter((brew)=>{
+            if (state.citiesChecked.includes(brew.city)){
+                return brew
+            }
+        })        
     }
     if (state.filterByName.length > 0){
-        filteredList = state.filterByName
+        filteredList = filteredList.filter((brew)=>{
+            if (state.filterByName.includes(brew)){
+                return brew
+            }
+        })
     }
 // create filtered state brewery list
     filteredList.forEach((brew)=> {
-
         renderBrews(brew)
     })
 // render city lists
@@ -201,21 +214,16 @@ function checkFilters (){
 
                 if (checkbox.checked === true){
                     state.citiesChecked.push(city)
-                    console.log('checked', checkbox.name)
-                    console.log('city list with added city', state.citiesChecked)
                 }
                 else {
                     const index = state.citiesChecked.indexOf(city)
                     state.citiesChecked.splice(index, 1)
-                    console.log('unchecked', checkbox.name)
-                    console.log('city list with removed city', state.citiesChecked)
                 }
                 state.filterByCity = state.breweries.filter((brew) => {
                     if (state.citiesChecked.includes(brew.city)){
                         return brew
                     }
                 })
-                console.log(state.filterByCity)
                 checkFilters()
             })
         })
@@ -243,9 +251,14 @@ searchByNameInput.addEventListener('keyup', ()=>{
     let searchChar = searchByNameInput.value
 
             if (brew.name.includes(searchChar)){
-                console.log(brew)
                 return brew
             }
         })
             checkFilters()
+})
+// clear all cities 
+clearAll.addEventListener('click', ()=>{
+
+    state.citiesChecked = []
+    checkFilters()
 })
