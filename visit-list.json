@@ -1,3 +1,15 @@
 {
-  "breweries": []
+  "breweries": [
+    {
+      "name": "Biker Brew House",
+      "brewery_type": "micro",
+      "street": "5700 Interstate Blvd",
+      "city": "Austintown",
+      "postal_code": "44515-1170",
+      "phone": null,
+      "website_url": "http://www.bikerbrewhouse.com",
+      "state": "Ohio",
+      "id": 1
+    }
+  ]
 }

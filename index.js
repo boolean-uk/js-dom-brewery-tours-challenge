@@ -173,26 +173,11 @@ function createBreweryCard(brewery) {
   }
 
   const successMessage = document.createElement("p");
-  successMessage.innerText = "Added to visit list!";
   successMessage.style.color = "#6bd040";
-  const removeMessage = document.createElement("p");
 
-  // Can also add error message - if item is already in state visit list, say something like 'item already in list'
-
-  // refactor this
   visitLink.addEventListener("click", () => {
-    const text = visitLink.innerText.toLowerCase();
-    if (text === "add to visit list") {
-      postToVisitList(brewery);
-      sectionLink.prepend(successMessage);
-      setTimeout(() => {
-        successMessage.remove();
-      }, 1500);
-    } else if (text === "remove from visit list") {
-      deleteFromVisitList(brewery);
-      renderBreweries(state.visitList);
-    }
-    btnContainer.innerHTML = "";
+    // Everything moved to an epic function
+    editVisitList(brewery, successMessage, sectionLink, visitLink);
   });
 
   city.append(strong);
@@ -264,6 +249,30 @@ function emptyVisitListMessage() {
       "You have no breweries in your visit list. Search for a state at the top to find your dream drinking hole!";
     mainList.appendChild(message);
   }
+}
+
+function editVisitList(brewery, successMessage, section, button) {
+  const text = button.innerText.toLowerCase();
+  if (text === "add to visit list") {
+    const match = state.visitList.find(
+      (breweryVisit) => breweryVisit.name === brewery.name
+    );
+    if (match) {
+      successMessage.innerText = "Already in visit list!";
+    } else {
+      postToVisitList(brewery);
+      successMessage.innerText = "Added to visit list!";
+    }
+  } else if (text === "remove from visit list") {
+    deleteFromVisitList(brewery);
+    renderBreweries(state.visitList);
+  }
+
+  btnContainer.innerHTML = "";
+  section.prepend(successMessage);
+  setTimeout(() => {
+    successMessage.remove();
+  }, 1500);
 }
 
 //////////////////////////////////////////////////////
