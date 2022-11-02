@@ -32,11 +32,12 @@ function searchSubmit (){
             console.log("everysingle pub", siteState.pubs)
             // invoking this function will put all data into required DOM
             attachPubsToList()
+            // filterType()
         })
     })
 }
-function attachPubsToList(){
-
+function attachPubsToList(pubs){
+    
     listOfBreweries.innerHTML = " ";
     siteState.pubs.forEach((pub) => {
         
@@ -49,6 +50,7 @@ function attachPubsToList(){
             // it will show pubs not matchin above condition
             console.log("not accessible " + pub.name + " due to filtration!")
         }
+        // filterType(filteredPUB)
     })
 }  
 
@@ -92,56 +94,33 @@ function createPubInfo(pub) {
 }
 function filterType (){
     // query selecting id=filter by type
-    
+    const listPubs = document.querySelector(".breweries-list");
     const filterByType = document.querySelector("#filter-by-type")
     
     // on that selected id applying event listener
     filterByType.addEventListener("change", (event) => {
         // preventing default behaviour
         event.preventDefault();
+        console.log("where is filter", filterByType.value)
         
-        // console.log("events", event)
-        // copying the value (which user chose) of the DOM to the state
+        
         siteState.typeOfPub = filterByType.value
-        // console.log("state", siteState.typeOfPub, "second line", siteState.pubs[1].brewery_type)
-        // console.log("state", filterByType.value, siteState.pubs)
-        // siteState.pubs.forEach((pub) => {
-            // console.log("pubs", pub.brewery_type.micro)
-        //     if (siteState.typeOfPub === pub.brewery_type.micro) {
-        //         console.log("perfect match")
-        //         createPubInfo(pub)
-        //     }
-        // })
-
-        let filteredPubs = siteState.pubs.filter(
-            (pub) => pub.brewery_type === filterByType.value
-          );
-        // attachPubsToList(filteredPubs)
-        createPubInfo()
-        // console.log("array working", filteringArray)
-        // if (siteState.typeOfPub === filteringArray){
-        //     console.log("its matching!!!")
-        //     // attachPubsToList()
-        // }
-        console.log("should appear pubs", filteredPubs)
-        // console.log(siteState.typeOfPub, filterByType.value)
-        // console.log("here must show URL", breweriesURL + "?by_state=" + siteState.state + "&by_type=" + siteState.typeOfPub)
-        // making concise the URL easy to filter
         
-        // console.log("state coming from here", siteState.state)
-        // const filterURL = breweriesURL + "?by_state=" + siteState.state
-        // console.log("state where is that", filterURL)
-        // if (siteState.state !== ""){
-        // }
-        // if(siteState.typeOfPub !== ""){
-        //     console.log(filterURL + "&by_type=" + siteState.typeOfPub)
-        // }
-        // console.log("type of pub", siteState.typeOfPub)
+       
+        console.log("state", siteState.typeOfPub, "second line", siteState.pubs)
+                
+        let filteredPUB = siteState.pubs.filter((pub) => pub.brewery_type === filterByType.value);
 
+        // console.log("array working", filteredPUB)
+
+        // listPubs.innerHTML = "";
+        attachPubsToList(pubs)
+
+        
     })
 }
 
-    // const filteredURL = breweriesURL + ""
+// const filteredURL = breweriesURL + ""
 //  1. make data available globally. by fetching brewery data
 //  2. save required data in state, in state we can filter by type.
 //  3. create DOM for the list to render by state inside required data of that brewery
@@ -149,7 +128,7 @@ function filterType (){
 //  5. add event listener by type
 //  6. render the state accordingly to user search
 function init(){
-    searchSubmit ()
     filterType()
+    searchSubmit ()
 }
 init()
