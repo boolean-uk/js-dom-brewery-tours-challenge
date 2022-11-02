@@ -12,7 +12,7 @@ const data = {
 }
 
 function filterListOfBreweries() {
-    // Clear Filtered Breweries
+    // Clear Filtered Lists
     data.threeFilterBreweries = [];
     data.microBreweries = [];
     data.regionalBreweries = [];
@@ -36,13 +36,9 @@ function filterListOfBreweries() {
             data.brewpubBreweries.push(brewery);
             data.threeFilterBreweries.push(brewery); // Add to default
         } // Do nothing with breweries not within these filters
-
-
-        // // Filters Micro and store in data.threeFilterBreweries
-        // if (type == 'micro' || type == 'regional' || type == 'brewpub') {
-        //     data.threeFilterBreweries.push(brewery);
-        // } // Else do nothing.
     }
+
+    renderListOfCities();
 }
 
 function renderListOfBreweries(filter, renderPerPage) {
@@ -118,10 +114,64 @@ function renderListOfBreweries(filter, renderPerPage) {
     }
 }
 
+function renderListOfCities() {
+    const form = document.querySelector('#filter-by-city-form');
+
+    // List of cities in the brewery data opened
+    let citiesList = [];
+    
+    // Get the list we are working with
+    const nameOfFilteredList = data.filter + 'Breweries';
+    
+    // For every Brewery in data, take only the cities
+    // and populate it in the list.
+    for (brewery of data[nameOfFilteredList]) {
+        if (citiesList.includes(brewery.city)) {
+            // If list has city, continue
+            // Breaks this iteration in the loop
+            continue
+        }
+        else {
+            // Push the brewery city to the list
+            citiesList.push(brewery.city);
+        }
+    }
+
+    // No city, no List.
+    if (citiesList.length === 0) {
+        clearListOfCities();
+        return
+    }
+
+    // Append cities of list
+    for (city of citiesList) {
+        const input = document.createElement('input');
+        const label = document.createElement('label');
+
+        input.setAttribute('type', 'checkbox');
+        input.setAttribute('name', city);
+        input.setAttribute('value', city);
+
+        label.setAttribute('for', city);
+        label.innerText = city;
+
+        // Appends it
+        form.appendChild(input);
+        form.appendChild(label);
+        
+    }
+}
+
 function clearListOfBreweries() {
     // Breweries Wrapper
     const ul = document.querySelector('#breweries-list');
     ul.innerHTML = '';
+}
+
+function clearListOfCities() {
+    // Cities Wrapper
+    const form = document.querySelector('#filter-by-city-form');
+    form.innerHTML = '';
 }
 
 // Called when form Submit.
