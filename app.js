@@ -6,6 +6,8 @@ const state = {
     breweriesFilteredByCity: [],
     userInputState: '',
     userInputSearch: '',
+    currentPageItems: [],
+    currentPage: 1,
 }
 
 init()
@@ -34,8 +36,8 @@ function sendAPICall() {
         .then((breweries) => {
             state.breweries = breweries
             filterToMicroRegionalBrewpub()
-            renderPage(state.breweries)
             citiesGenerator(state.breweries)
+            pagination()
         })
 }
 
@@ -141,10 +143,9 @@ function newAPICallWithFilters(filter) {
         })
         .then((breweries) => {
             state.breweries = breweries
-            renderPage(state.breweries)
             citiesGenerator(state.breweries)
+            pagination()
         })
-    console.log(state)
 }
 
 function breweriesSearch() {
@@ -166,6 +167,8 @@ function breweriesSearch() {
                 return false
             }
         })
+
+        console.log(state.breweriesInputSearch)
 
         renderPage(state.breweriesInputSearch)
     })
@@ -240,6 +243,38 @@ function filterCities() {
     } else {
         renderPage(state.breweriesFilteredByCity)
     }
+}
+
+function pagination() {
+    state.currentPageItems = state.breweries.filter((brewery, index) => {
+        if (index >= ((10 * state.currentPage) - 9) && index <= (10* state.currentPage)) {
+            return true
+        }
+    })
+    renderPage(state.currentPageItems)
+    renderPaginationButtons()
+}
+
+function renderPaginationButtons() {
+    const paginationContainer = document.querySelector('.pagination')
+    paginationContainer.innerHTML = ''
+       
+    for (i = 1; i <= ((state.breweries.length / 10)); i++) {
+        const paginationLink = document.createElement('a')
+        paginationLink.innerText = i
+        paginationContainer.appendChild(paginationLink)
+        if (i === state.currentPage) {
+            paginationLink.setAttribute('class', 'active')
+        }
+        paginationEventListener(paginationLink, i)
+    }
+}
+
+function paginationEventListener(paginationLink, i) {
+    paginationLink.addEventListener('click', () => {
+        state.currentPage = i
+        pagination()
+    })
 }
 
 // ACCEPTANCE CRITERIA:

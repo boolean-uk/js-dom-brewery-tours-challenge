@@ -229,3 +229,23 @@ article {
   text-decoration: none;
   font-weight: bold;
 }
+
+.pagination {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.pagination a {
+  cursor: pointer;
+  margin-right: 10px;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid #999;
+  color: #000
+}
+
+.pagination a.active {
+  background-color: #1565c0;
+  color: #fff;
+  cursor: default;
+}
