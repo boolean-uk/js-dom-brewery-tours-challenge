@@ -33,15 +33,14 @@ function getBreweryData() {
           brewery.brewery_type === 'regional'
         ) {
           state.breweries.push(brewery)
-          // eslint-disable-next-line no-empty
         }
         if (byType.value !== '') {
           state.filterByType = state.breweries.filter((brewery) => {
             return byType.value === brewery.brewery_type
           })
-          renderBreweryList(state.byType)
+          renderedBreweyInfo(state.byType)
         } else {
-          // renderBreweryList(state.breweries)
+          renderedBreweyInfo(state.brewery)
         }
         console.log('filtered list:', state.breweries) // filter function is working but the render is not.
       })
@@ -63,20 +62,6 @@ byType.addEventListener('change', (event) => {
   console.log('by type:', state.filterByType)
   renderedBreweyInfo(state.filterByType)
 })
-
-// //const selectElement = document.querySelector('.ice-cream');
-
-// selectElement.addEventListener('change', (event) => {
-//   const result = document.querySelector('.result');
-//   result.textContent = `You like ${event.target.value}`;
-// });
-//
-//
-//
-//
-//
-//
-//
 
 function renderedBreweyInfo(brewey) {
   renderBreweryList.innerText = ''
@@ -128,24 +113,17 @@ function renderedBreweyInfo(brewey) {
     li.appendChild(section3)
 
     const a = document.createElement('a')
-    a.setAttribute('href', '')
+    a.setAttribute('href', brewery.website_url)
     a.setAttribute('target', '_blank')
     a.innerText = 'Visit Website'
     section3.appendChild(a)
 
     renderBreweryList.appendChild(li)
-    console.log('test')
+    console.log('is rendering')
   })
 }
-// renderedBreweyInfo()
-// getBreweryData()
-// ensure li is linked to the Json files and 'getting' the correct data.
-// link the search button to the li above.
-// get to the point where a search will render a list in the above format.
-//
-
-// begin filter research
-// list will be filtered by the state
+getBreweryData()
+renderedBreweyInfo()
 // function filter brewey type.state.types[i]
 // if  type.state.types[i] != t0  micro, regional or brewpub then return li inner.html = ''
 //
