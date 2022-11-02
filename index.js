@@ -54,6 +54,7 @@ const btnContainer = document.querySelector(".btn-container");
 const visitBtn = document.querySelector(".visit-btn");
 const heading = document.querySelector(".list-heading");
 const searchBar = document.querySelector(".search-bar");
+const filters = document.querySelector(".filters-section");
 
 // State
 const state = {
@@ -120,6 +121,10 @@ visitBtn.addEventListener("click", () => {
 function renderBreweries(breweries) {
   mainList.innerHTML = "";
 
+  if (breweries === state.visitList) {
+    filters.style.visibility = "hidden";
+  }
+
   breweries.forEach((brewery) => {
     createBreweryCard(brewery);
   });
@@ -146,6 +151,8 @@ function createBreweryCard(brewery) {
   const city = document.createElement("p");
   const strong = document.createElement("strong");
   strong.textContent = `${brewery.city}, ${brewery.postal_code}`;
+  const inState = document.createElement("p");
+  inState.innerText = brewery.state;
 
   const sectionPhone = document.createElement("section");
   const phone = document.createElement("h3");
@@ -181,7 +188,7 @@ function createBreweryCard(brewery) {
   });
 
   city.append(strong);
-  sectionAddress.append(address, street, city);
+  sectionAddress.append(address, street, city, inState);
   sectionPhone.append(phone, number);
   sectionLink.append(visitLink, siteLink);
 
@@ -239,6 +246,8 @@ function resetSettings() {
   search.value = "";
   heading.innerText = "List of Breweries";
   searchBar.style.display = "block";
+  filters.style.visibility = "visible";
+
   resetPageNumber();
 }
 
@@ -266,6 +275,7 @@ function editVisitList(brewery, successMessage, section, button) {
   } else if (text === "remove from visit list") {
     deleteFromVisitList(brewery);
     renderBreweries(state.visitList);
+    emptyVisitListMessage();
   }
 
   btnContainer.innerHTML = "";
@@ -478,7 +488,6 @@ function getVistList() {
         const found = state.visitList.find(
           (breweryVisit) => breweryVisit.name === brewery.name
         );
-        // maybe in below if condition I can also invoke a delete function that will also remove repeated elements from the server json data
         if (found) return;
         state.visitList.push(brewery);
       });
