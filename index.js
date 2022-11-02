@@ -31,15 +31,21 @@ function searchSubmit (){
             // copying data to the state above code
             console.log("everysingle pub", siteState.pubs)
             // invoking this function will put all data into required DOM
-            attachPubsToList()
+            // need to pass parameter the all data
+            attachPubsToList(data)
             // filterType()
         })
     })
 }
-function attachPubsToList(pubs){
-    
+function attachPubsToList(filteredPUB){
+    console.log("attachPubsToList", filteredPUB)
     listOfBreweries.innerHTML = " ";
-    siteState.pubs.forEach((pub) => {
+    // if(!filteredPUB){
+    //     console.log("filtered", filteredPUB, "siteState", siteState.pubs)
+    //     filteredPUB = siteState.pubs
+    // }
+    // we use forEach method on variable from filterType function
+    filteredPUB.forEach((pub) => {
         
         // once i got the all info from API on each pub i can filter them
         if (pub.brewery_type === "micro" || pub.brewery_type === "regional" || pub.brewery_type === "brewpub"){
@@ -114,7 +120,9 @@ function filterType (){
         // console.log("array working", filteredPUB)
 
         // listPubs.innerHTML = "";
-        attachPubsToList(pubs)
+        console.log("calling attachPubsList from the filterType", filteredPUB)
+        // invoking this function to use our drop down filtered pubs variable
+        attachPubsToList(filteredPUB)
 
         
     })
