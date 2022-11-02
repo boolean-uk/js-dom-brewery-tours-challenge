@@ -110,6 +110,7 @@ visitBtn.addEventListener("click", () => {
   btnContainer.innerHTML = "";
   heading.innerText = "Visit list";
   searchBar.style.display = "none";
+  emptyVisitListMessage();
 });
 
 //////////////////////////////////////////////////////
@@ -160,19 +161,38 @@ function createBreweryCard(brewery) {
   siteLink.setAttribute("href", brewery.website_url);
   siteLink.setAttribute("target", "_blank");
   const visitLink = document.createElement("button");
-  visitLink.innerText = "Add to visit list";
+
+  const visit = state.visitList.find(
+    (breweryVisit) => breweryVisit.name === brewery.name
+  );
+
+  if (visit) {
+    visitLink.innerText = "Remove from visit list";
+  } else {
+    visitLink.innerText = "Add to visit list";
+  }
+
   const successMessage = document.createElement("p");
   successMessage.innerText = "Added to visit list!";
   successMessage.style.color = "#6bd040";
+  const removeMessage = document.createElement("p");
 
   // Can also add error message - if item is already in state visit list, say something like 'item already in list'
 
+  // refactor this
   visitLink.addEventListener("click", () => {
-    postToVisitList(brewery);
-    sectionLink.prepend(successMessage);
-    setTimeout(() => {
-      successMessage.remove();
-    }, 1500);
+    const text = visitLink.innerText.toLowerCase();
+    if (text === "add to visit list") {
+      postToVisitList(brewery);
+      sectionLink.prepend(successMessage);
+      setTimeout(() => {
+        successMessage.remove();
+      }, 1500);
+    } else if (text === "remove from visit list") {
+      deleteFromVisitList(brewery);
+      renderBreweries(state.visitList);
+    }
+    btnContainer.innerHTML = "";
   });
 
   city.append(strong);
@@ -235,6 +255,15 @@ function resetSettings() {
   heading.innerText = "List of Breweries";
   searchBar.style.display = "block";
   resetPageNumber();
+}
+
+function emptyVisitListMessage() {
+  if (state.visitList < 1) {
+    const message = document.createElement("p");
+    message.innerText =
+      "You have no breweries in your visit list. Search for a state at the top to find your dream drinking hole!";
+    mainList.appendChild(message);
+  }
 }
 
 //////////////////////////////////////////////////////
@@ -445,6 +474,25 @@ function getVistList() {
         state.visitList.push(brewery);
       });
     });
+}
+
+function deleteFromVisitList(brewery) {
+  const options = {
+    method: "DELETE",
+  };
+
+  const url = `http://localhost:3000/breweries/${brewery.id}`;
+
+  fetch(url, options)
+    .then((res) => res.json())
+    .then();
+
+  const match = state.visitList.find(
+    (breweryVisit) => breweryVisit.id === brewery.id
+  );
+  if (match) {
+    state.visitList.splice(state.visitList.indexOf(match), 1);
+  }
 }
 
 //////////////////////////////////////////////////////
