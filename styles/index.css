@@ -84,6 +84,10 @@ main {
   text-decoration: underline;
   font-size: 0.725rem;
 }
+.clear-all-btn:hover{
+  color: red;
+  cursor: pointer
+}
 
 #filter-by-type-form {
   padding: 1rem;
