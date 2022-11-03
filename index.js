@@ -67,7 +67,7 @@ function renderBreweries() {
 
         const p2 = document.createElement("p")
         p2.innerText = brewery.city + "  " + brewery.postal_code 
-        // p2.setAttribute("style") => need to re-check how to use style css in js
+        p2.setAttribute("style","font-weight : bold")
         section1.appendChild(p2)
 
         const section2 = document.createElement("section")
@@ -124,8 +124,8 @@ stateSearch.addEventListener("submit", (event) =>{
 typeSelector.addEventListener("change", (event) => {
 
     event.preventDefault()
-
     state.selectedType = typeSelector.value
+
     fetch(`https://api.openbrewerydb.org/breweries?by_type=${state.selectedType}&per_page=5`)
     .then((response) => {
         return response.json()
@@ -141,10 +141,6 @@ typeSelector.addEventListener("change", (event) => {
 
 loadBreweryData()
 
-// need to find a way to make sure these 2 are implement at the same time, so when user is on a state they can THEN filter for type + vice versa
-// https://api.openbrewerydb.org/breweries?by_type=${state.selectedType}&by_state=${state.userStateSearch}&per_page=5
-// ^ this link takes into account the state and the type
 
-// code, cry, code, have a mental breakdown, code then cry some more!!!
 
 
