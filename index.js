@@ -28,16 +28,16 @@ const clearListOfBreweries = () => {
     listOfBreweries.innerHTML = ""
 }
 
-const renderListOfBreweries = () => {
+const renderListOfBreweries = (brewery) => {
     const newBrewery = document.createElement("li")
     listOfBreweries.append(newBrewery)
 
     const h2ForBreweryName = document.createElement("h2")
-        h2ForBreweryName.innerText = breweryName
+        h2ForBreweryName.innerText = brewery.name
 
     const divForType = document.createElement("div")
         divForType.setAttribute("class", "type")
-        divForType.innerText = breweryType
+        divForType.innerText = brewery.brewery_type
 
     const sectionForAddress = document.createElement("section")
         sectionForAddress.setAttribute("class", "address")
@@ -46,11 +46,11 @@ const renderListOfBreweries = () => {
         h3ForAddress.innerText = "Address:"
 
     const pForNumberAndRoad = document.createElement("p")
-        pForNumberAndRoad.innerText = breweryNumberAndRoad
+        pForNumberAndRoad.innerText = brewery.street
 
     const pForCityAndPostcode = document.createElement("p")
     const strongForP = document.createElement("strong")
-        strongForP.innerText = `${city}, ${postcode}`
+        strongForP.innerText = `${brewery.city}, ${brewery.postal_code}`
         pForCityAndPostcode.append(strongForP)
 
     const sectionForPhone = document.createElement("section")
@@ -60,13 +60,13 @@ const renderListOfBreweries = () => {
         h3ForPhone.innerText = "Phone:"
 
     const pForPhone = document.createElement("p")
-        pForPhone.innerText = phoneNumber
+        pForPhone.innerText = brewery.phone
 
     const sectionForLink = document.createElement("section")
         sectionForLink.setAttribute("class", "link")
     
     const anchorForWebsite = document.createElement("a")
-        anchorForWebsite.setAttribute("href", breweryLink)
+        anchorForWebsite.setAttribute("href", brewery.website_url)
         anchorForWebsite.setAttribute("target", "_blank")
         anchorForWebsite.innerText = "Visit Website"
 
@@ -78,14 +78,7 @@ const renderListOfBreweries = () => {
 
 const loopThroughData = () => {
     state.breweries.forEach(brewery => {
-        breweryName = brewery.name
-        breweryType = brewery.brewery_type
-        breweryNumberAndRoad = brewery.street
-        city = brewery.city
-        postcode = brewery.postal_code
-        phoneNumber = brewery.phone
-        breweryLink = brewery.website_url
-        renderListOfBreweries()
+        renderListOfBreweries(brewery)
         if (brewery.brewery_type === "micro") {
             state.micro.push(brewery)
         } else if (brewery.brewery_type === "regional") {
@@ -111,6 +104,7 @@ const fetchData = () => {
 formForSearching.addEventListener("submit", (event) => {
     event.preventDefault()
     const stateSubmitted = inputForState.value.toLowerCase()
+    // IF STATEMENT TO MAKE SURE THE USER HAS ENTERED A REAL AMERICAN STATE
     if (state.usa.includes(stateSubmitted)) {
         if (stateSubmitted.includes(" ")) {
             US_STATE = stateSubmitted.replace(" ", '_')
@@ -127,38 +121,17 @@ selectForFilter.addEventListener("change", () => {
     clearListOfBreweries()
     if (selectForFilter.value === "micro") {
         state.micro.forEach(brewery => {
-            breweryName = brewery.name
-            breweryType = brewery.brewery_type
-            breweryNumberAndRoad = brewery.street
-            city = brewery.city
-            postcode = brewery.postal_code
-            phoneNumber = brewery.phone
-            breweryLink = brewery.website_url
-            renderListOfBreweries()
+            renderListOfBreweries(brewery)
         })
     } else if (selectForFilter.value === "regional") {
         clearListOfBreweries()
         state.regional.forEach(brewery => {
-            breweryName = brewery.name
-            breweryType = brewery.brewery_type
-            breweryNumberAndRoad = brewery.street
-            city = brewery.city
-            postcode = brewery.postal_code
-            phoneNumber = brewery.phone
-            breweryLink = brewery.website_url
-            renderListOfBreweries()
+            renderListOfBreweries(brewery)
         })
     } else if (selectForFilter.value === "brewpub") {
         clearListOfBreweries()
         state.brewpub.forEach(brewery => {
-            breweryName = brewery.name
-            breweryType = brewery.brewery_type
-            breweryNumberAndRoad = brewery.street
-            city = brewery.city
-            postcode = brewery.postal_code
-            phoneNumber = brewery.phone
-            breweryLink = brewery.website_url
-            renderListOfBreweries()
+            renderListOfBreweries(brewery)
         })
     } else {loopThroughData()}
 })
