@@ -10,15 +10,21 @@ const state = {
 const brewriesUL = document.querySelector("#breweries-list")
 const searchForm = document.querySelector("#select-state-form")
 const searchState = document.querySelector("#select-state")
+const inputState = document.querySelector("#select-state")
 
 //variables I want to reach in multiple places: scopeability?
-// const searchForState = searchState.value
-const stateName = "ohio"
+// const stateName
 
 //EVENT LISTENER: SEARCH
 searchForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    // const stateName
+    brewriesUL.innerHTML = "";
+    inputState.setAttribute("value", "")
+    const stateName = inputState.value
+
+    console.log(stateName)
+
+    console.log("event", event)
 
     if (stateName.length > 0) {
         //call function that will call the brewries by that state
@@ -33,7 +39,9 @@ searchForm.addEventListener("submit", (event) => {
 //NETWORK REQUESTS
 function getBrewries(stateName) {
 
+    //STILL TO DO
     // if "" -> "_"
+
 
     //GET by name
     fetch(`https://api.openbrewerydb.org/breweries?by_state=${stateName}&per_page=50`
@@ -47,25 +55,36 @@ function getBrewries(stateName) {
             console.log("Received brewries list", responseData);
 
             //then filter so you only get micro, brewpub and regional
-            const filteredBrewries = state.brewries.filter((responseData) =>
-            responseData.brewery_type !== breweryInfo.brewery_type
-            );
+
             // update local STATE with fetched people
             state.brewries = responseData;
 
-            // render each brewry
+            // render each RELEVANT brewry
             renderBrewry(); //renderBrewries after the filter
+
         });
     // state.brewries = filteredBrewries
 }
 
+// function onlyThreeBrewTypes() {
+//     const responseData = state.brewries
+//     for (let i = 0; i < responseData.length; i++) {
+//         if (state.brewries[i].brewery_type !== "micro" || state.brewries[i].brewery_type !== "brewpub" || state.brewries[i].brewery_type !== "regional")
+//             state.brewries.splice(i, 1)
+//         break
+//     }
+//     // onlyThreeBrewTypes() 
+//     //--> gives error of "Uncaught (in promise) InternalError: too much recursion"
+// }
 
 //RENDERING
 //only rendering the first brewery atm
 function renderBrewry() {
     // const breweryInfo = state.brewries
 
-    //for Each? (inputvalue === "state")
+    //filter the brewry types
+    // onlyThreeBrewTypes()
+
     state.brewries.forEach((brewery) => {
         //create elements
         const li = document.createElement("li")
@@ -94,7 +113,7 @@ function renderBrewry() {
 
         const p2 = document.createElement("p")
         // p2.setAttribute = strong //style it..check (need to create another element )
-        p2.innerHTML =`<strong> ${brewery.city} + ${brewery.postal_code}</strong>` // brewery.city + brewery.postal_code //"postal_code" e.g Chardon, 44024 check syntax
+        p2.innerHTML = `<strong> ${brewery.city} + ${brewery.postal_code}</strong>` // brewery.city + brewery.postal_code //"postal_code" e.g Chardon, 44024 check syntax
         section.append(p2)
 
         const sectionPhone = document.createElement("section")
@@ -119,7 +138,6 @@ function renderBrewry() {
         a.setAttribute("target", "_blank")
         sectionLinkToBrewry.append(a)
     })
-
 }
 
 //START
