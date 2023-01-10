@@ -17,11 +17,7 @@ body {
 }
 
 .select-state-section h2 {
-  width: 200px;
-  margin-bottom: 1.5rem;
-
-  border: 6px dashed #000;
-
+  width: 230px;
   text-align: center;
 }
 
@@ -42,6 +38,7 @@ main {
   grid-template-areas:
     "sidebar title"
     "sidebar search-bar"
+    "sidebar pagination"
     "sidebar article";
   grid-template-columns: 1fr 3fr;
   grid-template-rows: auto auto 1fr;
@@ -67,6 +64,7 @@ main {
 }
 
 .filter-by-city-heading {
+  margin-top: 1rem;
   padding: 1rem 1rem 0;
 
   display: grid;
@@ -115,14 +113,15 @@ main {
 h1 {
   grid-area: title;
 
-  padding-left: 1rem;
   margin-bottom: 0.5rem;
+  text-align: center;
 }
 
 .search-bar {
   grid-area: search-bar;
 
   padding: 0 1rem;
+  margin-bottom: 1rem;
 }
 
 #search-breweries-form {
@@ -228,3 +227,44 @@ article {
   text-decoration: none;
   font-weight: bold;
 }
+
+.pagination button {
+  margin: 0 0.5rem 0 0.5rem;
+  padding: 0.6rem;
+  background-color: #fbc02d;
+  border: 1px #fbc02d;
+  color: brown;
+  border-radius: 0.6rem;
+}
+
+.pagination button:hover {
+  color: white;
+  background-color: brown;
+  border: 1px brown;
+}
+
+.progressIndicator {
+  padding: 1rem;
+  font-size: 1.5rem;
+  border: 1px solid brown;
+  border-radius: 1rem;
+  color: brown;
+  background-color: #ffe082;
+  text-align: center;
+}
+
+#currentShowing {
+  color: lightgray;
+  margin: 0.4rem;
+}
+
+.paginationNumbering {
+  grid-area: pagination;
+
+  text-align: center;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  place-items: center;
+}
+

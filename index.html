@@ -1,50 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="styles/reset.css" />
-    <link rel="stylesheet" href="styles/index.css" />
-    <title>Brewery Tours</title>
-  </head>
-  <body>
-    <header class="main-header">
-      <section class="select-state-section">
-        <h2>Welcome to Brewery Tours</h2>
-        <form id="select-state-form" autocomplete="off">
-          <label for="select-state">Which state are you visiting?</label>
-          <input id="select-state" name="select-state" type="text" />
-          <input type="submit" value="Search" />
-        </form>
-      </section>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles/reset.css" />
+  <link rel="stylesheet" href="styles/index.css" />
+  <link rel="stylesheet" href="styles/spinner.css" />
+  <title>Brewery Tours</title>
+</head>
+
+<body>
+  <header class="main-header">
+    <section class="select-state-section">
+      <h2>Welcome to Brewery Tours</h2>
+      <form id="select-state-form" autocomplete="off">
+        <label for="select-state">Which state are you visiting?</label>
+        <input id="select-state" name="select-state" onfocus="this.value=''" type="text" />
+        <input type="submit" value="State search" />
+      </form>
+    </section>
+  </header>
+  <main>
+    <aside class="filters-section">
+      <h2>Filter By:</h2>
+      <form id="filter-by-type-form" autocompete="off">
+        <label for="filter-by-type">
+          <h3>Type of Brewery</h3>
+        </label>
+        <select name="filter-by-type" id="filter-by-type">
+          <option value="">Select a type...</option>
+          <option value="micro">Micro</option>
+          <option value="regional">Regional</option>
+          <option value="brewpub">Brewpub</option>
+        </select>
+      </form>
+      <!--
+      <div class="filter-by-city-heading">
+        <h3>Cities</h3>
+        <button class="clear-all-btn">clear all</button>
+      </div>
+      <form id="filter-by-city-form">
+      </form>
+      -->
+    </aside>
+    <h1>List of Breweries</h1>
+    <header class="search-bar">
+      <form id="search-breweries-form" autocomplete="off">
+        <label for="search-breweries">
+          <h2>Search breweries by name<br />(case sensitive):</h2>
+        </label>
+        <input id="search-breweries" name="search-breweries" onfocus="this.value=''" type="text">
+      </form>
     </header>
-    <main>
-      <aside class="filters-section">
-        <aside class="filters-section">
-          <h2>Filter By:</h2>
-          <form id="filter-by-type-form" autocompete="off">
-            <label for="filter-by-type"><h3>Type of Brewery</h3></label>
-            <select name="filter-by-type" id="filter-by-type">
-              <option value="">Select a type...</option>
-              <option value="micro">Micro</option>
-              <option value="regional">Regional</option>
-              <option value="brewpub">Brewpub</option>
-            </select>
-          </form>
-        </aside>
-      </aside>
-      <h1>List of Breweries</h1>
-      <article>
-        <ul id="breweries-list" class="breweries-list">
-          <!--
-          For each brewery returned in the search, 
-          add to the list using the HTML provided 
-          in templates/standard-list-items.html
-          -->
-        </ul>
-      </article>
-    </main>
-    <script src="index.js"></script>
-  </body>
+    <header class="paginationNumbering">
+      <div id="pagination-back" class="pagination"></div>
+      <div id="currentShowing"></div>
+      <div id="pagination-forward" class="pagination"></div>
+    </header>
+    <article>
+      <ul id="breweries-list" class="breweries-list">
+      </ul>
+    </article>
+  </main>
+  <script src="index.js"></script>
+</body>
+
 </html>
