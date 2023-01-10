@@ -10,12 +10,13 @@ inputField.addEventListener('submit', function(event){
     event.preventDefault()
     // Get input data from form and save to state
     const stateName = "Ohio"
-    console.log(state)
+    // console.log(stateName)
     // Check if anything has been typed
-    if(state.length > 0){
+    if(stateName.length > 0){
         // Call Function
         getBreweriesByStateFromAPI(stateName)
-
+    } else {
+        console.log("Please give us a state mate?")
     }
 })
 
@@ -23,7 +24,17 @@ inputField.addEventListener('submit', function(event){
 //NETWORK
 
 function getBreweriesByStateFromAPI(stateName){
-
+    console.log(stateName)
+    fetch(`https://api.openbrewerydb.org/breweries?by_state=ohio&per_page=3`)
+        .then((response) => {
+            console.log('here is the response', response)
+            return response.json()
+        })
+        .then((breweriesDataFromServer) => {
+            state.breweries = breweriesDataFromServer
+            console.log(state)
+            // Call Render
+        })
 }
 
 
