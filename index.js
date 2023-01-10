@@ -1,6 +1,7 @@
 const state = {
     selectedState: '',
     breweries: [],
+    cities: [],
     selectedFilters: []
 }
 
@@ -9,6 +10,8 @@ const searchByStateForm = document.querySelector('#select-state-form')
 const dropDown = document.querySelector('#filter-by-type')
 const searchNameForm = document.querySelector('#search-breweries-form')
 const breweryUL = document.querySelector('#breweries-list')
+const filterByCity = document.querySelector('#filter-by-city-form')
+const cityFilterClear = document.querySelector('.clear-all-btn')
 
 
 // EVENT LISTENERS 
@@ -24,19 +27,29 @@ searchByStateForm.addEventListener('submit', (e) => {
 
 // Filter by type Event
 dropDown.addEventListener('change', () => {
-    state.selectedFilters = []
-    state.selectedFilters.push(dropDown.value)
-    if (dropDown.value === "") state.selectedFilters = []
-    console.log(state.selectedFilters)
-    fetchDataForState()
+    filterByType()
+    displayBreweries()
+    displayCities()
 })
 
 
 // Search by name form Event
 searchNameForm.addEventListener('input', (e) => {
     const nameSearch = document.querySelector('#search-breweries').value.toLowerCase()
-    console.log(nameSearch)
     includesSearchedName(nameSearch)
+})
+
+
+// Cities filter gets updated
+filterByCity.addEventListener('change', () => {
+    filterOutCities()
+})
+
+
+// Clear all button click eventlistener
+cityFilterClear.addEventListener('click', () => {
+    filterByCity.reset()
+    filterOutCities()
 })
 
 // HTTP REQUESTS
@@ -50,17 +63,25 @@ const fetchDataForState = () => {
             state.breweries = breweries
             // console.log('filtered by state', state.breweries)
             displayBreweries()
+            displayCities()
         })
 }
 
 
 // LOGIC 
 
+// Filter by type 
+const filterByType = () => {
+    state.selectedFilters = []
+    state.selectedFilters.push(dropDown.value)
+    if (dropDown.value === "") state.selectedFilters = []
+}
+
+
 // Display List of Breweries
 const displayBreweries = () => {
     breweryUL.innerHTML = ''
     const filteredBreweries = filterBreweriesByType()
-    console.log('Filterd by selected filters', filteredBreweries)
     filteredBreweries.forEach((brewery) => {
         const li = document.createElement('li')
 
@@ -145,6 +166,52 @@ const includesSearchedName = (search) => {
             } else {
                 brewery.style.display = "grid"
             }
+        })
+    }
+}
+
+
+const displayCities = () => {
+    filterByCity.innerHTML = ''
+    state.cities = []
+    getCities()
+    state.cities.forEach((city) => {
+        const checkbox = document.createElement('input')
+        checkbox.type = 'checkbox'
+        checkbox.name = city
+        checkbox.value = city
+        const label = document.createElement('label')
+        label.htmlFor = city
+        label.innerText = city
+        filterByCity.append(checkbox, label)
+    })
+}
+
+const getCities = () => {
+    const listOfCurrentBreweries = document.querySelectorAll('li')
+    listOfCurrentBreweries.forEach((brewery) => {
+        const city = brewery.querySelector('strong').innerText.toLowerCase().split(',')[0]
+        if (!state.cities.includes(city)) state.cities.push(city)
+    })
+}
+
+const filterOutCities = () => {
+    state.cities = []
+    const  filterCities = document.querySelector('#filter-by-city-form').querySelectorAll('input')
+    filterCities.forEach((city) => {
+        if (city.checked) state.cities.push(city.value)
+    })
+    if (state.cities.length > 0) {
+        const listOfCurrentBreweries = document.querySelectorAll('li')
+        listOfCurrentBreweries.forEach((brewery) => {
+            const city = brewery.querySelector('strong').innerText.toLowerCase().split(',')[0]
+            !state.cities.includes(city) ? brewery.style.display = 'none' : brewery.style.display = 'grid'
+        })
+    } else {
+        const listOfCurrentBreweries = document.querySelectorAll('li')
+        listOfCurrentBreweries.forEach((brewery) => {
+            const city = brewery.querySelector('strong').innerText.toLowerCase().split(',')[0]
+            brewery.style.display = 'grid'
         })
     }
 }
