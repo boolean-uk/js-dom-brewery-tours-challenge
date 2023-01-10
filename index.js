@@ -1,67 +1,3 @@
-// PLAN:
-// Core Requirements -
-// Create STATE object
-//      - all breweries array = by_state Fetch.
-// Add event listener for form submit - #select-state-form
-//      - make sure submit is not empty / and is an actual state.
-//          - if statement on input.value.length / .lowercase.find() on us state array. 
-//              - US States array = all states in separate strings
-//              - used to compare with the #select-state-form submit.
-//          - if state has space in it, replace with underscore and save to variable.
-//      - prevent default behaviour.
-//      - Call GET function.
-// Create GET FUNCTION
-//      - make a fetch request by_state from brewery API, using saved state variable:
-//      - GET https://api.openbrewerydb.org/breweries?by_state=USER_SUBMITTED_STATE&per_page=50
-//      - save data to all breweries array in state object.
-//      - filter the breweries array 3 times. (Could be its own Function and called here.)
-//          - Once for Micro Breweries. Save to respective Array.
-//          - Once for Regional Breweries. Save to respective Array.
-//          - Once for BrewPub Breweries. Save to respective Array.
-// Create variables for Micro, Regional, BrewPub - default value True.
-// Create Render Function
-//      - clear inner html
-//      - Render state.micro AND/OR state.regional AND/OR state.brewpub 
-//          - IF relevant variable is true - Render.
-//      - loop through correct array
-//          - create document elements
-//          - add attributes
-//          - append
-// Filter By Type selector
-//      - By default Micro, Regional, Brewpub variables will be true.
-//      - Add Event listener to drop down menu
-//          - change variables to false if not selected.
-//          - ReRender
-
-// PLAN:
-// Core Requirements -
-// Create STATE object
-//      - all breweries array = by_state Fetch.
-// Add event listener for form submit - #select-state-form
-//      - make sure submit is not empty / and is an actual state.
-//          - if statement on input.value.length / .lowercase.find() on us state array. 
-//          - if state has space in it, replace with underscore and save to variable.
-//      - prevent default behaviour.
-//      - Call GET function.
-// Create GET FUNCTION
-//      - make a fetch request by_state from brewery API, using saved state variable:
-//      - GET https://api.openbrewerydb.org/breweries?by_state=USER_SUBMITTED_STATE&per_page=50
-//      - save data to all breweries array in state object.
-// Create Render Function
-//      - clear inner html
-//      - breweries.filter what we want
-//          - Render filtered array
-//            - loop through correct array
-//            - create document elements
-//            - add attributes
-//            - append
-// Filter By Type selector
-//      - Add Event listener to drop down menu
-//          - filter to what we want
-//          - render filtered array.
-
-
-
 // STATE
 const state = {
     breweries: [],
@@ -103,45 +39,38 @@ function submitFormListen() {
         event.preventDefault()
         // stateInput.value = what was typed in.
         const stateSubmit = stateInput.value.toLowerCase()
-        if(stateSubmit.length < 4){
-            // shortest state name is 4 characters.
-            return alert("Must be at least 4 character long")
-        }
         if(usStates.find(stateName => stateName === stateSubmit) === undefined){
-            return alert("That is not a real/correctly spelt State")
+            // must be a state, and spelt correctly.
+            return alert("That is not a real/correctly spelled State")
         }
-
+        // regex to replace all spaces with an underscore
         const true_state = (stateSubmit.replace(/ /g,"_"))
+
         getAllBreweries(true_state)
     })
 }
 
 function filterTypeListen() {
     filterForm.addEventListener('change', (event) => {
-        console.log(event.target.value)
-        // value from the select = event.target.value
         const selectInput = event.target.value
-        
+        // Toggles my variables above to true or false, depending on selection.
         if(selectInput === "micro"){
             microToggle = true
             regionalToggle = false
             brewpubToggle = false
-            console.log("micro selected", microToggle, regionalToggle, brewpubToggle)
         } else if(selectInput === "regional"){
             microToggle = false
             regionalToggle = true
             brewpubToggle = false
-            console.log("regional selected", microToggle, regionalToggle, brewpubToggle)
         } else if(selectInput === "brewpub"){
             microToggle = false
             regionalToggle = false
             brewpubToggle = true
-            console.log("brewpub selected", microToggle, regionalToggle, brewpubToggle)
         } else {
+            // if the "select a type" choice is reselected, then it will reset all variables to true.
             microToggle = true
             regionalToggle = true
             brewpubToggle = true
-            console.log("nothing selected", microToggle, regionalToggle, brewpubToggle)
         }
 
         renderAllBreweries()
@@ -152,12 +81,10 @@ function filterTypeListen() {
 function getAllBreweries(stateName) {
     fetch(`https://api.openbrewerydb.org/breweries?by_state=${stateName}&per_page=50`)
     .then((response) => {
-        console.log(response.status)
         return response.json()
     })
     .then((allBreweries) => {
         state.breweries = allBreweries
-        console.log(state.breweries)
         renderAllBreweries()
     })
 
@@ -166,29 +93,27 @@ function getAllBreweries(stateName) {
 // RENDERING
 function renderAllBreweries() {
     breweryUL.innerHTML = "";
-    console.log("Beginning of render all breweries")
-    // filter for all micro, regional, AND brewpubs.
+    // filter for all micro, regional, AND brewpubs depending on above variables.
     const filteredBreweries = state.breweries.filter((data) => {
-        if(microToggle === true){
+        if(microToggle){
             if(data.brewery_type === "micro") {
                 return true
             }
         }
-        if(regionalToggle === true){
+        if(regionalToggle){
             if(data.brewery_type === "regional") {
                 return true
             }
         }
-        if(brewpubToggle === true){
+        if(brewpubToggle){
             if(data.brewery_type === "brewpub") {
                 return true
             }
         }
     })
-    console.log("Filtered breweries:", filteredBreweries)
-    // Render reduced version
+
+    // Render filtered version
     filteredBreweries.forEach((brewery) => {
-        console.log("Inside filtered for each")
         // CREATING
         const brewLI = document.createElement("li")
 
@@ -253,4 +178,4 @@ function renderAllBreweries() {
 // START
 submitFormListen()
 filterTypeListen()
-renderAllBreweries()
+// renderAllBreweries()
