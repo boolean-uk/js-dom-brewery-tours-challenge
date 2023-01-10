@@ -84,10 +84,17 @@ const usStates = [
     "wisconsin"
 ]
 
+// For filtering
+let microToggle = true
+let regionalToggle = true
+let brewpubToggle = true
+
 // SELECT EXISTING HTML ELEMENTS
 const stateForm = document.querySelector("#select-state-form")
 const stateInput = document.querySelector("#select-state")
 const breweryUL = document.querySelector("#breweries-list")
+const filterForm = document.querySelector("#filter-by-type-form")
+const filterSelect = document.querySelector("#filter-by-type")
 
 // EVENT LISTENERS
 
@@ -106,6 +113,38 @@ function submitFormListen() {
 
         const true_state = (stateSubmit.replace(/ /g,"_"))
         getAllBreweries(true_state)
+    })
+}
+
+function filterTypeListen() {
+    filterForm.addEventListener('change', (event) => {
+        console.log(event.target.value)
+        // value from the select = event.target.value
+        const selectInput = event.target.value
+        
+        if(selectInput === "micro"){
+            microToggle = true
+            regionalToggle = false
+            brewpubToggle = false
+            console.log("micro selected", microToggle, regionalToggle, brewpubToggle)
+        } else if(selectInput === "regional"){
+            microToggle = false
+            regionalToggle = true
+            brewpubToggle = false
+            console.log("regional selected", microToggle, regionalToggle, brewpubToggle)
+        } else if(selectInput === "brewpub"){
+            microToggle = false
+            regionalToggle = false
+            brewpubToggle = true
+            console.log("brewpub selected", microToggle, regionalToggle, brewpubToggle)
+        } else {
+            microToggle = true
+            regionalToggle = true
+            brewpubToggle = true
+            console.log("nothing selected", microToggle, regionalToggle, brewpubToggle)
+        }
+
+        renderAllBreweries()
     })
 }
 
@@ -130,8 +169,20 @@ function renderAllBreweries() {
     console.log("Beginning of render all breweries")
     // filter for all micro, regional, AND brewpubs.
     const filteredBreweries = state.breweries.filter((data) => {
-        if(data.brewery_type === "micro" || data.brewery_type === "regional" || data.brewery_type === "brewpub") {
-            return true
+        if(microToggle === true){
+            if(data.brewery_type === "micro") {
+                return true
+            }
+        }
+        if(regionalToggle === true){
+            if(data.brewery_type === "regional") {
+                return true
+            }
+        }
+        if(brewpubToggle === true){
+            if(data.brewery_type === "brewpub") {
+                return true
+            }
         }
     })
     console.log("Filtered breweries:", filteredBreweries)
@@ -154,12 +205,14 @@ function renderAllBreweries() {
         const addressH3 = document.createElement("h3")
         const roadP = document.createElement("p")
         const areaP = document.createElement("p")
+        const areaStrong = document.createElement("strong")
 
         addressH3.innerText = "Address:"
         roadP.innerText = brewery.street
-        // areaP.innerText = "<strong>${brewery.city}, ${brewery.postal_code}</strong>"
+        areaStrong.innerText = `${brewery.city}, ${brewery.postal_code}`
 
         // APPENDING
+        areaP.append(areaStrong)
         addressSection.append(addressH3, roadP, areaP)
 
         // CREATING
@@ -199,4 +252,5 @@ function renderAllBreweries() {
 
 // START
 submitFormListen()
+filterTypeListen()
 renderAllBreweries()
