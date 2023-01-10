@@ -5,28 +5,41 @@ const state = {
 }
 
 // Selectors 
-const form = document.querySelector('#select-state-form')
+const searchByStateForm = document.querySelector('#select-state-form')
 const dropDown = document.querySelector('#filter-by-type')
+const searchNameForm = document.querySelector('#search-breweries-form')
 const breweryUL = document.querySelector('#breweries-list')
 
 
 // EVENT LISTENERS 
 
-// Search Event
-form.addEventListener('submit', (e) => {
+// Search by state Event
+searchByStateForm.addEventListener('submit', (e) => {
     e.preventDefault()
     const input = document.querySelector('#select-state').value.replace(' ', '_')
     state.selectedState = input
     fetchDataForState()
 })
 
-// Filter event
+
+// Filter by type Event
 dropDown.addEventListener('change', () => {
     state.selectedFilters = []
     state.selectedFilters.push(dropDown.value)
+    if (dropDown.value === "") state.selectedFilters = []
     console.log(state.selectedFilters)
     fetchDataForState()
 })
+
+
+// Search by name form Event
+searchNameForm.addEventListener('input', (e) => {
+    const nameSearch = document.querySelector('#search-breweries').value.toLowerCase()
+    console.log(nameSearch)
+    includesSearchedName(nameSearch)
+})
+
+// HTTP REQUESTS
 
 // Fetches data from the API
 const fetchDataForState = () => {
@@ -84,7 +97,11 @@ const displayBreweries = () => {
             sectionPhone.append(h3Phone)
 
             const pPhone = document.createElement('p')
-            pPhone.innerText = brewery.phone
+            if (brewery.phone !== null) {
+                pPhone.innerText = brewery.phone
+            } else {
+                pPhone.innerText = 'Not provided'
+            }
             sectionPhone.append(pPhone)
         li.append(sectionPhone)
 
@@ -113,4 +130,21 @@ const filterBreweriesByType = () => {
         filterdList = state.breweries.filter((brewery) => state.selectedFilters.includes(brewery.brewery_type))
     }
     return filterdList
+}
+
+const includesSearchedName = (search) => {
+    const listOfCurrentBreweries = document.querySelectorAll('li')
+    if (search=== '') {
+        listOfCurrentBreweries.forEach((brewery) => {
+            brewery.style.display = "grid"
+        })
+    } else {
+        listOfCurrentBreweries.forEach((brewery) => {
+            if (!brewery.querySelector('h2').innerText.toLowerCase().includes(search)) {
+                brewery.style.display = "none"
+            } else {
+                brewery.style.display = "grid"
+            }
+        })
+    }
 }
