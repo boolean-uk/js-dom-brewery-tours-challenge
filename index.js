@@ -6,14 +6,46 @@ const state = {
 //SELECT ELEMENTS
 const listOfBreweriesUL = document.querySelector('#breweries-list')
 const inputField = document.querySelector('#select-state-form')
+const searchThisState = document.querySelector(`#select-state`)
+const filterSelector = document.querySelector(`#filter-by-type-form`)
+const typeOfFilter = document.querySelector('#filter-by-type')
+
+console.log(searchThisState.value)
+
+filterSelector.addEventListener('change', function(event){
+    event.preventDefault()
+    listOfBreweriesUL.innerHTML = ""
+    if(typeOfFilter.value == "micro"){
+        const isMicro = state.breweries.filter(brewery => {
+            return brewery.brewery_type === "micro"
+        })
+        console.log(isMicro)
+        state.breweries = isMicro
+        renderAllBreweries()
+    }
+    if(typeOfFilter.value == "regional"){
+        const isRegional = state.breweries.filter(brewery => {
+            return brewery.brewery_type === "regional"
+        })
+        console.log(isRegional)
+        state.breweries = isRegional
+        renderAllBreweries()
+    }
+    if(typeOfFilter.value == "brewpub"){
+        const isBrewPub = state.breweries.filter(brewery => {
+            return brewery.brewery_type === "brewpub"
+        })
+        console.log(isBrewPub)
+        state.breweries = isBrewPub
+        renderAllBreweries()
+    }
+})
+
+
 inputField.addEventListener('submit', function(event){
     event.preventDefault()
-    // Get input data from form and save to state
-    const stateName = "Ohio"
-    // console.log(stateName)
-    // Check if anything has been typed
+    const stateName = searchThisState.value
     if(stateName.length > 0){
-        // Call Function
         getBreweriesByStateFromAPI(stateName)
     } else {
         console.log("Please give us a state mate?")
@@ -24,22 +56,21 @@ inputField.addEventListener('submit', function(event){
 //NETWORK
 
 function getBreweriesByStateFromAPI(stateName){
-    console.log(stateName)
-    fetch(`https://api.openbrewerydb.org/breweries?by_state=${stateName}&per_page=3`)
+    fetch(`https://api.openbrewerydb.org/breweries?by_state=${stateName}&per_page=50`)
         .then((response) => {
             return response.json()
         })
         .then((breweriesDataFromServer) => {
             state.breweries = breweriesDataFromServer
-            // Call Render
             renderAllBreweries()
         })
 }
 
+//RENDERING
+
 function renderAllBreweries(){
     listOfBreweriesUL.innerHTML = ""
     state.breweries.forEach((brewery) => {
-        console.log(brewery)
         const breweryDataLiConstainer = document.createElement("li")
 
         const breweryName = document.createElement('h2')
@@ -52,7 +83,7 @@ function renderAllBreweries(){
         const breweryAddressStreet = document.createElement('p')
         breweryAddressStreet.innerText = brewery.street
         const breweryAddressCity = document.createElement('p')
-        breweryAddressCity.innerText = `${brewery.city}, ${brewery.postal_code}`
+        breweryAddressCity.innerText = `${brewery.city}, ${brewery.state}, ${brewery.postal_code}`
         breweryAddressContainer.append(breweryAddressH3, breweryAddressStreet, breweryAddressCity)
 
         const breweryPhoneContainer = document.createElement('section')
@@ -80,8 +111,6 @@ function renderAllBreweries(){
         listOfBreweriesUL.append(breweryDataLiConstainer)
     })
 }
-
-//RENDERING
 
 // -- LOGIC --
 // 1.) Create State object and include breweries
