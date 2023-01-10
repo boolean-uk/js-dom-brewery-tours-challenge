@@ -19,27 +19,30 @@ filterSelector.addEventListener('change', function(event){
         const isMicro = state.breweries.filter(brewery => {
             return brewery.brewery_type === "micro"
         })
-        console.log(isMicro)
-        state.breweries = isMicro
-        renderAllBreweries()
+        isMicro.forEach((brewery) => {
+            creatingBreweriesList(brewery)
+
+        })
     }
     if(typeOfFilter.value == "regional"){
         const isRegional = state.breweries.filter(brewery => {
             return brewery.brewery_type === "regional"
         })
-        console.log(isRegional)
-        state.breweries = isRegional
-        renderAllBreweries()
+        isRegional.forEach((brewery) => {
+            creatingBreweriesList(brewery)
+
+        })
     }
     if(typeOfFilter.value == "brewpub"){
         const isBrewPub = state.breweries.filter(brewery => {
             return brewery.brewery_type === "brewpub"
         })
         console.log(isBrewPub)
-        state.breweries = isBrewPub
-        renderAllBreweries()
+        isBrewPub.forEach((brewery) => {
+            creatingBreweriesList(brewery) 
+        })
     }
-})
+    })
 
 
 inputField.addEventListener('submit', function(event){
@@ -68,10 +71,8 @@ function getBreweriesByStateFromAPI(stateName){
 
 //RENDERING
 
-function renderAllBreweries(){
-    listOfBreweriesUL.innerHTML = ""
-    state.breweries.forEach((brewery) => {
-        const breweryDataLiConstainer = document.createElement("li")
+function creatingBreweriesList(brewery){
+    const breweryDataLiConstainer = document.createElement("li")
 
         const breweryName = document.createElement('h2')
         breweryName.innerText = brewery.name
@@ -109,6 +110,12 @@ function renderAllBreweries(){
         breweryDataLiConstainer.append(breweryName, breweryAddressContainer, breweryPhoneContainer, breweryType, breweryLinkContainer)
 
         listOfBreweriesUL.append(breweryDataLiConstainer)
+}
+
+function renderAllBreweries(){
+    listOfBreweriesUL.innerHTML = ""
+    state.breweries.forEach((brewery) => {
+        creatingBreweriesList(brewery)
     })
 }
 
