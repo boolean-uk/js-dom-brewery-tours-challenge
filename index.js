@@ -25,19 +25,61 @@ inputField.addEventListener('submit', function(event){
 
 function getBreweriesByStateFromAPI(stateName){
     console.log(stateName)
-    fetch(`https://api.openbrewerydb.org/breweries?by_state=ohio&per_page=3`)
+    fetch(`https://api.openbrewerydb.org/breweries?by_state=${stateName}&per_page=3`)
         .then((response) => {
-            console.log('here is the response', response)
             return response.json()
         })
         .then((breweriesDataFromServer) => {
             state.breweries = breweriesDataFromServer
-            console.log(state)
             // Call Render
+            renderAllBreweries()
         })
 }
 
+function renderAllBreweries(){
+    listOfBreweriesUL.innerHTML = ""
+    state.breweries.forEach((brewery) => {
+        console.log(brewery)
+        const breweryDataLiConstainer = document.createElement("li")
 
+        const breweryName = document.createElement('h2')
+        breweryName.innerText = brewery.name
+
+        const breweryAddressContainer = document.createElement('section')
+        breweryAddressContainer.setAttribute("class", "address")
+        const breweryAddressH3 = document.createElement('h3')
+        breweryAddressH3.innerText = "Address:"
+        const breweryAddressStreet = document.createElement('p')
+        breweryAddressStreet.innerText = brewery.street
+        const breweryAddressCity = document.createElement('p')
+        breweryAddressCity.innerText = `${brewery.city}, ${brewery.postal_code}`
+        breweryAddressContainer.append(breweryAddressH3, breweryAddressStreet, breweryAddressCity)
+
+        const breweryPhoneContainer = document.createElement('section')
+        const breweryPhoneH3 = document.createElement('h3')
+        breweryPhoneH3.setAttribute("class", "phone")
+        breweryPhoneH3.innerText = `Phone:`
+        const breweryPhoneNumber = document.createElement('p') 
+        breweryPhoneNumber.innerText = brewery.phone
+        breweryPhoneContainer.append(breweryPhoneH3, breweryPhoneNumber)
+
+
+        const breweryType = document.createElement("span")
+        breweryType.setAttribute("class", "type")
+        breweryType.innerText = brewery.brewery_type
+
+        const breweryLinkContainer = document.createElement("section")
+        breweryLinkContainer.setAttribute("class", "link")
+        const breweryLink = document.createElement("a")
+        breweryLink.setAttribute("href", `${brewery.website_url}`)
+        breweryLink.innerText = "Visit Website"
+        breweryLinkContainer.append(breweryLink)
+        
+        breweryDataLiConstainer.append(breweryName, breweryAddressContainer, breweryPhoneContainer, breweryType, breweryLinkContainer)
+
+        listOfBreweriesUL.append(breweryDataLiConstainer)
+    })
+}
 
 //RENDERING
 
