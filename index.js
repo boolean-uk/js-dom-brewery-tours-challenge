@@ -1,9 +1,17 @@
 const state = {
     selectedState: '',
+    page: 1,
     breweries: [],
     cities: [],
-    selectedFilters: []
+    filters: {
+        type: '',
+        cities: [],
+        search: ''
+    }
 }
+
+
+
 
 // Selectors 
 const searchByStateForm = document.querySelector('#select-state-form')
@@ -12,6 +20,9 @@ const searchNameForm = document.querySelector('#search-breweries-form')
 const breweryUL = document.querySelector('#breweries-list')
 const filterByCity = document.querySelector('#filter-by-city-form')
 const cityFilterClear = document.querySelector('.clear-all-btn')
+const loadMoreBtn = document.querySelector('#load-more')
+
+
 
 
 // EVENT LISTENERS 
@@ -22,59 +33,124 @@ searchByStateForm.addEventListener('submit', (e) => {
     const input = document.querySelector('#select-state').value.replace(' ', '_')
     state.selectedState = input
     fetchDataForState()
+    document.querySelector('#search-breweries').value = ''
+    handleFilters()
+    loadMoreBtn.style.display = 'flex'
 })
 
 
 // Filter by type Event
 dropDown.addEventListener('change', () => {
     filterByType()
-    displayBreweries()
-    displayCities()
+    fetchDataForStateAndType()
+    handleFilters()
 })
 
 
 // Search by name form Event
 searchNameForm.addEventListener('input', (e) => {
-    const nameSearch = document.querySelector('#search-breweries').value.toLowerCase()
-    includesSearchedName(nameSearch)
+    state.filters.search = document.querySelector('#search-breweries').value.toLowerCase()
+    handleFilters()
 })
 
 
 // Cities filter gets updated
 filterByCity.addEventListener('change', () => {
-    filterOutCities()
+    handleFilters()
 })
 
 
 // Clear all button click eventlistener
 cityFilterClear.addEventListener('click', () => {
     filterByCity.reset()
-    filterOutCities()
+    handleFilters()
 })
+
+
+// Load more data from the API
+loadMoreBtn.addEventListener('click', () => {
+    ++state.page
+    fetchMorePages()
+})
+
+
+
 
 // HTTP REQUESTS
 
 // Fetches data from the API
 const fetchDataForState = () => {
-    
-    fetch(`https://api.openbrewerydb.org/breweries?by_state=${state.selectedState}&per_page=50`)
+    state.page = 1
+    fetch(`https://api.openbrewerydb.org/breweries?by_state=${state.selectedState}&per_page=20`)
         .then((res) => {return res.json()})
         .then((breweries) => {
-            state.breweries = breweries
-            // console.log('filtered by state', state.breweries)
+            state.breweries = breweries           
             displayBreweries()
             displayCities()
         })
 }
 
 
+const fetchDataForStateAndType = () => {
+    state.page = 1
+    if (state.filters.type !== '') {
+        fetch(`https://api.openbrewerydb.org/breweries?by_state=${state.selectedState}&by_type=${state.filters.type}&per_page=20`)
+        .then((res) => {return res.json()})
+        .then((breweries) => {
+            state.breweries = breweries 
+            displayBreweries()
+            displayCities()
+        })
+    } else {
+        fetchDataForState()
+    }
+}
+
+
+const fetchMorePages = () => {
+    if (state.filters.type !== '') {
+        fetch(`https://api.openbrewerydb.org/breweries?by_state=${state.selectedState}&by_type=${state.filters.type}&per_page=20&page=${state.page}`)
+        .then((res) => {return res.json()})
+        .then((breweries) => {
+            breweries.forEach((brewery) => {
+                state.breweries.push(brewery)
+            })
+            console.log(state.breweries)
+            displayBreweries()
+            displayCities()
+        })
+    } else {
+        fetch(`https://api.openbrewerydb.org/breweries?by_state=${state.selectedState}&per_page=20&page=${state.page}`)
+        .then((res) => {return res.json()})
+        .then((breweries) => {
+            breweries.forEach((brewery) => {
+                state.breweries.push(brewery)
+            })
+            displayBreweries()
+            displayCities()
+        })
+    }
+}
+
+
+const fetchRandomData = () => {
+    fetch(`https://api.openbrewerydb.org/breweries/random?size=20`)
+        .then((res) => {return res.json()})
+        .then((breweries) => {
+            breweries.forEach((brewery) => {
+                state.breweries.push(brewery)
+            })
+            displayBreweries()
+            displayCities()
+        })
+}
+
 // LOGIC 
 
 // Filter by type 
 const filterByType = () => {
-    state.selectedFilters = []
-    state.selectedFilters.push(dropDown.value)
-    if (dropDown.value === "") state.selectedFilters = []
+    state.filters.type = dropDown.value
+    if (dropDown.value === "") state.filters.type = ''
 }
 
 
@@ -82,6 +158,9 @@ const filterByType = () => {
 const displayBreweries = () => {
     breweryUL.innerHTML = ''
     const filteredBreweries = filterBreweriesByType()
+    const listH1 = document.querySelector('#list-head')
+    listH1.innerText = `List of Breweries in ${capatalize(state.selectedState)}`
+    if (state.selectedState === '') listH1.innerText = `List of Random Breweries`
     filteredBreweries.forEach((brewery) => {
         const li = document.createElement('li')
 
@@ -143,31 +222,24 @@ const displayBreweries = () => {
 // Filters the breweries by type - Called by displayBreweries()
 const filterBreweriesByType = () => {
     let filterdList = []
-    if (state.selectedFilters.length === 0) {
+    if (state.filters.type === '') {
         const defaultFilters = ['micro', 'regional', 'brewpub']
         filterdList = state.breweries.filter((brewery) => defaultFilters.includes(brewery.brewery_type))
-        // console.log('filtered by type', filterdList)
     } else {
-        filterdList = state.breweries.filter((brewery) => state.selectedFilters.includes(brewery.brewery_type))
+        filterdList = state.breweries.filter((brewery) => brewery.brewery_type === state.filters.type)
     }
+    console.log(filterdList)
     return filterdList
 }
 
-const includesSearchedName = (search) => {
+
+const includesSearchedName = () => {
     const listOfCurrentBreweries = document.querySelectorAll('li')
-    if (search=== '') {
-        listOfCurrentBreweries.forEach((brewery) => {
-            brewery.style.display = "grid"
-        })
-    } else {
-        listOfCurrentBreweries.forEach((brewery) => {
-            if (!brewery.querySelector('h2').innerText.toLowerCase().includes(search)) {
-                brewery.style.display = "none"
-            } else {
-                brewery.style.display = "grid"
-            }
-        })
-    }
+    listOfCurrentBreweries.forEach((brewery) => {
+        if (!brewery.querySelector('h2').innerText.toLowerCase().includes(state.filters.search)) {
+            brewery.style.display = "none"
+        } 
+    })
 }
 
 
@@ -187,6 +259,7 @@ const displayCities = () => {
     })
 }
 
+
 const getCities = () => {
     const listOfCurrentBreweries = document.querySelectorAll('li')
     listOfCurrentBreweries.forEach((brewery) => {
@@ -195,23 +268,38 @@ const getCities = () => {
     })
 }
 
+
 const filterOutCities = () => {
-    state.cities = []
-    const  filterCities = document.querySelector('#filter-by-city-form').querySelectorAll('input')
-    filterCities.forEach((city) => {
-        if (city.checked) state.cities.push(city.value)
+    const  filter = document.querySelector('#filter-by-city-form').querySelectorAll('input')
+    state.filters.cities = []
+    filter.forEach((city) => {
+        if (city.checked) state.filters.cities.push(city.value)
     })
-    if (state.cities.length > 0) {
+    if (state.filters.cities.length > 0) {
         const listOfCurrentBreweries = document.querySelectorAll('li')
         listOfCurrentBreweries.forEach((brewery) => {
             const city = brewery.querySelector('strong').innerText.toLowerCase().split(',')[0]
-            !state.cities.includes(city) ? brewery.style.display = 'none' : brewery.style.display = 'grid'
-        })
-    } else {
-        const listOfCurrentBreweries = document.querySelectorAll('li')
-        listOfCurrentBreweries.forEach((brewery) => {
-            const city = brewery.querySelector('strong').innerText.toLowerCase().split(',')[0]
-            brewery.style.display = 'grid'
+            if (!state.filters.cities.includes(city)) brewery.style.display = 'none'
         })
     }
 }
+
+
+const handleFilters = () => {
+    const listOfCurrentBreweries = document.querySelectorAll('li')
+    listOfCurrentBreweries.forEach((element) => {
+        element.style.display = 'grid'
+    })
+    filterOutCities()
+    includesSearchedName()
+} 
+
+const capatalize = (input) => {
+    let output = []
+    input.split('_').forEach((word) => {
+        output.push(word.charAt(0).toUpperCase() + word.slice(1))
+    })
+    return output.join(' ')
+}
+
+fetchRandomData()
