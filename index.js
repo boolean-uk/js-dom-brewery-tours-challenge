@@ -119,11 +119,84 @@ function getAllBreweries(stateName) {
     .then((allBreweries) => {
         state.breweries = allBreweries
         console.log(state.breweries)
+        renderAllBreweries()
     })
+
 }
 
 // RENDERING
+function renderAllBreweries() {
+    breweryUL.innerHTML = "";
+    console.log("Beginning of render all breweries")
+    // filter for all micro, regional, AND brewpubs.
+    const filteredBreweries = state.breweries.filter((data) => {
+        if(data.brewery_type === "micro" || data.brewery_type === "regional" || data.brewery_type === "brewpub") {
+            return true
+        }
+    })
+    console.log("Filtered breweries:", filteredBreweries)
+    // Render reduced version
+    filteredBreweries.forEach((brewery) => {
+        console.log("Inside filtered for each")
+        // CREATING
+        const brewLI = document.createElement("li")
 
+        const brewH2 = document.createElement("h2")
+        brewH2.innerText = brewery.name
+
+        const brewDiv = document.createElement("div")
+        brewDiv.className = "type"
+        brewDiv.innerText = brewery.brewery_type
+
+        const addressSection = document.createElement("section")
+        addressSection.className = "address"
+
+        const addressH3 = document.createElement("h3")
+        const roadP = document.createElement("p")
+        const areaP = document.createElement("p")
+
+        addressH3.innerText = "Address:"
+        roadP.innerText = brewery.street
+        // areaP.innerText = "<strong>${brewery.city}, ${brewery.postal_code}</strong>"
+
+        // APPENDING
+        addressSection.append(addressH3, roadP, areaP)
+
+        // CREATING
+        const phoneSection = document.createElement("section")
+        phoneSection.className = "phone"
+
+        const phoneH3 = document.createElement("h3")
+        const phoneP = document.createElement("p")
+
+        phoneH3.innerText = "Phone:"
+        if(brewery.phone === null){
+            phoneP.innerText = "N/A"
+        } else {
+            phoneP.innerText = brewery.phone
+        }
+
+        // APPENDING
+        phoneSection.append(phoneH3, phoneP)
+
+        // CREATING
+        const websiteSection = document.createElement("section")
+        websiteSection.className = "link"
+
+        const websiteAn = document.createElement("a")
+        websiteAn.href = brewery.website_url
+        websiteAn.target = "_blank"
+        websiteAn.innerText = "Visit Website"
+
+        // APPENDING
+        websiteSection.append(websiteAn)
+
+        //FINAL APPEND
+        brewLI.append(brewH2, brewDiv, addressSection, phoneSection, websiteSection)
+        breweryUL.append(brewLI)
+    })
+  }
 
 // START
 submitFormListen()
+renderAllBreweries()
