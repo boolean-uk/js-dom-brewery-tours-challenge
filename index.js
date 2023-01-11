@@ -25,8 +25,9 @@
 
 const state = {
     breweries: [],
-    filterSelected: []
-  };
+    filterByType: "",
+    filterByName: ""
+};
   
   
   // SELECT EXISTING HTML ELEMENTS
@@ -35,6 +36,9 @@ const state = {
   const filterByTypeForm = document.querySelector("#filter-by-type-form")
   const search = document.querySelector("#select-state")
   const selectByType = document.querySelector("#filter-by-type")
+  const mainarticle = document.querySelector("article")
+  const searchByNameForm = document.querySelector("#search-breweries-form")
+  const searchName = document.querySelector("search-breweries")
   // NETWORK REQUESTS
 //   - make get request that uses user input to search by state
 //      - GET https://api.openbrewerydb.org/breweries?by_state=${US_STATE_NAME}&per_page=50
@@ -88,28 +92,57 @@ searchByStateForm.addEventListener("submit", (event) => {
 
 selectByType.addEventListener('change', () => {
     // set array to empty
-    state.filterSelected = []
-// push the value from the form to the empty filters array
-    var optionSelected = selectByType.value
-    
-    console.log(optionSelected)
-    state.filterSelected = state.breweries.filter(function(breweries) {
-        return breweries.brewery_type === optionSelected;
-    });
-    
-    console.log(state.filterSelected)
-// if nothing is selected keep the filters array empty
-    if (optionSelected === "") {
-        state.filterSelected = []
-    }
-    console.log(" filterd state array",state.filterSelected)
-    renderBreweryList(state.filterSelected)
+    // push the value from the form to the empty filters array
+    state.filterByType = selectByType.value
+    // if(state.filterByType === ""){
+    //     return
+    // }
+    console.log(" filterd by type string",state.filterByType)
+    renderBreweryList(state.breweries)
 })
+// get this to work
 
+// searchByNameForm.addEventListener('keyup', (event) => {
+//     let searchValue = event.target.value;
+    
+//     searchValue.toLocaleLowerCase()
+//     findBreweryByName(searchValue)
+// })
 
-function renderBreweryList(breweriesitem) {
+// function findBreweryByName (searchValue){
+//     breweries = state.breweries.name
+//     console.log(searchValue)
+//     let filterdBrewerys = []
+//     filterdBrewerys = state.breweries.filter(() => {
+//         state.breweries.includes(searchValue)
+        
+//         console.log("this is the breweries array", state.breweries)
+//         console.log("this is the filterd array",filterdBrewerys)
+//         // console.log(brewery.name)
+//         renderBreweryList(state.filterSelected)
+//     })
+//     // console.log(filterSelected)
+// }
+
+function renderBreweryList() {
     breweriesList.innerHTML = ""
-    breweriesitem.forEach((brewery) => {
+    let filterdByType = state.filterByType
+    let filterdList = state.breweries.filter((brewery) => {
+        if (filterdByType === ""){
+            return true
+        }
+        if(brewery.brewery_type === filterdByType) {
+            return true
+        }
+        else{
+            return false
+        }
+    })    
+    console.log("this is the filterd list", filterdList)
+    
+    
+
+    filterdList.forEach((brewery) => {
         // const brewery = state.breweries
         
         const listItem = document.createElement("li")
@@ -171,6 +204,5 @@ function renderBreweryList(breweriesitem) {
         )
         websiteContainer.append(weblink)
     })   
-
-
 }
+
