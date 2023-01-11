@@ -15,6 +15,7 @@
 //     - Use forEach to filter out breweries that doesn't have a type of Micro, Regional or Brewpub
 //     - Push the JSON object to state.breweries
 //     - Call function to render the breweries
+//     - Throw away HTML
 
 //     FILTER BREWERIES BY TYPE:
 //         - call renderMicroBreweries() if micro is selected
@@ -86,13 +87,19 @@ searchButton.addEventListener("submit", (event) => {
 
   // Check if the the number of characters is > 0
 
-  // If state has 2 words, replace spaces with an underscore '_'
+  // Clear state.breweries array
+  console.log("SPLICE BEFORE: ", state.breweries);
+  state.breweries.splice(0, state.breweries.length);
+  console.log("SPLICE: ", state.breweries);
 
   // Call function that sends GET request: fetchBreweriesByState(STATE_NAME)
   fetchBreweriesByState(stateName);
 });
 
 function renderBreweries() {
+  // Throw away HTML so that page is updated
+  breweriesUL.innerHTML = "";
+
   state.breweries.forEach((listing) => {
     // CREATE ELEMENTS & SET ATTRIBUTES + PROPERTIES
     const breweryLI = document.createElement("li");
