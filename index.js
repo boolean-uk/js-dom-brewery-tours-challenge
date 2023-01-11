@@ -7,7 +7,8 @@ const state = {
         type: '',
         cities: [],
         search: ''
-    }
+    },
+    userData: []
 }
 
 
@@ -140,8 +141,18 @@ const fetchRandomData = () => {
             breweries.forEach((brewery) => {
                 state.breweries.push(brewery)
             })
+            fetchUserData()
             displayBreweries()
             displayCities()
+        })
+}
+
+
+const fetchUserData = () => {
+    fetch(`http://localhost:3000/wantToVisit`)
+        .then((res) => res.json())
+        .then((data) => {
+            state.userData = data
         })
 }
 
@@ -213,6 +224,19 @@ const displayBreweries = () => {
             a.innerText = 'visit Website'
             sectionWebsite.append(a)
         li.append(sectionWebsite)
+
+        const displayInfo = document.createElement('button')
+        displayInfo.addEventListener('click', (e) => {
+            addToUserList(brewery, e)
+        })
+        displayInfo.innerText = "want to visit"
+        state.userData.forEach((item) => {
+            if (item.brewery.id === brewery.id) {
+                displayInfo.className = "tracked"
+                displayInfo.innerText = "planing to visit"
+            }
+        })
+        li.append(displayInfo)
 
         breweryUL.append(li)
     })
@@ -297,9 +321,46 @@ const handleFilters = () => {
 const capatalize = (input) => {
     let output = []
     input.split('_').forEach((word) => {
-        output.push(word.charAt(0).toUpperCase() + word.slice(1))
+        output.push(word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     })
     return output.join(' ')
+}
+
+const addToUserList = (brewery, e) => {
+    let foundDeleteTarget = false
+    state.userData.forEach((element) => {
+        if (element.brewery.id === brewery.id) {
+            removeBreweryFromUserData(element)
+            e.target.className = ""
+            e.target.innerText = "want to visit"
+            return foundDeleteTarget = true
+        }
+    })
+    if (!foundDeleteTarget) {
+        const fetchBody = {brewery: brewery}
+        const fetchOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(fetchBody)
+        }
+        console.log(fetchOptions)
+        fetch(`http://localhost:3000/wantToVisit`, fetchOptions)
+            .then(() => fetchUserData())
+            e.target.className = "tracked"
+            e.target.innerText = "planing to visit"
+    }
+}
+
+const removeBreweryFromUserData = (element) => {
+    const target = element.id
+    const fetchOptions = {
+        method: "DELETE"
+    }
+    console.log(`http://localhost:3000/wantToVisit/${target}`)
+    fetch(`http://localhost:3000/wantToVisit/${target}`, fetchOptions)
+        .then(() => fetchUserData())
 }
 
 fetchRandomData()
