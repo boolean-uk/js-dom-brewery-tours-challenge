@@ -31,6 +31,8 @@ const stateInput = document.querySelector("#select-state")
 const breweryUL = document.querySelector("#breweries-list")
 const filterForm = document.querySelector("#filter-by-type-form")
 const filterSelect = document.querySelector("#filter-by-type")
+const searchForm = document.querySelector("#search-breweries-form")
+const searchInput = document.querySelector("#search-breweries")
 
 // EVENT LISTENERS
 
@@ -53,27 +55,17 @@ function submitFormListen() {
 function filterTypeListen() {
     filterForm.addEventListener('change', (event) => {
         const selectInput = event.target.value
-        // Toggles my variables above to true or false, depending on selection.
-        if(selectInput === "micro"){
-            microToggle = true
-            regionalToggle = false
-            brewpubToggle = false
-        } else if(selectInput === "regional"){
-            microToggle = false
-            regionalToggle = true
-            brewpubToggle = false
-        } else if(selectInput === "brewpub"){
-            microToggle = false
-            regionalToggle = false
-            brewpubToggle = true
-        } else {
-            // if the "select a type" choice is reselected, then it will reset all variables to true.
-            microToggle = true
-            regionalToggle = true
-            brewpubToggle = true
-        }
+        const filterType = filterBreweriesByType(selectInput)
+        renderBreweries(filterType)
+    })
+}
 
-        renderAllBreweries()
+function searchBarListen() {
+    searchForm.addEventListener("input", (event) => {
+        const searchQuery = event.target.value
+        const filterType = filterBreweriesByName(searchQuery)
+        console.log(searchQuery)
+        renderBreweries(filterType)
     })
 }
 
@@ -85,35 +77,46 @@ function getAllBreweries(stateName) {
     })
     .then((allBreweries) => {
         state.breweries = allBreweries
-        renderAllBreweries()
+        const filterType = filterBreweriesAll()
+        renderBreweries(filterType)
     })
 
 }
+// FILTER FUNCTIONS
 
-// RENDERING
-function renderAllBreweries() {
-    breweryUL.innerHTML = "";
-    // filter for all micro, regional, AND brewpubs depending on above variables.
+function filterBreweriesByType(type) {
     const filteredBreweries = state.breweries.filter((data) => {
-        if(microToggle){
-            if(data.brewery_type === "micro") {
-                return true
-            }
-        }
-        if(regionalToggle){
-            if(data.brewery_type === "regional") {
-                return true
-            }
-        }
-        if(brewpubToggle){
-            if(data.brewery_type === "brewpub") {
-                return true
-            }
+        if(data.brewery_type === type) {
+            return true
         }
     })
+    return filteredBreweries
+}
 
+function filterBreweriesAll() {
+    const filteredBreweries = state.breweries.filter((data) => {
+        if(data.brewery_type === "micro" || data.brewery_type === "regional" || data.brewery_type === "brewpub") {
+            return true
+        }
+    })
+    return filteredBreweries
+}
+
+function filterBreweriesByName(letters) {
+    const filteredBreweries = state.breweries.filter((data) => {
+        const breweryName = data.name.toLowerCase()
+        if(breweryName.includes(letters)) {
+            return true
+        }
+    })
+    return filteredBreweries
+}
+
+// RENDERING
+function renderBreweries(breweries) {
+    breweryUL.innerHTML = "";
     // Render filtered version
-    filteredBreweries.forEach((brewery) => {
+    breweries.forEach((brewery) => {
         // CREATING
         const brewLI = document.createElement("li")
 
@@ -175,7 +178,20 @@ function renderAllBreweries() {
     })
   }
 
+
+
+
+
 // START
 submitFormListen()
 filterTypeListen()
-// renderAllBreweries()
+searchBarListen()
+
+
+
+// extension 1...
+// create search bar and event listener for each key stroke
+// as keystroke, .find through brewery array to render new array.
+
+//extension 2...
+// rendering cities under filter bar.
