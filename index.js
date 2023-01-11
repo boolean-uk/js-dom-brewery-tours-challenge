@@ -1,7 +1,11 @@
 //STATE- container for all the variables of data
 
 const state = {
-    brewries: []
+    brewries: [],
+    filterByMicro: "micro",
+    filterByBrewpub: "brewpub",
+    filterByRegional: "regional",
+    filterAllThree: ["micro", "brewpub", "regional"],
 };
 
 //REQUIREMENT 1: show a list of brewries for a US state
@@ -11,9 +15,6 @@ const brewriesUL = document.querySelector("#breweries-list")
 const searchForm = document.querySelector("#select-state-form")
 const searchState = document.querySelector("#select-state")
 const inputState = document.querySelector("#select-state")
-
-//variables I want to reach in multiple places: scopeability?
-// const stateName
 
 //EVENT LISTENER: SEARCH
 searchForm.addEventListener("submit", (event) => {
@@ -38,11 +39,6 @@ searchForm.addEventListener("submit", (event) => {
 
 //NETWORK REQUESTS
 function getBrewries(stateName) {
-
-    //STILL TO DO
-    // if "" -> "_"
-
-
     //GET by name
     fetch(`https://api.openbrewerydb.org/breweries?by_state=${stateName}&per_page=50`
     ) // send a Request *******
@@ -60,84 +56,118 @@ function getBrewries(stateName) {
             state.brewries = responseData;
 
             // render each RELEVANT brewry
-            renderBrewry(); //renderBrewries after the filter
-
+            // renderThreeBreweryTypes()
+            ; //renderBrewries after the filter
+            renderBrewery()
         });
     // state.brewries = filteredBrewries
 }
 
-// function onlyThreeBrewTypes() {
-//     const responseData = state.brewries
-//     for (let i = 0; i < responseData.length; i++) {
-//         if (state.brewries[i].brewery_type !== "micro" || state.brewries[i].brewery_type !== "brewpub" || state.brewries[i].brewery_type !== "regional")
-//             state.brewries.splice(i, 1)
-//         break
-//     }
-//     // onlyThreeBrewTypes() 
-//     //--> gives error of "Uncaught (in promise) InternalError: too much recursion"
-// }
 
 //RENDERING
-//only rendering the first brewery atm
-function renderBrewry() {
+function renderBrewery() {
     // const breweryInfo = state.brewries
-
-    //filter the brewry types
-    // onlyThreeBrewTypes()
-
+    //generate list of filtered breweries
     state.brewries.forEach((brewery) => {
-        //create elements
-        const li = document.createElement("li")
-        brewriesUL.append(li)
+        if (brewery.brewery_type === "micro" 
+        || brewery.brewery_type === "regional"
+        || brewery.brewery_type === "brewpub" 
+        ) {
+            //create elements
+            const li = document.createElement("li")
+            brewriesUL.append(li)
 
-        const h2 = document.createElement("h2")
-        h2.innerText = brewery.name //"name"
-        li.append(h2)
+            const h2 = document.createElement("h2")
+            h2.innerText = brewery.name
+            li.append(h2)
 
-        const div = document.createElement("div")
-        div.setAttribute("class", "type")
-        div.innerText = brewery.brewery_type //"brewery_type"
-        li.append(div)
+            const div = document.createElement("div")
+            div.setAttribute("class", "type")
+            div.innerText = brewery.brewery_type
+            li.append(div)
 
-        const section = document.createElement("section")
-        section.setAttribute("class", "address")
-        li.append(section)
+            const section = document.createElement("section")
+            section.setAttribute("class", "address")
+            li.append(section)
 
-        const h3 = document.createElement("h3")
-        h3.innerText = "Address:"
-        section.append(h3)
+            const h3 = document.createElement("h3")
+            h3.innerText = "Address:"
+            section.append(h3)
 
-        const p = document.createElement("p")
-        p.innerText = brewery.street //"street"": <p>9511 Kile Rd</p>
-        section.append(p)
+            const p = document.createElement("p")
+            p.innerText = brewery.street //"street"": <p>9511 Kile Rd</p>
+            section.append(p)
 
-        const p2 = document.createElement("p")
-        // p2.setAttribute = strong //style it..check (need to create another element )
-        p2.innerHTML = `<strong> ${brewery.city} + ${brewery.postal_code}</strong>` // brewery.city + brewery.postal_code //"postal_code" e.g Chardon, 44024 check syntax
-        section.append(p2)
+            const p2 = document.createElement("p")
+            p2.innerHTML = `<strong> ${brewery.city} + ${brewery.postal_code}</strong>`
+            section.append(p2)
 
-        const sectionPhone = document.createElement("section")
-        sectionPhone.setAttribute("class", "phone")
-        li.append(sectionPhone)
+            const sectionPhone = document.createElement("section")
+            sectionPhone.setAttribute("class", "phone")
+            li.append(sectionPhone)
 
-        const h3Phone = document.createElement("h3")
-        h3Phone.innerText = "Phone:"
-        sectionPhone.append(h3Phone)
+            const h3Phone = document.createElement("h3")
+            h3Phone.innerText = "Phone:"
+            sectionPhone.append(h3Phone)
 
-        const pPhone = document.createElement("p")
-        pPhone.innerText = brewery.phone //(object key:) "phone"
-        sectionPhone.append(pPhone)
+            const pPhone = document.createElement("p")
+            pPhone.innerText = brewery.phone //(object key:) "phone"
+            sectionPhone.append(pPhone)
 
-        const sectionLinkToBrewry = document.createElement("section")
-        sectionLinkToBrewry.setAttribute("class", "link")
-        li.append(sectionLinkToBrewry)
+            const sectionLinkToBrewry = document.createElement("section")
+            sectionLinkToBrewry.setAttribute("class", "link")
+            li.append(sectionLinkToBrewry)
 
-        const a = document.createElement("a")
-        a.innerText = "Visit Website"
-        a.setAttribute("href", brewery.website_url) //${breweryInfo.website_url} update null to "website_url"
-        a.setAttribute("target", "_blank")
-        sectionLinkToBrewry.append(a)
+            const a = document.createElement("a")
+            a.innerText = "Visit Website"
+            a.setAttribute("href", brewery.website_url)
+            a.setAttribute("target", "_blank")
+            sectionLinkToBrewry.append(a)
+        }
     })
+    console.log(state.brewries)
 }
 
+// function renderMicroBrewery() {
+//     state.brewries.forEach((brewery) => {
+//         if (brewery.brewery_type === "micro") {
+//             renderBrewery()
+//         }
+//     })
+// }
+
+// function renderBrewPubBrewery() {
+//     state.brewries.forEach((brewery) => {
+//         if (brewery.brewery_type === "brewpub") {
+//             renderBrewery()
+//         }
+//     })
+// }
+
+// function renderRegionalBrewery() {
+//     state.brewries.forEach((brewery) => {
+//         if (brewery.brewery_type === "regional") {
+//             renderBrewery()
+//         }
+//     })
+// }
+
 //START
+
+//FILTER BY TYPE ASIDE
+
+//  - clear list
+//  - Filter state.breweries
+//      - state.breweries.filter(.type === "micro")
+
+//click/checked event micro - call function to render micro list x3 (2. regional, 3. brewpub)
+// const dropdownMicro = document.querySelector("option")
+// dropdownMicro.addEventListener("click", (event) => {
+
+//     filterMicroBrews()
+
+// })
+// function filterMicroBrews() {
+
+// }
+
