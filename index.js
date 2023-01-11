@@ -20,11 +20,6 @@ const usStates = [
     "wisconsin"
 ]
 
-// For filtering
-let microToggle = true
-let regionalToggle = true
-let brewpubToggle = true
-
 // SELECT EXISTING HTML ELEMENTS
 const stateForm = document.querySelector("#select-state-form")
 const stateInput = document.querySelector("#select-state")
@@ -34,6 +29,7 @@ const filterSelect = document.querySelector("#filter-by-type")
 const searchForm = document.querySelector("#search-breweries-form")
 const searchInput = document.querySelector("#search-breweries")
 const cityForm = document.querySelector("#filter-by-city-form")
+const clearButton = document.querySelector(".clear-all-btn")
 
 // EVENT LISTENERS
 
@@ -58,6 +54,7 @@ function filterTypeListen() {
         const selectInput = event.target.value
         const filterType = filterBreweriesByType(selectInput)
         renderBreweries(filterType)
+        renderCities(filterType)
     })
 }
 
@@ -65,8 +62,18 @@ function searchBarListen() {
     searchForm.addEventListener("input", (event) => {
         const searchQuery = event.target.value
         const filterType = filterBreweriesByName(searchQuery)
-        console.log(searchQuery)
         renderBreweries(filterType)
+        renderCities(filterType)
+    })
+}
+
+function clearAllListen() {
+    clearButton.addEventListener("click", () => {
+        checkedCities = []
+        const filterType = filterBreweriesAll()
+        renderBreweries(filterType)
+        renderCities(filterType)
+        
     })
 }
 
@@ -80,6 +87,7 @@ function getAllBreweries(stateName) {
         state.breweries = allBreweries
         const filterType = filterBreweriesAll()
         renderBreweries(filterType)
+        renderCities(filterType)
     })
 
 }
@@ -100,6 +108,7 @@ function filterBreweriesAll() {
             return true
         }
     })
+    state.breweries = filteredBreweries
     return filteredBreweries
 }
 
@@ -107,6 +116,17 @@ function filterBreweriesByName(letters) {
     const filteredBreweries = state.breweries.filter((data) => {
         const breweryName = data.name.toLowerCase()
         if(breweryName.includes(letters)) {
+            return true
+        }
+    })
+    return filteredBreweries
+}
+
+function filterByCity(city) {
+    const filteredBreweries = state.breweries.filter((data) => {
+        // const cityName = city.toLowerCase()
+        console.log("data:", data.city, "city name:", city)
+        if(city === data.city) {
             return true
         }
     })
@@ -177,12 +197,13 @@ function renderBreweries(breweries) {
         brewLI.append(brewH2, brewDiv, addressSection, phoneSection, websiteSection)
         breweryUL.append(brewLI)
     })
-    renderCities(breweries)
+    
   }
 
+let checkedCities = []
 function renderCities(breweries){
     cityForm.innerHTML = "";
-
+    
     const cities = breweries.map((company) => company.city)
     const filteredCities = cities.filter((city, index) => cities.indexOf(city) === index).sort()
     
@@ -197,6 +218,28 @@ function renderCities(breweries){
         cityLabel.for = city
         cityLabel.innerText = city
 
+        cityInput.addEventListener("change", (event) => {
+            // const filterType = filterByCity(city)
+            // renderBreweries(filterType)
+            if(cityInput.checked) {
+                checkedCities.push(city)
+                const filteredBreweries = state.breweries.filter((brewery) => checkedCities.includes(brewery.city))
+                renderBreweries(filteredBreweries)
+            } else {
+                if(checkedCities.length > 1){
+                    checkedCities = checkedCities.filter((item) => item !== city)
+                    const filteredBreweries = state.breweries.filter((brewery) => checkedCities.includes(brewery.city))
+                    renderBreweries(filteredBreweries)
+                } else if(checkedCities.length === 1) {
+                    const filterType = filterBreweriesAll()
+                    console.log(filterType)
+                    renderBreweries(filterType)
+                    renderCities(filterType)
+                }
+                
+            }
+        })
+        
         cityForm.append(cityInput, cityLabel)
     })
 }
@@ -207,3 +250,4 @@ function renderCities(breweries){
 submitFormListen()
 filterTypeListen()
 searchBarListen()
+clearAllListen()
