@@ -1,6 +1,7 @@
 //STATE
 const state = {
     breweries: [],
+    filterByName: ""
   };
 
 //SELECT ELEMENTS
@@ -9,10 +10,17 @@ const inputField = document.querySelector('#select-state-form')
 const searchThisState = document.querySelector(`#select-state`)
 const filterSelector = document.querySelector(`#filter-by-type-form`)
 const typeOfFilter = document.querySelector('#filter-by-type')
+const brewerySeachBar = document.querySelector('#search-breweries-form')
+const searchThisBrewery = document.querySelector('search-breweries')
 
-console.log(searchThisState.value)
+// EX2
+// Select form for right hand side ID filter-by-city-form
+// For each loop round breweries
+// Create new elements with input and lable (lable type checkbox, name + value = STATE NAME taken from breweries)
+// Label innertext = STATENAME
+// Append
 
-filterSelector.addEventListener('change', function(event){
+filterSelector.addEventListener('input', function(event){
     event.preventDefault()
     listOfBreweriesUL.innerHTML = ""
     if(typeOfFilter.value == "micro"){
@@ -21,19 +29,15 @@ filterSelector.addEventListener('change', function(event){
         })
         isMicro.forEach((brewery) => {
             creatingBreweriesList(brewery)
-
         })
-    }
-    if(typeOfFilter.value == "regional"){
+    } if(typeOfFilter.value == "regional"){
         const isRegional = state.breweries.filter(brewery => {
             return brewery.brewery_type === "regional"
         })
         isRegional.forEach((brewery) => {
             creatingBreweriesList(brewery)
-
         })
-    }
-    if(typeOfFilter.value == "brewpub"){
+    } if(typeOfFilter.value == "brewpub"){
         const isBrewPub = state.breweries.filter(brewery => {
             return brewery.brewery_type === "brewpub"
         })
@@ -43,7 +47,6 @@ filterSelector.addEventListener('change', function(event){
         })
     }
     })
-
 
 inputField.addEventListener('submit', function(event){
     event.preventDefault()
@@ -55,7 +58,27 @@ inputField.addEventListener('submit', function(event){
     }
 })
 
-
+brewerySeachBar.addEventListener('input', function(event){
+    event.preventDefault
+    state.filterByName = event.target.value.toLowerCase()
+    const breweriesFilteredByName = state.breweries.filter((brewery) => {
+        if (state.filterByName.length === 0){
+            return true; 
+        } if (brewery.name.includes(state.filterByName)) {
+            return true;
+        } if (brewery.name.toLowerCase().includes(state.filterByName)){
+            return true;
+        } else {    
+            return false;
+        }
+    })
+    console.log(breweriesFilteredByName)
+    listOfBreweriesUL.innerHTML = ""
+    breweriesFilteredByName.forEach((brewery) => {
+        creatingBreweriesList(brewery)
+    })
+})
+  
 //NETWORK
 
 function getBreweriesByStateFromAPI(stateName){

@@ -19,6 +19,7 @@
         </form>
       </section>
     </header>
+    
     <main>
       <aside class="filters-section">
         <aside class="filters-section">
@@ -33,8 +34,29 @@
             </select>
           </form>
         </aside>
+        <div class="filter-by-city-heading">
+          <h3>Cities</h3>
+          <button class="clear-all-btn">clear all</button>
+        </div>
+        <form id="filter-by-city-form">
+          <!-- 
+            For each city, generate a checkbox and label like below 
+          -->
+          <input type="checkbox" name="chardon" value="chardon" />
+          <label for="chardon">Chardon</label>
+        
+          <input type="checkbox" name="cincinnati" value="cincinnati" />
+          <label for="cincinnati">Cincinnati</label>
+        
+        </form>
       </aside>
       <h1>List of Breweries</h1>
+      <header class="search-bar">
+        <form id="search-breweries-form" autocomplete="off">
+          <label for="search-breweries"><h2>Search breweries:</h2></label>
+          <input id="search-breweries" name="search-breweries" type="text">
+        </form>
+      </header>
       <article>
         <ul id="breweries-list" class="breweries-list">
           <!--
