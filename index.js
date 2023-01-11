@@ -6,14 +6,34 @@ const state = {
 // select html elements
 
 const breweryList = document.querySelector("#breweries-list");
+const formState = document.querySelector('#select-state-form');
+const inputState = document.querySelector('#select-state');
+const typeFilter = document.querySelector('#filter-by-type-form');
+
+// event logic
+
+let usState = ''
+
+formState.addEventListener('submit', (event) => {
+    event.preventDefault;
+    console.log(inputState.value);
+    usState = inputState.value;
+    usState = usState.toLowerCase();
+    getStateBrews(usState);    
+})
+
 
 // network requests
 
 function getStateBrews(usState) {
-    fetch(`https://api.openbrewerydb.org/breweries?by_state=${usState}&per_page=50`)
+    fetch("https://api.openbrewerydb.org/breweries?by_state=" + usState + "&per_page=50")
+    .then((response) => {
+        return response.json()
+    })
     .then((breweryData) => {
         state.breweries = breweryData;
-    })
+        renderBrewList();}
+    )
 }
 
 // rendering
@@ -90,3 +110,5 @@ function renderBrewList() {
 }
 
 // start
+
+renderBrewList();
