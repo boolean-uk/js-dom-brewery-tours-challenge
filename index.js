@@ -35,6 +35,7 @@ const state = {
 };
 // EXISTING ELEMENTS QUERY SELECTORS
 const searchButton = document.querySelector("#select-state-form");
+const breweriesUL = document.querySelector("#breweries-list");
 
 function fetchBreweriesByState(stateName) {
   fetch(
@@ -59,7 +60,7 @@ function fetchBreweriesByState(stateName) {
       });
 
       console.log(state.breweries);
-      stateData.forEach((item) => {
+      /*  stateData.forEach((item) => {
         console.log(item.id, "======", item.brewery_type.toUpperCase());
       });
       console.log("=================================");
@@ -68,7 +69,7 @@ function fetchBreweriesByState(stateName) {
 
       state.breweries.forEach((item) => {
         console.log(item.id, "======", item.brewery_type.toUpperCase());
-      });
+      }); */
 
       // Call function to render the breweries
       renderBreweries();
@@ -91,4 +92,66 @@ searchButton.addEventListener("submit", (event) => {
   fetchBreweriesByState(stateName);
 });
 
-function renderBreweries() {}
+function renderBreweries() {
+  state.breweries.forEach((listing) => {
+    // CREATE ELEMENTS & SET ATTRIBUTES + PROPERTIES
+    const breweryLI = document.createElement("li");
+
+    const name = document.createElement("h2");
+    name.innerText = listing.name;
+
+    const type = document.createElement("div");
+    type.setAttribute("class", "type");
+    type.innerText = listing.brewery_type;
+
+    const addressSection = document.createElement("section");
+    addressSection.setAttribute("class", "address");
+
+    const addressHeader = document.createElement("h3");
+    addressHeader.innerText = "Address:";
+
+    const street = document.createElement("p");
+    street.innerText = listing.street;
+
+    const cityAndPostalCode = document.createElement("p");
+    cityAndPostalCode.innerHTML = `<strong>${listing.city}, ${listing.postal_code}</strong>`;
+
+    const phoneSection = document.createElement("section");
+    phoneSection.setAttribute("class", "phone");
+
+    const phoneHeader = document.createElement("h3");
+    phoneHeader.innerText = "Phone:";
+
+    const phoneNumber = document.createElement("p");
+    if (listing.phone === null) {
+      phoneNumber.innerText = "N/A";
+    } else {
+      phoneNumber.innerText = listing.phone;
+    }
+
+    const websiteSection = document.createElement("section");
+    websiteSection.setAttribute("class", "link");
+
+    const websiteAnchor = document.createElement("a");
+    websiteAnchor.setAttribute("href", listing.website_url);
+    websiteAnchor.setAttribute("target", "_blank");
+    websiteAnchor.innerText = "Visit Website";
+
+    // APPEND ELEMENTS
+    breweriesUL.append(breweryLI);
+    breweryLI.append(name);
+    breweryLI.append(type);
+
+    breweryLI.append(addressSection);
+    addressSection.append(addressHeader);
+    addressSection.append(street);
+    addressSection.append(cityAndPostalCode);
+
+    breweryLI.append(phoneSection);
+    phoneSection.append(phoneHeader);
+    phoneSection.append(phoneNumber);
+
+    breweryLI.append(websiteSection);
+    websiteSection.append(websiteAnchor);
+  });
+}
