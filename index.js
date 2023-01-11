@@ -33,6 +33,7 @@ const filterForm = document.querySelector("#filter-by-type-form")
 const filterSelect = document.querySelector("#filter-by-type")
 const searchForm = document.querySelector("#search-breweries-form")
 const searchInput = document.querySelector("#search-breweries")
+const cityForm = document.querySelector("#filter-by-city-form")
 
 // EVENT LISTENERS
 
@@ -176,9 +177,29 @@ function renderBreweries(breweries) {
         brewLI.append(brewH2, brewDiv, addressSection, phoneSection, websiteSection)
         breweryUL.append(brewLI)
     })
+    renderCities(breweries)
   }
 
+function renderCities(breweries){
+    cityForm.innerHTML = "";
 
+    const cities = breweries.map((company) => company.city)
+    const filteredCities = cities.filter((city, index) => cities.indexOf(city) === index).sort()
+    
+
+    filteredCities.forEach((city) => {
+        const cityInput = document.createElement("input")
+        cityInput.type = "checkbox"
+        cityInput.name = city
+        cityInput.value = city
+
+        const cityLabel = document.createElement("label")
+        cityLabel.for = city
+        cityLabel.innerText = city
+
+        cityForm.append(cityInput, cityLabel)
+    })
+}
 
 
 
@@ -186,12 +207,3 @@ function renderBreweries(breweries) {
 submitFormListen()
 filterTypeListen()
 searchBarListen()
-
-
-
-// extension 1...
-// create search bar and event listener for each key stroke
-// as keystroke, .find through brewery array to render new array.
-
-//extension 2...
-// rendering cities under filter bar.
