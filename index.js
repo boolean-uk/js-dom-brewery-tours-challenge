@@ -62,6 +62,30 @@ function renderBrewList() {
         aLink.href = item.website_url;
         aLink.target = "_blank";
         aLink.innerHTML = "Visit Website";
+
+        // Appending
+
+        // Address section appends
+        sectAddress.append(h3Address);
+        sectAddress.append(pStreet);
+        sectAddress.append(pCity);
+
+        // Phone section appends
+        sectPhone.append(h3Phone);
+        sectPhone.append(pPhone);
+
+        // Link section appends
+        sectLink.append(aLink);
+
+        // li appends
+        li.append(h2);
+        li.append(div);
+        li.append(sectAddress);
+        li.append(sectPhone);
+        li.append(sectLink);
+
+        breweryList.append(li);
+
     })
 }
 
