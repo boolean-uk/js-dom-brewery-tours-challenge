@@ -218,9 +218,7 @@ function renderCities(breweries){
         cityLabel.for = city
         cityLabel.innerText = city
 
-        cityInput.addEventListener("change", (event) => {
-            // const filterType = filterByCity(city)
-            // renderBreweries(filterType)
+        cityInput.addEventListener("change", () => {
             if(cityInput.checked) {
                 checkedCities.push(city)
                 const filteredBreweries = state.breweries.filter((brewery) => checkedCities.includes(brewery.city))
@@ -231,12 +229,11 @@ function renderCities(breweries){
                     const filteredBreweries = state.breweries.filter((brewery) => checkedCities.includes(brewery.city))
                     renderBreweries(filteredBreweries)
                 } else if(checkedCities.length === 1) {
+                    checkedCities = []
                     const filterType = filterBreweriesAll()
-                    console.log(filterType)
                     renderBreweries(filterType)
                     renderCities(filterType)
                 }
-                
             }
         })
         
