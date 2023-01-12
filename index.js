@@ -15,28 +15,11 @@ const filterSelector = document.querySelector(`#filter-by-type-form`)
 const typeOfFilter = document.querySelector('#filter-by-type')
 const brewerySeachBar = document.querySelector('#search-breweries-form')
 const searchThisBrewery = document.querySelector('search-breweries')
-const filterByCity = document.querySelector('#filter-by-city-form')
-
-// EX2
-// Select form for right hand side ID filter-by-city-form TICK
-// Create function and call it from the render function 
-// For each loop round breweries within filtered breweries
-// Create new elements with input and lable (lable type checkbox, name + value = STATE NAME taken from breweries)
-// Label innertext = STATENAME
-// Append
-
-// function filterCheckboxList(filteredBreweries) {
-//     console.log(filteredBreweries)
-//     filteredBreweries.forEach((brewery) => {
-//         const breweryNameForListInput = document.createElement('input')
-//         breweryNameForListInput.getAttribute('type', "checkbox")
-//         const breweryNameForListLabel = document.createElement('label')
-//         breweryNameForListLabel.getAttribute('for', "statename")
-//         breweryNameForListLabel.innerText = brewery.name
-//         filterByCity.append(breweryNameForListInput, breweryNameForListLabel)
-
-//     })
-// }
+const filterByCityList = document.querySelector('#filter-by-city-form')
+const clearAllButton = document.querySelector(".clear-all-btn")
+const checklistBox = document.querySelector('#filter-by-city-form input')
+console.log(checklistBox)
+console.log(filterByCityList)
 
 // Drop Down event listener
 filterSelector.addEventListener('input', function(event){
@@ -64,9 +47,17 @@ brewerySeachBar.addEventListener('input', function(event){
 })
 
 // Checkbox event listener
-filterByCity.addEventListener('input', function(event){
-    event.preventDefault
+filterByCityList.addEventListener('change', function(event){
+    event.preventDefault()
     state.filterByCity = event.target.value
+    renderBreweries()
+})
+
+// Clear all button
+
+clearAllButton.addEventListener('click', function(event){
+    event.preventDefault
+    state.filterByCity = ""
     renderBreweries()
 })
   
@@ -187,7 +178,7 @@ function creatingBreweriesList(brewery){
 }
 
 function renderCitiesList(){
-    filterByCity.innerHTML = ""
+    filterByCityList.innerHTML = ""
     state.listOfCities.forEach((city) => {
         const breweryNameForListInput = document.createElement('input')
         breweryNameForListInput.setAttribute('type', "checkbox")
@@ -196,7 +187,7 @@ function renderCitiesList(){
         const breweryNameForListLabel = document.createElement('label')
         breweryNameForListLabel.setAttribute('for', city)
         breweryNameForListLabel.innerText = city
-        filterByCity.append(breweryNameForListInput, breweryNameForListLabel)
+        filterByCityList.append(breweryNameForListInput, breweryNameForListLabel)
     })
 } 
 
