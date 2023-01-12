@@ -1,6 +1,7 @@
 // state
 const state = {
-    breweries: []
+    breweries: [],
+    type: ''
 };
 
 // select html elements
@@ -8,15 +9,9 @@ const state = {
 const breweryList = document.querySelector("#breweries-list");
 const formState = document.querySelector('#select-state-form');
 const inputState = document.querySelector('#select-state');
-const typeFilter = document.querySelector('#filter-by-type-form');
+const typeFilter = document.querySelector('#filter-by-type');
 
 // event logic
-
-// String.replaceAt = function (index, char) {
-//     let a = this.split("");
-//     a[index] = char;
-//     return a.join("");
-// }
 
 let usState = ''
 
@@ -31,6 +26,13 @@ formState.addEventListener('submit', (event) => {
     usState.replace(` `, `_`);
     getStateBrews(usState);    
 })
+
+typeFilter.addEventListener('change', (event) => {
+    state.type = event.target.value
+    console.log(state.type)
+    renderBrewList();
+})
+
 
 
 // network requests
@@ -59,6 +61,16 @@ function renderBrewList() {
 
     let filteredBreweries = state.breweries.filter((brewery) => {
         if (brewery.brewery_type === "brewpub" || brewery.brewery_type === "micro" || brewery.brewery_type === "regional") {
+            return true
+        } else {
+            return false
+        }
+    })
+
+    filteredBreweries = filteredBreweries.filter((brewery) => {
+        if (state.type === "") {
+            return true
+        } else if (brewery.brewery_type === state.type) {
             return true
         } else {
             return false
