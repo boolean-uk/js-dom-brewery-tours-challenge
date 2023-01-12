@@ -121,8 +121,10 @@ function getVisitData() {
     })
     .then((responseData) => {
         state.visitDatabase = responseData
-        console.log(state.visitDatabase)
+        console.log("inside getvisitdata", state.visitDatabase)
+        renderBreweries()
     })
+
 }
 
 // RENDERING
@@ -190,12 +192,12 @@ function renderBreweries() {
 
     // If there are no more entries - Rerender previous page.
 
-    if(paginatedBreweries.length === 0){
-        state.currentPage--
-        start = rows * state.currentPage;
-        end = start + rows;
-        paginatedBreweries = filteredBreweries.slice(start, end)
-    }
+    // if(paginatedBreweries.length === 0){
+    //     state.currentPage--
+    //     start = rows * state.currentPage;
+    //     end = start + rows;
+    //     paginatedBreweries = filteredBreweries.slice(start, end)
+    // }
 
     paginatedBreweries.forEach((brewery) => {
         // CREATING
@@ -259,12 +261,60 @@ function renderBreweries() {
         visitSection.className = "visit";
 
         const visitBtn = document.createElement("button");
-        console.log(state.visitDatabase.includes(brewery.name))
-        console.log(brewery.name)
-        if(state.visitDatabase.find(visitDB => visitDB.name === brewery.name)) {
+        // If the brewery name is already in the VisitDB, then change text to "remove from list"
+        // Else have text as "save to list"
+        if(state.visitDatabase.find(visitPub => visitPub.name === brewery.name)) {
             visitBtn.innerText = "Remove From List";
+            // Add Event Listener
+            // DELETE REQUEST
+            visitBtn.addEventListener("click", () => {
+                
+                // grab ID
+                const pubID = state.visitDatabase.find(visitPub => visitPub.name === brewery.name).id
+    
+                const options = {
+                    method: "DELETE"
+                }
+                fetch(`http://localhost:3000/breweries/${pubID}`, options)
+                .then((res) => {
+                    console.log("Server Response to DELETE Fetch Status:", res.status)
+                    return res.json()
+                })
+                .then(() => {
+                    getVisitData()
+                    visitBtn.innerText = "Save To List"
+                })
+            })
         } else {
             visitBtn.innerText = "Save To List";
+            visitBtn.addEventListener("click", (event) => {
+
+                const newSaveBrewery = {
+                    name: brewery.name,
+                    city: brewery.city
+                }
+
+                const newSaveBreweryJSON = JSON.stringify(newSaveBrewery)
+
+                const options = {
+                    method: "POST",
+                    body: newSaveBreweryJSON,
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+
+                fetch("http://localhost:3000/breweries", options)
+                .then((response) => {
+                    console.log("Response to POST:", response.status)
+                    return response.json()
+                })
+                .then(() => {
+                    getVisitData()
+                    visitBtn.innerText = "Remove From List"
+                })
+
+            })
         }
 
         // APPENDING
@@ -274,7 +324,9 @@ function renderBreweries() {
         brewLI.append(brewH2, brewDiv, addressSection, phoneSection, websiteSection, visitSection);
         breweryUL.append(brewLI);
     })
+    
     renderPageButtons()
+    
   }
 
 function renderPageButtons() {
