@@ -1,6 +1,7 @@
 //STATE
 const state = {
     breweries: [],
+    filterByType: "",
     filterByName: ""
   };
 
@@ -20,34 +21,14 @@ const searchThisBrewery = document.querySelector('search-breweries')
 // Label innertext = STATENAME
 // Append
 
+// Drop Down event listener
 filterSelector.addEventListener('input', function(event){
-    event.preventDefault()
-    listOfBreweriesUL.innerHTML = ""
-    if(typeOfFilter.value == "micro"){
-        const isMicro = state.breweries.filter(brewery => {
-            return brewery.brewery_type === "micro"
-        })
-        isMicro.forEach((brewery) => {
-            creatingBreweriesList(brewery)
-        })
-    } if(typeOfFilter.value == "regional"){
-        const isRegional = state.breweries.filter(brewery => {
-            return brewery.brewery_type === "regional"
-        })
-        isRegional.forEach((brewery) => {
-            creatingBreweriesList(brewery)
-        })
-    } if(typeOfFilter.value == "brewpub"){
-        const isBrewPub = state.breweries.filter(brewery => {
-            return brewery.brewery_type === "brewpub"
-        })
-        console.log(isBrewPub)
-        isBrewPub.forEach((brewery) => {
-            creatingBreweriesList(brewery) 
-        })
-    }
-    })
+    event.preventDefault
+    state.filterByType = event.target.value
+    renderBreweries()
+})
 
+//Inial search for Breweries
 inputField.addEventListener('submit', function(event){
     event.preventDefault()
     const stateName = searchThisState.value
@@ -58,25 +39,11 @@ inputField.addEventListener('submit', function(event){
     }
 })
 
+// Search bar event listener
 brewerySeachBar.addEventListener('input', function(event){
     event.preventDefault
     state.filterByName = event.target.value.toLowerCase()
-    const breweriesFilteredByName = state.breweries.filter((brewery) => {
-        if (state.filterByName.length === 0){
-            return true; 
-        } if (brewery.name.includes(state.filterByName)) {
-            return true;
-        } if (brewery.name.toLowerCase().includes(state.filterByName)){
-            return true;
-        } else {    
-            return false;
-        }
-    })
-    console.log(breweriesFilteredByName)
-    listOfBreweriesUL.innerHTML = ""
-    breweriesFilteredByName.forEach((brewery) => {
-        creatingBreweriesList(brewery)
-    })
+    renderBreweries()
 })
   
 //NETWORK
@@ -88,11 +55,51 @@ function getBreweriesByStateFromAPI(stateName){
         })
         .then((breweriesDataFromServer) => {
             state.breweries = breweriesDataFromServer
-            renderAllBreweries()
+            renderBreweries()
         })
 }
 
 //RENDERING
+
+function renderBreweries(){
+    listOfBreweriesUL.innerHTML = ""
+    // create filter variable and filter by type
+    let filteredBreweries = state.breweries.filter((brewery) => {
+        if(state.filterByType.length > 0){
+            if(brewery.brewery_type === state.filterByType){
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return true
+        }
+    })
+    // Filter By name
+    filteredBreweries = filteredBreweries.filter((brewery) => {
+        if(state.filterByName.length > 0){
+            if (state.filterByName.length === 0){
+                return true; 
+            } if (brewery.name.includes(state.filterByName)) {
+                return true;
+            } if (brewery.name.toLowerCase().includes(state.filterByName)){
+                return true;
+            } else {    
+                return false;
+            }
+        } else {
+            return true
+        }
+    })
+
+    filteredBreweries.forEach((brewery) => {
+        creatingBreweriesList(brewery)
+    })
+    
+    // state.breweries.forEach((brewery) => {
+    //     creatingBreweriesList(brewery)
+    // })
+}
 
 function creatingBreweriesList(brewery){
     const breweryDataLiConstainer = document.createElement("li")
@@ -135,12 +142,12 @@ function creatingBreweriesList(brewery){
         listOfBreweriesUL.append(breweryDataLiConstainer)
 }
 
-function renderAllBreweries(){
-    listOfBreweriesUL.innerHTML = ""
-    state.breweries.forEach((brewery) => {
-        creatingBreweriesList(brewery)
-    })
-}
+// function renderAllBreweries(){
+//     listOfBreweriesUL.innerHTML = ""
+//     state.breweries.forEach((brewery) => {
+//         creatingBreweriesList(brewery)
+//     })
+// }
 
 // -- LOGIC --
 // 1.) Create State object and include breweries
