@@ -21,7 +21,9 @@
                 If no option is selected, check if at least one of the three options is OK
                     if yes, add the item to the filtered list
             render the filtered list
-
+*/
+//DONE
+/*
     Render the list
         get the ul element 
         for each item in the filtered list
@@ -33,9 +35,15 @@
 
 */
 const UlElement = document.querySelector("ul");
+const stateSearchForm = document.querySelector("select-state-form");
 
-const RenderBreweryList = (filteredList) => {
-    filteredList.forEach(element => {
+const State = {
+    BreweriesList: [],
+    FilteredBreweries: []
+}
+
+const RenderBreweryList = () => {
+    State.FilteredBreweries.forEach(element => {
         UlElement.innerHTML = "";
         //creating elements
         const LiElement = document.createElement("li");
@@ -83,3 +91,24 @@ const RenderBreweryList = (filteredList) => {
         UlElement.append(LiElement);
     });
 }
+
+const FecthData = (USState) => {
+    fetch(`https://api.openbrewerydb.org/breweries?by_state=${USState}`)
+    .then((res) => {return res.json()})
+    .then((breweries) => {
+        State.BreweriesList = breweries;
+        FilterBreweries();
+    })
+}
+
+const FilterBreweries = () => {
+
+}
+
+stateSearchForm.addEventListener('submit', (eventObject)=>{
+    eventObject.preventDefault();
+    const userInput = document.querySelector('#select-state').value.replace(' ', '_');
+    FecthData(userInput);
+    FilterBreweries();
+    RenderBreweryList();
+})
