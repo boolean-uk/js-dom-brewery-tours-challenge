@@ -96,6 +96,8 @@ function clearAllListen() {
 }
 
 // NETWORK REQUESTS
+
+// From API
 function getAllBreweries(stateName) {
     fetch(`https://api.openbrewerydb.org/breweries?by_state=${stateName}&per_page=50`)
     .then((response) => {
@@ -108,6 +110,19 @@ function getAllBreweries(stateName) {
         renderCities(state.breweries);
     });
 
+}
+
+// From Visit Database
+
+function getVisitData() {
+    fetch('http://localhost:3000/breweries')
+    .then((response) => {
+        return response.json();
+    })
+    .then((responseData) => {
+        state.visitDatabase = responseData
+        console.log(state.visitDatabase)
+    })
 }
 
 // RENDERING
@@ -167,9 +182,7 @@ function renderBreweries() {
 
     // Filter By Pagination (Page Number)
 
-    // let start = rows * currentPage;
-    // let end = start + rows;
-    // let paginatedBreweries = breweries.slice(start, end);
+
     let start = rows * state.currentPage;
     let end = start + rows;
 
@@ -237,11 +250,28 @@ function renderBreweries() {
         websiteAn.target = "_blank";
         websiteAn.innerText = "Visit Website";
 
+        
         // APPENDING
         websiteSection.append(websiteAn);
+        
+        // CREATING
+        const visitSection = document.createElement("section");
+        visitSection.className = "visit";
+
+        const visitBtn = document.createElement("button");
+        console.log(state.visitDatabase.includes(brewery.name))
+        console.log(brewery.name)
+        if(state.visitDatabase.find(visitDB => visitDB.name === brewery.name)) {
+            visitBtn.innerText = "Remove From List";
+        } else {
+            visitBtn.innerText = "Save To List";
+        }
+
+        // APPENDING
+        visitSection.append(visitBtn);
 
         //FINAL APPEND
-        brewLI.append(brewH2, brewDiv, addressSection, phoneSection, websiteSection);
+        brewLI.append(brewH2, brewDiv, addressSection, phoneSection, websiteSection, visitSection);
         breweryUL.append(brewLI);
     })
     renderPageButtons()
@@ -251,11 +281,11 @@ function renderPageButtons() {
     paginationWrapper.innerHTML = "";
     
     const backButton = document.createElement("button")
-    backButton.innerText = "< Previous page"
+    backButton.innerText = "<"
     const currentPageSpan = document.createElement("span")
     currentPageSpan.innerText = state.currentPage + 1
     const forwardButton = document.createElement("button")
-    forwardButton.innerText = "Next Page >"
+    forwardButton.innerText = ">"
 
     backButton.addEventListener("click", () => {
         if(state.currentPage > 0){
@@ -318,3 +348,7 @@ submitFormListen();
 filterTypeListen();
 searchBarListen();
 clearAllListen();
+getVisitData()
+
+
+// json-server --watch breweries.json --port 3000

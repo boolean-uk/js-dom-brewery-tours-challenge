@@ -1,0 +1,16 @@
+{
+    "breweries": [
+        {
+            "name": "Test Brewery",
+            "id": 1
+        },
+        {
+            "name": "Second Test Brewery",
+            "id": 2
+        },
+        {
+            "name": "13 Below Brewery",
+            "id": 3
+        }
+    ]
+}
