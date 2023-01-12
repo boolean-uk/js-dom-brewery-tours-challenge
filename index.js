@@ -1,8 +1,10 @@
 //STATE
 const state = {
     breweries: [],
+    listOfCities: [],
     filterByType: "",
-    filterByName: ""
+    filterByName: "",
+    filterByCity: ""
   };
 
 //SELECT ELEMENTS
@@ -13,13 +15,28 @@ const filterSelector = document.querySelector(`#filter-by-type-form`)
 const typeOfFilter = document.querySelector('#filter-by-type')
 const brewerySeachBar = document.querySelector('#search-breweries-form')
 const searchThisBrewery = document.querySelector('search-breweries')
+const filterByCity = document.querySelector('#filter-by-city-form')
 
 // EX2
-// Select form for right hand side ID filter-by-city-form
-// For each loop round breweries
+// Select form for right hand side ID filter-by-city-form TICK
+// Create function and call it from the render function 
+// For each loop round breweries within filtered breweries
 // Create new elements with input and lable (lable type checkbox, name + value = STATE NAME taken from breweries)
 // Label innertext = STATENAME
 // Append
+
+// function filterCheckboxList(filteredBreweries) {
+//     console.log(filteredBreweries)
+//     filteredBreweries.forEach((brewery) => {
+//         const breweryNameForListInput = document.createElement('input')
+//         breweryNameForListInput.getAttribute('type', "checkbox")
+//         const breweryNameForListLabel = document.createElement('label')
+//         breweryNameForListLabel.getAttribute('for', "statename")
+//         breweryNameForListLabel.innerText = brewery.name
+//         filterByCity.append(breweryNameForListInput, breweryNameForListLabel)
+
+//     })
+// }
 
 // Drop Down event listener
 filterSelector.addEventListener('input', function(event){
@@ -45,6 +62,13 @@ brewerySeachBar.addEventListener('input', function(event){
     state.filterByName = event.target.value.toLowerCase()
     renderBreweries()
 })
+
+// Checkbox event listener
+filterByCity.addEventListener('input', function(event){
+    event.preventDefault
+    state.filterByCity = event.target.value
+    renderBreweries()
+})
   
 //NETWORK
 
@@ -63,6 +87,7 @@ function getBreweriesByStateFromAPI(stateName){
 
 function renderBreweries(){
     listOfBreweriesUL.innerHTML = ""
+    // filterByCity.innerHTML = ""
     // create filter variable and filter by type
     let filteredBreweries = state.breweries.filter((brewery) => {
         if(state.filterByType.length > 0){
@@ -91,14 +116,33 @@ function renderBreweries(){
             return true
         }
     })
+    // Create City List
+    filteredBreweries.forEach((brewery) => {
+        if(!state.listOfCities.includes(brewery.city)){
+            state.listOfCities.push(brewery.city)
+            renderCitiesList()
+        }
+    })
+
+    // Filter by City
+
+    filteredBreweries = filteredBreweries.filter((brewery) => {
+        if (state.filterByCity.length > 0) {
+            if (state.filterByCity.length === 0) {
+                return true
+            } if (brewery.city.includes(state.filterByCity)){
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return true
+        }
+    })
 
     filteredBreweries.forEach((brewery) => {
         creatingBreweriesList(brewery)
     })
-    
-    // state.breweries.forEach((brewery) => {
-    //     creatingBreweriesList(brewery)
-    // })
 }
 
 function creatingBreweriesList(brewery){
@@ -141,6 +185,20 @@ function creatingBreweriesList(brewery){
 
         listOfBreweriesUL.append(breweryDataLiConstainer)
 }
+
+function renderCitiesList(){
+    filterByCity.innerHTML = ""
+    state.listOfCities.forEach((city) => {
+        const breweryNameForListInput = document.createElement('input')
+        breweryNameForListInput.setAttribute('type', "checkbox")
+        breweryNameForListInput.setAttribute('name', city)
+        breweryNameForListInput.setAttribute('value', city)
+        const breweryNameForListLabel = document.createElement('label')
+        breweryNameForListLabel.setAttribute('for', city)
+        breweryNameForListLabel.innerText = city
+        filterByCity.append(breweryNameForListInput, breweryNameForListLabel)
+    })
+} 
 
 // function renderAllBreweries(){
 //     listOfBreweriesUL.innerHTML = ""
