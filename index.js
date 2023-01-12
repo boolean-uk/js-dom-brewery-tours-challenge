@@ -12,13 +12,23 @@ const typeFilter = document.querySelector('#filter-by-type-form');
 
 // event logic
 
+// String.replaceAt = function (index, char) {
+//     let a = this.split("");
+//     a[index] = char;
+//     return a.join("");
+// }
+
 let usState = ''
 
 formState.addEventListener('submit', (event) => {
-    event.preventDefault;
+    event.preventDefault();
+    state.breweries = [];
+    console.log(state.breweries)    
     console.log(inputState.value);
     usState = inputState.value;
+    inputState.value = '';
     usState = usState.toLowerCase();
+    usState.replace(` `, `_`);
     getStateBrews(usState);    
 })
 
@@ -26,11 +36,15 @@ formState.addEventListener('submit', (event) => {
 // network requests
 
 function getStateBrews(usState) {
+    console.log("check if getStateBrews is running")
+
     fetch("https://api.openbrewerydb.org/breweries?by_state=" + usState + "&per_page=50")
     .then((response) => {
-        return response.json()
+        console.log(response);
+        return response.json();
     })
     .then((breweryData) => {
+        console.log(`is state.breweries being cleared`, state.breweries);
         state.breweries = breweryData;
         renderBrewList();}
     )
@@ -40,8 +54,18 @@ function getStateBrews(usState) {
 
 function renderBrewList() {
     // maybe erase here?
+    
+    breweryList.innerHTML = '';
 
-    state.breweries.forEach((item)=> {
+    let filteredBreweries = state.breweries.filter((brewery) => {
+        if (brewery.brewery_type === "brewpub" || brewery.brewery_type === "micro" || brewery.brewery_type === "regional") {
+            return true
+        } else {
+            return false
+        }
+    })
+
+    filteredBreweries.forEach((item)=> {
         const li = document.createElement('li');
 
         const h2 = document.createElement('h2');
