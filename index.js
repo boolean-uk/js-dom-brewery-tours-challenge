@@ -360,7 +360,9 @@ const removeBreweryFromUserData = (element) => {
     }
     console.log(`http://localhost:3000/wantToVisit/${target}`)
     fetch(`http://localhost:3000/wantToVisit/${target}`, fetchOptions)
-        .then(() => fetchUserData())
+        .then(() => {
+            fetchUserData()
+        })
 }
 
 fetchRandomData()

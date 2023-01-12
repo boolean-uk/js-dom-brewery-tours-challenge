@@ -2,28 +2,6 @@
   "wantToVisit": [
     {
       "brewery": {
-        "id": "bad-lab-beer-co-somersworth",
-        "name": "Bad Lab Beer Co.",
-        "brewery_type": "brewpub",
-        "street": "460 High St",
-        "address_2": null,
-        "address_3": null,
-        "city": "Somersworth",
-        "state": "New Hampshire",
-        "county_province": null,
-        "postal_code": "03878-1012",
-        "country": "United States",
-        "longitude": "-70.88353777",
-        "latitude": "43.22651432",
-        "phone": "6033192436",
-        "website_url": "http://www.badlabbeer.com",
-        "updated_at": "2023-01-04T04:46:02.393Z",
-        "created_at": "2023-01-04T04:46:02.393Z"
-      },
-      "id": 1
-    },
-    {
-      "brewery": {
         "id": "11-below-brewing-company-houston",
         "name": "11 Below Brewing Company",
         "brewery_type": "micro",
@@ -42,7 +20,7 @@
         "updated_at": "2023-01-04T04:46:02.393Z",
         "created_at": "2023-01-04T04:46:02.393Z"
       },
-      "id": 2
+      "id": 1
     },
     {
       "brewery": {
@@ -64,7 +42,51 @@
         "updated_at": "2023-01-04T04:46:02.393Z",
         "created_at": "2023-01-04T04:46:02.393Z"
       },
-      "id": 3
+      "id": 2
+    },
+    {
+      "brewery": {
+        "id": "512-brewing-co-austin",
+        "name": "(512) Brewing Co",
+        "brewery_type": "micro",
+        "street": "407 Radam Ln Ste F200",
+        "address_2": null,
+        "address_3": null,
+        "city": "Austin",
+        "state": "Texas",
+        "county_province": null,
+        "postal_code": "78745-1197",
+        "country": "United States",
+        "longitude": null,
+        "latitude": null,
+        "phone": "5129211545",
+        "website_url": "http://www.512brewing.com",
+        "updated_at": "2023-01-04T04:46:02.393Z",
+        "created_at": "2023-01-04T04:46:02.393Z"
+      },
+      "id": 5
+    },
+    {
+      "brewery": {
+        "id": "5-stones-artisan-brewery-new-braunfels",
+        "name": "5 Stones Artisan Brewery",
+        "brewery_type": "micro",
+        "street": "11335 Farm To Market Road 1863",
+        "address_2": null,
+        "address_3": null,
+        "city": "New Braunfels",
+        "state": "Texas",
+        "county_province": null,
+        "postal_code": "78132",
+        "country": "United States",
+        "longitude": "-98.232345",
+        "latitude": "29.711365",
+        "phone": "2103808215",
+        "website_url": null,
+        "updated_at": "2023-01-04T04:46:02.393Z",
+        "created_at": "2023-01-04T04:46:02.393Z"
+      },
+      "id": 6
     }
   ]
 }

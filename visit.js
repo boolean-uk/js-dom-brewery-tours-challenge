@@ -49,16 +49,22 @@ const fetchUserData = () => {
         .then((res) => res.json())
         .then((data) => {
             state.breweries = data
-            populateStateOptions()
-            populateTypeOptions()
-            populateCities()
-            displayBreweries()
+            init()
         })
+}
+
+
+const init = () => {
+    populateStateOptions()
+    populateTypeOptions()
+    populateCities()
+    displayBreweries()
 }
 
 
 const populateStateOptions = () => {
     stateSelect.innerHTML = ''
+    state.states = []
 
     const defaultOption = document.createElement('option')
     defaultOption.value = ''
@@ -79,6 +85,7 @@ const populateStateOptions = () => {
 
 const populateTypeOptions = () => {
     typeSelect.innerHTML = ''
+    state.types = []
 
     const defaultOption = document.createElement('option')
     defaultOption.value = ''
@@ -100,6 +107,7 @@ const populateTypeOptions = () => {
 
 const populateCities = () => {
     citiesForm.innerHTML = ''
+    state.cities = []
 
     state.breweries.forEach((breweryEntry) => {
         if (!state.cities.includes(breweryEntry.brewery.city)) {
@@ -170,6 +178,13 @@ const displayBreweries = () => {
             sectionPhone.append(pPhone)
         li.append(sectionPhone)
 
+        const removeBtn = document.createElement('button')
+        removeBtn.innerText = "Remove"
+        removeBtn.addEventListener('click', () => {
+            removeItem(breweryEntry)
+        })
+        li.append(removeBtn)
+
         const sectionWebsite = document.createElement('section')
         sectionWebsite.className = 'link'
             const a = document.createElement('a')
@@ -235,6 +250,15 @@ const filterByName = () => {
             brewery.style.display = 'none'
         }
     })
+}
+
+
+const removeItem = (item) => {
+    const fetchOptions = {
+        method: "DELETE"
+    }
+    fetch(`http://localhost:3000/wanttovisit/${item.id}`, fetchOptions)
+        .then(() => fetchUserData())
 }
 
 fetchUserData()
