@@ -28,7 +28,8 @@ const state = {
     citys: [],
     filterByCity: [],
     filterByType: "",
-    filterByName: ""
+    filterByName: "",
+    CurrentPage: 1
 };
 
 
@@ -43,7 +44,9 @@ const searchByNameForm = document.querySelector("#search-breweries-form")
 const searchName = document.querySelector("search-breweries")
 const filterByCityForm = document.querySelector("#filter-by-city-form")
 const clearAllBtn = document.querySelector(".clear-all-btn")
-
+const pageForward = document.querySelector("#next-button")
+const pageBack = document.querySelector("#prev-button")
+const pageNumbers = document.querySelector("#pagination-numbers")
 // NETWORK REQUESTS
 //   - make get request that uses user input to search by state
 //      - GET https://api.openbrewerydb.org/breweries?by_state=${US_STATE_NAME}&per_page=50
@@ -71,6 +74,7 @@ const clearAllBtn = document.querySelector(".clear-all-btn")
 // -if brewry type === "micro" render the object and repeat 
 // START
 
+// Function calls performs GET request for data by state
 searchByStateForm.addEventListener("submit", (event) => {
     event.preventDefault()
     const US_STATE_NAME = search.value
@@ -94,6 +98,7 @@ searchByStateForm.addEventListener("submit", (event) => {
             return
         })
         .then(() => {
+            state.citys = []
             state.breweries.forEach((brewery) => {
                 if (state.citys.includes(brewery.city)) {
                     return
@@ -107,26 +112,45 @@ searchByStateForm.addEventListener("submit", (event) => {
             return
         })
 })
-
+// event listener to re-render the brewery list and intiate filter for type 
 selectByType.addEventListener('change', () => {
     state.filterByType = selectByType.value
     console.log(" filterd by type string", state.filterByType)
     renderBreweryList()
 })
-
+// event listner for search by name which re render the brewery initiate filter by name
 searchByNameForm.addEventListener('keyup', (event) => {
     state.filterByName = event.target.value;
 
     renderBreweryList()
 })
+// event listener that clears the filter by city and rerenders the brewery list and the city list
 clearAllBtn.addEventListener("click", () => {
     state.filterByCity = []
     renderBreweryList()
     renderCityList()
-    console.log("this is filter by citys2", state.filterByCity)
-    console.log("this is the cits array2" , state.citys)
 })
-
+pageForward.addEventListener("click", () => {
+    state.CurrentPage = state.CurrentPage + 1
+    if(state.CurrentPage === 5){
+        state.CurrentPage -1
+        console.log("current page3", state.CurrentPage)
+     return renderBreweryList()
+    }
+    console.log("current page4", state.CurrentPage)
+   return renderBreweryList()
+})
+pageBack.addEventListener("click", () => {
+    state.CurrentPage = state.CurrentPage - 1
+    if (state.CurrentPage === 0){
+        state.CurrentPage + 1
+        console.log("current page1", state.CurrentPage)
+        return renderBreweryList()
+    }
+    console.log("current page2", state.CurrentPage)
+    return renderBreweryList()
+})
+// mamoth function that performs all filtering and renders the brewery list
 function renderBreweryList() {
     breweriesList.innerHTML = ""
 
@@ -165,11 +189,24 @@ function renderBreweryList() {
         if (state.filterByCity.includes(brewery.city)) {
             return true
         }
-        else{
+        else {
             return false
         }
 
     })
+    if (filterdList.length > 10) {
+        let rows = 10;
+        state.CurrentPage--;
+
+        let start = rows * (state.CurrentPage)
+        let end = start + rows
+        filterdList = filterdList.slice(start, end);
+        
+        state.CurrentPage++;
+        console.log("this is the state", state.breweries)
+    }
+    
+
 
     filterdList.forEach((brewery) => {
 
@@ -235,8 +272,10 @@ function renderBreweryList() {
     })
 
 }
+// function the renders the city list
 function renderCityList() {
     filterByCityForm.innerHTML = ""
+
     state.citys.forEach((city) => {
         if (state.breweries.city === city) {
             return
@@ -258,7 +297,7 @@ function renderCityList() {
                 if (checkBox.checked === true) {
                     state.filterByCity.push(checkBox.value)
                 }
-                if(checkBox.checked === false) {
+                if (checkBox.checked === false) {
                     indexOfCityName = state.filterByCity.indexOf(checkBox.value);
                     removedItem = state.filterByCity.splice(indexOfCityName, 1)
                 }
@@ -267,4 +306,7 @@ function renderCityList() {
             })
         }
     })
+}
+function renderPageNumbers(){
+
 }
