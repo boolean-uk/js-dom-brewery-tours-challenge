@@ -1,7 +1,6 @@
 const state = {
     brewries: [],
-    filteredByName: []
-    // usa: ["alabama", "alaska", "arizona", "arkansas", "california", "colorado", "connecticut", "delaware", "florida", "georgia", "hawaii", "idaho", "illinois", "indiana", "iowa", "kansas", "kentucky", "louisiana", "maine", "maryland", "massachusetts", "michigan", "minnesota", "mississippi", "missouri", "montana", "nebraska", "nevada", "new hampshire", "new jersey", "new mexico", "new york", "north carolina", "north dakota", "ohio", "oklahoma", "oregon", "pennsylvania", "rhode island", "south carolina", "south dakota", "tennessee", "texas", "utah", "vermont", "virginia", "washington", "west virginia", "wisconsin"]
+    //filteredByName: []
 };
 
 //SELECT EXISTING HTML ELEMENTS
@@ -10,10 +9,10 @@ const searchForm = document.querySelector("#select-state-form")
 const searchState = document.querySelector("#select-state")
 const inputState = document.querySelector("#select-state")
 
+const dropdownSelectAType = document.querySelector("option")
 const dropdownMicro = document.querySelector("option[value = micro]")
 const dropdownBrewpub = document.querySelector("option[value = brewpub]")
 const dropdownRegional = document.querySelector("option[value = regional]")
-
 
 //EVENT LISTENER: SEARCH A  US STATE
 searchForm.addEventListener("submit", (event) => {
@@ -26,8 +25,7 @@ searchForm.addEventListener("submit", (event) => {
 
     console.log("event", event)
 
-    // if (stateName.length > 0) {
-    //check user has typed a USA state
+    // if (stateName.length > 0): if typed !(a US state), nothing will render
     if (stateName.length > 0) {
         //call function that will call the brewries by that state
         getBrewries(stateName)
@@ -36,23 +34,7 @@ searchForm.addEventListener("submit", (event) => {
     else if (stateName.length === 0) {
         alert("Please type in the state you are visiting first then try again")
     }
-
-    //  // apply filtering by type
-    //   filteredTodos = filteredTodos.filter((todo) => {
-    //     // if my array is empty, don't filter, keep all todos
-    //     if (state.filterByType.length === 0) return true;
-
-    //     // keep the todo item, if todo.type is a string inside state.filterByType array
-    //     for (let i = 0; i < state.filterByType.length; i++) {
-    //       if (todo.type === state.filterByType[i]) {
-    //         return true; // todo.type matches ONE of the types in my array so keep this todo and just return
-    //       }
-    //     }
-    //     // got to the end, haven't returned before, so there is no match
-    //     return false;
-    //   });
 })
-
 
 //NETWORK REQUESTS
 function getBrewries(stateName) {
@@ -72,11 +54,9 @@ function getBrewries(stateName) {
         });
 }
 
-
 //RENDERING
 function renderBreweryList() {
-    // const breweryInfo = state.brewries
-    //generate list of filtered breweries
+    //Generate list of breweries
     state.brewries.forEach((brewery) => {
         if (brewery.brewery_type === "micro"
             || brewery.brewery_type === "regional"
@@ -137,10 +117,15 @@ function renderBreweryList() {
     console.log(state.brewries)
 }
 
-
 //FILTER BY TYPE: ASIDE
-dropdownMicro.addEventListener("click", (event) => {                          //or in selected state
-    console.log("congrats, you selected the element dropdownMicro properly")
+//ideally a function would be called to render the relevant breweries but it hasnt worked irl yet
+dropdownSelectAType.addEventListener("click", (event) => {
+    brewriesUL.innerHTML = "";
+    renderBreweryList()
+})
+
+dropdownMicro.addEventListener("click", (event) => {
+    // console.log("congrats, you selected the element dropdownMicro properly")
     brewriesUL.innerHTML = "";
 
     state.brewries.forEach((brewery) => {
@@ -197,12 +182,10 @@ dropdownMicro.addEventListener("click", (event) => {                          //
             sectionLinkToBrewry.append(a)
         }
     })
-    console.log("micro ones:", state.brewries)
 })
 
 dropdownBrewpub.addEventListener("click", (event) => {
-    console.log("congrats, you selected the element dropdownBrewpub properly")
-
+    // console.log("congrats, you selected the element dropdownBrewpub properly")
     brewriesUL.innerHTML = "";
 
     state.brewries.forEach((brewery) => {
@@ -262,8 +245,7 @@ dropdownBrewpub.addEventListener("click", (event) => {
 })
 
 dropdownRegional.addEventListener("click", (event) => {
-    console.log("congrats, you selected the element dropdownRegional properly")
-
+    // console.log("congrats, you selected the element dropdownRegional properly")
     brewriesUL.innerHTML = "";
 
     state.brewries.forEach((brewery) => {
@@ -322,49 +304,42 @@ dropdownRegional.addEventListener("click", (event) => {
     })
 })
 
-//EXTENSION 1
 
-//create search bar
-//upon input, loop through rendered breweries
-//filter through state.breweries.name: use includes
-//if input value contains same word --> render the breweries that match. 
-
-
-// if state.brewries[i].name includes newBrewName, maybe push into filteredByName and then console.log(filteredByName)
+//EXTENSION 1--> status: kinda works
 const listOfBreweriesH1 = document.querySelector("h1")
 
-// const renderBrewerySearchBar = () => {
+//create search bar
+const renderBrewerySearchBar = () => {
 
-//     const breweriesSearch = document.createElement("header")
-//     breweriesSearch.setAttribute("class", "search-bar")
-//     listOfBreweriesH1.after(breweriesSearch)
+    const breweriesSearch = document.createElement("header")
+    breweriesSearch.setAttribute("class", "search-bar")
 
-//     const form = document.createElement("form")
-//     form.setAttribute("id", "search-breweries-form")
-//     // form.setAttribute("auto complete", off)
-//     breweriesSearch.append(form)
+    const form = document.createElement("form")
+    form.setAttribute("id", "search-breweries-form")
+    // form.setAttribute("auto complete", off)
 
-//     const label = document.createElement("label")
-//     label.setAttribute("for", "search-breweries")
-//     label.innerHTML = "<h2>Search breweries:</h2>"
-//     form.append(label)
+    const label = document.createElement("label")
+    label.setAttribute("for", "search-breweries")
+    label.innerHTML = "<h2>Search breweries:</h2>"
 
-//     const input = document.createElement("input")
-//     label.setAttribute("id", "search-breweries")
-//     label.setAttribute("name", "search-breweries")
-//     label.setAttribute("type", "text")
-//     // label.setAttribute("value", "")
+    const input = document.createElement("input")
+    input.setAttribute("id", "search-breweries")
+    input.setAttribute("name", "search-breweries")
+    input.setAttribute("type", "text")
+    input.setAttribute("oninput", "searchBrewEvent()")
 
-//     form.append(input)
+    //appends
+    listOfBreweriesH1.after(breweriesSearch)
+    breweriesSearch.append(form)
+    form.append(label)
+    form.append(input)
+}
 
-//     input.addEventListener("oninput", () => {
-//         console.log("input!!!")
-//         // searchBrewEvent()
-//         renderBreweryList()
-//     })
-// }
-// renderBrewerySearchBar()
+renderBrewerySearchBar()
 
+//upon input, loop through rendered breweries (works but does not go back to original list: 
+//therefore  can only search what is rendered)
+// if state.brewries[i].name includes newBrewName, maybe push into filteredByName and then console.log(filteredByName)??
 const searchBrewEvent = () => {
     brewriesUL.innerHTML = "";
 
@@ -385,7 +360,11 @@ const searchBrewEvent = () => {
         return true
     }
 
+    //atm only searching what is already on the page so retyping a new name doesn't work. have to re-search
+    //the state to get the whole list back up. Also doesn't work when teh list is filtered by type (the
+    // micro, brewpub and regional):
     for (let i = 0; i < state.brewries.length; i++) {
+        //filter through state.breweries.name: use includes
         if (state.brewries[i].name.includes(updatedBrewName)) {
             console.log("updated BrewName returned true", updatedBrewName)
 
@@ -439,12 +418,9 @@ const searchBrewEvent = () => {
             a.setAttribute("href", state.brewries[i].website_url)
             a.setAttribute("target", "_blank")
             sectionLinkToBrewry.append(a)
-            // return true
         } else {
             console.log("updated BrewName returned false", updatedBrewName)
             return false
         }
     }
-
-
 }
