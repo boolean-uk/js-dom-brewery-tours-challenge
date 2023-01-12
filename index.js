@@ -1,4 +1,4 @@
-//TODO
+//DONE
 /*
     Get the user Input
         Listen to the form submit
@@ -21,9 +21,7 @@
                 If no option is selected, check if at least one of the three options is OK
                     if yes, add the item to the filtered list
             render the filtered list
-*/
-//DONE
-/*
+            
     Render the list
         get the ul element 
         for each item in the filtered list
@@ -117,8 +115,12 @@ const FilterBreweries = () => {
                 State.FilteredBreweries.push(element);
             }
         }
-        else
+        else if (element.brewery_type === "micro" ||
+                element.brewery_type === "regional" ||
+                element.brewery_type === "brewpub" )
+        {
             State.FilteredBreweries.push(element);
+        }
     })
 }
 
