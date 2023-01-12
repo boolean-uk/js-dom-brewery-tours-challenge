@@ -4,6 +4,7 @@ const state = {
     filterByType: '',
     filterByName: '',
     filterByCity: [],
+    currentPage: 1
 };
 
 // VARIABLES
@@ -26,8 +27,7 @@ const usStates = [
 ];
 
 // Used for Pagination
-let currentPage = 0;
-let rows = 10;
+const rows = 10;
 
 // SELECT EXISTING HTML ELEMENTS
 const stateForm = document.querySelector("#select-state-form");
@@ -111,24 +111,23 @@ function getAllBreweries(stateName) {
 // RENDERING
 function renderBreweries() {
     breweryUL.innerHTML = "";
-    // Render filtered version
     // currentPage--;
 
-    // let start = rows * currentPage;
-    // let end = start + rows;
-    // let paginatedBreweries = breweries.slice(start, end);
+    // Filter By Brewery Type (Drop Down)
 
     let filteredBreweries = state.breweries.filter((brewery) => {
         if (state.filterByType.length > 0) {
             if (brewery.brewery_type === state.filterByType) {
-                return true
+                return true;
             } else {
-                return false
+                return false;
             }
         } else {
-            return true
+            return true;
         }
     })
+
+    // Filter By Brewery Name (Search Bar)
 
     filteredBreweries = filteredBreweries.filter((brewery) => {
         if(state.filterByName.length > 0) {
@@ -137,21 +136,27 @@ function renderBreweries() {
                 return true;
             }
         } else {
-            return true
+            return true;
         }
     })
 
+    // Filter By City Name (Check Boxes)
+
     filteredBreweries = filteredBreweries.filter((brewery) => {
         if (state.filterByCity.length === 0) return true;
-
+        // goes through the filterByCity array, and checks for matches.
         for (let i = 0; i < state.filterByCity.length; i++) {
             if (brewery.city === state.filterByCity[i]) {
               return true; 
             }
           }
-          // got to the end, haven't returned before, so there is no match
-          return false;
-        })
+        // If it reaches here, its because it had no matches. So return false.
+        return false;
+    })
+
+    // Filter By Pagination (Page Number)
+
+
 
     filteredBreweries.forEach((brewery) => {
         // CREATING
@@ -216,27 +221,30 @@ function renderBreweries() {
     // renderPageButtons()
   }
 
-// function renderPageButtons() {
-//     paginationWrapper.innerHTML = "";
+function renderPageButtons() {
+    paginationWrapper.innerHTML = "";
     
-//     const backButton = document.createElement("button")
-//     backButton.innerText = "< Previous page"
-//     const currentPageSpan = document.createElement("span")
-//     currentPageSpan.innerText = currentPage + 1
-//     const forwardButton = document.createElement("button")
-//     forwardButton.innerText = "Next Page >"
+    const backButton = document.createElement("button")
+    backButton.innerText = "< Previous page"
+    const currentPageSpan = document.createElement("span")
+    currentPageSpan.innerText = state.currentPage + 1
+    const forwardButton = document.createElement("button")
+    forwardButton.innerText = "Next Page >"
 
-//     backButton.addEventListener("click", () => {
-//         currentPage--
-//         console.log(state.breweries)
-//     })
-//     forwardButton.addEventListener("click", () => {
-//         currentPage++
-//         console.log(currentPage)
-//     })
+    backButton.addEventListener("click", () => {
+        if(state.currentPage > 1){
+            state.currentPage--
+        }
+        console.log(state.currentPage)
+    })
+    forwardButton.addEventListener("click", () => {
+        state.currentPage++
+        console.log(state.currentPage)
+    })
 
-//     paginationWrapper.append(backButton, currentPageSpan, forwardButton)
-// }
+    paginationWrapper.append(backButton, currentPageSpan, forwardButton)
+}
+renderPageButtons()
 function renderCities(breweries){
     cityForm.innerHTML = "";
     
@@ -263,6 +271,7 @@ function renderCities(breweries){
                 state.filterByCity.push(city)
                 renderBreweries()
             } else {
+                // if changed, but unchecked. remove that city from the array and rerender.
                 state.filterByCity = state.filterByCity.filter((item) => item !== city);
                 renderBreweries()
             }
