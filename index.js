@@ -20,11 +20,13 @@ formState.addEventListener('submit', (event) => {
     state.breweries = [];
     console.log(state.breweries)    
     console.log(inputState.value);
-    usState = inputState.value;
-    inputState.value = '';
-    usState = usState.toLowerCase();
-    usState.replace(` `, `_`);
-    getStateBrews(usState);    
+    if (inputState.value != ""){
+        usState = inputState.value;
+        inputState.value = '';
+        usState = usState.toLowerCase();
+        usState.replace(` `, `_`);
+        getStateBrews(usState);
+    } else {return}
 })
 
 typeFilter.addEventListener('change', (event) => {
