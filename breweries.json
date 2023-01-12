@@ -7,6 +7,26 @@
     {
       "name": "Second Test Brewery",
       "id": 2
+    },
+    {
+      "name": "Akronym Brewing LLC",
+      "city": "Akron",
+      "id": 3
+    },
+    {
+      "name": "Aqueduct Brewing",
+      "city": "Akron",
+      "id": 4
+    },
+    {
+      "name": "Actual Brewing Company, LLC",
+      "city": "Columbus",
+      "id": 5
+    },
+    {
+      "name": "Antiques on High",
+      "city": "Columbus",
+      "id": 6
     }
   ]
 }

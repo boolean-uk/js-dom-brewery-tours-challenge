@@ -190,14 +190,6 @@ function renderBreweries() {
 
     let paginatedBreweries = filteredBreweries.slice(start, end);
 
-    // If there are no more entries - Rerender previous page.
-
-    // if(paginatedBreweries.length === 0){
-    //     state.currentPage--
-    //     start = rows * state.currentPage;
-    //     end = start + rows;
-    //     paginatedBreweries = filteredBreweries.slice(start, end)
-    // }
 
     paginatedBreweries.forEach((brewery) => {
         // CREATING
@@ -325,7 +317,10 @@ function renderBreweries() {
         breweryUL.append(brewLI);
     })
     
-    renderPageButtons()
+    if(paginatedBreweries.length > 0){
+
+        renderPageButtons()
+    }
     
   }
 
