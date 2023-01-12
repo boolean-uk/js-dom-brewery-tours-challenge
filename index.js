@@ -36,10 +36,12 @@
 */
 const UlElement = document.querySelector("#breweries-list");
 const StateSearchForm = document.querySelector("#select-state-form");
+const FilterDropDown = document.querySelector("#filter-by-type");
 
 const State = {
     BreweriesList: [],
-    FilteredBreweries: []
+    FilteredBreweries: [],
+    ActiveFilter: ""
 }
 
 const RenderBreweryList = () => {
@@ -94,6 +96,8 @@ const RenderBreweryList = () => {
 }
 
 const FecthData = (USState) => {
+    State.BreweriesList = [];
+    State.FilteredBreweries = [];
     fetch(`https://api.openbrewerydb.org/breweries?by_state=${USState}`)
     .then((res) => {return res.json();})
     .then((breweries) => {
@@ -104,11 +108,30 @@ const FecthData = (USState) => {
 }
 
 const FilterBreweries = () => {
-    State.FilteredBreweries = State.BreweriesList;
+    State.FilteredBreweries = [];
+    State.BreweriesList.forEach(element => {
+        if(State.ActiveFilter != "")
+        {
+            if(element.brewery_type === State.ActiveFilter)
+            {
+                State.FilteredBreweries.push(element);
+            }
+        }
+        else
+            State.FilteredBreweries.push(element);
+    })
 }
+
+//Event Listeners
 
 StateSearchForm.addEventListener('submit', (eventObject)=>{
     eventObject.preventDefault();
     const UserInput = document.querySelector('#select-state').value.replace(' ', '_');
     FecthData(UserInput);
 });
+
+FilterDropDown.addEventListener('change', () => {
+    State.ActiveFilter = FilterDropDown.value;
+    FilterBreweries();
+    RenderBreweryList();
+})
