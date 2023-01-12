@@ -25,21 +25,26 @@
 
 const state = {
     breweries: [],
+    citys: [],
+    filterByCity: [],
     filterByType: "",
     filterByName: ""
 };
-  
-  
-  // SELECT EXISTING HTML ELEMENTS
-  const breweriesList = document.querySelector(".breweries-list")
-  const searchByStateForm = document.querySelector("#select-state-form")
-  const filterByTypeForm = document.querySelector("#filter-by-type-form")
-  const search = document.querySelector("#select-state")
-  const selectByType = document.querySelector("#filter-by-type")
-  const mainarticle = document.querySelector("article")
-  const searchByNameForm = document.querySelector("#search-breweries-form")
-  const searchName = document.querySelector("search-breweries")
-  // NETWORK REQUESTS
+
+
+// SELECT EXISTING HTML ELEMENTS
+const breweriesList = document.querySelector(".breweries-list")
+const searchByStateForm = document.querySelector("#select-state-form")
+const filterByTypeForm = document.querySelector("#filter-by-type-form")
+const search = document.querySelector("#select-state")
+const selectByType = document.querySelector("#filter-by-type")
+const mainarticle = document.querySelector("article")
+const searchByNameForm = document.querySelector("#search-breweries-form")
+const searchName = document.querySelector("search-breweries")
+const filterByCityForm = document.querySelector("#filter-by-city-form")
+const clearAllBtn = document.querySelector(".clear-all-btn")
+
+// NETWORK REQUESTS
 //   - make get request that uses user input to search by state
 //      - GET https://api.openbrewerydb.org/breweries?by_state=${US_STATE_NAME}&per_page=50
 //      - if a state has two words, then " " should be rplaced with "_" use the replace():
@@ -47,13 +52,13 @@ const state = {
 //      - on fetch repsonse: save the fetched datat into the local state.
 //      
 
-  // RENDERING
-  //   - add a listener for the search form submission which triggers the GET request
-  //      - listener gets added to the <form> element on the 'submit' event
-  //      - prevent default form submission
-  //      - read the US-State from the <input> #select state
-  //      - filter input: check length > 0, 
-  //      - call function (stateName) as the parameter
+// RENDERING
+//   - add a listener for the search form submission which triggers the GET request
+//      - listener gets added to the <form> element on the 'submit' event
+//      - prevent default form submission
+//      - read the US-State from the <input> #select state
+//      - filter input: check length > 0, 
+//      - call function (stateName) as the parameter
 //        - on render filter data by type: to keep micro, regional and brewpub
 //        - when rendering show; 
 //          - name: name of brewery, 
@@ -63,14 +68,14 @@ const state = {
 //          - phone: the phone number 
 //          - set .innertext of <a> to the website_url: of object
 //        - set filter by type of brewery section to filter by brewery_type:
-            // -if brewry type === "micro" render the object and repeat 
-  // START
+// -if brewry type === "micro" render the object and repeat 
+// START
 
 searchByStateForm.addEventListener("submit", (event) => {
     event.preventDefault()
-    const US_STATE_NAME = search.value 
-    
-    if(US_STATE_NAME.length < 0 ){
+    const US_STATE_NAME = search.value
+
+    if (US_STATE_NAME.length < 0) {
         return
     }
     US_STATE_NAME.replace(" ", "_")
@@ -85,69 +90,92 @@ searchByStateForm.addEventListener("submit", (event) => {
             state.breweries = responseData;
             console.log("brewerys added to the state", state.breweries)
 
-           renderBreweryList(state.breweries);
-           return
+            renderBreweryList(state.breweries);
+            return
         })
-    })
+        .then(() => {
+            state.breweries.forEach((brewery) => {
+                if (state.citys.includes(brewery.city)) {
+                    return
+                }
+                else {
+                    state.citys.push(brewery.city)
+                }
+            })
+            console.log("citys array", state.citys)
+            renderCityList()
+            return
+        })
+})
 
 selectByType.addEventListener('change', () => {
-    // set array to empty
-    // push the value from the form to the empty filters array
     state.filterByType = selectByType.value
-    // if(state.filterByType === ""){
-    //     return
-    // }
-    console.log(" filterd by type string",state.filterByType)
-    renderBreweryList(state.breweries)
+    console.log(" filterd by type string", state.filterByType)
+    renderBreweryList()
 })
-// get this to work
 
-// searchByNameForm.addEventListener('keyup', (event) => {
-//     let searchValue = event.target.value;
-    
-//     searchValue.toLocaleLowerCase()
-//     findBreweryByName(searchValue)
-// })
+searchByNameForm.addEventListener('keyup', (event) => {
+    state.filterByName = event.target.value;
 
-// function findBreweryByName (searchValue){
-//     breweries = state.breweries.name
-//     console.log(searchValue)
-//     let filterdBrewerys = []
-//     filterdBrewerys = state.breweries.filter(() => {
-//         state.breweries.includes(searchValue)
-        
-//         console.log("this is the breweries array", state.breweries)
-//         console.log("this is the filterd array",filterdBrewerys)
-//         // console.log(brewery.name)
-//         renderBreweryList(state.filterSelected)
-//     })
-//     // console.log(filterSelected)
-// }
+    renderBreweryList()
+})
+clearAllBtn.addEventListener("click", () => {
+    state.filterByCity = []
+    renderBreweryList()
+    renderCityList()
+    console.log("this is filter by citys2", state.filterByCity)
+    console.log("this is the cits array2" , state.citys)
+})
 
 function renderBreweryList() {
     breweriesList.innerHTML = ""
+
     let filterdByType = state.filterByType
+    let filterByName = state.filterByName
+
+    // filter by type
     let filterdList = state.breweries.filter((brewery) => {
-        if (filterdByType === ""){
+        if (filterdByType === "") {
             return true
         }
-        if(brewery.brewery_type === filterdByType) {
+        if (brewery.brewery_type === filterdByType) {
+            return true
+        }
+        else {
+            return false
+        }
+    })
+
+    // filter by name
+    filterdList = filterdList.filter((brewery) => {
+        if (filterByName === "") {
+            return true
+        }
+        if (brewery.name.includes(filterByName)) {
+            return true
+        }
+        else {
+            return false
+        }
+    })
+    filterdList = filterdList.filter((brewery) => {
+        if (state.filterByCity.length < 1) {
+            return true
+        }
+        if (state.filterByCity.includes(brewery.city)) {
             return true
         }
         else{
             return false
         }
-    })    
-    console.log("this is the filterd list", filterdList)
-    
-    
+
+    })
 
     filterdList.forEach((brewery) => {
-        // const brewery = state.breweries
-        
+
         const listItem = document.createElement("li")
         breweriesList.append(listItem)
-        
+
         const breweryName = document.createElement("h2")
         breweryName.innerText = brewery.name
 
@@ -167,7 +195,7 @@ function renderBreweryList() {
         const cityAndPostcode = document.createElement("p")
         const cityAndPostcodeB = document.createElement("strong")
         cityAndPostcodeB.innerHTML = `${brewery.city}, ${brewery.postal_code}`
-        
+
         const contactContainer = document.createElement("section")
         contactContainer.setAttribute("class", "phone")
 
@@ -184,14 +212,15 @@ function renderBreweryList() {
         weblink.setAttribute("href", brewery.website_url)
         weblink.setAttribute("target", "_blank")
         weblink.innerText = "Visit Website"
+        // city list render
 
         listItem.append(
-            breweryName, 
-            breweryType, 
+            breweryName,
+            breweryType,
             addressContainer,
             contactContainer,
             websiteContainer
-            )
+        )
         addressContainer.append(
             addressHeading,
             streetAddress,
@@ -203,6 +232,39 @@ function renderBreweryList() {
             phoneNumber
         )
         websiteContainer.append(weblink)
-    })   
-}
+    })
 
+}
+function renderCityList() {
+    filterByCityForm.innerHTML = ""
+    state.citys.forEach((city) => {
+        if (state.breweries.city === city) {
+            return
+        }
+        else {
+            const checkBox = document.createElement("input")
+            checkBox.setAttribute("type", "checkbox")
+            checkBox.setAttribute("name", `${city}`)
+            checkBox.setAttribute("value", `${city}`)
+
+            const cityLabel = document.createElement("label")
+            cityLabel.setAttribute("for", `${city}`)
+            cityLabel.innerText = city
+
+            filterByCityForm.append(checkBox, cityLabel)
+
+            checkBox.addEventListener('change', () => {
+                console.log(checkBox.value)
+                if (checkBox.checked === true) {
+                    state.filterByCity.push(checkBox.value)
+                }
+                if(checkBox.checked === false) {
+                    indexOfCityName = state.filterByCity.indexOf(checkBox.value);
+                    removedItem = state.filterByCity.splice(indexOfCityName, 1)
+                }
+                console.log("check box filter value", state.filterByCity)
+                renderBreweryList()
+            })
+        }
+    })
+}
