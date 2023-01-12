@@ -4,7 +4,7 @@ const state = {
     filterByType: '',
     filterByName: '',
     filterByCity: [],
-    currentPage: 1
+    currentPage: 0
 };
 
 // VARIABLES
@@ -65,6 +65,7 @@ function filterTypeListen() {
     filterForm.addEventListener('change', (event) => {
         const selectInput = event.target.value;
         state.filterByType = selectInput;
+        state.currentPage = 0
         renderBreweries();
     });
 }
@@ -74,6 +75,7 @@ function searchBarListen() {
     searchForm.addEventListener("input", (event) => {
         const searchQuery = event.target.value.toLowerCase();
         state.filterByName = searchQuery;
+        state.currentPage = 0
         renderBreweries();
     });
 }
@@ -84,6 +86,7 @@ function clearAllListen() {
         state.filterByType = '';
         state.filterByName = '';
         state.filterByCity = [];
+        state.currentPage = 0
         filterForm.reset();
         searchForm.reset();
         renderBreweries();
@@ -101,7 +104,6 @@ function getAllBreweries(stateName) {
     .then((allBreweries) => {
         // setting state.breweries to the data from the API
         state.breweries = allBreweries;
-
         renderBreweries();
         renderCities(state.breweries);
     });
@@ -113,9 +115,18 @@ function renderBreweries() {
     breweryUL.innerHTML = "";
     // currentPage--;
 
+    let filteredBreweries = state.breweries.filter((brewery) => {
+        const brewtype = brewery.brewery_type 
+        if(brewtype === 'micro' || brewtype === 'regional' || brewtype === 'brewpub') {
+            return true
+        } else {
+            return false
+        }
+    })
+
     // Filter By Brewery Type (Drop Down)
 
-    let filteredBreweries = state.breweries.filter((brewery) => {
+    filteredBreweries = filteredBreweries.filter((brewery) => {
         if (state.filterByType.length > 0) {
             if (brewery.brewery_type === state.filterByType) {
                 return true;
@@ -156,9 +167,24 @@ function renderBreweries() {
 
     // Filter By Pagination (Page Number)
 
+    // let start = rows * currentPage;
+    // let end = start + rows;
+    // let paginatedBreweries = breweries.slice(start, end);
+    let start = rows * state.currentPage;
+    let end = start + rows;
 
+    let paginatedBreweries = filteredBreweries.slice(start, end);
 
-    filteredBreweries.forEach((brewery) => {
+    // If there are no more entries - Rerender previous page.
+
+    if(paginatedBreweries.length === 0){
+        state.currentPage--
+        start = rows * state.currentPage;
+        end = start + rows;
+        paginatedBreweries = filteredBreweries.slice(start, end)
+    }
+
+    paginatedBreweries.forEach((brewery) => {
         // CREATING
         const brewLI = document.createElement("li");
 
@@ -218,7 +244,7 @@ function renderBreweries() {
         brewLI.append(brewH2, brewDiv, addressSection, phoneSection, websiteSection);
         breweryUL.append(brewLI);
     })
-    // renderPageButtons()
+    renderPageButtons()
   }
 
 function renderPageButtons() {
@@ -232,19 +258,21 @@ function renderPageButtons() {
     forwardButton.innerText = "Next Page >"
 
     backButton.addEventListener("click", () => {
-        if(state.currentPage > 1){
+        if(state.currentPage > 0){
             state.currentPage--
+            renderBreweries()
         }
         console.log(state.currentPage)
     })
     forwardButton.addEventListener("click", () => {
         state.currentPage++
+        renderBreweries()
         console.log(state.currentPage)
     })
 
     paginationWrapper.append(backButton, currentPageSpan, forwardButton)
 }
-renderPageButtons()
+
 function renderCities(breweries){
     cityForm.innerHTML = "";
     
@@ -269,10 +297,12 @@ function renderCities(breweries){
         cityInput.addEventListener("change", () => {
             if(cityInput.checked) {
                 state.filterByCity.push(city)
+                state.currentPage = 0
                 renderBreweries()
             } else {
                 // if changed, but unchecked. remove that city from the array and rerender.
                 state.filterByCity = state.filterByCity.filter((item) => item !== city);
+                state.currentPage = 0
                 renderBreweries()
             }
         });
