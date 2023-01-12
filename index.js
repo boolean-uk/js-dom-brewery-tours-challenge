@@ -1,6 +1,9 @@
 // STATE
 const state = {
     breweries: [],
+    filterByType: '',
+    filterByName: '',
+    filterByCity: [],
 };
 
 // VARIABLES
@@ -26,7 +29,7 @@ const usStates = [
 let checkedCities = [];
 
 // Used for Pagination
-let currentPage = 1;
+let currentPage = 0;
 let rows = 10;
 
 // SELECT EXISTING HTML ELEMENTS
@@ -64,33 +67,51 @@ function filterTypeListen() {
     // Listening for the Type of Brewery drop down.
     filterForm.addEventListener('change', (event) => {
         const selectInput = event.target.value;
+        // OLD CODE
         // Passing the FILTER BY TYPE function directly into the
         // render breweries and cities.
-        renderBreweries(filterBreweriesByType(selectInput));
-        renderCities(filterBreweriesByType(selectInput));
+        // renderBreweries(filterBreweriesByType(selectInput));
+        // renderCities(filterBreweriesByType(selectInput));
+
+        // NEW CODE
+        state.filterByType = selectInput;
+        renderBreweries()
     });
 }
 
 function searchBarListen() {
     // Listening for the Search Bar - each stroke.
     searchForm.addEventListener("input", (event) => {
-        const searchQuery = event.target.value;
+        const searchQuery = event.target.value.toLowerCase();
+        // OLD CODE
         // Passing the FILTER BY NAME function directly into the
         // render breweries and cities.
-        renderBreweries(filterBreweriesByName(searchQuery));
-        renderCities(filterBreweriesByName(searchQuery));
+        // renderBreweries(filterBreweriesByName(searchQuery));
+        // renderCities(filterBreweriesByName(searchQuery));
+
+        //NEW CODE
+        state.filterByName = searchQuery;
+        renderBreweries()
     });
 }
 
 function clearAllListen() {
     // Listening for the clear all button.
     clearButton.addEventListener("click", () => {
+        // OLD CODE
         // Empty the checkedCities array so no duplicates.
-        checkedCities = [];
-        // Passing the ALL filter - so all micros/regionals/brewpubs 
-        // get rendered by breweries/cities.
-        renderBreweries(filterBreweriesAll());
-        renderCities(filterBreweriesAll());
+        // checkedCities = [];
+        // // Passing the ALL filter - so all micros/regionals/brewpubs 
+        // // get rendered by breweries/cities.
+        // renderBreweries(filterBreweriesAll());
+        // renderCities(filterBreweriesAll());
+        
+        //NEW CODE
+        state.filterByType = '';
+        state.filterByName = '';
+        state.filterByCity = [];
+        renderBreweries()
+        renderCities(state.breweries)
         
     });
 }
@@ -104,72 +125,110 @@ function getAllBreweries(stateName) {
     .then((allBreweries) => {
         // setting state.breweries to the data from the API
         state.breweries = allBreweries;
+        // OLD CODE
         // Passing the filtered breweries (micro/regional/brewpub) directly into the
         // renderBreweries and renderCities functions.
-        renderBreweries(filterBreweriesAll());
-        renderCities(filterBreweriesAll());
+        // renderBreweries(filterBreweriesAll());
+        // renderCities(filterBreweriesAll());
+
+        // NEW CODE
+        renderBreweries()
+        renderCities(state.breweries)
     });
 
 }
 // FILTER FUNCTIONS
 
-function filterBreweriesByType(type) {
-    // the type being passed is either micro, regional, or brewpub.
-    const filteredBreweries = state.breweries.filter((data) => {
-        // all breweries that match the type, are kept in the array.
-        if(data.brewery_type === type) {
-            return true;
-        }
-    });
-    return filteredBreweries;
-}
+// function filterBreweriesByType(type) {
+//     // the type being passed is either micro, regional, or brewpub.
+//     const filteredBreweries = state.breweries.filter((data) => {
+//         // all breweries that match the type, are kept in the array.
+//         if(data.brewery_type === type) {
+//             return true;
+//         }
+//     });
+//     return filteredBreweries;
+// }
 
-function filterBreweriesAll() {
-    // filters the FETCH data and only keeps brewery_types of micro, regional, or brewpub.
-    const filteredBreweries = state.breweries.filter((data) => {
-        if(data.brewery_type === "micro" || data.brewery_type === "regional" || data.brewery_type === "brewpub") {
-            return true;
-        }
-    });
-    // sets our state to the filtered array.
-    state.breweries = filteredBreweries;
-    return filteredBreweries;
-}
+// function filterBreweriesAll() {
+//     // filters the FETCH data and only keeps brewery_types of micro, regional, or brewpub.
+//     const filteredBreweries = state.breweries.filter((data) => {
+//         if(data.brewery_type === "micro" || data.brewery_type === "regional" || data.brewery_type === "brewpub") {
+//             return true;
+//         }
+//     });
+//     // sets our state to the filtered array.
+//     state.breweries = filteredBreweries;
+//     return filteredBreweries;
+// }
 
-function filterBreweriesByName(letters) {
-    // if the name of the brewery contains any of the letters passed to this
-    // function, then it is kept and returned.
-    const filteredBreweries = state.breweries.filter((data) => {
-        const breweryName = data.name.toLowerCase();
-        if(breweryName.includes(letters)) {
-            return true;
-        }
-    });
-    return filteredBreweries;
-}
+// function filterBreweriesByName(letters) {
+//     // if the name of the brewery contains any of the letters passed to this
+//     // function, then it is kept and returned.
+//     const filteredBreweries = state.breweries.filter((data) => {
+//         const breweryName = data.name.toLowerCase();
+//         if(breweryName.includes(letters)) {
+//             return true;
+//         }
+//     });
+//     return filteredBreweries;
+// }
 
-function filterByCity(city) {
-    // if the city matches the state.breweries.city, then it is kept and returned.
-    const filteredBreweries = state.breweries.filter((data) => {
-        if(city === data.city) {
-            return true;
-        }
-    });
-    return filteredBreweries;
-}
+// function filterByCity(city) {
+//     // if the city matches the state.breweries.city, then it is kept and returned.
+//     const filteredBreweries = state.breweries.filter((data) => {
+//         if(city === data.city) {
+//             return true;
+//         }
+//     });
+//     return filteredBreweries;
+// }
 
 // RENDERING
-function renderBreweries(breweries) {
+function renderBreweries() {
     breweryUL.innerHTML = "";
     // Render filtered version
-    currentPage--;
+    // currentPage--;
 
-    let start = rows * currentPage;
-    let end = start + rows;
-    let paginatedBreweries = breweries.slice(start, end);
+    // let start = rows * currentPage;
+    // let end = start + rows;
+    // let paginatedBreweries = breweries.slice(start, end);
+    let filteredBreweries = state.breweries.filter((brewery) => {
+        if (state.filterByType.length > 0) {
+            if (brewery.brewery_type === state.filterByType) {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return true
+        }
+    })
 
+    filteredBreweries = filteredBreweries.filter((brewery) => {
+        if(state.filterByName.length > 0) {
+            const breweryName = brewery.name.toLowerCase();
+            if(breweryName.includes(state.filterByName)) {
+                return true;
+            }
+        } else {
+            return true
+        }
+    })
 
-    paginatedBreweries.forEach((brewery) => {
+    filteredBreweries = filteredBreweries.filter((brewery) => {
+        if (state.filterByCity.length === 0) return true;
+
+        for (let i = 0; i < state.filterByCity.length; i++) {
+            if (brewery.city === state.filterByCity[i]) {
+              return true; // todo.type matches ONE of the types in my array so keep this todo and just return
+            }
+          }
+          // got to the end, haven't returned before, so there is no match
+          return false;
+        })
+
+    filteredBreweries.forEach((brewery) => {
         // CREATING
         const brewLI = document.createElement("li");
 
@@ -229,27 +288,30 @@ function renderBreweries(breweries) {
         brewLI.append(brewH2, brewDiv, addressSection, phoneSection, websiteSection);
         breweryUL.append(brewLI);
     })
-    renderPageButtons()
+    // renderPageButtons()
   }
-function renderPageButtons() {
-    paginationWrapper.innerHTML = "";
+
+// function renderPageButtons() {
+//     paginationWrapper.innerHTML = "";
     
-    const backButton = document.createElement("button")
-    backButton.innerText = "< Previous page"
-    const forwardButton = document.createElement("button")
-    forwardButton.innerText = "Next Page >"
+//     const backButton = document.createElement("button")
+//     backButton.innerText = "< Previous page"
+//     const currentPageSpan = document.createElement("span")
+//     currentPageSpan.innerText = currentPage + 1
+//     const forwardButton = document.createElement("button")
+//     forwardButton.innerText = "Next Page >"
 
-    backButton.addEventListener("click", () => {
-        currentPage--
-        console.log(currentPage)
-    })
-    forwardButton.addEventListener("click", () => {
-        currentPage++
-        console.log(currentPage)
-    })
+//     backButton.addEventListener("click", () => {
+//         currentPage--
+//         console.log(state.breweries)
+//     })
+//     forwardButton.addEventListener("click", () => {
+//         currentPage++
+//         console.log(currentPage)
+//     })
 
-    paginationWrapper.append(backButton, forwardButton)
-}
+//     paginationWrapper.append(backButton, currentPageSpan, forwardButton)
+// }
 function renderCities(breweries){
     cityForm.innerHTML = "";
     
@@ -273,26 +335,36 @@ function renderCities(breweries){
         // Listening for check marks on cities, to then filter and re-render breweries.
         cityInput.addEventListener("change", () => {
             if(cityInput.checked) {
+                // OLD CODE
                 // If checked, push the city into the checked cities array, 
                 // and rerender breweries from that array.
-                checkedCities.push(city);
-                const filteredBreweries = state.breweries.filter((brewery) => checkedCities.includes(brewery.city));
-                renderBreweries(filteredBreweries);
+                // checkedCities.push(city);
+                // const filteredBreweries = state.breweries.filter((brewery) => checkedCities.includes(brewery.city));
+                // renderBreweries(filteredBreweries);
+
+                // NEW CODE
+                state.filterByCity.push(city)
+                console.log(state.filterByCity)
+                renderBreweries()
             } else {
-                // If unchecked - and checkedCities array has more than 1 city
-                // remove that city from the array and re-render the breweries.
-                if(checkedCities.length > 1){
-                    checkedCities = checkedCities.filter((item) => item !== city);
-                    const filteredBreweries = state.breweries.filter((brewery) => checkedCities.includes(brewery.city));
-                    renderBreweries(filteredBreweries);
-                } else if(checkedCities.length === 1) {
-                    // If unchecked - and checkedCities array has only 1 city in it.
-                    // set checkedCities to empty, and rerender all cities/breweries using
-                    // the all filter, to get back all breweries.
-                    checkedCities = [];
-                    renderBreweries(filterBreweriesAll());
-                    renderCities(filterBreweriesAll());
-                }
+                // OLD CODE
+                // // If unchecked - and checkedCities array has more than 1 city
+                // // remove that city from the array and re-render the breweries.
+                // if(checkedCities.length > 1){
+                //     checkedCities = checkedCities.filter((item) => item !== city);
+                //     const filteredBreweries = state.breweries.filter((brewery) => checkedCities.includes(brewery.city));
+                //     renderBreweries(filteredBreweries);
+                // } else if(checkedCities.length === 1) {
+                //     // If unchecked - and checkedCities array has only 1 city in it.
+                //     // set checkedCities to empty, and rerender all cities/breweries using
+                //     // the all filter, to get back all breweries.
+                //     checkedCities = [];
+                //     renderBreweries(filterBreweriesAll());
+                //     renderCities(filterBreweriesAll());
+                // }
+                state.filterByCity = state.filterByCity.filter((item) => item !== city);
+                console.log(state.filterByCity)
+                renderBreweries()
             }
         });
         // APPENDING

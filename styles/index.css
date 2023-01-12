@@ -228,3 +228,11 @@ article {
   text-decoration: none;
   font-weight: bold;
 }
+
+.pagination {
+    padding: 1rem 0 0 0;
+    display: grid;
+    grid-template-columns: 10rem 3rem 10rem;
+    justify-content: center;
+    justify-items: center;
+}
