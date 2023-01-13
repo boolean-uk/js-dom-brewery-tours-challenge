@@ -1,6 +1,7 @@
 // STATE
 const state = {
     breweries: [],
+    allBreweries: [],
     micro: [],
     regional: [],
     brewpub: [],
@@ -78,13 +79,19 @@ const renderListOfBreweries = (brewery) => {
 
 const loopThroughData = () => {
     state.breweries.forEach(brewery => {
-        renderListOfBreweries(brewery)
+        
         if (brewery.brewery_type === "micro") {
             state.micro.push(brewery)
+            state.allBreweries.push(brewery)
         } else if (brewery.brewery_type === "regional") {
             state.regional.push(brewery)
+            state.allBreweries.push(brewery)
         } else if (brewery.brewery_type === "brewpub") {
-            state.brewpub.push(brewery)}
+            state.brewpub.push(brewery)
+            state.allBreweries.push(brewery)}
+    })
+    state.allBreweries.forEach(brewery => {
+        renderListOfBreweries(brewery)
     })
 }
 
