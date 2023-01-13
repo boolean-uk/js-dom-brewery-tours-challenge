@@ -10,20 +10,24 @@ const state = {
 // select the existed classes and ids
 const form = document.querySelector("#select-state-form");
 const breweryUL = document.querySelector("#breweries-list");
+const filterByType = document.querySelector("#filter-by-type");
+
+// get the details of brewery in by using fecth
 
 // 2)add the event listener for the form submit
 // prevent the default behaviour on page loading
-// write the condition for the length of the input in the search bar (state.brewerie> 0)
+// write the condition for the length of the input in the search bar 
 // call the function of fecth request
-form.addEventListener("submit", (event) => {
-  //   console.log(form);
-  event.preventDefault();
-  const formstateInput = document
-    .querySelector("#select-state")
-    .value.replace(" ", "_");
-  state.usState = formstateInput;
-  getTheBrewery(formstateInput);
-});
+function searchForm() {
+  form.addEventListener("submit", (event) => {
+    //   console.log(form);
+    event.preventDefault();
+    const formstateInput = document
+      .querySelector("#select-state")
+      .value.replace(" ", "_");
+    getTheBrewery(formstateInput);
+  });
+}
 
 // NETWORK REQUESTS
 // create the fetch function with link provided in the API
@@ -39,8 +43,38 @@ function getTheBrewery(usState) {
     .then((responseData) => {
       //   console.log(responseData);
       state.breweries = responseData;
-      renderBreweries();
+      setState(responseData);
     });
+}
+
+// get the details of brewery in by using fecth
+function fetchTypeData(usState) {
+  state.usState = usState;
+  let newData = `https://api.openbrewerydb.org/breweries?by_state=${state.usState}&by_type=${filterByType.value}`;
+  console.log("new data:", newData);
+  fetch(newData)
+    .then((response) => {
+      return response.json();
+    })
+    .then((responseData) => {
+      //   console.log(responseData);
+      state.breweries = responseData;
+      setState(responseData);
+    });
+}
+// addevent listener for the filter
+function filterType() {
+  filterByType.addEventListener("change", (event) => {
+    console.log(filterByType);
+    event.preventDefault();
+    const filterInput = document.querySelector("#select-state").value;
+    fetchTypeData(filterInput);
+  });
+}
+
+function setState(breweries) {
+  state.breweries = breweries;
+  renderBreweries();
 }
 // RENDERING
 // create the render function for the data in state
@@ -54,9 +88,6 @@ function renderBreweries() {
   breweryUL.innerHTML = "";
   for (let i = 0; i < state.breweries.length; i++) {
     const brewery = state.breweries[i];
-    // remember to prepare the list of the types
-    // if(brewery.brewery_type === "micro" || brewery.brewery_type === "regional" ||brewery.brewery_type === "Brewpub" )
-
     const li = document.createElement("li");
     breweryUL.append(li);
 
@@ -113,7 +144,13 @@ function renderBreweries() {
     linkSection.append(a);
 
     li.append(linkSection);
+    console.log("list of the brewery:", li);
   }
 }
 
-// find out how to do the filter one
+function addingTwoEventListeners() {
+  searchForm();
+  filterType();
+}
+addingTwoEventListeners();
+
