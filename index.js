@@ -78,9 +78,20 @@ function getBreweriesByStateFromAPI(stateName){
 
 function renderBreweries(){
     listOfBreweriesUL.innerHTML = ""
+    let filteredBreweries = state.breweries.filter((brewery) => {
+        if(brewery.brewery_type === "micro"){
+            return true
+        } if (brewery.brewery_type === "regional"){
+            return true
+        } if (brewery.brewery_type === "brewpub"){
+            return true
+        } else {
+            return false
+        }
+    })
     // filterByCity.innerHTML = ""
     // create filter variable and filter by type
-    let filteredBreweries = state.breweries.filter((brewery) => {
+    filteredBreweries = filteredBreweries.filter((brewery) => {
         if(state.filterByType.length > 0){
             if(brewery.brewery_type === state.filterByType){
                 return true
