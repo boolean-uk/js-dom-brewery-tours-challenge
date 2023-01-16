@@ -30,13 +30,14 @@
 // STATE
 const state = {
   breweries: [], // state.breweries
-  // microBreweries: [],
-  // regionalBreweries: [],
-  // brewpubBreweries: [],
+  microBreweries: [],
+  regionalBreweries: [],
+  brewpubBreweries: [],
 };
 // EXISTING ELEMENTS QUERY SELECTORS
 const searchButton = document.querySelector("#select-state-form");
 const breweriesUL = document.querySelector("#breweries-list");
+const filterForm = document.querySelector("#filter-by-type-form");
 
 function fetchBreweriesByState(stateName) {
   fetch(
@@ -73,34 +74,15 @@ function fetchBreweriesByState(stateName) {
       }); */
 
       // Call function to render the breweries
-      renderBreweries();
+      renderBreweries(state.breweries);
     });
 }
 
-searchButton.addEventListener("submit", (event) => {
-  // Stop page from refreshing on submit
-  event.preventDefault();
-
-  // Read the text that the user inputs and store it in a variable
-  // event.target[0] is the first <input> in the form
-  const stateName = event.target[0].value;
-
-  // Check if the the number of characters is > 0
-
-  // Clear state.breweries array
-  console.log("SPLICE BEFORE: ", state.breweries);
-  state.breweries.splice(0, state.breweries.length);
-  console.log("SPLICE: ", state.breweries);
-
-  // Call function that sends GET request: fetchBreweriesByState(STATE_NAME)
-  fetchBreweriesByState(stateName);
-});
-
-function renderBreweries() {
+function renderBreweries(breweriesToBeRendered) {
   // Throw away HTML so that page is updated
   breweriesUL.innerHTML = "";
 
-  state.breweries.forEach((listing) => {
+  breweriesToBeRendered.forEach((listing) => {
     // CREATE ELEMENTS & SET ATTRIBUTES + PROPERTIES
     const breweryLI = document.createElement("li");
 
@@ -161,4 +143,56 @@ function renderBreweries() {
     breweryLI.append(websiteSection);
     websiteSection.append(websiteAnchor);
   });
+}
+
+// Read the text that the user inputs and store it in a variable
+// event.target[0] is the first <input> in the form
+searchButton.addEventListener("submit", (event) => {
+  event.preventDefault(); // Stop page from refreshing on submit
+
+  const stateName = event.target[0].value;
+
+  // Check if the the number of characters is > 0
+
+  // Clear state.breweries array
+  // state.breweries.splice(0, state.breweries.length);
+  state.breweries = [];
+
+  // Call function that sends GET request: fetchBreweriesByState(STATE_NAME)
+  fetchBreweriesByState(stateName);
+});
+
+// FILTER BREWERIES BY TYPE
+filterForm.addEventListener("change", (event) => {
+  //console.log("micro submitted");
+  const selectedOption = event.target.value;
+  console.log(selectedOption);
+  filterByType(selectedOption);
+});
+
+function filterByType(selectedOption) {
+  if (selectedOption === "micro") {
+    state.breweries.forEach((brewery) => {
+      if (brewery.brewery_type === "micro") {
+        state.microBreweries.push(brewery);
+      }
+    });
+    renderBreweries(state.microBreweries);
+  } else if (selectedOption === "regional") {
+    state.breweries.forEach((brewery) => {
+      if (brewery.brewery_type === "regional") {
+        state.regionalBreweries.push(brewery);
+      }
+    });
+    renderBreweries(state.regionalBreweries);
+  } else if (selectedOption === "brewpub") {
+    state.breweries.forEach((brewery) => {
+      if (brewery.brewery_type === "brewpub") {
+        state.brewpubBreweries.push(brewery);
+      }
+    });
+    renderBreweries(state.brewpubBreweries);
+  } else {
+    renderBreweries(state.breweries);
+  }
 }
