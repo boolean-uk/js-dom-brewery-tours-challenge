@@ -92,8 +92,8 @@ searchByStateForm.addEventListener("submit", (event) => {
         .then((responseData) => {
             console.log("Received brewery list", responseData)
             state.breweries = responseData;
+            
             console.log("brewerys added to the state", state.breweries)
-
             renderBreweryList(state.breweries);
             return
         })
@@ -132,23 +132,21 @@ clearAllBtn.addEventListener("click", () => {
 })
 pageForward.addEventListener("click", () => {
     state.CurrentPage = state.CurrentPage + 1
-    if(state.CurrentPage === 5){
-        state.CurrentPage -1
+    if (breweriesList.innerHTML === "") {
+        state.CurrentPage - 1
         console.log("current page3", state.CurrentPage)
-     return renderBreweryList()
+        return renderBreweryList()
     }
-    console.log("current page4", state.CurrentPage)
-   return renderBreweryList()
+    else {
+        console.log("current page4", state.CurrentPage)
+        return renderBreweryList()
+    }
 })
 pageBack.addEventListener("click", () => {
     state.CurrentPage = state.CurrentPage - 1
-    if (state.CurrentPage === 0){
-        state.CurrentPage + 1
-        console.log("current page1", state.CurrentPage)
-        return renderBreweryList()
-    }
     console.log("current page2", state.CurrentPage)
     return renderBreweryList()
+
 })
 // mamoth function that performs all filtering and renders the brewery list
 function renderBreweryList() {
@@ -156,9 +154,24 @@ function renderBreweryList() {
 
     let filterdByType = state.filterByType
     let filterByName = state.filterByName
+    // initial filter 
+   let filterdList = state.breweries.filter((brewery) => {
+        if (brewery.brewery_type === "micro"){
+            return true
+        }
+        if (brewery.brewery_type === "brewpub"){
+            return true
+        }
+        if (brewery.brewery_type === "regional"){
+            return true
+        }
+        else {
+            return false
+        }
+    })
 
     // filter by type
-    let filterdList = state.breweries.filter((brewery) => {
+   filterdList = filterdList.filter((brewery) => {
         if (filterdByType === "") {
             return true
         }
@@ -201,12 +214,12 @@ function renderBreweryList() {
         let start = rows * (state.CurrentPage)
         let end = start + rows
         filterdList = filterdList.slice(start, end);
-        
+
         state.CurrentPage++;
+        
         console.log("this is the state", state.breweries)
     }
     
-
 
     filterdList.forEach((brewery) => {
 
@@ -307,6 +320,6 @@ function renderCityList() {
         }
     })
 }
-function renderPageNumbers(){
+function renderPageNumbers() {
 
 }
