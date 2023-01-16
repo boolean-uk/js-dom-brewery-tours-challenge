@@ -105,7 +105,8 @@ function RenderBreweries() { // thought id make a function with an index to disp
 filteredTypeOption.addEventListener('change', (event) => { // when i want to filter my breweries i do an event listener with event of `change`
     event.preventDefault() // not sure if i have to have this prevent default here
     let FILTEREDBREWERY = event.target.value // got what the user has filtered
-    fetch(`https://api.openbrewerydb.org/breweries?by_type=${FILTEREDBREWERY}&per_page=50`) // i put what the user filtered and wanted to read the types of breweries that the user filtered
+    const stateTypedByUser = selectedStateValue.value // want to get the value which is what the user typed exactly
+    fetch(`https://api.openbrewerydb.org/breweries?by_type=${FILTEREDBREWERY}&per_page=50&by_state=${stateTypedByUser}`) // i put what the user filtered and wanted to read the types of breweries that the user filtered
         .then((response) => {
             return response.json() // the reason why it wasnt filtering is cuz of returning the .json() but i really would like to know why i have to do it again since i thought i dont need to if i already done it once above for the searchButton listener
         })
