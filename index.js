@@ -3,6 +3,9 @@
 // 1)create the local version of data for the breweries
 // which is assgint the value of breweries array to the state object
 const state = {
+  selectedType: {
+    type: ""
+  },
   usState: "",
   breweries: [],
 };
@@ -16,7 +19,7 @@ const filterByType = document.querySelector("#filter-by-type");
 
 // 2)add the event listener for the form submit
 // prevent the default behaviour on page loading
-// write the condition for the length of the input in the search bar 
+// write the condition for the length of the input in the search bar
 // call the function of fecth request
 function searchForm() {
   form.addEventListener("submit", (event) => {
@@ -76,6 +79,21 @@ function setState(breweries) {
   state.breweries = breweries;
   renderBreweries();
 }
+
+// filtering the type of breweries
+const filterBreweriesBY = () => {
+  let filterList = []
+  if(state.selectedType.type === ''){
+    const defaultFilters =['micro','regional','brewpub',]
+    filterList = state.breweries.filter((brewery) => defaultFilters.includes(brewery.brewery_type))
+  }
+  else{
+    filterList =state.breweries.filter((brewery) => brewery.brewery_type === state.selectedType.type)
+  }
+  console.log(filterList )
+  return filterList
+}
+
 // RENDERING
 // create the render function for the data in state
 // clear the list with .innerHTMl = ""
@@ -86,8 +104,10 @@ function setState(breweries) {
 
 function renderBreweries() {
   breweryUL.innerHTML = "";
-  for (let i = 0; i < state.breweries.length; i++) {
-    const brewery = state.breweries[i];
+  const filterBreweries = filterBreweriesBY()
+  filterBreweries.forEach((brewery) => {
+    // // const brewery = state.breweries[i];
+    // if (brewery.brewery_type === "micro" || brewery.brewery_type === "regional" || brewery.brewery_type === "brewpub"){
     const li = document.createElement("li");
     breweryUL.append(li);
 
@@ -144,8 +164,9 @@ function renderBreweries() {
     linkSection.append(a);
 
     li.append(linkSection);
-    console.log("list of the brewery:", li);
-  }
+    // console.log("list of the brewery:", li);
+    // }
+  })
 }
 
 function addingTwoEventListeners() {
@@ -153,4 +174,3 @@ function addingTwoEventListeners() {
   filterType();
 }
 addingTwoEventListeners();
-
