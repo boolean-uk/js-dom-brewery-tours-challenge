@@ -30,7 +30,9 @@
 
 // * STATE
 
-const state = []
+const state = {
+    found: []
+}
 
 // * QUERY SELECTORS
 
@@ -66,10 +68,37 @@ fetch(link)
     .then(data => {
         console.log('fetched:', data)
         // store the data fetched in the local state
-        state.push(data)
+        state.found = data
         console.log('what is in the state?', state)
+        renderFoundBreweries()
     })
     .catch(error => {
         console.log('fetch error:', error)
     })
 }
+
+// * RENDER LOGIC
+
+//render the found breweries based on the state.todo array
+function renderFoundBreweries() {
+    console.log('called: renderFoundBreweries')
+    breweriesUL.innerHTML = ''
+    state.found.forEach((brewery) => {
+        console.log('what brewery are you lookign at?', brewery)
+        const li = document.createElement('li')
+        breweriesUL.append(li)
+    })
+}
+
+
+
+
+
+
+
+// const h2 = document.createElement('h2')
+        //     const breweryName = found.name
+        //     console.log('what is breweryName?', breweryName)
+        //     h2.innerText = `${breweryName}`
+
+        // li.append(h2)
