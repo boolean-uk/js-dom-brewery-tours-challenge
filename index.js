@@ -7,6 +7,7 @@ searchForm.addEventListener('submit', (event) => {
   const userInput = document.querySelector('#select-state').value
   console.log(userInput)
   state.userInput = userInput
+  getBreweriesByState(state.userInput)
 })
 
 const breweries = [
@@ -32,8 +33,25 @@ const breweries = [
   }
 ];
 
-state.breweries = breweries
-const templateBrewery = state.breweries[0]
+function getBreweriesByState(state) {
+  let queryResult 
+  fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${state}`)
+  .then(res => queryResult = res.json())
+  .then((json) => {
+      addBreweriesToState(json)
+      console.log(json)
+      renderBreweries()
+    })
+}
+
+function addBreweriesToState(arrOfBreweries) {
+  state.breweries = arrOfBreweries
+}
+
+// state.breweries = getBreweriesByState('California')
+// const templateBrewery = state.breweries[0]
+
+const breweryUl = document.querySelector('#breweries-list')
 
 function createBreweryLi(breweryObj) {
   const li = document.createElement('li')
@@ -79,10 +97,15 @@ function createBreweryLi(breweryObj) {
   return li
 }
 
-const breweryUl = document.querySelector('#breweries-list')
-
-function renderBeweries() {
-  breweryUl.append(createBreweryLi(templateBrewery))
+function renderBreweries() {
+  breweryUl.innerHTML = ''
+  for (let i = 0; i < state.breweries.length; i++) {
+    breweryUl.append(createBreweryLi(state.breweries[i]))
+  }
+  // state.breweries[i]
+  // breweryUl.append(createBreweryLi(state.breweries[0]))
 }
 
-renderBeweries()
+
+// getBreweriesByState('California')
+
