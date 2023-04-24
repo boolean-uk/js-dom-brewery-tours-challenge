@@ -40,6 +40,8 @@ const whichStateForm = document.querySelector('#select-state-form')
 const whichStateInput = document.querySelector('#select-state')
 const breweriesUL = document.querySelector('#breweries-list')
 
+const typeOfBrewerySelect = document.querySelector('#filter-by-type')
+
 // * EVENT HANDLERS
 
 //when search is clicked, don't reload the page
@@ -176,9 +178,30 @@ function renderBreweryList() {
     })
 }
 
+// * FILTER DROPDOWN LOGIC
+
+// listen for type of brewery selection being made
+// based on the option selected
+    // value = 'micro'
+// render the page based on filter for only micro brewery types
+//repeat for the other 2 types
+
+console.log(typeOfBrewerySelect)
+
+function typeOfBreweryFilter() {
+    console.log('called: typeOfBreweryFilter')
+    typeOfBrewerySelect.addEventListener('change', (option) => {
+        // const res = document.querySelector()
+        // console.log('event clicked?', option[1].label)
+    })
+}
+
+function init() {
+    typeOfBreweryFilter()
+}
 
 
-
-
-
-
+// const selectElement = document.querySelector('.Colours');
+// selectElement.addEventListener('change', (event) => {
+//    const result = document.querySelector('.tutorial');
+//    result.textContent = `You like ${event.target.value}`;
