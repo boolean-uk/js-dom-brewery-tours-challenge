@@ -1,9 +1,10 @@
-// *** Planning
+// *** PLANNING
 
 /*
 
 1 - use insomnia to ensure I can access the data from the API
     - get familiar with the data structure returned, and which parts I might need
+        - state.brewery_type
 
 2 - create a local state array in my JS that I can store brewery information in
     - think about paths to getting to the parts of the data I want for rendering later
@@ -25,3 +26,50 @@
 
 */
 
+// *** CODE
+
+// * STATE
+
+const state = []
+
+// * QUERY SELECTORS
+
+const whichStateForm = document.querySelector('#select-state-form')
+const whichStateInput = document.querySelector('#select-state')
+const breweriesUL = document.querySelector('#breweries-list')
+
+// * EVENT HANDLERS
+
+//when search is clicked, don't reload the page
+whichStateForm.addEventListener('submit', (event) => {
+    console.log('search clicked')
+    event.preventDefault()
+    // take the user input - save to variable
+    const newInput = whichStateInput.value
+    console.log('what was inputted?', newInput)
+    getData(newInput)
+    whichStateForm.reset()
+})
+
+// * SERVER LOGIC
+
+const homeURL = 'https://api.openbrewerydb.org/v1/breweries?by_state='
+
+// use that URL for the fetch GET
+function getData(searchedForState) {
+    console.log('called: getData')
+// use that variable to interpolate into URL
+    const link = `${homeURL}${searchedForState}`
+    console.log('what is link?', link)
+fetch(link)
+    .then(res => res.json())
+    .then(data => {
+        console.log('fetched:', data)
+        // store the data fetched in the local state
+        state.push(data)
+        console.log('what is in the state?', state)
+    })
+    .catch(error => {
+        console.log('fetch error:', error)
+    })
+}
