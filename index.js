@@ -1,10 +1,16 @@
-// Array for data
+const api = "https://api.openbrewerydb.org/v1/breweries?by_state=";
+const ul = document.querySelector("#breweries-list");
+
 const breweries = {
   breweryList: [],
 };
 
-const api = "https://api.openbrewerydb.org/v1/breweries?by_state=";
-const ul = document.querySelector("#breweries-list");
+// Empty 'HomePage'
+function loadPage() {
+  const articleSection = document.querySelector("article");
+  articleSection.innerText = "Search Brewery...";
+}
+// loadPage()
 
 // GET
 function getData() {
@@ -74,6 +80,31 @@ function displayBrew() {
   });
 }
 
+// Displaying cities just by TYPE
+
+function displayByType(array, type, input) {
+  let breweries = null;
+  let breweryList = [];
+  for (let i = 0; i < array.length; i++) {
+    if (array[i].type === type) {
+      breweries = array[i];
+      break;
+    }
+  }
+
+  if (breweries) {
+    breweryList = array.filter((data) => {
+      for (const prop in data) {
+        if (data[prop].includes(input)) {
+          return true;
+        }
+      }
+      return false;
+    });
+  }
+  return breweryList;
+}
+
 // Stop page from loading & working input
 const form = document.querySelector("form");
 form.addEventListener("submit", (event) => {
@@ -83,4 +114,9 @@ form.addEventListener("submit", (event) => {
   const values = input.value;
   console.log("input value:", values);
   form.reset();
+
+  const searchInput = document.querySelector("submit");
+  searchInput.addEventListener("submit", () => {
+    displayByType();
+  });
 });
