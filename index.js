@@ -38,13 +38,13 @@ function renderCards() {
         if (brewery.address_1 === null) {
             brewery.address_1 = `No Given Address`
         }
-        if (brewery.address_2 === null) {
         li.innerHTML = `
         <h2>${brewery.name}</h2>
         <div class="type">${brewery.brewery_type}</div>
         <section class="address">
           <h3>Address:</h3>
           <p>${brewery.address_1}</p>
+          ${brewery.address_2 ? `<p><strong>${brewery.address_2}</strong></p>` : ''}
         </section>
         <section class="phone">
           <h3>Phone:</h3>
@@ -54,24 +54,6 @@ function renderCards() {
           <a href="${brewery.website_url}" target="_blank">Visit Website</a>
         </section>
         `
-    } else {
-        li.innerHTML = `
-        <h2>${brewery.name}</h2>
-        <div class="type">${brewery.brewery_type}</div>
-        <section class="address">
-          <h3>Address:</h3>
-          <p>${brewery.address_1}</p>
-          <p><strong>${brewery.address_2}</strong></p>
-        </section>
-        <section class="phone">
-          <h3>Phone:</h3>
-          <p>${brewery.phone}</p>
-        </section>
-        <section class="link">
-          <a href="${brewery.website_url}" target="_blank">Visit Website</a>
-        </section>
-        `
-    }
         breweryList.append(li)
     })
 }
