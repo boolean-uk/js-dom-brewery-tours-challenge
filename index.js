@@ -8,31 +8,33 @@ const state = {
 const searchField = document.querySelector(`#select-state-form`)
 
 
-// EXTRACTS SEARCH TERM AND WRITES IT TO A VARIABLE
+// EXTRACTS SEARCH TERM, FETCHES DATA USING THAT TERM, CHECKS BREWERY TYPE AND WRITES VALID
+// BREWERIES TO STATE AND ADDS VISIBLE PROPERTY
 function searchSubmit() {
     const searchText = searchField[`select-state`].value
     fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchText}`)
     .then(function (response) {
         return response.json()
     })
-    .then(function (data) {
-        state.breweries = data
-        state.breweries = state.breweries.filter(currentBrewery => {
+    .then(function (data) {        
+        state.breweries = []
+        data.filter(currentBrewery => {
             if (currentBrewery.brewery_type === `micro` || currentBrewery.brewery_type === `regional` || currentBrewery.brewery_type === `brewpub`) {
+                state.breweries.push({...currentBrewery, visible: true})                
                 return true
             } else {
                 return false
             }
         })
-    return state.breweries
     })
+    return state.breweries
 }
 
 function print() {
     setTimeout(() => {
         console.log(state.breweries)
     }
-    ,3000) 
+    ,1000) 
 }
 
 // SEARCH BUTTON - PREVENTS PAGE REFRESH AND FUNS SEARCHSUBMIT FUNCTION
