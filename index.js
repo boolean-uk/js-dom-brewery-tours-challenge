@@ -11,9 +11,11 @@ const state = {
 // adding an event listener to the form 
 form.addEventListener('submit', (e)=>{
     e.preventDefault()
-    console.log(formInput.value)
 
-    fetch('https://api.openbrewerydb.org/v1/breweries')
+    let userInput = formInput.value.toLowerCase().split(' ').join('_')
+    console.log(`userInput`, userInput)
+
+    fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${userInput}`)
     .then((response) =>{
        return response.json()
     })
@@ -24,6 +26,7 @@ form.addEventListener('submit', (e)=>{
         state.breweryArr = filtered
         console.log(`state.breweryArr`,state.breweryArr)
         renderBreweries()
+        form.reset()
     })
 })
 
@@ -63,7 +66,7 @@ const renderBreweries = () => {
         const linkSection = document.createElement('section')
         linkSection.setAttribute('class', 'link')
         const website = document.createElement('a')
-        website.setAttribute('href', 'null')
+        website.setAttribute('href', `${element.website_url}`)
         website.innerHTML = 'Visit Website'
         website.setAttribute('target', '_blank')
         linkSection.append(website)
