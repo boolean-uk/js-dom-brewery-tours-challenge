@@ -83,25 +83,32 @@ function filterBreweryListForType() {
     console.log('called: filterBreweryListForType')
     const filtered = state.breweryList.filter(checkType)
     console.log('here are all the breweries with matching types:', filtered)
-    
-    renderBreweryList(filtered)
+    //update the state so it only contains filtered items
+    updateState(filtered)
 }
 
+// check for brewery types we want to display
 function checkType(breweryObj){
     console.log('called: checkType')
-    console.log('brew type?', breweryObj.brewery_type)
     if (breweryObj.brewery_type === 'micro') {
-        console.log('found a micro')
         return breweryObj
     }
     if (breweryObj.brewery_type === 'regional') {
-        console.log('found a regional')
         return breweryObj
     }
     if (breweryObj.brewery_type === 'brewpub') {
-        console.log('found a brewpub')
         return breweryObj
     }
+}
+
+// * STATE MANIPULATION LOGIC
+
+// update the state 
+function updateState(list) {
+    console.log('called: updateState')
+    state.breweryList = ''
+    state.breweryList = list
+    renderBreweryList()
 }
 
 
