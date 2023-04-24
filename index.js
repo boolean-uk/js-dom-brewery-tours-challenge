@@ -31,7 +31,7 @@
 // * STATE
 
 const state = {
-    found: []
+    breweryList: []
 }
 
 // * QUERY SELECTORS
@@ -68,24 +68,58 @@ fetch(link)
     .then(data => {
         console.log('fetched:', data)
         // store the data fetched in the local state
-        state.found = data
+        state.breweryList = data
         console.log('what is in the state?', state)
-        renderFoundBreweries()
+        filterBreweryListForType()
     })
     .catch(error => {
         console.log('fetch error:', error)
     })
 }
 
+// * FILTERED BY BREWERY TYPE LOGIC
+
+function filterBreweryListForType() {
+    console.log('called: filterBreweryListForType')
+    const filtered = state.breweryList.filter(checkType)
+    console.log('here are all the breweries with matching types:', filtered)
+    
+    renderBreweryList(filtered)
+}
+
+function checkType(breweryObj){
+    console.log('called: checkType')
+    console.log('brew type?', breweryObj.brewery_type)
+    if (breweryObj.brewery_type === 'micro') {
+        console.log('found a micro')
+        return breweryObj
+    }
+    if (breweryObj.brewery_type === 'regional') {
+        console.log('found a regional')
+        return breweryObj
+    }
+    if (breweryObj.brewery_type === 'brewpub') {
+        console.log('found a brewpub')
+        return breweryObj
+    }
+}
+
+
 // * RENDER LOGIC
 
-//render the found breweries based on the state.todo array
-function renderFoundBreweries() {
-    console.log('called: renderFoundBreweries')
+//render the breweries based on the filtered breweryList array
+function renderBreweryList() {
+    console.log('called: renderBreweryList')
     breweriesUL.innerHTML = ''
-    state.found.forEach((brewery) => {
-        console.log('what brewery are you lookign at?', brewery)
+
+    // logic for filtering for the brewery types we want to see
+
+    state.breweryList.forEach((brewery) => {
         const li = document.createElement('li')
+        const h2 = document.createElement('h2')
+            h2.innerText = `${brewery.name}`
+
+        li.append(h2)
         breweriesUL.append(li)
     })
 }
@@ -96,9 +130,3 @@ function renderFoundBreweries() {
 
 
 
-// const h2 = document.createElement('h2')
-        //     const breweryName = found.name
-        //     console.log('what is breweryName?', breweryName)
-        //     h2.innerText = `${breweryName}`
-
-        // li.append(h2)
