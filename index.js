@@ -5,8 +5,14 @@ const searchForm = document.querySelector('#select-state-form')
 searchForm.addEventListener('submit', (event) => {
   event.preventDefault()
   const userInput = document.querySelector('#select-state').value
-  console.log(userInput)
+  console.log('user input:', userInput)
   state.userInput = userInput
+
+  let filter = 'Micro'
+  const filterDropdown = document.querySelector('#filter-by-type')
+  console.log('dropdown: ', filterDropdown)
+  state.filter = filterDropdown.value
+  console.log('filter:', state.filter)
   getBreweriesByState(state.userInput)
 })
 
@@ -39,7 +45,7 @@ function getBreweriesByState(state) {
   .then(res => queryResult = res.json())
   .then((json) => {
       addBreweriesToState(json)
-      console.log(json)
+      console.log('response:', json)
       renderBreweries()
     })
 }
@@ -94,19 +100,30 @@ function createBreweryLi(breweryObj) {
   return li
 }
 
+function filterMatchesType(stateFilter, breweryType) {
+  if (stateFilter === '') {
+    return true
+  }
+  else if (stateFilter === breweryType) {
+    return true
+  }
+  return false
+}
+
 function renderBreweries() {
   breweryUl.innerHTML = ''
-  let filter = 'Micro'
-  const filterDropdown = document.querySelector('#filter-by-type')
-  console.log('dropdown: ', filterDropdown)
-  filter = filterDropdown.value
-  console.log(filter)
+  // console.log('rendering with filter', state.filter)
+
+  state.filter
 
   for (let i = 0; i < state.breweries.length; i++) {
+    console.log(`state.filter: ${state.filter}\nBrewery type: ${state.breweries[i].brewery_type}`)
+    console.log(`filters match: ${filterMatchesType(state.filter, state.breweries[i].brewery_type)}`)
+    if (!(filterMatchesType(state.filter, state.breweries[i].brewery_type))) continue
     breweryUl.append(createBreweryLi(state.breweries[i]))
   }
 }
 
 
-getBreweriesByState('California')
+// getBreweriesByState('California')
 
