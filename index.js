@@ -26,24 +26,24 @@ function searchSubmit() {
                 return false
             }
         })
-    renderCards()
+    renderCards(state.breweries)
     return state.breweries
     })
 }
+
 // RENDER BREWERY CARDS
-function renderCards() {
+function renderCards(arr) {
     breweryList.innerHTML = ``
-    state.breweries.forEach(brewery => {
+    arr.forEach(brewery => {
+        if (brewery.visible === true) {
+        
         const li = document.createElement(`li`)
-        if (brewery.address_1 === null) {
-            brewery.address_1 = `No Given Address`
-        }
         li.innerHTML = `
         <h2>${brewery.name}</h2>
         <div class="type">${brewery.brewery_type}</div>
         <section class="address">
           <h3>Address:</h3>
-          <p>${brewery.address_1}</p>
+          ${brewery.address_1 ? `<p>${brewery.address_1}</p>` : `<p>No Address Given</p>`}
           ${brewery.address_2 ? `<p><strong>${brewery.address_2}</strong></p>` : ''}
         </section>
         <section class="phone">
@@ -55,14 +55,28 @@ function renderCards() {
         </section>
         `
         breweryList.append(li)
+    }})
+}
+
+// ADDS EVENT LISTENER TO FILTER
+function filterEventListener() {
+    const field = document.querySelector(`#filter-by-type`)
+    field.addEventListener(`change`, (event) => {
+        filterArray(event.target.value)
     })
 }
 
-function print() {
-    setTimeout(() => {
-        console.log(state.breweries)
-    }
-    ,1000) 
+// TAKES FILTER VALUE AND CHANGES VISIBLE PROPERTY OF EACH OBJECT BASED ON FILTER VALUE
+function filterArray(filter) {
+    state.breweries.forEach(brewery => {
+        if (brewery.brewery_type === filter || filter === ``) {
+            brewery.visible = true
+        } else {
+            brewery.visible = false
+        }
+    })
+    renderCards(state.breweries)
+    return state.breweries
 }
 
 // SEARCH BUTTON - PREVENTS PAGE REFRESH AND FUNS SEARCHSUBMIT FUNCTION
@@ -70,8 +84,13 @@ function searchEventListener() {
     searchField.addEventListener('submit', (event) => {
         event.preventDefault()
         searchSubmit()
-        // print ()
     })
 }
 
-searchEventListener()
+function pageLoad() {
+    searchEventListener()
+    filterEventListener()
+}
+
+
+pageLoad()
