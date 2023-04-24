@@ -57,17 +57,8 @@ form.addEventListener('submit', function handle (event) {
 
 function renderBrewerys() {
     breweryList.innerHTML = ''
-
-    // let filteredBreweries = brew.brewerys;
-    // if (typeOfBrewery) {
-    //   filteredBreweries = filteredBreweries.filter(
-    //     (item) => item.brewery_type === typeOfBrewery
-    //   );
-    // }
-
-    
-
-    brew.brewerys.forEach(brewery => {
+  
+        brew.brewerys.forEach(brewery => {
        
             // create elements for
             const li = document.createElement('li')
@@ -90,7 +81,7 @@ function renderBrewerys() {
             sectionContact.setAttribute('class', 'phone')
             sectionLinks.setAttribute('class', 'link')
             aTagLink.setAttribute('href', `${brewery.website_url}`)
-        aTagLink.setAttribute('target', '_blank')
+            aTagLink.setAttribute('target', '_blank')
         
 
 
@@ -100,27 +91,27 @@ function renderBrewerys() {
             h3Address.innerText = 'Address:'
             pTagAddress.innerText = `${brewery.street}`
             strong.innerText = `${brewery.city}, ${brewery.postal_code.slice(0, 5)}`
-        h3Contact.innerText = 'Phone:'
-        if (brewery.phone) {
-            pTagContact.innerText = `${brewery.phone}`
-        }
-        else {
-            pTagContact.innerText = 'N/A'
-        }
+            h3Contact.innerText = 'Phone:'
+            if (brewery.phone) {
+                pTagContact.innerText = `${brewery.phone}`
+            }
+            else {
+                pTagContact.innerText = 'N/A'
+            }
             aTagLink.innerText = 'Visit Website'
-
-            // appending
-            pTagAddressTwo.append(strong)
-            sectionAddress.append(h3Address, pTagAddress, pTagAddressTwo)
-            sectionContact.append(h3Contact, pTagContact)
-            sectionLinks.append(aTagLink)
-            li.append(h2name, divType, sectionAddress, sectionContact, sectionLinks)
-        breweryList.append(li)
-
+            if (brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub') {
+                // appending
+                pTagAddressTwo.append(strong)
+                sectionAddress.append(h3Address, pTagAddress, pTagAddressTwo)
+                sectionContact.append(h3Contact, pTagContact)
+                sectionLinks.append(aTagLink)
+                li.append(h2name, divType, sectionAddress, sectionContact, sectionLinks)
+                breweryList.append(li)
+            }
 
         
-    })
-
+        })
+    
 
 }
 
@@ -135,6 +126,17 @@ function listenToTypeOfBrewery() {
         brew.brewerys = brew.brewerys.filter(item => item.brewery_type === typeOfBrew)
         console.log('please work', brew.brewerys);
         renderBrewerys(brew.brewerys)
+        type.addEventListener('click', function typeSelect(event) {
+
+            const typeOfBrew = event.target.value
+            console.log(typeOfBrew);
+
+            brew.brewerys = brew.brewerys.filter(item => item.brewery_type === typeOfBrew)
+            console.log('please work', brew.brewerys);
+            renderBrewerys(brew.brewerys)
+    
+         }) 
+
 
      }) 
 }
