@@ -48,9 +48,6 @@ function addBreweriesToState(arrOfBreweries) {
   state.breweries = arrOfBreweries
 }
 
-// state.breweries = getBreweriesByState('California')
-// const templateBrewery = state.breweries[0]
-
 const breweryUl = document.querySelector('#breweries-list')
 
 function createBreweryLi(breweryObj) {
@@ -99,13 +96,17 @@ function createBreweryLi(breweryObj) {
 
 function renderBreweries() {
   breweryUl.innerHTML = ''
+  let filter = 'Micro'
+  const filterDropdown = document.querySelector('#filter-by-type')
+  console.log('dropdown: ', filterDropdown)
+  filter = filterDropdown.value
+  console.log(filter)
+
   for (let i = 0; i < state.breweries.length; i++) {
     breweryUl.append(createBreweryLi(state.breweries[i]))
   }
-  // state.breweries[i]
-  // breweryUl.append(createBreweryLi(state.breweries[0]))
 }
 
 
-// getBreweriesByState('California')
+getBreweriesByState('California')
 
