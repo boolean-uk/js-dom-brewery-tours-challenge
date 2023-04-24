@@ -11,9 +11,15 @@ console.log('this');
 const form = document.querySelector('#select-state-form')
 const stateInput = document.querySelector('#select-state')
 const breweryList = document.querySelector('.breweries-list')
+const type = document.querySelector('#filter-by-type')
+const typeInput = document.querySelector('option')
 
 const brew = {
     brewerys: []
+}
+
+const brewTwo = {
+    brewerysTwo: []
 }
 
 form.addEventListener('submit', function handle (event) {
@@ -38,6 +44,8 @@ form.addEventListener('submit', function handle (event) {
         brew.brewerys = data
         console.log('End of getBrewerys', brew);
         renderBrewerys()
+
+        
     })
   
 
@@ -49,6 +57,16 @@ form.addEventListener('submit', function handle (event) {
 
 function renderBrewerys() {
     breweryList.innerHTML = ''
+
+    // let filteredBreweries = brew.brewerys;
+    // if (typeOfBrewery) {
+    //   filteredBreweries = filteredBreweries.filter(
+    //     (item) => item.brewery_type === typeOfBrewery
+    //   );
+    // }
+
+    
+
     brew.brewerys.forEach(brewery => {
        
             // create elements for
@@ -64,6 +82,7 @@ function renderBrewerys() {
             const pTagContact = document.createElement('p')
             const sectionLinks = document.createElement('section')
             const aTagLink = document.createElement('a')
+            const strong = document.createElement('strong')
 
             // set attributes
             divType.setAttribute('class', 'type')
@@ -71,25 +90,34 @@ function renderBrewerys() {
             sectionContact.setAttribute('class', 'phone')
             sectionLinks.setAttribute('class', 'link')
             aTagLink.setAttribute('href', `${brewery.website_url}`)
-            aTagLink.setAttribute('target', '_blank')
-   
+        aTagLink.setAttribute('target', '_blank')
+        
+
 
             // innerText
             h2name.innerText = `${brewery.name}`
             divType.innerText = `${brewery.brewery_type}`
             h3Address.innerText = 'Address:'
             pTagAddress.innerText = `${brewery.street}`
-            pTagAddressTwo.innerText = `${brewery.city}, ${brewery.postal_code.slice(0, 5)}`
-            h3Contact.innerText = 'Phone:'
+            strong.innerText = `${brewery.city}, ${brewery.postal_code.slice(0, 5)}`
+        h3Contact.innerText = 'Phone:'
+        if (brewery.phone) {
             pTagContact.innerText = `${brewery.phone}`
+        }
+        else {
+            pTagContact.innerText = 'N/A'
+        }
             aTagLink.innerText = 'Visit Website'
 
             // appending
+            pTagAddressTwo.append(strong)
             sectionAddress.append(h3Address, pTagAddress, pTagAddressTwo)
             sectionContact.append(h3Contact, pTagContact)
             sectionLinks.append(aTagLink)
             li.append(h2name, divType, sectionAddress, sectionContact, sectionLinks)
-            breweryList.append(li)
+        breweryList.append(li)
+
+
         
     })
 
@@ -99,4 +127,22 @@ function renderBrewerys() {
 
 
 
+function listenToTypeOfBrewery() { 
+    type.addEventListener('click', function typeSelect(event) {
+
+        const typeOfBrew = event.target.value
+        console.log(typeOfBrew);
+        brew.brewerys = brew.brewerys.filter(item => item.brewery_type === typeOfBrew)
+        console.log('please work', brew.brewerys);
+        renderBrewerys(brew.brewerys)
+
+     }) 
+}
+
+
+
+
+
+
 renderBrewerys()
+listenToTypeOfBrewery()
