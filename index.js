@@ -107,20 +107,65 @@ function checkType(breweryObj){
 
 // * RENDER LOGIC
 
-//render the breweries based on the filtered breweryList array
+//render the breweries based on state.breweryList array
 function renderBreweryList() {
     console.log('called: renderBreweryList')
     breweriesUL.innerHTML = ''
 
-    // logic for filtering for the brewery types we want to see
-
     state.breweryList.forEach((brewery) => {
         const li = document.createElement('li')
+            breweriesUL.append(li)
+
         const h2 = document.createElement('h2')
             h2.innerText = `${brewery.name}`
+            li.appendChild(h2)
 
-        li.append(h2)
-        breweriesUL.append(li)
+        const div = document.createElement('div')
+            div.setAttribute('class', 'type')
+            div.innerText = `${brewery.brewery_type}`
+            li.appendChild(div)
+
+        const firstSection = document.createElement('section')
+            firstSection.setAttribute('class', 'address')
+            li.appendChild(firstSection)
+
+            const addressH3 = document.createElement('h3')
+                addressH3.innerText = 'Address:'
+                firstSection.appendChild(addressH3)
+
+            const firstP = document.createElement('p')
+                firstP.innerText = `${brewery.address_1}`
+                firstSection.appendChild(firstP)
+
+            const secondP = document.createElement('p')
+                firstSection.appendChild(secondP)
+
+            const strong = document.createElement('strong')
+                strong.innerText = `${brewery.city} ${brewery.postal_code}`
+                secondP.append(strong)
+
+        const secondSection = document.createElement('section')
+            secondSection.setAttribute('class', 'phone')
+            li.appendChild(secondSection)
+
+            const secondH3 = document.createElement('h3')
+                secondH3.innerText = 'Phone:'
+                secondSection.appendChild(secondH3)
+
+            const thirdP = document.createElement('p')
+                thirdP.innerText = `${brewery.phone}`
+                secondSection.appendChild(thirdP)
+        
+        const thirdSection = document.createElement('section')
+            thirdSection.setAttribute('class', 'link')
+            li.appendChild(thirdSection)
+
+            const anchor = document.createElement('a')
+                anchor.setAttribute('href', `${brewery.website_url}`)
+                anchor.setAttribute('target', '_blank')
+                anchor.innerText = 'Visit Website'
+                thirdSection.appendChild(anchor)
+
     })
 }
 
