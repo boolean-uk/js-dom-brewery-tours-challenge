@@ -1,50 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="styles/reset.css" />
-    <link rel="stylesheet" href="styles/index.css" />
-    <title>Brewery Tours</title>
-  </head>
-  <body>
-    <header class="main-header">
-      <section class="select-state-section">
-        <h2>Welcome to Brewery Tours</h2>
-        <form id="select-state-form" autocomplete="off">
-          <label for="select-state">Which state are you visiting?</label>
-          <input id="select-state" name="select-state" type="text" />
-          <input type="submit" value="Search" />
-        </form>
-      </section>
-    </header>
-    <main>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles/reset.css" />
+  <link rel="stylesheet" href="styles/index.css" />
+
+  <title>Brewery Tours</title>
+</head>
+
+<body>
+  <header class="main-header">
+    <section class="select-state-section">
+      <h2>Welcome to Brewery Tours</h2>
+      <form id="select-state-form" autocomplete="off">
+        <label for="select-state">Which state are you visiting?</label>
+        <input id="select-state" name="select-state" type="text" />
+        <input type="submit" value="Search" />
+      </form>
+    </section>
+  </header>
+  <main>
+    <aside class="filters-section">
       <aside class="filters-section">
-        <aside class="filters-section">
-          <h2>Filter By:</h2>
-          <form id="filter-by-type-form" autocompete="off">
-            <label for="filter-by-type"><h3>Type of Brewery</h3></label>
-            <select name="filter-by-type" id="filter-by-type">
-              <option value="">Select a type...</option>
-              <option value="micro">Micro</option>
-              <option value="regional">Regional</option>
-              <option value="brewpub">Brewpub</option>
-            </select>
-          </form>
-        </aside>
+        <h2>Filter By:</h2>
+        <form id="filter-by-type-form" autocompete="off">
+          <label for="filter-by-type">
+            <h3>Type of Brewery</h3>
+          </label>
+          <select name="filter-by-type" id="filter-by-type">
+            <option value="">Select a type...</option>
+            <option value="micro">Micro</option>
+            <option value="regional">Regional</option>
+            <option value="brewpub">Brewpub</option>
+          </select>
+        </form>
       </aside>
-      <h1>List of Breweries</h1>
-      <article>
-        <ul id="breweries-list" class="breweries-list">
-          <!--
+    </aside>
+    <h1>List of Breweries</h1>
+    <article>
+      <ul id="breweries-list" class="breweries-list">
+        <!--
           For each brewery returned in the search, 
           add to the list using the HTML provided 
           in templates/standard-list-items.html
           -->
-        </ul>
-      </article>
-    </main>
-    <script src="index.js"></script>
-  </body>
+      </ul>
+    </article>
+  </main>
+  <script src="index.js"></script>
+</body>
+
 </html>
