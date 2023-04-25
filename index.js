@@ -36,8 +36,11 @@ const state = {
 const whichStateForm = document.querySelector('#select-state-form')
 const whichStateInput = document.querySelector('#select-state')
 const breweriesUL = document.querySelector('#breweries-list')
-
 const typeOfBrewerySelect = document.querySelector('#filter-by-type')
+
+const searchBreweriesForm = document.querySelector('#search-breweries-form')
+const searchBreweriesInput = document.querySelector('#search-breweries')
+
 
 // * EVENT HANDLERS
 
@@ -199,10 +202,69 @@ function typeOfBreweryFilter() {
     })
 }
 
+// * SEARCH BREWERIES LOGIC
+
+
+
+// re-render the page as the user is typing
+
+function searchBreweriesByName() {
+    console.log('called: searchBreweriesByName')
+    // read what the user is inputting
+    searchBreweriesForm.addEventListener('input', (event) => {
+        event.preventDefault()
+        const newSearch = searchBreweriesInput.value
+        console.log('what is being searched for?', newSearch )
+        //call the search filter
+        breweryNameSearchFilter(newSearch)
+    })
+}
+
+// filter the state based on matching brewery names
+
+function breweryNameSearchFilter(searchInput) {
+    console.log('called: breweryNameSearchFilter')
+    //filter the state array based on which name matches
+    const filteredBreweriesByName = state.breweryList.filter((stateObj) => {
+        if (stateObj.name.includes(`${searchInput}`)) {
+            return stateObj
+        }
+    })
+    renderBreweryList(filteredBreweriesByName)
+}
+
+
 // run event listeners on page load
 function init() {
     console.log('callled: init')
     typeOfBreweryFilter()
+    searchBreweriesByName()
 }
 
 init()
+
+
+
+// function breweryNameSearchFilter(){
+//     const searchingByName = state.breweryList.filter((inputChars) => {
+//         if (state.breweryList.name === `${inputChars}`) {
+//             console.log('found this based on letters', searchingByName)
+//             renderBreweryList(searchingByName)
+//         }
+//     })
+// }
+
+
+// console.log('called: breweryNameSearchFilter')
+// const re = new RegExp(`${searchInput}`)
+// let found = []
+// // for each breweryList item
+// state.breweryList.forEach((brewery) => {
+//     // regex experiment
+//     console.log('what is re', re)
+//     console.log('what is brewery.name?', brewery.name)
+//     found.push(brewery.name.match(re))
+//     console.log('what is found?', found)
+
+// })
+// renderBreweryList(found)
