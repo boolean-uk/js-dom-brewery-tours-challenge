@@ -5,7 +5,7 @@
 // fetch the information from the brewery for that input
 // render it using the given template
 // look at some past exercises using filter function
-console.log('this');
+// console.log('this');
 // app.js is connected to the page
 
 const form = document.querySelector('#select-state-form')
@@ -18,6 +18,8 @@ const brew = {
     brewerys: [],
 
 }
+
+
 
 
 form.addEventListener('submit', function handle (event) {
@@ -61,6 +63,7 @@ function renderBrewerys() {
         brew.brewerys.forEach(brewery => {
        
             // create elements for
+      
             const li = document.createElement('li')
             const h2name = document.createElement('h2')
             const divType = document.createElement('div')
@@ -91,6 +94,7 @@ function renderBrewerys() {
             h3Address.innerText = 'Address:'
             pTagAddress.innerText = `${brewery.street}`
             strong.innerText = `${brewery.city}, ${brewery.postal_code.slice(0, 5)}`
+            pTagAddress.innerText = strong
             h3Contact.innerText = 'Phone:'
             if (brewery.phone) {
                 pTagContact.innerText = `${brewery.phone}`
@@ -99,9 +103,11 @@ function renderBrewerys() {
                 pTagContact.innerText = 'N/A'
             }
             aTagLink.innerText = 'Visit Website'
+
+        
             if (brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub') {
                 // appending
-                pTagAddressTwo.append(strong)
+                // pTagAddressTwo.append(strong)
                 sectionAddress.append(h3Address, pTagAddress, pTagAddressTwo)
                 sectionContact.append(h3Contact, pTagContact)
                 sectionLinks.append(aTagLink)
@@ -116,9 +122,11 @@ function renderBrewerys() {
 
 
 
-
 function listenToTypeOfBrewery() { 
     type.addEventListener('change', function typeSelect(event) {
+        if( brew.brewerys.length === 0) {
+    alert('Please enter the state')
+}
 
         const typeOfBrew = event.target.value
         console.log(typeOfBrew);
