@@ -110,18 +110,18 @@ function updateState(list) {
     console.log('called: updateState')
     state.breweryList = ''
     state.breweryList = list
-    renderBreweryList()
+    renderBreweryList(state.breweryList)
 }
 
 
 // * RENDER LOGIC
 
 //render the breweries based on state.breweryList array
-function renderBreweryList() {
+function renderBreweryList(whichToRender) {
     console.log('called: renderBreweryList')
     breweriesUL.innerHTML = ''
 
-    state.breweryList.forEach((brewery) => {
+    whichToRender.forEach((brewery) => {
         const li = document.createElement('li')
             breweriesUL.append(li)
 
@@ -180,28 +180,28 @@ function renderBreweryList() {
 
 // * FILTER DROPDOWN LOGIC
 
-// listen for type of brewery selection being made
-// based on the option selected
-    // value = 'micro'
-// render the page based on filter for only micro brewery types
-//repeat for the other 2 types
-
-console.log(typeOfBrewerySelect)
-
 function typeOfBreweryFilter() {
     console.log('called: typeOfBreweryFilter')
-    typeOfBrewerySelect.addEventListener('change', (option) => {
-        // const res = document.querySelector()
-        // console.log('event clicked?', option[1].label)
+    // listen for type of brewery selection being made
+    typeOfBrewerySelect.addEventListener('change', () => {
+        // based on the option selected
+        const typeSelected = typeOfBrewerySelect.value
+        console.log('what is typeSelected?', typeSelected)
+        const filteredBreweries = state.breweryList.filter((stateObj) => {
+            if (stateObj.brewery_type === `${typeSelected}`) {
+                return stateObj
+            }
+        })
+        console.log('what is filteredBreweries?', filteredBreweries)
+        // from the state, render only brewery types that match selected
+        renderBreweryList(filteredBreweries)
     })
 }
 
+// run event listeners on page load
 function init() {
+    console.log('callled: init')
     typeOfBreweryFilter()
 }
 
-
-// const selectElement = document.querySelector('.Colours');
-// selectElement.addEventListener('change', (event) => {
-//    const result = document.querySelector('.tutorial');
-//    result.textContent = `You like ${event.target.value}`;
+init()
