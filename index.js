@@ -2,24 +2,47 @@
 
 /*
 
-Extension 1
-- A new 'search' section should be added under the List of Breweries heading
-- From the 'search' section, a user can search for breweries by name
-- As the user types, the brewery list should be updated automatically
+Extension 2
 
-1 - find where to add the search breweries input
-    - after the List of Breweries header, before the UL
-        - check for relevant CSS written to indicate class/ID names to use
+1 - Add a new 'filter by city' section to the filter menu
 
-2 - code for adding in the new search bar
-    - think about how to handle what the user inputs
+        <div class="filter-by-city-heading">
+        <h3>Cities</h3>
+        <button class="clear-all-btn">clear all</button>
+        </div>
+        <form id="filter-by-city-form">
+        <!-- 
+            POPULATE CITIES HERE
+        -->
+        </form>
 
-3 - create the logic for handling the user input to compare with brewery names
-    - comparing to the state array by the brewery.name
-        - update what is rendered based on filtering of the state array
+2 - For each city, generate a checkbox and label like below:
 
-4 - check that rendering is occuring as the user is typing
-    - think about when the filter function should be running 
+                <input type="checkbox" name="chardon" value="chardon" />
+                <label for="chardon">Chardon</label>
+
+                <input type="checkbox" name="cincinnati" value="cincinnati" />
+                <label for="cincinnati">Cincinnati</label>
+
+3 - The cities list should be populated based on the 
+results of the search. Each city should only appear once.
+
+ - logic to check if a city has already been included in the list
+    - if YES - ignore
+    - if NO - add new item
+
+4 - From the 'filter by city' section, the user can filter by 
+city by selecting a checkbox beside the city name
+
+ - logic to update state for checked box
+    - if city name of brewery matches that of a checked item
+        - render it on the page
+
+5 - From the 'filter by city' section, a user can clear all filters
+
+ - listen for clear all click
+    - remove all checked TRUE instances
+    - render the page for all items in state
 
 */
 
@@ -37,9 +60,9 @@ const whichStateForm = document.querySelector('#select-state-form')
 const whichStateInput = document.querySelector('#select-state')
 const breweriesUL = document.querySelector('#breweries-list')
 const typeOfBrewerySelect = document.querySelector('#filter-by-type')
-
 const searchBreweriesForm = document.querySelector('#search-breweries-form')
 const searchBreweriesInput = document.querySelector('#search-breweries')
+
 
 
 // * EVENT HANDLERS
@@ -113,8 +136,7 @@ function updateState(list) {
     renderBreweryList(state.breweryList)
 }
 
-
-// * RENDER LOGIC
+// * RENDER RESULTS LOGIC
 
 //render the breweries based on state.breweryList array
 function renderBreweryList(whichToRender) {
@@ -178,7 +200,7 @@ function renderBreweryList(whichToRender) {
     })
 }
 
-// * FILTER DROPDOWN LOGIC
+// * FILTER TYPE OF BREWERY LOGIC
 
 function typeOfBreweryFilter() {
     console.log('called: typeOfBreweryFilter')
@@ -204,10 +226,7 @@ function typeOfBreweryFilter() {
 
 // * SEARCH BREWERIES LOGIC
 
-
-
-// re-render the page as the user is typing
-
+// listen for when a user is typing in search breweries
 function searchBreweriesByName() {
     console.log('called: searchBreweriesByName')
     // read what the user is inputting
@@ -221,7 +240,6 @@ function searchBreweriesByName() {
 }
 
 // filter the state based on matching brewery names
-
 function breweryNameSearchFilter(searchInput) {
     console.log('called: breweryNameSearchFilter')
     //filter the state array based on which name matches
@@ -230,6 +248,7 @@ function breweryNameSearchFilter(searchInput) {
             return stateObj
         }
     })
+    // render the list that contains only matching brewery names
     renderBreweryList(filteredBreweriesByName)
 }
 
@@ -241,29 +260,3 @@ function init() {
 }
 
 init()
-
-
-
-// function breweryNameSearchFilter(){
-//     const searchingByName = state.breweryList.filter((inputChars) => {
-//         if (state.breweryList.name === `${inputChars}`) {
-//             console.log('found this based on letters', searchingByName)
-//             renderBreweryList(searchingByName)
-//         }
-//     })
-// }
-
-
-// console.log('called: breweryNameSearchFilter')
-// const re = new RegExp(`${searchInput}`)
-// let found = []
-// // for each breweryList item
-// state.breweryList.forEach((brewery) => {
-//     // regex experiment
-//     console.log('what is re', re)
-//     console.log('what is brewery.name?', brewery.name)
-//     found.push(brewery.name.match(re))
-//     console.log('what is found?', found)
-
-// })
-// renderBreweryList(found)
