@@ -13,12 +13,11 @@ const stateInput = document.querySelector('#select-state')
 const breweryList = document.querySelector('.breweries-list')
 const type = document.querySelector('#filter-by-type')
 const typeInput = document.querySelector('option')
-
+const searchInput = document.querySelector('#search-breweries')
 const brew = {
     brewerys: [],
 
 }
-
 
 
 
@@ -30,10 +29,7 @@ form.addEventListener('submit', function handle (event) {
     console.log('updateState', updateState);
     form.reset()
 
-
-
 // fetch the json
-
     fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${updateState}&per_page=10`)
     .then(function (response) {
         console.log('response returned..', response);
@@ -47,20 +43,15 @@ form.addEventListener('submit', function handle (event) {
         renderBrewerys()
 
         
-    })
-  
-
-    
+    })  
 })
 
-
 // render brewerys
-
 function renderBrewerys() {
     breweryList.innerHTML = ''
   
   
-        brew.brewerys.forEach(brewery => {
+       brewsTwo = brew.brewerys.map(brewery => {
        
             // create elements for
       
@@ -86,6 +77,7 @@ function renderBrewerys() {
             aTagLink.setAttribute('href', `${brewery.website_url}`)
             aTagLink.setAttribute('target', '_blank')
         
+        
 
 
             // innerText
@@ -94,7 +86,7 @@ function renderBrewerys() {
             h3Address.innerText = 'Address:'
             pTagAddress.innerText = `${brewery.street}`
             strong.innerText = `${brewery.city}, ${brewery.postal_code.slice(0, 5)}`
-            pTagAddress.innerText = strong
+           
             h3Contact.innerText = 'Phone:'
             if (brewery.phone) {
                 pTagContact.innerText = `${brewery.phone}`
@@ -108,16 +100,18 @@ function renderBrewerys() {
             if (brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub') {
                 // appending
                 // pTagAddressTwo.append(strong)
+                pTagAddressTwo.append(strong)
                 sectionAddress.append(h3Address, pTagAddress, pTagAddressTwo)
                 sectionContact.append(h3Contact, pTagContact)
                 sectionLinks.append(aTagLink)
                 li.append(h2name, divType, sectionAddress, sectionContact, sectionLinks)
                 breweryList.append(li)
-  type.selectedIndex = 0
-            }
-        
-        })
 
+                }
+                
+  type.selectedIndex = 0
+            // }
+        })
 }
 
 
@@ -158,13 +152,8 @@ if(typeOfBrew === 'micro')
      }) 
 }
 
-
-
-
 renderBrewerys()
 listenToTypeOfBrewery()
-
-
 
 function rendertypeBrewerys(type) {
     breweryList.innerHTML = ''
@@ -220,6 +209,96 @@ function rendertypeBrewerys(type) {
                 li.append(h2name, divType, sectionAddress, sectionContact, sectionLinks)
                 breweryList.append(li)
   type.selectedIndex = 0
+            }
+        
+        })
+
+}
+
+
+// Extension 1
+// a new search bar is generated under the List of Breweries
+// From the 'search' section, a user can search for breweries by name
+// As the user types, the brewery list should be updated automatically
+
+// searxh bar added to the HTML
+
+// create an add listener event to prevent default behavior
+
+const search = document.querySelector('#search-breweries-form')
+
+search.addEventListener('input', function listenThis(event) {
+event.preventDefault()
+console.log('lol',brew.brewerys);
+
+
+
+const searchBrew = searchInput.value.toLowerCase()
+
+
+console.log('We have this', searchBrew);
+renderSearchBrewerys(searchBrew)
+
+
+}) 
+
+
+
+
+function renderSearchBrewerys(myInput) {
+    breweryList.innerHTML = ''
+  
+  
+        brew.brewerys.forEach(brewery => {
+       
+            // create elements for
+            const li = document.createElement('li')
+            const h2name = document.createElement('h2')
+            const divType = document.createElement('div')
+            const sectionAddress = document.createElement('section')
+            const h3Address = document.createElement('h3')
+            const pTagAddress = document.createElement('p')
+            const pTagAddressTwo = document.createElement('p')
+            const sectionContact = document.createElement('section')
+            const h3Contact = document.createElement('h3')
+            const pTagContact = document.createElement('p')
+            const sectionLinks = document.createElement('section')
+            const aTagLink = document.createElement('a')
+            const strong = document.createElement('strong')
+
+            // set attributes
+            divType.setAttribute('class', 'type')
+            sectionAddress.setAttribute('class', 'address')
+            sectionContact.setAttribute('class', 'phone')
+            sectionLinks.setAttribute('class', 'link')
+            aTagLink.setAttribute('href', `${brewery.website_url}`)
+            aTagLink.setAttribute('target', '_blank')
+        
+
+
+            // innerText
+            h2name.innerText = `${brewery.name}`
+            divType.innerText = `${brewery.brewery_type}`
+            h3Address.innerText = 'Address:'
+            pTagAddress.innerText = `${brewery.street}`
+            strong.innerText = `${brewery.city}, ${brewery.postal_code.slice(0, 5)}`
+            h3Contact.innerText = 'Phone:'
+            if (brewery.phone) {
+                pTagContact.innerText = `${brewery.phone}`
+            }
+            else {
+                pTagContact.innerText = 'N/A'
+            }
+            aTagLink.innerText = 'Visit Website'
+            if (brewery.name.toLowerCase().includes(myInput) && brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub') {
+                // appending
+                pTagAddressTwo.append(strong)
+                sectionAddress.append(h3Address, pTagAddress, pTagAddressTwo)
+                sectionContact.append(h3Contact, pTagContact)
+                sectionLinks.append(aTagLink)
+                li.append(h2name, divType, sectionAddress, sectionContact, sectionLinks)
+                breweryList.append(li)
+//   type.selectedIndex = 0
             }
         
         })

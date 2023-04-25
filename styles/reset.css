@@ -47,3 +47,8 @@ textarea,
 select {
   font: inherit;
 }
+
+
+.hidden {
+  display: none;
+}
