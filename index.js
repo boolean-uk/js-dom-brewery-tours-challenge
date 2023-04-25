@@ -79,10 +79,31 @@ function filterArray(filter) {
     return state.breweries
 }
 
+function brewerySearchEventListener() {
+    const searchArea = document.querySelector(`#search-breweries-form`)
+    searchArea.addEventListener(`keyup`, (event) => {
+        const searchTerm = event.target.value
+        const pattern = new RegExp(searchTerm, `i`)
+        state.breweries.forEach(brewery => {
+            if (pattern.test(brewery.name)) {
+                brewery.visible = true
+            } else {
+                brewery.visible = false
+            }
+        })
+        renderCards(state.breweries)
+    })
+    searchArea.addEventListener(`submit`, (event) => {
+        event.preventDefault()
+    })
+}
+
 // SEARCH BUTTON - PREVENTS PAGE REFRESH AND FUNS SEARCHSUBMIT FUNCTION
 function searchEventListener() {
     searchField.addEventListener('submit', (event) => {
         event.preventDefault()
+        const searchArea = document.querySelector(`#brewery-search`)
+        searchArea.value = ``
         searchSubmit()
     })
 }
@@ -90,6 +111,7 @@ function searchEventListener() {
 function pageLoad() {
     searchEventListener()
     filterEventListener()
+    brewerySearchEventListener()
 }
 
 
