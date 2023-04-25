@@ -34,15 +34,31 @@
               <option value="brewpub">Brewpub</option>
             </select>
           </form>
+          <div class="filter-by-city-heading">
+            <h3>Cities</h3>
+            <button class="clear-all-btn">clear all</button>
+          </div>
+          <form id="filter-by-city-form">
+            <!-- 
+              For each city, generate a checkbox and label like below 
+            -->
+            <!-- <input type="checkbox" name="chardon" value="chardon" />
+            <label for="chardon">Chardon</label>
+          
+            <input type="checkbox" name="cincinnati" value="cincinnati" />
+            <label for="cincinnati">Cincinnati</label> -->
+            
+          
+          </form>
         </aside>
       </aside>
       <h1>List of Breweries</h1>
-      <aside class="search-bar">
-        <form id="search-breweries-form">
-          <h2>Search breweries:</h2>
-          <input id="brewery-search" name="brewery-search" type="text">
+      <header class="search-bar">
+        <form id="search-breweries-form" autocomplete="off">
+          <label for="search-breweries"><h2>Search breweries:</h2></label>
+          <input id="search-breweries" name="search-breweries" type="text">
         </form>
-      </aside>
+      </header>
       <article>
         <ul id="breweries-list" class="breweries-list">
           <!--
@@ -56,25 +72,3 @@
     <script src="index.js"></script>
   </body>
 </html>
-
-<!-- 
-  NEW IDEAS
-  Start - all pubs have visible = true
-  Filter - if pub type = filter type
-          set visible = true
-          else set visible = false
-  Search - if search term is in pub name
-          set visible = true
-          else set visible = false
-
-
-
-  Search adds a value to the objects in array
-        searchMatch
-        if item matches search, searchMatch = true and it is rendered
-
-
-Filter adds filter = true/false
-Search adds search = true/false
-City Filter adds cityFilter = true/false
- -->
