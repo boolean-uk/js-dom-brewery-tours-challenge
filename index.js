@@ -2,27 +2,24 @@
 
 /*
 
-1 - use insomnia to ensure I can access the data from the API
-    - get familiar with the data structure returned, and which parts I might need
-        - state.brewery_type
+Extension 1
+- A new 'search' section should be added under the List of Breweries heading
+- From the 'search' section, a user can search for breweries by name
+- As the user types, the brewery list should be updated automatically
 
-2 - create a local state array in my JS that I can store brewery information in
-    - think about paths to getting to the parts of the data I want for rendering later
-    - think about how I can filter by brewery types for rendering specified types
+1 - find where to add the search breweries input
+    - after the List of Breweries header, before the UL
+        - check for relevant CSS written to indicate class/ID names to use
 
-3 - be able to take the user input from the search bar
-    - prevent default submit behaviour to avoid page reloading
-        -set up an event listener for when the form is submitted 
-    - use the user input to construct the FETCH GET for data that matches this
-    - check the links using insomnia and console.log() what is returned to check it
+2 - code for adding in the new search bar
+    - think about how to handle what the user inputs
 
-4 - saving the fetched data to my local state
-    - ensure the state is cleared for each search
-    - push the retrieved data into my local state array
+3 - create the logic for handling the user input to compare with brewery names
+    - comparing to the state array by the brewery.name
+        - update what is rendered based on filtering of the state array
 
-5 - render the state on the page
-    - use the templates for the format of the HTML components to create dynamically
-    - create a function that will make a list item forEach of the matching data in the local state
+4 - check that rendering is occuring as the user is typing
+    - think about when the filter function should be running 
 
 */
 
@@ -187,13 +184,17 @@ function typeOfBreweryFilter() {
         // based on the option selected
         const typeSelected = typeOfBrewerySelect.value
         console.log('what is typeSelected?', typeSelected)
+        if (typeSelected === 'all') {
+                return renderBreweryList(state.breweryList)
+            }
+        //filter the state array based on which menu item has been selected
         const filteredBreweries = state.breweryList.filter((stateObj) => {
             if (stateObj.brewery_type === `${typeSelected}`) {
                 return stateObj
             }
         })
         console.log('what is filteredBreweries?', filteredBreweries)
-        // from the state, render only brewery types that match selected
+        // render only brewery types that match selected
         renderBreweryList(filteredBreweries)
     })
 }
