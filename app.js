@@ -290,7 +290,7 @@ function renderSearchBrewerys(myInput) {
                 pTagContact.innerText = 'N/A'
             }
             aTagLink.innerText = 'Visit Website'
-            if (brewery.name.toLowerCase().includes(myInput) && brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub') {
+            if (brewery.name.toLowerCase().includes(myInput) && (brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub') ){
                 // appending
                 pTagAddressTwo.append(strong)
                 sectionAddress.append(h3Address, pTagAddress, pTagAddressTwo)
