@@ -226,13 +226,12 @@ function breweryNameSearchFilter(searchInput) {
     console.log('called: breweryNameSearchFilter')
     //filter the state array based on which name matches
     const filteredBreweriesByName = state.breweryList.filter((stateObj) => {
-        if (stateObj.name.includes(`${searchInput}`)) {
+        if (stateObj.name.toLowerCase().includes(`${searchInput}`)) {
             return stateObj
         }
     })
     renderBreweryList(filteredBreweriesByName)
 }
-
 
 // run event listeners on page load
 function init() {
