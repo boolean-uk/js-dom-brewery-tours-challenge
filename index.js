@@ -100,3 +100,44 @@ function createBreweryLi(breweryObj) {
 
   return li
 }
+
+function rendercityFilter() {
+  const header = document.createElement('header')
+  header.classList.add('search-bar')
+
+  const form = document.createElement('form')
+  form.id = 'search-breweries-form'
+  form.autocomplete = 'off'
+
+  const label = document.createElement('label')
+  label.for = 'search-breweries'
+
+  const h2 = document.createElement('h2')
+  h2.innerText = 'Search breweries:'
+
+  const input = document.createElement('input')
+  input.id = 'search-breweries'
+  input.name = 'search-breweries'
+  input.type = 'text'
+
+  label.append(h2)
+  form.append(label, input)
+  header.append(form)
+
+  const article = document.querySelector('article')
+  const main = document.querySelector('main')
+  main.insertBefore(header, article)
+}
+
+function addCityFilterEvent() {
+  const cityFilterForm = document.querySelector('#search-breweries-form')
+  cityFilterForm.addEventListener('submit', (event) => event.preventDefault())
+  const textInput = document.querySelector('#search-breweries')
+  textInput.addEventListener('input', () => {
+    const userInput = textInput.value
+    console.log(userInput)
+  })
+}
+
+rendercityFilter()
+addCityFilterEvent()
