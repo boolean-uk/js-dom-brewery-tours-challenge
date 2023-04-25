@@ -47,6 +47,22 @@ function createCityArray(arr) {
         }
     })
     renderCitySearchButtons(state.citySearchList)
+    clearFiltersButton()
+}
+
+function clearFiltersButton() {
+    const clearButton = document.querySelector(`.clear-all-btn`)
+    clearButton.addEventListener(`click`, () => {
+        console.log(`blah`)
+        let checkBoxes = document.querySelectorAll(`.checkbox`)
+        checkBoxes.forEach(box => {
+            box.checked = false
+        })
+        state.breweries.forEach(brewery => {
+            brewery.cityFilter = true
+        })
+    renderCards(state.breweries)
+    })
 }
 
 // CREATES A CHECK BOX FOR EVERY CITY
@@ -54,6 +70,7 @@ function renderCitySearchButtons(arr) {
     cityFilterForm.innerHTML = ``
     arr.forEach(city => {
         const cityInput = document.createElement(`input`)
+            cityInput.setAttribute(`class`, `checkbox`)
             cityInput.setAttribute(`type`, `checkbox`)
             cityInput.setAttribute(`name`, `${city}`)
             cityInput.setAttribute(`value`, `${city}`)
@@ -77,7 +94,7 @@ function cityFilterArray(cityInput, city) {
     }
     state.breweries.forEach(brewery => {
         const pattern = new RegExp(brewery.city)
-        if (pattern.test(state.citySearchActive)) {
+        if (pattern.test(state.citySearchActive) || state.citySearchActive.length === 0) {
             brewery.cityFilter = true
         } else {
             brewery.cityFilter = false
