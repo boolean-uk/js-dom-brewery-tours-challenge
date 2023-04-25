@@ -1,12 +1,32 @@
 const form = document.querySelector('#select-state-form')
 const formInput = document.querySelector('input[type=text]')
 const ul = document.querySelector('#breweries-list')
-console.log(ul)
-
+const dropdownMenu = document.querySelector('#filter-by-type')
 
 const state = {
-    breweryArr: []
+    breweryArr: [],
+    filter: 'optionVal'
 }
+
+
+dropdownMenu.addEventListener('input',()=>{
+
+    let dropdownMenuVal = dropdownMenu.value 
+    state.filter = dropdownMenuVal
+    console.log(`state.filter is`, state.filter)
+    console.log(`length`, state.breweryArr.length)
+
+    const filteredByType = state.breweryArr.filter((brewery) =>{
+        return brewery.brewery_type === state.filter
+    })
+
+    state.breweryArr = filteredByType
+    console.log(`length`, state.breweryArr.length)
+
+    renderBreweries()
+    
+})
+
 
 // adding an event listener to the form 
 form.addEventListener('submit', (e)=>{
@@ -20,9 +40,9 @@ form.addEventListener('submit', (e)=>{
        return response.json()
     })
     .then((data) => {
-        console.log(data)
+        // console.log(data)
       let filtered =  data.filter((brewery) =>  brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub')
-        console.log(`filtered`,filtered)
+        // console.log(`filtered`,filtered)
         state.breweryArr = filtered
         console.log(`state.breweryArr`,state.breweryArr)
         renderBreweries()
@@ -76,3 +96,4 @@ const renderBreweries = () => {
 }
 
 console.log(state.breweryArr)
+
