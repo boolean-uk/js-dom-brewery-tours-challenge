@@ -5,7 +5,7 @@ const state = {
   breweryList: [],
 };
 
-// Empty 'HomePage'
+// Empty 'HomePage' not really need for it
 // function loadPage() {
 //   const articleSection = document.querySelector("article");
 
@@ -51,6 +51,8 @@ function brewType(item) {
   if (item.brewery_type === "brewpub") {
     return item;
   }
+
+  // not sure if it's right syntax
   // if (
   //   ((((item.brewery_type === "micro") !== item.brewery_type) ===
   //     "regional") !==
@@ -133,6 +135,8 @@ form.addEventListener("submit", (event) => {
   const values = input.value;
   console.log("input value:", values);
 
+
+  // still working on how to make this part work
   const newInput = document.querySelector("input");
   const stateInput = newInput.brewery_type;
   getData(input);
