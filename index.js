@@ -64,6 +64,7 @@ function renderBreweries() {
   });
 }
 
+<<<<<<< HEAD
 // From the list, retrieve only micro, regional and brewup types.
 function filterBreweries(breweries) {
   const typesOfBrewery = ["micro", "regional", "brewpub"];
@@ -113,6 +114,8 @@ selectBreweryType.addEventListener("change", (event) => {
 });
 
 
+=======
+>>>>>>> 4390c611b470d81f895bde2ab5cf97dfc8a49a77
 // The first time the page is loaded, some New York breweries will be loade on the page.
 function loadBreweryData() {
   fetch(`${baseUri}?by_state=new_york&per_page=9`)
