@@ -1,35 +1,79 @@
 const api = "https://api.openbrewerydb.org/v1/breweries?by_state=";
 const ul = document.querySelector("#breweries-list");
 
-const breweries = {
+const state = {
   breweryList: [],
 };
 
 // Empty 'HomePage'
-function loadPage() {
-  const articleSection = document.querySelector("article");
-  articleSection.innerText = "Search Brewery...";
-}
-// loadPage()
+// function loadPage() {
+//   const articleSection = document.querySelector("article");
+
+//   articleSection.innerText = "Search Brewery...";
+// }
+// // loadPage()
 
 // GET
 function getData() {
+  // const apiLink = `${api}${searchState}`;
   fetch(api)
     .then(function (response) {
       return response.json();
     })
     .then(function (data) {
-      breweries.breweryList = data;
+      state.breweryList = data;
       console.log("Data", data);
+      // const tourBreweries = data.filter((brewery) => {
+      //   return ['micro', 'regional', 'brewpub'].includes(brewery.brewery_type.toLowerCase());
       displayBrew();
+    })
+    .catch(function (error) {
+      console.log("error", error);
     });
 }
+
+// );
 getData();
+
+// Displaying cities just by STATE and only 3 types
+
+// function displayByType() {
+//   const byType = state.breweryList.filter(brewType);
+// }
+
+function brewType(item) {
+  if (item.brewery_type === "micro") {
+    return item;
+  }
+  if (item.brewery_type === "regional") {
+    return item;
+  }
+  if (item.brewery_type === "brewpub") {
+    return item;
+  }
+  // if (
+  //   ((((item.brewery_type === "micro") !== item.brewery_type) ===
+  //     "regional") !==
+  //     item.brewery_type) ===
+  //   "brewpub"
+  // ) {
+  //   return item;
+  // }
+}
+
+function displayByState(stateB) {
+  const sameStateBrew = state.breweryList.filter(
+    (sameStateB) => sameStateB.state === stateB
+  );
+  console.log("state", sameStateBrew);
+  console.log(api.state)
+}
+displayByState()
 
 // ForEach => display
 function displayBrew() {
   ul.innerHTML = " ";
-  breweries.breweryList.forEach((data) => {
+  state.breweryList.forEach((data) => {
     const li = document.createElement("li");
     ul.append(li);
 
@@ -80,31 +124,6 @@ function displayBrew() {
   });
 }
 
-// Displaying cities just by TYPE
-
-function displayByType(array, type, input) {
-  let breweries = null;
-  let breweryList = [];
-  for (let i = 0; i < array.length; i++) {
-    if (array[i].type === type) {
-      breweries = array[i];
-      break;
-    }
-  }
-
-  if (breweries) {
-    breweryList = array.filter((data) => {
-      for (const prop in data) {
-        if (data[prop].includes(input)) {
-          return true;
-        }
-      }
-      return false;
-    });
-  }
-  return breweryList;
-}
-
 // Stop page from loading & working input
 const form = document.querySelector("form");
 form.addEventListener("submit", (event) => {
@@ -113,10 +132,10 @@ form.addEventListener("submit", (event) => {
   const input = document.querySelector("#select-state");
   const values = input.value;
   console.log("input value:", values);
-  form.reset();
 
-  const searchInput = document.querySelector("submit");
-  searchInput.addEventListener("submit", () => {
-    displayByType();
-  });
+  const newInput = document.querySelector("input");
+  const stateInput = newInput.brewery_type;
+  getData(input);
+  console.log("new", stateInput);
+  form.reset();
 });
