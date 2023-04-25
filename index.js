@@ -1,12 +1,13 @@
 const state = {
-    breweries: []
+    breweries: [],
+    searchedCities: []
 }
 
-// Stop page refresh on search submit
-// Write search term to variable
+// FILE WIDE CONSTANTS
 
 const searchField = document.querySelector(`#select-state-form`)
 const breweryList = document.querySelector(`#breweries-list`)
+
 
 // EXTRACTS SEARCH TERM, FETCHES DATA USING THAT TERM, CHECKS BREWERY TYPE AND WRITES VALID
 // BREWERIES TO STATE AND ADDS VISIBLE PROPERTY
@@ -19,15 +20,11 @@ function searchSubmit() {
     .then(function (data) {        
         state.breweries = []
         data.filter(currentBrewery => {
-            if (currentBrewery.brewery_type === `micro` || currentBrewery.brewery_type === `regional` || currentBrewery.brewery_type === `brewpub`) {
-                state.breweries.push({...currentBrewery, visible: true})                
-                return true
-            } else {
-                return false
-            }
+            if (currentBrewery.brewery_type === `micro` || currentBrewery.brewery_type === `regional` || currentBrewery.brewery_type === `brewpub`) {          
+                state.breweries.push({...currentBrewery, filter: true, search: true})
+            } 
         })
     renderCards(state.breweries)
-    return state.breweries
     })
 }
 
@@ -35,7 +32,7 @@ function searchSubmit() {
 function renderCards(arr) {
     breweryList.innerHTML = ``
     arr.forEach(brewery => {
-        if (brewery.visible === true) {
+        if (brewery.filter === true && brewery.search === true) {
         
         const li = document.createElement(`li`)
         li.innerHTML = `
@@ -55,7 +52,8 @@ function renderCards(arr) {
         </section>
         `
         breweryList.append(li)
-    }})
+    }
+})
 }
 
 // ADDS EVENT LISTENER TO FILTER
@@ -70,9 +68,9 @@ function filterEventListener() {
 function filterArray(filter) {
     state.breweries.forEach(brewery => {
         if (brewery.brewery_type === filter || filter === ``) {
-            brewery.visible = true
+            brewery.filter = true
         } else {
-            brewery.visible = false
+            brewery.filter = false
         }
     })
     renderCards(state.breweries)
@@ -82,21 +80,26 @@ function filterArray(filter) {
 function brewerySearchEventListener() {
     const searchArea = document.querySelector(`#search-breweries-form`)
     searchArea.addEventListener(`keyup`, (event) => {
-        const searchTerm = event.target.value
-        const pattern = new RegExp(searchTerm, `i`)
-        state.breweries.forEach(brewery => {
-            if (pattern.test(brewery.name)) {
-                brewery.visible = true
-            } else {
-                brewery.visible = false
-            }
-        })
-        renderCards(state.breweries)
+        brewerySearchArray(event.target.value)
     })
     searchArea.addEventListener(`submit`, (event) => {
         event.preventDefault()
     })
 }
+
+function brewerySearchArray(searchTerm) {
+    const pattern = new RegExp(searchTerm, `i`)
+    state.breweries.forEach(brewery => {
+        if (pattern.test(brewery.name)) {
+            brewery.search = true
+        } else {
+            brewery.search = false
+        }
+    })
+    renderCards(state.breweries)
+}
+
+// Changes visible value based on other events
 
 // SEARCH BUTTON - PREVENTS PAGE REFRESH AND FUNS SEARCHSUBMIT FUNCTION
 function searchEventListener() {
