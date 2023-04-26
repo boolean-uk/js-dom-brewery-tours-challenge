@@ -73,7 +73,7 @@ const typeOfBrewerySelect = document.querySelector('#filter-by-type')
 const searchBreweriesForm = document.querySelector('#search-breweries-form')
 const searchBreweriesInput = document.querySelector('#search-breweries')
 const filterByCityForm = document.querySelector('#filter-by-city-form')
-
+const clearAllFiltersButton = document.querySelector('.clear-all-btn')
 
 // * EVENT HANDLERS
 
@@ -88,6 +88,15 @@ whichStateForm.addEventListener('submit', (event) => {
     whichStateForm.reset()
 })
 
+clearAllFiltersButton.addEventListener('click', (event) => {
+    event.preventDefault()
+    console.log('clear all clicked')
+    state.breweryTypeFilter = ''
+    state.brewerySearchFilter = ''
+    state.breweryCityFilter = ''
+    console.log(state)
+    checkRenderConditions()
+})
 
 // * SERVER LOGIC
 
