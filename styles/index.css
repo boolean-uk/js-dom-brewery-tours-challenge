@@ -66,6 +66,19 @@ main {
   font-size: 1rem;
 }
 
+.savedBreweries {
+    display: grid;
+    place-content: center;
+    padding: 1rem;
+
+    border-radius: 0rem 0rem 0.25rem 0.25rem;
+    border: 1px solid #000;
+}
+
+.savedBreweries a {
+    text-decoration: none;
+}
+
 .filter-by-city-heading {
   padding: 1rem 1rem 0;
 
@@ -93,7 +106,8 @@ main {
   grid-gap: 1rem;
 
   border: 1px solid #000;
-  border-radius: 0 0 0.25rem 0.25rem;
+  border-bottom: none;
+  /* border-radius: 0 0 0.25rem 0.25rem; */
 }
 
 #filter-by-type-form label {
@@ -107,9 +121,10 @@ main {
   grid-template-columns: 24px auto;
   align-items: center;
 
-  border-radius: 0 0 0.25rem 0.25rem;
+  /* border-radius: 0 0 0.25rem 0.25rem; */
   border: 1px solid #000;
   border-top: none;
+  border-bottom: none;
 }
 
 h1 {
@@ -159,7 +174,7 @@ article {
   grid-template-areas:
     "heading heading type"
     "address phone ."
-    ". . link";
+    ". visit link";
   grid-template-columns: repeat(2, 1fr) minmax(140px, auto);
   grid-template-rows: repeat(3, auto);
 
@@ -215,6 +230,10 @@ article {
   grid-area: link;
 }
 
+.breweries-list li .visit {
+    grid-area: visit;
+}
+
 .breweries-list li .link a {
   display: block;
   padding: 0.5rem 1rem;
@@ -227,4 +246,55 @@ article {
   text-align: center;
   text-decoration: none;
   font-weight: bold;
+}
+
+.breweries-list li .visit button {
+  display: block;
+  padding: 0.5rem 1rem;
+
+  border-radius: 0.25rem;
+  background-color: #1565c0;
+  color: #fff;
+
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+  border: none;
+}
+
+.breweries-list li .visit button:hover {
+    background-color: #4b81c0;
+}
+
+.pagination {
+    padding: 1rem 0 0 0;
+    display: grid;
+    grid-template-columns: 5rem 2rem 5rem;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+}
+
+.pagination button {
+    border: none;
+    background-color: #fff;
+    height: 40px;
+    width: 50px;
+    font-size: 1.5rem;
+    border-radius: 3px;
+}
+
+.pagination span {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.pagination button:hover {
+    background-color: rgb(245, 245, 245);
+    box-shadow: 1px 2px #c7c7c7;
+}
+
+.pagination button:active {
+    box-shadow: none;
 }

@@ -32,9 +32,27 @@
               <option value="brewpub">Brewpub</option>
             </select>
           </form>
+            <div class="filter-by-city-heading">
+                <h3>Cities</h3>
+                <button class="clear-all-btn">clear all</button>
+            </div>
+            <form id="filter-by-city-form">
+            </form>
+        </aside>
+        <aside class="filters-section">
+            <div class="savedBreweries">
+
+                <a href="http://localhost:3000/breweries" target="_blank">Saved Breweries</a>
+            </div>
         </aside>
       </aside>
       <h1>List of Breweries</h1>
+      <header class="search-bar">
+        <form id="search-breweries-form" autocomplete="off">
+          <label for="search-breweries"><h2>Search breweries:</h2></label>
+          <input id="search-breweries" name="search-breweries" type="text">
+        </form>
+      </header>
       <article>
         <ul id="breweries-list" class="breweries-list">
           <!--
@@ -43,6 +61,7 @@
           in templates/standard-list-items.html
           -->
         </ul>
+        <div class="pagination"></div>
       </article>
     </main>
     <script src="index.js"></script>
