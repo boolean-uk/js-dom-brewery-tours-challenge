@@ -4,9 +4,16 @@ const breweryList = document.querySelector('.breweries-list')
 const type = document.querySelector('#filter-by-type')
 const typeInput = document.querySelector('option')
 const searchInput = document.querySelector('#search-breweries')
+const cityForm = document.querySelector('#filter-by-city-form')
+
 const brew = {
     brewerys: [],
 }
+
+let cityArray = []
+
+
+// form submit
 
 form.addEventListener('submit', function handle(event) {
     event.preventDefault()
@@ -20,7 +27,9 @@ form.addEventListener('submit', function handle(event) {
         })
         .then(function (data) {
             brew.brewerys = data
+            
             renderBrewerys()
+            renderCityFilter()
         })
 })
 
@@ -29,6 +38,8 @@ function renderBrewerys(filteredBreweries) {
 
     const typeOfBrew = type.value
     const breweriesToRender = filteredBreweries || brew.brewerys;
+
+    // filter function to make 
 
     const filteredBreweriesByType  = breweriesToRender.filter(function (brewery) {
         if (typeOfBrew === '') {
@@ -39,6 +50,7 @@ function renderBrewerys(filteredBreweries) {
     })
 
     filteredBreweriesByType.forEach(function (brewery) {
+        // create elements
         const li = document.createElement('li')
         const h2name = document.createElement('h2')
         const divType = document.createElement('div')
@@ -53,6 +65,7 @@ function renderBrewerys(filteredBreweries) {
         const aTagLink = document.createElement('a')
         const strong = document.createElement('strong')
 
+        // set attributes
         divType.setAttribute('class', 'type')
         sectionAddress.setAttribute('class', 'address')
         sectionContact.setAttribute('class', 'phone')
@@ -60,6 +73,7 @@ function renderBrewerys(filteredBreweries) {
         aTagLink.setAttribute('href', `${brewery.website_url}`)
         aTagLink.setAttribute('target', '_blank')
 
+        // content
         h2name.innerText = `${brewery.name}`
         divType.innerText = `${brewery.brewery_type}`
         h3Address.innerText = 'Address:'
@@ -74,6 +88,7 @@ function renderBrewerys(filteredBreweries) {
         }
         aTagLink.innerText = 'Visit Website'
 
+        // appending
         pTagAddressTwo.append(strong)
         sectionAddress.append(h3Address, pTagAddress, pTagAddressTwo)
         sectionContact.append(h3Contact, pTagContact)
@@ -85,7 +100,7 @@ function renderBrewerys(filteredBreweries) {
 
 type.addEventListener('change', function typeSelect(event) {
     renderBrewerys()
-    searchTerm.innerText = ''
+
 })
 
 searchInput.addEventListener('input', function handleSearch() {
@@ -99,3 +114,44 @@ searchInput.addEventListener('input', function handleSearch() {
 });
 
 renderBrewerys()
+
+// Extension 2
+
+//     Add a new 'filter by city' section to the filter menu
+//     The cities list should be populated based on the results of the search. Each city should only appear once.
+
+function renderCityFilter() {
+cityForm.innerHTML = '' 
+
+    brew.brewerys.forEach(brewery => {
+        const city = brewery.city
+
+    // skip over cities that have already been rendered
+    if (cityArray.includes(city)) {
+        return;
+      }
+       // mark this city as rendered
+       cityArray.push(city);
+
+        // create elements 
+    
+        const cityInput = document.createElement('input')
+        const cityLabel = document.createElement('label')
+
+        // set attributes
+        cityInput.setAttribute('type', 'checkbox')
+        cityInput.setAttribute('name', city)
+        cityInput.setAttribute('value', city)
+        cityLabel.setAttribute('for', city)
+        // content
+        cityLabel.innerText = city
+        // appending    
+        cityForm.append(cityInput, cityLabel)
+    })
+
+}
+
+
+
+renderCityFilter()
+
