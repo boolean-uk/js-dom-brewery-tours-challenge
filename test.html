@@ -6,18 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles/reset.css" />
     <link rel="stylesheet" href="styles/index.css" />
-    <script src="index.js" defer></script>
+    <script src="test.js" defer></script>
     <title>Brewery Tours</title>
   </head>
   <body>
     <header class="main-header">
       <section class="select-state-section">
-        <a href="./index.html">
-          <h2>Welcome to Brewery Tours</h2>
-        </a>
-        <a href="./visit.html">
-            <button>Show places you plan to visit</button>
-        </a>
+        <h2>Welcome to Brewery Tours</h2>
         <form id="select-state-form" autocomplete="off">
           <label for="select-state">Which state are you visiting?</label>
           <input id="select-state" name="select-state" type="text" />
@@ -38,24 +33,9 @@
               <option value="brewpub">Brewpub</option>
             </select>
           </form>
-          <div class="filter-by-city-heading">
-            <h3>Cities</h3>
-            <button class="clear-all-btn">clear all</button>
-          </div>
-          <form id="filter-by-city-form">
-            <!-- 
-              For each city, generate a checkbox and label like below 
-            -->
-          </form>
         </aside>
       </aside>
-      <h1 id="list-head">List of Breweries</h1>
-      <header class="search-bar">
-        <form id="search-breweries-form" autocomplete="off">
-          <label for="search-breweries"><h2>Search breweries:</h2></label>
-          <input id="search-breweries" name="search-breweries" type="text">
-        </form>
-      </header>
+      <h1>List of Breweries</h1>
       <article>
         <ul id="breweries-list" class="breweries-list">
           <!--
@@ -64,7 +44,6 @@
           in templates/standard-list-items.html
           -->
         </ul>
-        <button id="load-more" style="display: none;">Load More</button>
       </article>
     </main>
   </body>

@@ -5,37 +5,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles/reset.css" />
-    <link rel="stylesheet" href="styles/index.css" />
-    <script src="index.js" defer></script>
+    <link rel="stylesheet" href="styles/visit.css" />
+    <script src="visit.js" defer></script>
     <title>Brewery Tours</title>
   </head>
   <body>
     <header class="main-header">
       <section class="select-state-section">
         <a href="./index.html">
-          <h2>Welcome to Brewery Tours</h2>
+            <h2>Welcome to Brewery Tours</h2>
         </a>
-        <a href="./visit.html">
-            <button>Show places you plan to visit</button>
-        </a>
-        <form id="select-state-form" autocomplete="off">
-          <label for="select-state">Which state are you visiting?</label>
-          <input id="select-state" name="select-state" type="text" />
-          <input type="submit" value="Search" />
-        </form>
       </section>
     </header>
     <main>
       <aside class="filters-section">
         <aside class="filters-section">
           <h2>Filter By:</h2>
+          <form id="filter-by-state-form" autocompete="off">
+            <label for="filter-by-state"><h3>State</h3></label>
+            <select name="filter-by-state" id="filter-by-state">
+            </select>
+          </form>
           <form id="filter-by-type-form" autocompete="off">
             <label for="filter-by-type"><h3>Type of Brewery</h3></label>
             <select name="filter-by-type" id="filter-by-type">
-              <option value="">Select a type...</option>
-              <option value="micro">Micro</option>
-              <option value="regional">Regional</option>
-              <option value="brewpub">Brewpub</option>
             </select>
           </form>
           <div class="filter-by-city-heading">
@@ -49,7 +42,7 @@
           </form>
         </aside>
       </aside>
-      <h1 id="list-head">List of Breweries</h1>
+      <h1 id="list-head">List of Breweries you are planning to visit</h1>
       <header class="search-bar">
         <form id="search-breweries-form" autocomplete="off">
           <label for="search-breweries"><h2>Search breweries:</h2></label>

@@ -1,0 +1,92 @@
+{
+  "wantToVisit": [
+    {
+      "brewery": {
+        "id": "11-below-brewing-company-houston",
+        "name": "11 Below Brewing Company",
+        "brewery_type": "micro",
+        "street": "6820 Bourgeois Rd",
+        "address_2": null,
+        "address_3": null,
+        "city": "Houston",
+        "state": "Texas",
+        "county_province": null,
+        "postal_code": "77066-3107",
+        "country": "United States",
+        "longitude": "-95.5186591",
+        "latitude": "29.9515464",
+        "phone": "2814442337",
+        "website_url": "http://www.11belowbrewing.com",
+        "updated_at": "2023-01-04T04:46:02.393Z",
+        "created_at": "2023-01-04T04:46:02.393Z"
+      },
+      "id": 1
+    },
+    {
+      "brewery": {
+        "id": "3-nations-brewing-farmers-branch",
+        "name": "3 Nations Brewing",
+        "brewery_type": "micro",
+        "street": "2405 Squire Pl Ste 200",
+        "address_2": null,
+        "address_3": null,
+        "city": "Farmers Branch",
+        "state": "Texas",
+        "county_province": null,
+        "postal_code": "75234-4714",
+        "country": "United States",
+        "longitude": "-96.89883128",
+        "latitude": "32.93044336",
+        "phone": "4696607184",
+        "website_url": "http://www.threenationsbrewing.com",
+        "updated_at": "2023-01-04T04:46:02.393Z",
+        "created_at": "2023-01-04T04:46:02.393Z"
+      },
+      "id": 2
+    },
+    {
+      "brewery": {
+        "id": "512-brewing-co-austin",
+        "name": "(512) Brewing Co",
+        "brewery_type": "micro",
+        "street": "407 Radam Ln Ste F200",
+        "address_2": null,
+        "address_3": null,
+        "city": "Austin",
+        "state": "Texas",
+        "county_province": null,
+        "postal_code": "78745-1197",
+        "country": "United States",
+        "longitude": null,
+        "latitude": null,
+        "phone": "5129211545",
+        "website_url": "http://www.512brewing.com",
+        "updated_at": "2023-01-04T04:46:02.393Z",
+        "created_at": "2023-01-04T04:46:02.393Z"
+      },
+      "id": 5
+    },
+    {
+      "brewery": {
+        "id": "5-stones-artisan-brewery-new-braunfels",
+        "name": "5 Stones Artisan Brewery",
+        "brewery_type": "micro",
+        "street": "11335 Farm To Market Road 1863",
+        "address_2": null,
+        "address_3": null,
+        "city": "New Braunfels",
+        "state": "Texas",
+        "county_province": null,
+        "postal_code": "78132",
+        "country": "United States",
+        "longitude": "-98.232345",
+        "latitude": "29.711365",
+        "phone": "2103808215",
+        "website_url": null,
+        "updated_at": "2023-01-04T04:46:02.393Z",
+        "created_at": "2023-01-04T04:46:02.393Z"
+      },
+      "id": 6
+    }
+  ]
+}
