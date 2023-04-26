@@ -15,6 +15,7 @@ const breweryList = document.querySelector(`#breweries-list`)
 const cityFilterForm = document.querySelector(`#filter-by-city-form`)
 const typeOptions = document.querySelector(`#filter-by-type`)
 const pageDisplay = document.querySelector(`.page-display`)
+const visitList = document.querySelector(`.visit-list`)
 const numberPerPage = 10
 let pageNumber = 1
 let numberOfPages = 1
@@ -264,12 +265,24 @@ function addVisit(brewery) {
     })
     .then(function (data) {
         state.toVisit.push(data)
-        test()
     })
 }
 
-function test() {
-
+function visitListEventListener() {
+    const showVisitButton = document.querySelector(`.show-visit-list`)
+    showVisitButton.addEventListener(`click`, () => {
+        if (showVisitButton.id === "inactive") {
+            breweryList.classList.add(`hidden`)
+            visitList.classList.remove(`hidden`)
+            showVisitButton.innerText = `Hide Visit List`
+            showVisitButton.setAttribute(`id`, `active`)
+        } else {
+            breweryList.classList.remove(`hidden`)
+            visitList.classList.add(`hidden`)
+            showVisitButton.innerText = `Show Visit List`
+            showVisitButton.setAttribute(`id`, `inactive`)
+        }
+    })
 }
 
 function pageLoad() {
@@ -277,6 +290,7 @@ function pageLoad() {
     filterEventListener()
     brewerySearchEventListener()
     paginationEventListener()
+    visitListEventListener()
 }
 
 

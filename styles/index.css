@@ -50,7 +50,6 @@ main {
 
 .filters-section {
   grid-area: sidebar;
-
   padding-left: 1rem;
 }
 
@@ -127,8 +126,13 @@ h1 {
 
 .pagination {
   display: grid;
-  grid-template-columns: repeat(3, 100px);
+  grid-template-columns: repeat(3, 100px) 1fr;
   place-items: center;
+}
+
+.show-visit-list {
+  place-self: end;
+  margin-right: 1rem;
 }
 
 .pagination-section li {
@@ -244,3 +248,8 @@ article {
   text-decoration: none;
   font-weight: bold;
 }
+
+.hidden {
+  display: none;
+}
+
