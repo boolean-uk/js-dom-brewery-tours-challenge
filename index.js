@@ -29,12 +29,7 @@ function getBreweryList(stateSearch) {
     .then(function (data){
         
         state.breweryList = data
-        
-
-        state.breweryList.forEach(object => {
-            deleteIncorrectBrewery(object) 
-        })
-        
+        deleteIncorrectBrewery()
         renderBreweryList()
         filterSelect.addEventListener('change', () => {
             renderBreweryList()
@@ -46,6 +41,14 @@ function getBreweryList(stateSearch) {
     
 }
 
+// Function that takes the brewery type and puts it in an array
+function breweryArr() {
+    let brewTypeArr = []
+    state.breweryList.forEach(object => {
+        brewTypeArr.push(object.brewery_type)
+    })
+    return brewTypeArr
+}
 
 
 //The list should only shows the types of breweries that offer brewery tours:
@@ -54,12 +57,16 @@ function getBreweryList(stateSearch) {
 // Brewpub
 
 // Write a function that will filter out the breweries that are not wanted
-function deleteIncorrectBrewery(object){
-    if (object.brewery_type !== 'micro' && object.brewery_type !== 'regional' && object.brewery_type !== 'brewpub'){
-        
-        state.breweryList.splice(state.breweryList.indexOf(object), 1)
+function deleteIncorrectBrewery(){
+    let filterArr = ['micro', 'brewpub', 'regional']
+
+    newState = []
+    for (let i = findPositions(breweryArr(), filterArr).length - 1; i >= 0; i--){
+       
+       newState.push(state.breweryList.splice(findPositions(breweryArr(), filterArr)[i], 1)[0])
     }
     
+    state.breweryList = newState
 }
 
 
@@ -69,9 +76,6 @@ function deleteIncorrectBrewery(object){
 function renderBreweryList() {
     listOfBreweries.innerHTML = ''
     
-    state.breweryList.forEach(object => {
-        deleteIncorrectBrewery(object) 
-    })
     state.breweryList.forEach(object => {
         // Create the list item that will contain all the elements that will render the brewery information.
         const listItem = document.createElement('li')
@@ -182,12 +186,7 @@ filterSelect.addEventListener('change', (event) => {
                 state.breweryList = data
         
                 // Refilters the unwanted breweries
-                state.breweryList.forEach(object => {
-                    deleteIncorrectBrewery(object) 
-                })
-                state.breweryList.forEach(object => {
-                    deleteIncorrectBrewery(object) 
-                })
+                deleteIncorrectBrewery()
         
                 // Refilters the state array to the selected type of brewery
                 filterBrewpub(event.target.value)
@@ -207,12 +206,7 @@ filterSelect.addEventListener('change', (event) => {
                         state.breweryList = data
         
 
-                        state.breweryList.forEach(object => {
-                            deleteIncorrectBrewery(object) 
-                        })
-                        state.breweryList.forEach(object => {
-                            deleteIncorrectBrewery(object) 
-                        })
+                        deleteIncorrectBrewery()
         
                     })
 
@@ -234,14 +228,6 @@ filterSelect.addEventListener('change', (event) => {
 })
 
 
-// Function that takes the brewery type and puts it in an array
-function breweryArr() {
-    let brewTypeArr = []
-    state.breweryList.forEach(object => {
-        brewTypeArr.push(object.brewery_type)
-    })
-    return brewTypeArr
-}
 
 
 // Function that filters brewery
