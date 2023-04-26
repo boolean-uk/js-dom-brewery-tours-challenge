@@ -71,7 +71,7 @@ const breweriesUL = document.querySelector('#breweries-list')
 const typeOfBrewerySelect = document.querySelector('#filter-by-type')
 const searchBreweriesForm = document.querySelector('#search-breweries-form')
 const searchBreweriesInput = document.querySelector('#search-breweries')
-
+const filterByCityForm = document.querySelector('#filter-by-city-form')
 
 
 // * EVENT HANDLERS
@@ -86,6 +86,7 @@ whichStateForm.addEventListener('submit', (event) => {
     getData(newInput)
     whichStateForm.reset()
 })
+
 
 // * SERVER LOGIC
 
@@ -111,6 +112,7 @@ fetch(link)
     })
 }
 
+
 // * FILTERED BY BREWERY TYPE LOGIC
 
 function filterBreweryListForType() {
@@ -135,6 +137,7 @@ function checkType(breweryObj){
     }
 }
 
+
 // * STATE MANIPULATION LOGIC
 
 // update the state 
@@ -153,6 +156,7 @@ function checkRenderConditions() {
     let appliedTypeFilter
     let appliedSearchFilter
 
+    //filter the state based on the type filter selected
     appliedTypeFilter = state.breweryList.filter((brewery) => {
         //if type filter is empty - render all
         if(state.breweryTypeFilter === '') return true
@@ -162,6 +166,7 @@ function checkRenderConditions() {
         console.log('what is appliedTypeFilter?', appliedTypeFilter)
         return true
     })
+
     //once filter by type state has been checked, begin state search check
     console.log('applying search filter logic')
     appliedSearchFilter = appliedTypeFilter.filter((brewery) => {
@@ -172,11 +177,47 @@ function checkRenderConditions() {
         console.log('what is appliedSearchFilter?', appliedSearchFilter)
         return true
     })
+
     console.log('appliedTypeFilter', appliedTypeFilter)
     console.log('appliedSearchFilter', appliedSearchFilter)
-    // type and search filters complete, call to render based on the sorted data
+    console.log('generate city checkboxes', renderCityCheckboxes(appliedSearchFilter))
+
+    // call to render based on the sorted data
     renderBreweryList(appliedSearchFilter)
 }
+
+
+// * RENDER CITIES FILTER
+
+function renderCityCheckboxes(presentCities) {
+    console.log('called: cityCheckboxes')
+    filterByCityForm.innerHTML = ''
+
+    presentCities.forEach((brewery) => {
+        const cityInput = document.createElement('input')
+            cityInput.setAttribute('type', 'checkbox')
+            cityInput.setAttribute('name', `${brewery.city}`)
+            cityInput.setAttribute('value', `${brewery.city}`)
+        filterByCityForm.appendChild(cityInput)
+
+        const cityLabel = document.createElement('label')
+            cityLabel.setAttribute('for', `${brewery.city}`)
+            cityLabel.innerText = `${brewery.city}`
+        filterByCityForm.appendChild(cityLabel)
+
+    })
+}
+
+
+// 3 - The cities list should be populated based on the 
+// results of the search. Each city should only appear once.
+
+//  - logic to check if a city has already been included in the list
+//     - if YES - ignore
+//     - if NO - add new item
+
+
+
 
 
 // * RENDER RESULTS LOGIC
@@ -244,6 +285,7 @@ function renderBreweryList(whichBreweries) {
     })
 }
 
+
 // * FILTER TYPE OF BREWERY LOGIC
 
 function typeOfBreweryFilter() {
@@ -266,6 +308,7 @@ function typeOfBreweryFilter() {
     })
 }
 
+
 // * SEARCH BREWERIES LOGIC
 
 // listen for when a user is typing in search breweries
@@ -279,6 +322,8 @@ function searchBreweriesByName() {
         checkRenderConditions()
     })
 }
+
+// * INIT
 
 // run event listeners on page load
 function init() {
