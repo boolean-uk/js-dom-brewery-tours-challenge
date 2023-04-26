@@ -1,26 +1,48 @@
-const api = "https://api.openbrewerydb.org/v1/breweries?by_state=";
+const api = `https://api.openbrewerydb.org/v1/breweries?by_state`;
 const ul = document.querySelector("#breweries-list");
-const searchState = [];
-const apiLink = `${api}${searchState}`;
 
-// ????
 const state = {
   breweryList: [],
-  searchState: [], // TODO: add searchState variable here to store the state the user searched for and submitted in the form ✅?
+  searchState: "", // TODO: add searchState variable here to store the state the user searched for and submitted in the form ✅ -> ?
 };
 
 // GET
-function getData() {
+function load() {
   // TODO: add searchState to state js object above ✅
   // TODO: enable the line below, apiLink and use that for fetch ✅
+  submitForm();
+}
+function submitForm() {
+  const form = document.querySelector("form");
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
 
-  fetch(apiLink)
+    const input = document.querySelector("#select-state");
+    state.searchState = input.value; // this is the input value
+
+    // TODO: save values inside the state.searchState variable
+    // then just call getData() without passing anything to it
+
+    // still working on how to make this part work
+    // const newInput = document.querySelector("input");
+    // const stateInput = newInput.brewery_type;
+
+    //console.log("new", stateInput);
+    getData();
+
+    form.reset();
+  });
+}
+
+function getData() {
+  fetch(`${api}=${state.searchState}`)
     .then(function (response) {
       return response.json();
     })
     .then(function (data) {
       state.breweryList = data;
-      console.log("Data", data);
+      // LINE 26 TO 37 MY OWN COMMENT
+
       // const tourBreweries = data.filter((brewery) => {
       //   return ['micro', 'regional', 'brewpub'].includes(brewery.brewery_type.toLowerCase());
 
@@ -50,10 +72,10 @@ function getData() {
 //   const byType = state.breweryList.filter(brewType);
 // }
 
-// // NOT NEEDED ✅
+// // TODO: NOT NEEDED ✅
 // function brewType(item) {
 //   if (item.brewery_type === "micro") {
-//     return item;
+// return item;
 //   }
 //   if (item.brewery_type === "regional") {
 //     return item;
@@ -84,17 +106,16 @@ function displayBrew() {
     if (obj.brewery_type === "micro") return true;
     if (obj.brewery_type === "regional") return true;
     if (obj.brewery_type === "brewpub") return true;
-    state.breweryList.push(obj);
   });
 
-  console.log("Filtered", filtered);
+  console.log("Filtered data by Type", filtered);
 
   // TODO: -> filter here state.breweryList to only include the breweries of micro, regional, brewpub ✅
   // store the filter results in a variable ✅
   // then call forEach on the filtered list only ✅
 
   // NOTE: when you add the dropdown functionality, you can then filter a second time to just keep micro, regional or brewpub
-
+  ul.innerHTML = "";
   filtered.forEach((data) => {
     const li = document.createElement("li");
     ul.append(li);
@@ -142,36 +163,9 @@ function displayBrew() {
 
     const aEl = document.createElement("a");
     aEl.innerText = "Visit Website";
+    aEl.href = data.website_url;
+    aEl.target = "_blank";
     linkSection.append(aEl);
-
-    // WEB SITE LINK
-
-    //  const link = document.querySelector("href");
-    //   // link.innerText = data.website_url;
-    //   linkSection.append(link);
-    //   console.log('link', link)
-    // });
-    // }
-
-    // Stop page from loading & working input
-    const form = document.querySelector("form");
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-
-      const input = document.querySelector("#select-state");
-      const values = input.value; // this is the input value
-      console.log("input value:", values);
-
-      // save values inside the state.searchState variable
-      // then just call getData() without passing anything to it
-      state.searchState = values;
-      // still working on how to make this part work
-      // const newInput = document.querySelector("input");
-      // const stateInput = newInput.brewery_type;
-      getData();
-      //console.log("new", stateInput);
-      form.reset();
-    });
   });
 }
-getData();
+load();
