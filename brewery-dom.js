@@ -1,7 +1,11 @@
 const article = document.querySelector('article')
 const breweryList = document.querySelector('.breweries-list')
-const form = document.querySelector('form')
+const form = document.querySelector('#select-state-form')
 const searchInput = document.querySelector('input')
+const microOption = document.querySelector('option')
+const regionalOption = document.querySelector('#regional')
+const brewpubOption = document.querySelector('#brewpub')
+
 
 let searchQuery = ""
 
@@ -37,9 +41,6 @@ function getBreweryList() {
             return false
         }})
 
-
-    // state.breweryArray = data
-
         renderCards ()
     })
 }
@@ -54,6 +55,14 @@ form.addEventListener('submit', (event) => {
     form.reset()
   })
 
+  microOption.addEventListener('click', (event) => {
+    // event.preventDefault()
+    console.log('processing micro click')
+    form.reset()
+    renderCards()
+
+  })
+
 function renderCards() {
 
     breweryList.innerHTML = ""
@@ -61,21 +70,36 @@ function renderCards() {
         const li = document.createElement('li')
         const h2 = document.createElement('h2')
         const div = document.createElement('div')
-        const section = document.createElement('section')
+        const section1 = document.createElement('section')
         const h3 = document.createElement('h3')
         const address1 = document.createElement('p')
         const address2 = document.createElement('p')
+        const pnContainer = document.createElement('section')
+        const pnTemplate = document.createElement('h3')
+        const pn = document.createElement('p')
+        const webContainer = document.createElement('section')
+        const webLink = document.createElement('a')
     
         h2.innerText = list.name
         div.setAttribute("class", "type")
         div.innerText = list.brewery_type
-        section.setAttribute("class", "address")
+        section1.setAttribute("class", "address")
         h3.innerText = ("Address:")
         address1.innerText = list.address_1
-        address2.innerText = list.city
+        address2.innerHTML = `<strong>${list.city}, ${list.postal_code}</strong>`
+        pnContainer.setAttribute("class", "phone")
+        pnTemplate.innerText = ("Phone:")
+        pn.innerText = list.phone
+        webContainer.setAttribute("class", "link")
+        webLink.setAttribute("href", `${list.website_url}`)
+        webLink.setAttribute("target", "_blank")
+        webLink.innerText = "Visit Website"
 
-        section.append(h3, address1, address2)
-        li.append(h2, div, section)
+
+        section1.append(h3, address1, address2)
+        pnContainer.append(pnTemplate, pn)
+        webContainer.append(webLink)
+        li.append(h2, div, section1, pnContainer, webContainer)
         breweryList.append(li)
     })  
 }
