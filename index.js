@@ -12,6 +12,13 @@ const state = {
 const searchField = document.querySelector(`#select-state-form`)
 const breweryList = document.querySelector(`#breweries-list`)
 const cityFilterForm = document.querySelector(`#filter-by-city-form`)
+const typeOptions = document.querySelector(`#filter-by-type`)
+const pageDisplay = document.querySelector(`.page-display`)
+const numberPerPage = 10
+let pageNumber = 1
+let numberOfPages = 1
+let firstItem = 0
+let lastItem = 10
 
 // EXTRACTS SEARCH TERM, FETCHES DATA USING THAT TERM, CHECKS BREWERY TYPE AND WRITES VALID
 // BREWERIES TO STATE AND ADDS VISIBLE PROPERTY
@@ -21,7 +28,7 @@ function searchSubmit() {
         alert(`Search Cannot Be Empty - Please Enter a State`)
         return
     }
-    fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchText}`)
+    fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchText}&per_page=500`)
     .then(function (response) {
         return response.json()
     })
@@ -37,6 +44,8 @@ function searchSubmit() {
             return
         }
     state.displayedData = state.breweries
+    typeOptions.selectedIndex = 0
+    resetPageNumbers()
     renderCards(state.breweries)
     createCityArray(state.breweries)
     })
@@ -56,6 +65,7 @@ function createCityArray(arr) {
     clearFiltersButton()
 }
 
+// CLEARS THE CITY FILTERS
 function clearFiltersButton() {
     const clearButton = document.querySelector(`.clear-all-btn`)
     clearButton.addEventListener(`click`, () => {
@@ -100,7 +110,14 @@ function cityFilterArray(cityInput, city) {
 
 // RENDER BREWERY CARDS
 function renderCards(arr) {
+    numberOfPages = Math.ceil(arr.length / numberPerPage)
+    pageDisplay.innerText = `Page ${pageNumber} of ${numberOfPages}`
     breweryList.innerHTML = ``
+    arr = arr.slice(firstItem, lastItem)    
+    // for (let i = 0; i < arr.length; i++) {
+    //     console.log(arr[i].name)
+    // }    
+    // console.log(`BREAK`)
     arr.forEach(brewery => {
         const li = document.createElement(`li`)
         li.innerHTML = `
@@ -151,6 +168,7 @@ function displayedData(arr) {
         })
     }
     state.displayedData = arr
+    resetPageNumbers()
     renderCards(state.displayedData)
 }
 
@@ -176,10 +194,41 @@ function searchEventListener() {
     })
 }
 
+// ADDS EVENT LISTENERS TO PREV/NEXT PAGE BUTTONS
+function paginationEventListener() {
+    const prev = document.querySelector('.prev');
+    prev.addEventListener('click', (e) => {
+       e.preventDefault();
+       if (pageNumber > 1) {
+          pageNumber--;
+          firstItem -= 10
+          lastItem -= 10
+          renderCards(state.displayedData);
+       }
+    });
+    const next = document.querySelector(".next");
+    next.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (pageNumber < numberOfPages) {
+            pageNumber++;
+            firstItem += 10
+            lastItem += 10
+            renderCards(state.displayedData);
+        }
+    });
+}
+
+function resetPageNumbers() {
+    pageNumber = 1
+    firstItem = 0
+    lastItem = 10
+}
+
 function pageLoad() {
     searchEventListener()
     filterEventListener()
     brewerySearchEventListener()
+    paginationEventListener()
 }
 
 
