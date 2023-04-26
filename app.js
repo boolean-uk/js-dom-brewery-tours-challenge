@@ -3,7 +3,9 @@ const ul = document.querySelector("#breweries-list");
 
 const state = {
   breweryList: [],
-  searchState: "", // TODO: add searchState variable here to store the state the user searched for and submitted in the form ✅ -> ?
+  searchState: "",
+  filterType: "",
+  // TODO: add searchState variable here to store the state the user searched for and submitted in the form ✅ -> ?
 };
 
 // GET
@@ -11,6 +13,7 @@ function load() {
   // TODO: add searchState to state js object above ✅
   // TODO: enable the line below, apiLink and use that for fetch ✅
   submitForm();
+  filterDropDown();
 }
 function submitForm() {
   const form = document.querySelector("form");
@@ -34,12 +37,24 @@ function submitForm() {
   });
 }
 
+function filterDropDown() {
+  const filter = document.querySelector("#filter-by-type");
+  filter.addEventListener("change", (event) => {
+    //  event.preventDefault();
+
+    state.filterType = filter.value;
+    displayBrew();
+  });
+}
+
 function getData() {
   fetch(`${api}=${state.searchState}`)
     .then(function (response) {
       return response.json();
     })
+
     .then(function (data) {
+      console.log(data.length);
       state.breweryList = data;
       // LINE 26 TO 37 MY OWN COMMENT
 
@@ -97,18 +112,22 @@ function getData() {
 
 // ForEach => display
 function displayBrew() {
-  // const wantedType = ["micro", "regional", "brewpub"]; --> why doesn't work **
-  // console.log('b-list', state.breweryList)
-  // const filtered = state.breweryList.filter(
-  //   (obj) => obj.brewery_type === wantedType **
-  // );
-  const filtered = state.breweryList.filter((obj) => {
-    if (obj.brewery_type === "micro") return true;
-    if (obj.brewery_type === "regional") return true;
-    if (obj.brewery_type === "brewpub") return true;
-  });
+  const wantedTypes = ["micro", "regional", "brewpub"];
+  console.log("state", state.filterType);
 
-  console.log("Filtered data by Type", filtered);
+  const filtered = state.breweryList
+    .filter((obj) => {
+      return wantedTypes.includes(obj.brewery_type);
+    })
+    .filter((obj) => {
+      if (wantedTypes.includes(state.filterType)) {
+        return obj.brewery_type === state.filterType;
+      } else {
+        return true;
+      }
+    });
+
+  console.log("Filtered data by Type", filtered.length);
 
   // TODO: -> filter here state.breweryList to only include the breweries of micro, regional, brewpub ✅
   // store the filter results in a variable ✅
