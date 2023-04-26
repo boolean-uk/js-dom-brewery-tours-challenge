@@ -44,6 +44,13 @@ city by selecting a checkbox beside the city name
     - remove all checked TRUE instances
     - render the page for all items in state
 
+
+*TO DO
+
+- fix so that filter by type updates the state
+    - then search will only look at those already filtered
+
+
 */
 
 // *** CODE
@@ -51,7 +58,9 @@ city by selecting a checkbox beside the city name
 // * STATE
 
 const state = {
-    breweryList: []
+    breweryList: [],
+    breweryTypeFilter: '',
+    brewerySearchFilter: ''
 }
 
 // * QUERY SELECTORS
@@ -107,7 +116,7 @@ fetch(link)
 function filterBreweryListForType() {
     console.log('called: filterBreweryListForType')
     const filtered = state.breweryList.filter(checkType)
-    console.log('here are all the breweries with matching types:', filtered)
+    console.log('here are all the micro, regional & brewpub breweries:', filtered)
     //update the state so it only contains filtered items
     updateState(filtered)
 }
@@ -133,17 +142,52 @@ function updateState(list) {
     console.log('called: updateState')
     state.breweryList = ''
     state.breweryList = list
-    renderBreweryList(state.breweryList)
+    renderBreweryList(list)
 }
+
+
+//check the rendering conditions
+function checkRenderConditions() {
+    console.log('applying type filter logic')
+
+    let appliedTypeFilter
+    let appliedSearchFilter
+
+    appliedTypeFilter = state.breweryList.filter((brewery) => {
+        //if type filter is empty - render all
+        if(state.breweryTypeFilter === '') return true
+        //if the brewery type does not match state, don't render
+        else if(brewery.brewery_type !== state.breweryTypeFilter) return false
+        console.log('type filter finished')
+        console.log('what is appliedTypeFilter?', appliedTypeFilter)
+        return true
+    })
+    //once filter by type state has been checked, begin state search check
+    console.log('applying search filter logic')
+    appliedSearchFilter = appliedTypeFilter.filter((brewery) => {
+        //if name search is empty - render all
+        if(state.brewerySearchFilter === '') return true
+        //if the brewery name does not match what's in the search, don't render
+        else if(!brewery.name.toLowerCase().includes(`${state.brewerySearchFilter}`)) return false
+        console.log('what is appliedSearchFilter?', appliedSearchFilter)
+        return true
+    })
+    console.log('appliedTypeFilter', appliedTypeFilter)
+    console.log('appliedSearchFilter', appliedSearchFilter)
+    // type and search filters complete, call to render based on the sorted data
+    renderBreweryList(appliedSearchFilter)
+}
+
 
 // * RENDER RESULTS LOGIC
 
 //render the breweries based on state.breweryList array
-function renderBreweryList(whichToRender) {
+function renderBreweryList(whichBreweries) {
     console.log('called: renderBreweryList')
     breweriesUL.innerHTML = ''
 
-    whichToRender.forEach((brewery) => {
+    whichBreweries.forEach((brewery) => {
+
         const li = document.createElement('li')
             breweriesUL.append(li)
 
@@ -209,18 +253,16 @@ function typeOfBreweryFilter() {
         // based on the option selected
         const typeSelected = typeOfBrewerySelect.value
         console.log('what is typeSelected?', typeSelected)
-        if (typeSelected === 'all') {
-                return renderBreweryList(state.breweryList)
+        state.breweryTypeFilter = typeSelected
+            if (typeSelected === 'all') {
+                state.breweryTypeFilter = ''
             }
-        //filter the state array based on which menu item has been selected
-        const filteredBreweries = state.breweryList.filter((stateObj) => {
-            if (stateObj.brewery_type === `${typeSelected}`) {
-                return stateObj
+        const filteredByType = state.breweryList.filter((item) => {
+            if (item.brewery_type === typeSelected) {
+                return item
             }
         })
-        console.log('what is filteredBreweries?', filteredBreweries)
-        // render only brewery types that match selected
-        renderBreweryList(filteredBreweries)
+        checkRenderConditions()
     })
 }
 
@@ -232,24 +274,10 @@ function searchBreweriesByName() {
     // read what the user is inputting
     searchBreweriesForm.addEventListener('input', (event) => {
         event.preventDefault()
-        const newSearch = searchBreweriesInput.value
-        console.log('what is being searched for?', newSearch )
-        //call the search filter
-        breweryNameSearchFilter(newSearch)
+        //add to the state
+        state.brewerySearchFilter = searchBreweriesInput.value
+        checkRenderConditions()
     })
-}
-
-// filter the state based on matching brewery names
-function breweryNameSearchFilter(searchInput) {
-    console.log('called: breweryNameSearchFilter')
-    //filter the state array based on which name matches
-    const filteredBreweriesByName = state.breweryList.filter((stateObj) => {
-        if (stateObj.name.toLowerCase().includes(`${searchInput}`)) {
-            return stateObj
-        }
-    })
-    // render the list that contains only matching brewery names
-    renderBreweryList(filteredBreweriesByName)
 }
 
 // run event listeners on page load
@@ -257,6 +285,7 @@ function init() {
     console.log('callled: init')
     typeOfBreweryFilter()
     searchBreweriesByName()
+    
 }
 
 init()
