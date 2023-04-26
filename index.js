@@ -113,7 +113,7 @@ function createBreweryLi(breweryObj) {
   return li
 }
 
-function rendercityFilter() {
+function renderNameFilter() {
   const header = document.createElement('header')
   header.classList.add('search-bar')
 
@@ -155,7 +155,7 @@ function addCityFilterEvent() {
 
 function init() {
   state.nameFilter = ''
-  rendercityFilter()
+  renderNameFilter()
   addCityFilterEvent()
 }
 
