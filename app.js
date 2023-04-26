@@ -2,7 +2,7 @@ const api = "https://api.openbrewerydb.org/v1/breweries?by_state=";
 const ul = document.querySelector("#breweries-list");
 const searchState = [];
 const apiLink = `${api}${searchState}`;
-console.log();
+
 // ????
 const state = {
   breweryList: [],
@@ -42,7 +42,7 @@ function getData() {
 }
 
 // );
-//  TODO: -> move this at the bottom of the file, just for clarity ✅
+//  TODO: -> move this - getData()- at the bottom of the file, just for clarity ✅
 
 // Displaying cities just by STATE and only 3 types
 
@@ -75,15 +75,18 @@ function getData() {
 
 // ForEach => display
 function displayBrew() {
-  ul.innerHTML = "";
-  const wantedType = ["micro", "regional", "brewpub"];
+  // const wantedType = ["micro", "regional", "brewpub"]; --> why doesn't work **
   // console.log('b-list', state.breweryList)
   // const filtered = state.breweryList.filter(
-  //   (obj) => obj.brewery_type === wantedType
+  //   (obj) => obj.brewery_type === wantedType **
   // );
   const filtered = state.breweryList.filter((obj) => {
-    if (obj.brewery_type === wantedType) return true;
+    if (obj.brewery_type === "micro") return true;
+    if (obj.brewery_type === "regional") return true;
+    if (obj.brewery_type === "brewpub") return true;
+    state.breweryList.push(obj);
   });
+
   console.log("Filtered", filtered);
 
   // TODO: -> filter here state.breweryList to only include the breweries of micro, regional, brewpub ✅
@@ -137,30 +140,38 @@ function displayBrew() {
     linkSection.className = "link";
     li.append(linkSection);
 
-    const aLink = document.createElement("a");
-    aLink.innerText = "Visit Website";
-    linkSection.append(aLink);
+    const aEl = document.createElement("a");
+    aEl.innerText = "Visit Website";
+    linkSection.append(aEl);
+
+    // WEB SITE LINK
+
+    //  const link = document.querySelector("href");
+    //   // link.innerText = data.website_url;
+    //   linkSection.append(link);
+    //   console.log('link', link)
+    // });
+    // }
+
+    // Stop page from loading & working input
+    const form = document.querySelector("form");
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const input = document.querySelector("#select-state");
+      const values = input.value; // this is the input value
+      console.log("input value:", values);
+
+      // save values inside the state.searchState variable
+      // then just call getData() without passing anything to it
+      state.searchState = values;
+      // still working on how to make this part work
+      // const newInput = document.querySelector("input");
+      // const stateInput = newInput.brewery_type;
+      getData();
+      //console.log("new", stateInput);
+      form.reset();
+    });
   });
 }
-
-// Stop page from loading & working input
-const form = document.querySelector("form");
-form.addEventListener("submit", (event) => {
-  event.preventDefault();
-
-  const input = document.querySelector("#select-state");
-  const values = input.value; // this is the input value
-  console.log("input value:", values);
-
-  // save values inside the state.searchState variable
-  // then just call getData() without passing anything to it
-
-  // still working on how to make this part work
-  // const newInput = document.querySelector("input");
-  // const stateInput = newInput.brewery_type;
-  getData();
-  //console.log("new", stateInput);
-  form.reset();
-});
-
 getData();
