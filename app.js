@@ -5,7 +5,7 @@ const type = document.querySelector('#filter-by-type')
 const typeInput = document.querySelector('option')
 const searchInput = document.querySelector('#search-breweries')
 const cityForm = document.querySelector('#filter-by-city-form')
-
+const clear = document.querySelector('.clear-all-btn')
 
 const brew = {
     brewerys: [],
@@ -166,6 +166,9 @@ function renderCityFilter() {
 
         cityInput.addEventListener('change', event => {
             const checked = event.target.checked;
+           
+      
+           
 
             if (checked) {
                 cityArrayFilter.push(city);
@@ -175,13 +178,27 @@ function renderCityFilter() {
                     cityArrayFilter.splice(index, 1);
                 }
             }
+             
 
             renderBrewerys();
-        });
+
+        })
     }
 
+    })
+
+
+    // Clear button
+    clear.addEventListener('click', function () {
+
+        cityForm.reset()
+        cityArrayFilter = [];
+        renderBrewerys();
     });
+
 }
+
+
 
 renderBrewerys()
 
