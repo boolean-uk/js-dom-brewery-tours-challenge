@@ -45,6 +45,17 @@ function filterMatchesType(stateFilter, breweryType) {
   return false
 }
 
+function filterMatchesName(stateNameFilter, breweryName) {
+  console.log(breweryName.toLowerCase())
+  console.log(stateNameFilter.toLowerCase())
+  if (stateNameFilter === '') {
+    return true
+  } else if (breweryName.toLowerCase().includes(stateNameFilter.toLowerCase())) {
+    return true
+  } 
+  return false
+}
+
 // Rendering the entire list
 function renderBreweries() {
   breweryUl.innerHTML = ''
@@ -52,6 +63,7 @@ function renderBreweries() {
     // console.log(`state.filter: ${state.filter}\nBrewery type: ${state.breweries[i].brewery_type}`)
     // console.log(`filters match: ${filterMatchesType(state.filter, state.breweries[i].brewery_type)}`)
     if (!(filterMatchesType(state.filter, state.breweries[i].brewery_type))) continue
+    if (!(filterMatchesName(state.nameFilter, state.breweries[i].name))) continue
     breweryUl.append(createBreweryLi(state.breweries[i]))
   }
 }
@@ -135,9 +147,16 @@ function addCityFilterEvent() {
   const textInput = document.querySelector('#search-breweries')
   textInput.addEventListener('input', () => {
     const userInput = textInput.value
-    console.log(userInput)
+    state.nameFilter = userInput
+    renderBreweries()
   })
 }
 
-rendercityFilter()
-addCityFilterEvent()
+
+function init() {
+  state.nameFilter = ''
+  rendercityFilter()
+  addCityFilterEvent()
+}
+
+init()
