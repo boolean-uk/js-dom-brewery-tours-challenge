@@ -21,7 +21,6 @@ const state = {
 }
 
 
-
 function getBreweryList(stateSearch) {
     fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${stateSearch}&per_page=100`)
     .then(function (response) {
@@ -53,6 +52,8 @@ function getBreweryList(stateSearch) {
 // Micro
 // Regional
 // Brewpub
+
+// Write a function that will filter out the breweries that are not wanted
 function deleteIncorrectBrewery(object){
     if (object.brewery_type !== 'micro' && object.brewery_type !== 'regional' && object.brewery_type !== 'brewpub'){
         
@@ -148,9 +149,8 @@ form.addEventListener('submit', (event) => {
     event.preventDefault()
     searchRecord.push(inputs[0].value.replace(' ', '_').toLowerCase())
     getBreweryList(searchRecord[searchRecord.length-1])
-    
     form.reset()
-
+    filterSelect.value = ''
     
 
     
@@ -158,22 +158,20 @@ form.addEventListener('submit', (event) => {
 
 // - From the 'filter by type of brewery' section, a user can filter by type of brewery.
 
-
-
 filterSelect.addEventListener('change', (event) => {
-    
-    
-    // Get the current original state array
+
+    // If statement ensures that if the form was nto submitted then the select resets and the user cannot filter
     if (state.breweryList.length === 0){
         event.target.value = ''
+
+        // Else proceeds with filtering the list only after the form has beenn submitted.
     } else {
         
-        // Use the filter function
-        
 
+        // Filters the state array
         filterBrewpub(event.target.value)
-        console.log(state.breweryList)
-
+        
+        // Another if statement, here if the user selects another option in the drop down menu the filter function filters all the elements and the state array gets self depleted. This second if statement re-fetches the data and puts it in the state array. 
         if (state.breweryList.length === 0){
             fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchRecord[searchRecord.length-1]}&per_page=100`)
             .then(function (response) {
@@ -183,7 +181,7 @@ filterSelect.addEventListener('change', (event) => {
         
                 state.breweryList = data
         
-
+                // Refilters the unwanted breweries
                 state.breweryList.forEach(object => {
                     deleteIncorrectBrewery(object) 
                 })
@@ -191,23 +189,50 @@ filterSelect.addEventListener('change', (event) => {
                     deleteIncorrectBrewery(object) 
                 })
         
+                // Refilters the state array to the selected type of brewery
                 filterBrewpub(event.target.value)
+
+                //Rerenders the list
                 renderBreweryList()
-                console.log(state.breweryList)
+                
+                // Third if statement, if it is the case that a user searches for a state that does not have one of the three brewery types from the drop down menu, then the state array goes empty. Thus, this re-fethces the data, but this time does not re-render the state array on the page, this way the user can understand that the state has no breweries that was selected by the filter, and if the user selects a different brewery type then the state array is not empty. 
+                if (state.breweryList.length === 0){
+                    
+                    fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchRecord[searchRecord.length-1]}&per_page=100`)
+                    .then(function (response) {
+                        return response.json()
+                    })
+                    .then(function (data){
+        
+                        state.breweryList = data
+        
 
-            })
+                        state.breweryList.forEach(object => {
+                            deleteIncorrectBrewery(object) 
+                        })
+                        state.breweryList.forEach(object => {
+                            deleteIncorrectBrewery(object) 
+                        })
+        
+                    })
+
+                }   
             
-
+            })
 
         }
         
-        // listOfBreweries.innerHTML = ''
-
         // rerender the list
         renderBreweryList()
     
     }
+
+    // If the user wants to go back and see the origional list he can. 
+    if (event.target.value === ''){
+        getBreweryList(searchRecord[searchRecord.length-1])
+    }
 })
+
 
 // Function that takes the brewery type and puts it in an array
 function breweryArr() {
@@ -221,11 +246,18 @@ function breweryArr() {
 
 // Function that filters brewery
 function filterBrewpub(value){
-    let filterArr = ['micro', 'brewpub', 'regional']
+    // The 4 values from the select tag
+    let filterArr = ['micro', 'brewpub', 'regional', '']
+
+    // Here the value argument that will be passed is the value of the brewery type that the user selects from the drop down menu
     const removeIdx = filterArr.indexOf(value)
+
+    // What remains in the filter array is an array that includes all the values of the select tag except the wanted value that was passed throuhg as an argument. 
     filterArr.splice(removeIdx, 1)
-    
+
+    // Using the find positions function, it is an array that shows all the indexes of the brewery array (breweryArr()) that are present in the filter array (filterArr). 
     for (let i = findPositions(breweryArr(), filterArr).length - 1; i >= 0; i--){
+        // Takes the state array and removes all the indexes from the findPositions() function using splice, the loop counts down so that the indexes don't get shifted as the array elements get removed. 
         state.breweryList.splice(findPositions(breweryArr(), filterArr)[i], 1)
     }
 
