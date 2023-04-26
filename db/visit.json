@@ -1,0 +1,28 @@
+{
+  "toVisit": [
+    {
+      "name": "14 Cannons Brewing Company",
+      "address": "31125 Via Colinas Ste 907",
+      "city": "Westlake Village",
+      "phone": "8186996165",
+      "website": "http://14cannons.com",
+      "id": 1
+    },
+    {
+      "name": "1850 Brewing Company",
+      "address": null,
+      "city": "Mariposa",
+      "phone": null,
+      "website": "http://www.1850restaurant.com",
+      "id": 2
+    },
+    {
+      "name": "2 Tread Brewing Co",
+      "address": "1018 Santa Rosa Plz",
+      "city": "Santa Rosa",
+      "phone": "4152330857",
+      "website": "http://www.2treadbrewing.com",
+      "id": 3
+    }
+  ]
+}

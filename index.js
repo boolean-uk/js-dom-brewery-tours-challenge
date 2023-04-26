@@ -2,6 +2,7 @@ const state = {
     breweries: [],
     typeFilter: ``,
     liveSearch: ``,
+    toVisit: [],
     displayedData: [],
     citySearchList: [],
     citySearchActive: [],
@@ -19,6 +20,17 @@ let pageNumber = 1
 let numberOfPages = 1
 let firstItem = 0
 let lastItem = 10
+let visitTest = []
+
+// function getToVisit() {
+//     fetch(`http://localhost:3000/visit`)
+//     .then(function (response) {
+//         return response.json()
+//     })
+//     .then(function (data) {
+//         state.toVisit = data
+//     })
+// }
 
 // EXTRACTS SEARCH TERM, FETCHES DATA USING THAT TERM, CHECKS BREWERY TYPE AND WRITES VALID
 // BREWERIES TO STATE AND ADDS VISIBLE PROPERTY
@@ -114,10 +126,6 @@ function renderCards(arr) {
     pageDisplay.innerText = `Page ${pageNumber} of ${numberOfPages}`
     breweryList.innerHTML = ``
     arr = arr.slice(firstItem, lastItem)    
-    // for (let i = 0; i < arr.length; i++) {
-    //     console.log(arr[i].name)
-    // }    
-    // console.log(`BREAK`)
     arr.forEach(brewery => {
         const li = document.createElement(`li`)
         li.innerHTML = `
@@ -134,8 +142,10 @@ function renderCards(arr) {
         </section>
         <section class="link">
           <a href="${brewery.website_url}" target="_blank">Visit Website</a>
+          <button class="visit-button">Add to Visit List</button>
         </section>
         `
+        visitEventListener(brewery, li)
         breweryList.append(li)
     })
 }
@@ -224,6 +234,44 @@ function resetPageNumbers() {
     lastItem = 10
 }
 
+function visitEventListener(brewery, li) {
+    const visitButton = li.querySelector(`.visit-button`)
+    visitButton.addEventListener(`click`, () => {
+        addVisit(brewery)
+    })
+}
+
+function addVisit(brewery) {
+    const newVisit = {
+        name: brewery.name,
+        address: brewery.address_1,
+        city: brewery.city,
+        phone: brewery.phone,
+        website: brewery.website_url
+    }
+
+    const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newVisit)
+    }
+
+    fetch(`http://localhost:3000/toVisit`, options)
+    .then(function (response) {
+        return response.json()
+    })
+    .then(function (data) {
+        state.toVisit.push(data)
+        test()
+    })
+}
+
+function test() {
+
+}
+
 function pageLoad() {
     searchEventListener()
     filterEventListener()
@@ -233,3 +281,5 @@ function pageLoad() {
 
 
 pageLoad()
+
+// npx json-server --watch db/visit.json
