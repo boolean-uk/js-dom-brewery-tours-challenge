@@ -75,7 +75,7 @@ function getData() {
 
 // ForEach => display
 function displayBrew() {
-  ul.innerHTML = " ";
+  ul.innerHTML = "";
   const wantedType = ["micro", "regional", "brewpub"];
   // console.log('b-list', state.breweryList)
   // const filtered = state.breweryList.filter(
