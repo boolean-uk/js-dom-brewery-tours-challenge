@@ -2,6 +2,9 @@ const form = document.querySelector("#select-state-form");
 const formInput = document.querySelector("input[type=text]");
 const ul = document.querySelector("#breweries-list");
 const dropdownMenu = document.querySelector("#filter-by-type");
+const searchByNameForm = document.querySelector("#search-breweries-form");
+const searchByNameInput = document.querySelector("#search-breweries");
+console.log(`herrree`, searchByNameForm);
 
 const state = {
   breweryArr: [],
@@ -104,3 +107,33 @@ const renderBreweries = () => {
 };
 
 console.log(state.breweryArr);
+
+// Extension 1
+
+searchByNameInput.addEventListener("input", (e) => {
+  let searchByNameInputVal = e.target.value.toLowerCase();
+  console.log(searchByNameInputVal);
+
+  if (!searchByNameInputVal) {
+    ul.innerHTML = "";
+  } else {
+    fetch(
+      `https://api.openbrewerydb.org/v1/breweries?by_name=${searchByNameInputVal}`
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log(`data here`, data);
+        let filtered = data.filter(
+          (brewery) =>
+            brewery.brewery_type === "micro" ||
+            brewery.brewery_type === "regional" ||
+            brewery.brewery_type === "brewpub"
+        );
+        state.breweryArr = filtered;
+        console.log(`state.breweryArr`, state.breweryArr);
+        renderBreweries();
+      });
+  }
+});
