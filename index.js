@@ -4,13 +4,14 @@ const ul = document.querySelector("#breweries-list");
 const dropdownMenu = document.querySelector("#filter-by-type");
 const searchByNameForm = document.querySelector("#search-breweries-form");
 const searchByNameInput = document.querySelector("#search-breweries");
-console.log(`herrree`, searchByNameForm);
+const baseUrl = "https://api.openbrewerydb.org/v1/breweries";
 
 const state = {
   breweryArr: [],
   filter: "optionVal",
 };
 
+// adding an event listener for dropdown menu
 dropdownMenu.addEventListener("input", () => {
   let dropdownMenuVal = dropdownMenu.value;
   state.filter = dropdownMenuVal;
@@ -18,18 +19,18 @@ dropdownMenu.addEventListener("input", () => {
   let userInput = formInput.value.toLowerCase().split(" ").join("_");
   console.log(`userInput`, userInput);
 
-  fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${userInput}`)
+  // fetching breweries by state
+  fetch(`${baseUrl}?by_state=${userInput}`)
     .then((response) => {
       return response.json();
     })
     .then((data) => {
-      console.log(`data here`, data);
+      console.log(`data`, data);
+      // filtering fetched breweries by selected type
       let filteredByType = data.filter((brewery) => {
         return brewery.brewery_type === state.filter;
       });
-
       state.breweryArr = filteredByType;
-
       console.log(`state.breweryArr`, state.breweryArr);
       renderBreweries();
     });
@@ -41,22 +42,12 @@ form.addEventListener("submit", (e) => {
 
   let userInput = formInput.value.toLowerCase().split(" ").join("_");
   console.log(`userInput`, userInput);
-
-  fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${userInput}`)
+  fetch(`${baseUrl}?by_state=${userInput}`)
     .then((response) => {
       return response.json();
     })
     .then((data) => {
-      // console.log(data)
-      let filtered = data.filter(
-        (brewery) =>
-          brewery.brewery_type === "micro" ||
-          brewery.brewery_type === "regional" ||
-          brewery.brewery_type === "brewpub"
-      );
-      // console.log(`filtered`,filtered)
-      state.breweryArr = filtered;
-      console.log(`state.breweryArr`, state.breweryArr);
+      filterFetchedDataByType(data);
       renderBreweries();
     });
 });
@@ -106,10 +97,21 @@ const renderBreweries = () => {
   });
 };
 
-console.log(state.breweryArr);
+// creating a reusable function for fetching and filtering data by type
+const filterFetchedDataByType = (fetchedData) => {
+  let filtered = fetchedData.filter(
+    (brewery) =>
+      brewery.brewery_type === "micro" ||
+      brewery.brewery_type === "regional" ||
+      brewery.brewery_type === "brewpub"
+  );
+  state.breweryArr = filtered;
+  console.log(`state.breweryArr`, state.breweryArr);
+};
 
 // Extension 1
 
+// adding an event listener to input for searching breweries by name
 searchByNameInput.addEventListener("input", (e) => {
   let searchByNameInputVal = e.target.value.toLowerCase();
   console.log(searchByNameInputVal);
@@ -117,22 +119,12 @@ searchByNameInput.addEventListener("input", (e) => {
   if (!searchByNameInputVal) {
     ul.innerHTML = "";
   } else {
-    fetch(
-      `https://api.openbrewerydb.org/v1/breweries?by_name=${searchByNameInputVal}`
-    )
+    fetch(`${baseUrl}?by_name=${searchByNameInputVal}`)
       .then((response) => {
         return response.json();
       })
       .then((data) => {
-        console.log(`data here`, data);
-        let filtered = data.filter(
-          (brewery) =>
-            brewery.brewery_type === "micro" ||
-            brewery.brewery_type === "regional" ||
-            brewery.brewery_type === "brewpub"
-        );
-        state.breweryArr = filtered;
-        console.log(`state.breweryArr`, state.breweryArr);
+        filterFetchedDataByType(data);
         renderBreweries();
       });
   }
