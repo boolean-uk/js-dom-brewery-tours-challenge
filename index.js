@@ -60,7 +60,8 @@ city by selecting a checkbox beside the city name
 const state = {
     breweryList: [],
     breweryTypeFilter: '',
-    brewerySearchFilter: ''
+    brewerySearchFilter: '',
+    breweryCityFilter: ''
 }
 
 // * QUERY SELECTORS
@@ -148,13 +149,13 @@ function updateState(list) {
     renderBreweryList(list)
 }
 
-
 //check the rendering conditions
 function checkRenderConditions() {
     console.log('applying type filter logic')
 
     let appliedTypeFilter
     let appliedSearchFilter
+    let appliedCityFilter
 
     //filter the state based on the type filter selected
     appliedTypeFilter = state.breweryList.filter((brewery) => {
@@ -162,8 +163,6 @@ function checkRenderConditions() {
         if(state.breweryTypeFilter === '') return true
         //if the brewery type does not match state, don't render
         else if(brewery.brewery_type !== state.breweryTypeFilter) return false
-        console.log('type filter finished')
-        console.log('what is appliedTypeFilter?', appliedTypeFilter)
         return true
     })
 
@@ -174,27 +173,37 @@ function checkRenderConditions() {
         if(state.brewerySearchFilter === '') return true
         //if the brewery name does not match what's in the search, don't render
         else if(!brewery.name.toLowerCase().includes(`${state.brewerySearchFilter}`)) return false
-        console.log('what is appliedSearchFilter?', appliedSearchFilter)
         return true
     })
 
-    console.log('appliedTypeFilter', appliedTypeFilter)
-    console.log('appliedSearchFilter', appliedSearchFilter)
+    // then filter out any unchecked city match results
+    console.log('applying city filter logic')
+    appliedCityFilter = appliedSearchFilter.filter((brewery) => {
+        if(state.breweryCityFilter === '') return true
+        // if the brewery city does not match the state city, don't render
+        else if(brewery.city !== state.breweryCityFilter) return false
+        console.log('**********')
+        console.log('what is brewery.city?', brewery.city)
+        console.log('what is state.breweryCityFilter?', state.breweryCityFilter)
+        return true
+    })
+
+    console.log('appliedTypeFilter', appliedTypeFilter.length)
+    console.log('appliedSearchFilter', appliedSearchFilter.length)
+    console.log('appliedCityFilter', appliedCityFilter.length)
 
     // call to render based on the sorted data
-    renderBreweryList(appliedSearchFilter)
+    renderBreweryList(appliedCityFilter)
 }
 
 
-// * RENDER CITIES FILTER
+// * RENDER CITIES FILTER LOGIC
 
 //check for duplicate cities 
 function checkCityDuplicates(allCities) {
     console.log('called: checkCityDuplicates')
     const singleCities = []
-    console.log('what is singleCities BEFORE', singleCities)
     allCities.forEach((brewery) => {
-        console.log('what is brewery.city', brewery.city)
         if (singleCities.filter(e => e.city === brewery.city).length > 0) {
             console.log('already in list')
         }
@@ -208,7 +217,7 @@ function checkCityDuplicates(allCities) {
 
 //render the city checkboxes
 function renderCityCheckboxes(presentCities) {
-    console.log('called: cityCheckboxes')
+    console.log('called: renderCityCheckboxes')
     filterByCityForm.innerHTML = ''
 
     presentCities.forEach((brewery) => {
@@ -218,14 +227,43 @@ function renderCityCheckboxes(presentCities) {
             cityInput.setAttribute('name', `${brewery.city}`)
             cityInput.setAttribute('value', `${brewery.city}`)
         filterByCityForm.appendChild(cityInput)
+            // event listener to update state when checkbox clicked
+            cityInput.addEventListener('input', () => {
+                state.breweryCityFilter = `${brewery.city}`
+                console.log('state city filter updated:', state.breweryCityFilter)
+                checkRenderConditions()
+            })
 
         const cityLabel = document.createElement('label')
             cityLabel.setAttribute('for', `${brewery.city}`)
             cityLabel.innerText = `${brewery.city}`
         filterByCityForm.appendChild(cityLabel)
 
+
+
+
     })
 }
+
+
+// * FILTER CITIES LOGIC
+
+// 4 - From the 'filter by city' section, the user can filter by 
+// city by selecting a checkbox beside the city name
+
+// event listener for when box is checked
+
+
+//  - logic to update state for checked box
+//     - if city name of brewery matches that of a checked item
+//         - render it on the page
+
+// 5 - From the 'filter by city' section, a user can clear all filters
+
+//  - listen for clear all click
+//     - remove all checked TRUE instances
+//     - render the page for all items in state
+
 
 
 // * RENDER RESULTS LOGIC
@@ -233,7 +271,8 @@ function renderCityCheckboxes(presentCities) {
 //render the breweries based on state.breweryList array
 function renderBreweryList(whichBreweries) {
     console.log('called: renderBreweryList')
-    console.log('generate city checkboxes', checkCityDuplicates(whichBreweries))
+    checkCityDuplicates(whichBreweries)
+
     breweriesUL.innerHTML = ''
 
     whichBreweries.forEach((brewery) => {
@@ -331,6 +370,9 @@ function searchBreweriesByName() {
         checkRenderConditions()
     })
 }
+
+
+
 
 // * INIT
 
