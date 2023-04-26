@@ -153,15 +153,23 @@ function checkRenderConditions() {
     })
     console.log('appliedSearchFilter', appliedSearchFilter.length)
 
+
+
     //if the city matches any of the elements in state.breweryCityFilter array
     let cityContainer = []
     // for each of the checked items, filter out any unchecked city match results
     console.log('applying CITY FILTER logic')
+    //if city search is empty - render all
+     if(state.breweryCityFilter === '') {
+        cityContainer = appliedSearchFilter
+     } else {
+
+
     for (i = 0; i < state.breweryCityFilter.length; i++) {
+
         //filter through breweries list looking for a match
         appliedCityFilter = appliedSearchFilter.filter((brewery) => {
-            //if city search is empty - render all
-            if(state.breweryCityFilter === '') return true
+
             //if the brewery city matches, add to cityContainer
             if (brewery.city === state.breweryCityFilter[i]) {
                 cityContainer.push(brewery)
@@ -174,13 +182,13 @@ function checkRenderConditions() {
         console.log('cityContainer.length', cityContainer.length)
     }
 
+}
     // call to render based on the sorted data
     renderBreweryList(cityContainer)
 }
 
 
 // * RENDER CITIES FILTER LOGIC
-
 //check for duplicate cities 
 function checkCityDuplicates(allCities) {
     console.log('called: checkCityDuplicates')
@@ -214,12 +222,16 @@ function renderCityCheckboxes(presentCities) {
 
         // event listener to update state when checkbox clicked
         cityInput.addEventListener('change', () => {
-            if (cityInput.checked) {
+            if (cityInput.checked === undefined) {
             state.breweryCityFilter.push(`${brewery.city}`)
             console.log('state city filter updated:', state.breweryCityFilter)
-            } else {
-                console.log('not checked')
-            }
+            } 
+            // console.log('cityInput'. cityInput)
+            // console.log('cityInput'. cityInput.value)
+            // console.log('cityInput'. cityInput.name)
+            // console.log('cityInput'. cityInput.type)
+            // console.log('brewery.city'. brewery.city)
+            // console.log('cityInput.checked'. cityInput.checked)
             checkRenderConditions()
         })
     
@@ -233,7 +245,6 @@ function renderCityCheckboxes(presentCities) {
 
 
 // * RENDER RESULTS LOGIC
-
 //render the breweries based on state.breweryList array
 function renderBreweryList(whichBreweries) {
     console.log('called: renderBreweryList')
@@ -300,7 +311,6 @@ function renderBreweryList(whichBreweries) {
 
 
 // * FILTER TYPE OF BREWERY LOGIC
-
 function typeOfBreweryFilter() {
     console.log('called: typeOfBreweryFilter')
     // listen for type of brewery selection being made
@@ -323,7 +333,6 @@ function typeOfBreweryFilter() {
 
 
 // * SEARCH BREWERIES LOGIC
-
 // listen for when a user is typing in search breweries
 function searchBreweriesByName() {
     console.log('called: searchBreweriesByName')
@@ -338,7 +347,6 @@ function searchBreweriesByName() {
 
 
 // * INIT
-
 // run event listeners on page load
 function init() {
     console.log('callled: init')
