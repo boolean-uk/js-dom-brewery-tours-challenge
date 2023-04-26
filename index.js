@@ -180,7 +180,6 @@ function checkRenderConditions() {
 
     console.log('appliedTypeFilter', appliedTypeFilter)
     console.log('appliedSearchFilter', appliedSearchFilter)
-    console.log('generate city checkboxes', renderCityCheckboxes(appliedSearchFilter))
 
     // call to render based on the sorted data
     renderBreweryList(appliedSearchFilter)
@@ -189,11 +188,31 @@ function checkRenderConditions() {
 
 // * RENDER CITIES FILTER
 
+//check for duplicate cities 
+function checkCityDuplicates(allCities) {
+    console.log('called: checkCityDuplicates')
+    const singleCities = []
+    console.log('what is singleCities BEFORE', singleCities)
+    allCities.forEach((brewery) => {
+        console.log('what is brewery.city', brewery.city)
+        if (singleCities.filter(e => e.city === brewery.city).length > 0) {
+            console.log('already in list')
+        }
+        else {
+                singleCities.push(brewery)
+            }
+    }) 
+    console.log('what is singleCities AFTER', singleCities)
+    renderCityCheckboxes(singleCities)
+}
+
+//render the city checkboxes
 function renderCityCheckboxes(presentCities) {
     console.log('called: cityCheckboxes')
     filterByCityForm.innerHTML = ''
 
     presentCities.forEach((brewery) => {
+
         const cityInput = document.createElement('input')
             cityInput.setAttribute('type', 'checkbox')
             cityInput.setAttribute('name', `${brewery.city}`)
@@ -209,22 +228,12 @@ function renderCityCheckboxes(presentCities) {
 }
 
 
-// 3 - The cities list should be populated based on the 
-// results of the search. Each city should only appear once.
-
-//  - logic to check if a city has already been included in the list
-//     - if YES - ignore
-//     - if NO - add new item
-
-
-
-
-
 // * RENDER RESULTS LOGIC
 
 //render the breweries based on state.breweryList array
 function renderBreweryList(whichBreweries) {
     console.log('called: renderBreweryList')
+    console.log('generate city checkboxes', checkCityDuplicates(whichBreweries))
     breweriesUL.innerHTML = ''
 
     whichBreweries.forEach((brewery) => {
