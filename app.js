@@ -6,12 +6,14 @@ const typeInput = document.querySelector('option')
 const searchInput = document.querySelector('#search-breweries')
 const cityForm = document.querySelector('#filter-by-city-form')
 
+
 const brew = {
     brewerys: [],
 }
 
 let cityArray = []
 
+let cityArrayFilter = []
 
 // form submit
 
@@ -34,70 +36,86 @@ form.addEventListener('submit', function handle(event) {
 })
 
 function renderBrewerys(filteredBreweries) {
-    breweryList.innerHTML = ''
-
-    const typeOfBrew = type.value
+    breweryList.innerHTML = '';
+  
+    const typeOfBrew = type.value;
+    const searchTerm = searchInput.value.toLowerCase();
     const breweriesToRender = filteredBreweries || brew.brewerys;
 
-    // filter function to make 
+    // filters
 
-    const filteredBreweriesByType  = breweriesToRender.filter(function (brewery) {
+    const filteredBreweriesByTypeAndCity = breweriesToRender.filter(function (brewery) {
+        // first filter checks for brewery type filter and if nothing is selected gives the list with all types with excursions
         if (typeOfBrew === '') {
-            return brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub'
+            return brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub';
         } else {
-            return brewery.brewery_type === typeOfBrew
+            return brewery.brewery_type === typeOfBrew;
         }
-    })
+        // this filter checks for the city that were added in the array (array that we got from the renderCityFilter function)
+    }).filter(function (brewery) {
+        if (cityArrayFilter.length === 0) {
+            return true;
+        } else {
+            return cityArrayFilter.includes(brewery.city);
+        }
+        // search input 
+    }).filter(function (brewery) {
+        const breweryName = brewery.name.toLowerCase();
+        return breweryName.includes(searchTerm);
+    });
 
-    filteredBreweriesByType.forEach(function (brewery) {
+    // the above const will tell what to render in the bellow code
+
+    filteredBreweriesByTypeAndCity.forEach(function (brewery) {
         // create elements
-        const li = document.createElement('li')
-        const h2name = document.createElement('h2')
-        const divType = document.createElement('div')
-        const sectionAddress = document.createElement('section')
-        const h3Address = document.createElement('h3')
-        const pTagAddress = document.createElement('p')
-        const pTagAddressTwo = document.createElement('p')
-        const sectionContact = document.createElement('section')
-        const h3Contact = document.createElement('h3')
-        const pTagContact = document.createElement('p')
-        const sectionLinks = document.createElement('section')
-        const aTagLink = document.createElement('a')
-        const strong = document.createElement('strong')
+        const li = document.createElement('li');
+        const h2name = document.createElement('h2');
+        const divType = document.createElement('div');
+        const sectionAddress = document.createElement('section');
+        const h3Address = document.createElement('h3');
+        const pTagAddress = document.createElement('p');
+        const pTagAddressTwo = document.createElement('p');
+        const sectionContact = document.createElement('section');
+        const h3Contact = document.createElement('h3');
+        const pTagContact = document.createElement('p');
+        const sectionLinks = document.createElement('section');
+        const aTagLink = document.createElement('a');
+        const strong = document.createElement('strong');
 
         // set attributes
-        divType.setAttribute('class', 'type')
-        sectionAddress.setAttribute('class', 'address')
-        sectionContact.setAttribute('class', 'phone')
-        sectionLinks.setAttribute('class', 'link')
-        aTagLink.setAttribute('href', `${brewery.website_url}`)
-        aTagLink.setAttribute('target', '_blank')
+        divType.setAttribute('class', 'type');
+        sectionAddress.setAttribute('class', 'address');
+        sectionContact.setAttribute('class', 'phone');
+        sectionLinks.setAttribute('class', 'link');
+        aTagLink.setAttribute('href', `${brewery.website_url}`);
+        aTagLink.setAttribute('target', '_blank');
 
         // content
-        h2name.innerText = `${brewery.name}`
-        divType.innerText = `${brewery.brewery_type}`
-        h3Address.innerText = 'Address:'
-        pTagAddress.innerText = `${brewery.street}`
-        strong.innerText = `${brewery.city}, ${brewery.postal_code.slice(0, 5)}`
+        h2name.innerText = `${brewery.name}`;
+        divType.innerText = `${brewery.brewery_type}`;
+        h3Address.innerText = 'Address:';
+        pTagAddress.innerText = `${brewery.street}`;
+        strong.innerText = `${brewery.city}, ${brewery.postal_code.slice(0, 5)}`;
 
-        h3Contact.innerText = 'Phone:'
+        h3Contact.innerText = 'Phone:';
         if (brewery.phone) {
-            pTagContact.innerText = `${brewery.phone}`
+            pTagContact.innerText = `${brewery.phone}`;
         } else {
-            pTagContact.innerText = 'N/A'
+            pTagContact.innerText = 'N/A';
         }
-        aTagLink.innerText = 'Visit Website'
+        aTagLink.innerText = 'Visit Website';
 
         // appending
-        pTagAddressTwo.append(strong)
-        sectionAddress.append(h3Address, pTagAddress, pTagAddressTwo)
-        sectionContact.append(h3Contact, pTagContact)
-        sectionLinks.append(aTagLink)
-        li.append(h2name, divType, sectionAddress, sectionContact, sectionLinks)
-        breweryList.append(li)
-    })
+        pTagAddressTwo.append(strong);
+        sectionAddress.append(h3Address, pTagAddress, pTagAddressTwo);
+        sectionContact.append(h3Contact, pTagContact);
+        sectionLinks.append(aTagLink);
+        li.append(h2name, divType, sectionAddress, sectionContact, sectionLinks);
+        breweryList.append(li);
+    });
 }
 
+// Event Handlers 
 type.addEventListener('change', function typeSelect(event) {
     renderBrewerys()
 
@@ -113,45 +131,57 @@ searchInput.addEventListener('input', function handleSearch() {
   renderBrewerys(filteredBreweries);
 });
 
-renderBrewerys()
+
 
 // Extension 2
 
-//     Add a new 'filter by city' section to the filter menu
-//     The cities list should be populated based on the results of the search. Each city should only appear once.
-
 function renderCityFilter() {
-cityForm.innerHTML = '' 
+    cityForm.innerHTML = '';
+
+    cityArray = []; 
+    cityArrayFilter = []; 
 
     brew.brewerys.forEach(brewery => {
-        const city = brewery.city
+        const city = brewery.city;
 
-    // skip over cities that have already been rendered
-    if (cityArray.includes(city)) {
-        return;
-      }
-       // mark this city as rendered
-       cityArray.push(city);
+        if (cityArray.includes(city))
+         {
+            return;
+        }
+        if (brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub')
+        {
 
-        // create elements 
-    
-        const cityInput = document.createElement('input')
-        const cityLabel = document.createElement('label')
+        cityArray.push(city);
 
-        // set attributes
-        cityInput.setAttribute('type', 'checkbox')
-        cityInput.setAttribute('name', city)
-        cityInput.setAttribute('value', city)
-        cityLabel.setAttribute('for', city)
-        // content
-        cityLabel.innerText = city
-        // appending    
-        cityForm.append(cityInput, cityLabel)
-    })
+        const cityInput = document.createElement('input');
+        const cityLabel = document.createElement('label');
 
+        cityInput.setAttribute('type', 'checkbox');
+        cityInput.setAttribute('name', city);
+        cityInput.setAttribute('value', city);
+        cityLabel.setAttribute('for', city);
+        cityLabel.innerText = city;
+
+        cityForm.append(cityInput, cityLabel);
+
+        cityInput.addEventListener('change', event => {
+            const checked = event.target.checked;
+
+            if (checked) {
+                cityArrayFilter.push(city);
+            } else {
+                const index = cityArrayFilter.indexOf(city);
+                if (index > -1) {
+                    cityArrayFilter.splice(index, 1);
+                }
+            }
+
+            renderBrewerys();
+        });
+    }
+
+    });
 }
 
-
-
-renderCityFilter()
+renderBrewerys()
 
