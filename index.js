@@ -29,10 +29,10 @@ function getBreweriesByState(currentState) {
 
 // Type filter logic for rendering the list
 function filterMatchesType(stateFilter, breweryType) {
-  if (
-    breweryType === 'micro'
-    || breweryType === 'regional'
-    || breweryType === 'brewpub'
+  if ( stateFilter === '' &&
+    (breweryType === 'micro'
+      || breweryType === 'regional'
+      || breweryType === 'brewpub')
   ) {
     return true
   }
