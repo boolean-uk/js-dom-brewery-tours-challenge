@@ -18,24 +18,22 @@ searchForm.addEventListener('submit', (event) => {
 })
 
 // GET request based on user input
-function getBreweriesByState(state) {
-  fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${state}`)
+function getBreweriesByState(currentState) {
+  fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${currentState}`)
   .then(res => res.json())
   .then((json) => {
-      addBreweriesToState(json)
-      // console.log('response:', json)
+      state.breweries = json
       renderBreweries()
     })
 }
 
-// For some reason adding this line directly to getBreweriesByState() causes an error
-function addBreweriesToState(arrOfBreweries) {
-  state.breweries = arrOfBreweries
-}
-
 // Type filter logic for rendering the list
 function filterMatchesType(stateFilter, breweryType) {
-  if (stateFilter === '') {
+  if (
+    breweryType === 'micro'
+    || breweryType === 'regional'
+    || breweryType === 'brewpub'
+  ) {
     return true
   }
   else if (stateFilter === breweryType) {
