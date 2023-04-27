@@ -20,7 +20,7 @@ let cityArrayFilter = []
 form.addEventListener('submit', function handle(event) {
     event.preventDefault()
     const state = stateInput.value;
-    const updateState = state.toLowerCase().replaceAll(' ', '_')
+    const updateState = state.toLowerCase().trim().replaceAll(' ', '_')
     form.reset()
 
     fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${updateState}&per_page=10`)
@@ -42,7 +42,7 @@ function renderBrewerys(filteredBreweries) {
     const searchTerm = searchInput.value.toLowerCase();
     const breweriesToRender = filteredBreweries || brew.brewerys;
 
-    // filters
+    // filters 
 
     const filteredBreweriesByTypeAndCity = breweriesToRender.filter(function (brewery) {
         // first filter checks for brewery type filter and if nothing is selected gives the list with all types with excursions
@@ -166,10 +166,6 @@ function renderCityFilter() {
 
         cityInput.addEventListener('change', event => {
             const checked = event.target.checked;
-           
-      
-           
-
             if (checked) {
                 cityArrayFilter.push(city);
             } else {
@@ -178,8 +174,6 @@ function renderCityFilter() {
                     cityArrayFilter.splice(index, 1);
                 }
             }
-             
-
             renderBrewerys();
 
         })
