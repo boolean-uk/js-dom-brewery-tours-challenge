@@ -9,7 +9,6 @@ const state = {
 }
 
 // FILE WIDE CONSTANTS
-
 const searchField = document.querySelector(`#select-state-form`)
 const breweryList = document.querySelector(`#breweries-list`)
 const cityFilterForm = document.querySelector(`#filter-by-city-form`)
@@ -22,16 +21,6 @@ let numberOfPages = 1
 let firstItem = 0
 let lastItem = 10
 let visitTest = []
-
-// function getToVisit() {
-//     fetch(`http://localhost:3000/visit`)
-//     .then(function (response) {
-//         return response.json()
-//     })
-//     .then(function (data) {
-//         state.toVisit = data
-//     })
-// }
 
 // EXTRACTS SEARCH TERM, FETCHES DATA USING THAT TERM, CHECKS BREWERY TYPE AND WRITES VALID
 // BREWERIES TO STATE AND ADDS VISIBLE PROPERTY
@@ -63,8 +52,6 @@ function searchSubmit() {
     createCityArray(state.breweries)
     })
 }
-
-
 
 // CREATES AN ARRAY OF EVERY CITY FROM THE CURRENTLY SELECTED STATE
 function createCityArray(arr) {
@@ -160,7 +147,7 @@ function filterEventListener() {
     })
 }
 
-// CHANGES RENDERED DATA WHEN FILTERS ARE APPLIED
+// CHANGES DATA TO BE RENDERED WHEN FILTERS ARE APPLIED
 function displayedData(arr) {
     if (state.typeFilter !== ``) {
         arr = arr.filter(function (el) {
@@ -229,19 +216,14 @@ function paginationEventListener() {
     });
 }
 
+// RESETS PAGE NUMBER AND STARTS RENDERING FROM BEGINNING OF LIST FOR PAGE 1
 function resetPageNumbers() {
     pageNumber = 1
     firstItem = 0
     lastItem = 10
 }
 
-function visitEventListener(brewery, li) {
-    const visitButton = li.querySelector(`.visit-button`)
-    visitButton.addEventListener(`click`, () => {
-        addVisit(brewery)
-    })
-}
-
+// FETCHES THE VISIT LIST FROM JSON SERVER
 function fetchVisitList() {
     fetch(`http://localhost:3000/toVisit`)
     .then(function (response) {
@@ -252,6 +234,15 @@ function fetchVisitList() {
     })
 }
 
+// ADDS EVENT LISTENER TO ADD TO VISIT LIST BUTTON ON BREWERY CARDS
+function visitEventListener(brewery, li) {
+    const visitButton = li.querySelector(`.visit-button`)
+    visitButton.addEventListener(`click`, () => {
+        addVisit(brewery)
+    })
+}
+
+// ADDS THE SELECTED BREWERY TO THE VISIT LIST
 function addVisit(brewery) {
     const newVisit = {
         name: brewery.name,
@@ -262,8 +253,8 @@ function addVisit(brewery) {
         website_url: brewery.website_url
     }
 
+    // CHECKS IF BREWERY IS ALREADY IN VISIT LIST AND SKIPS IF IT IS
     const alreadyExists = state.toVisit.some(brewery => brewery.name === newVisit.name)
-
     if (alreadyExists) {
         return
     }
@@ -285,6 +276,7 @@ function addVisit(brewery) {
     })
 }
 
+// ADDS EVENT LISTENER TO SHOW VISIT LIST BUTTON. TOGGLES BETWEEN BREWERY LIST AND VISIT LIST
 function visitListEventListener() {
     const showVisitButton = document.querySelector(`.show-visit-list`)
     showVisitButton.addEventListener(`click`, () => {
@@ -309,6 +301,7 @@ function visitListEventListener() {
     })
 }
 
+// RENDERS THE VISIT LIST
 function renderVisitList(arr) {
     numberOfPages = Math.ceil(arr.length / numberPerPage)
     pageDisplay.innerText = `Page ${pageNumber} of ${numberOfPages}`
@@ -338,11 +331,13 @@ function renderVisitList(arr) {
     })
 }
 
+
+// DELETE FROM VISIT LIST BUTTON. CONFIRMS FIRST, DELETES ON SECOND CLICK
 function deleteEventListener(brewery, li) {
     const deleteButton = li.querySelector(`.delete-button`)
     deleteButton.addEventListener(`click`, () => {
-        if (deleteButton.innerText === `Visited?`) {
-            deleteButton.innerText = `Click to Remove From Your List`
+        if (deleteButton.innerText === `Visited? Click to Remove`) {
+            deleteButton.innerText = `Click to Confirm Removal From List`
         } else {
             const options = {
                 method: "DELETE"
