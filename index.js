@@ -137,3 +137,118 @@ function breweryRender(selectedType = '') {
         ul.append(li)
     }
 }
+
+// BONUS
+// autocomplete form
+// followed a youtube tutorial for this
+// https://www.youtube.com/watch?v=MO3qC1ouGiA&ab_channel=CodingArtist
+
+// array containing all of the states
+// could've went through the api data to get this 
+// but I wanted to check it worked before complicating it
+
+const stateAutoComplete = [
+    "Alabama",
+    "Alaska",
+    "Arizona",
+    "Arkansas",
+    "California",
+    "Colorado",
+    "Connecticut",
+    "Delaware",
+    "Florida",
+    "Georgia",
+    "Hawaii",
+    "Idaho",
+    "Illinois",
+    "Indiana",
+    "Iowa",
+    "Kansas",
+    "Kentucky",
+    "Louisiana",
+    "Maine",
+    "Maryland",
+    "Massachusetts",
+    "Michigan",
+    "Minnesota",
+    "Mississippi",
+    "Missouri",
+    "Montana",
+    "Nebraska",
+    "Nevada",
+    "New Hampshire",
+    "New Jersey",
+    "New Mexico",
+    "New York",
+    "North Carolina",
+    "North Dakota",
+    "Ohio",
+    "Oklahoma",
+    "Oregon",
+    "Pennsylvania",
+    "Rhode Island",
+    "South Carolina",
+    "South Dakota",
+    "Tennessee",
+    "Texas",
+    "Utah",
+    "Vermont",
+    "Virginia",
+    "Washington",
+    "West Virginia",
+    "Wisconsin",
+    "Wyoming"
+  ];
+
+// add an unordered list to the search bar
+// which will act as a drop down for the suggestions
+
+const input = document.getElementById('select-state')
+
+// create a ul and add style to it, would be better to change
+// the css but I didn't want to touch it.
+
+const dropdownUl = document.createElement('ul')
+dropdownUl.style.backgroundColor = '#ffffff'
+dropdownUl.style.width = '203px'
+dropdownUl.style.listStyle = 'none'
+dropdownUl.style.zIndex = '1'
+dropdownUl.style.position = 'absolute'
+dropdownUl.style.top = '100'
+dropdownUl.style.margin = '0'
+dropdownUl.style.border = '1px solid black'
+dropdownUl.style.borderTop = 'none'
+dropdownUl.style.borderRadius = '0px 0px 5px 5px'
+
+
+searchForm.addEventListener('keyup', (e) => {
+    removeElements()
+    //loop through array
+    for (let i of stateAutoComplete) {
+        if(i.toLowerCase().startsWith(input.value.toLowerCase()) &&
+        input.value !== '') {
+           const listItem = document.createElement('li')
+           listItem.classList.add('list-items')
+           listItem.style.cursor = 'pointer'
+           listItem.setAttribute('onclick', "displayNames('" + i + "')")
+           let word = '<b>' + i.substring(0, input.value.length) + '</b>'
+           word += i.substring(input.value.length)
+           listItem.innerHTML = word;
+           listItem.style.left = '0'
+           dropdownUl.appendChild(listItem)
+           searchForm.appendChild(dropdownUl)
+        }
+    }
+})
+
+function displayNames(value) {
+    input.value = value;
+    removeElements()
+}
+
+function removeElements() {
+    let items = document.querySelectorAll('.list-items')
+    items.forEach((item) => {
+        item.remove();
+    });
+} 
