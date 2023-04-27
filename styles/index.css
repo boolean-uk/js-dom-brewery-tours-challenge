@@ -80,6 +80,7 @@ main {
   border: none;
   background-color: transparent;
   color: #1565c0;
+  cursor: pointer;
 
   text-decoration: underline;
   font-size: 0.725rem;
@@ -215,9 +216,13 @@ article {
   grid-area: link;
 }
 
-.breweries-list li .link a {
+.breweries-list li .link a,
+.breweries-list li .link button {
   display: block;
   padding: 0.5rem 1rem;
+  margin: 5px;
+  cursor: pointer;
+  border: none;
 
   border-radius: 0.25rem;
   background-color: #1565c0;
@@ -227,4 +232,46 @@ article {
   text-align: center;
   text-decoration: none;
   font-weight: bold;
+}
+
+.breweries-list li .link a:hover,
+.breweries-list li .link button:hover {
+  background-color: #227be0;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.heading-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.page-btn,
+.visit-btn {
+  background-color: #ffe082;
+  padding: 5px 15px;
+  cursor: pointer;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  margin: 20px;
+}
+
+.page-btn:hover {
+  background-color: #fbc02d;
+}
+
+.visit-btn {
+  background-color: #1565c0;
+  color: #ffe082;
+}
+
+.visit-btn:hover {
+  background-color: #ffe082;
+  color: #1565c0;
 }
