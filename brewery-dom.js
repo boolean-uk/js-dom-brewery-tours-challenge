@@ -10,6 +10,8 @@ const brewpubOption = document.querySelector('#brewpub')
 // defines search query
 let searchQuery = ""
 
+let searchFilter = ""
+
 //defines empty state to hold data
 const state = {
     breweryArray: []
@@ -65,70 +67,38 @@ form.addEventListener('submit', (event) => {
     event.preventDefault()
     console.log(event.target.value) 
 
-    const originalItems = state.breweryArray
-
 // conditional statement to retrieve where the user has clicked specifically and give different outcomes based on which list item they have clicked
     if (event.target.value === "micro") {
-
-        console.log("sending get request to server")
-        fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchQuery}&by_type=${"micro"}`) // uses string interpolation to input the user's search bar input
-        .then(function (response) {  
-        return response.json()
-        })
-        .then(function (data) {
-        state.breweryArray = []
-    // filters to ensure that results are only returned if they're a micro, regional or brewpub brewery
-        data.filter(currentBrewery => {
-            if (currentBrewery.brewery_type === `micro` || currentBrewery.brewery_type === `regional` || currentBrewery.brewery_type === `brewpub`) {
-                state.breweryArray.push({...currentBrewery, visible: true})                
-                return true
-            } else {
-                return false
-            }})
-    
-            renderCards ()
-        })
+        searchFilter = "micro"
 }
     if (event.target.value === "regional") {
-        console.log("sending get request to server")
-        fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchQuery}&by_type=${"regional"}`) // uses string interpolation to input the user's search bar input
-        .then(function (response) {  
-        return response.json()
-        })
-        .then(function (data) {
-        state.breweryArray = []
-    // filters to ensure that results are only returned if they're a micro, regional or brewpub brewery
-        data.filter(currentBrewery => {
-            if (currentBrewery.brewery_type === `micro` || currentBrewery.brewery_type === `regional` || currentBrewery.brewery_type === `brewpub`) {
-                state.breweryArray.push({...currentBrewery, visible: true})                
-                return true
-            } else {
-                return false
-            }})
-    
-            renderCards ()
-        })
+        searchFilter = "regional"
     }
     if (event.target.value === "brewpub") {
-        console.log("sending get request to server")
-        fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchQuery}&by_type=${"brewpub"}`) // uses string interpolation to input the user's search bar input
-        .then(function (response) {  
-        return response.json()
-        })
-        .then(function (data) {
-        state.breweryArray = []
-    // filters to ensure that results are only returned if they're a micro, regional or brewpub brewery
-        data.filter(currentBrewery => {
-            if (currentBrewery.brewery_type === `micro` || currentBrewery.brewery_type === `regional` || currentBrewery.brewery_type === `brewpub`) {
-                state.breweryArray.push({...currentBrewery, visible: true})                
-                return true
-            } else {
-                return false
-            }})
-    
-            renderCards ()
-        })
+        searchFilter = "brewpub"
   }
+
+  console.log("sending get request to server")
+  fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchQuery}&by_type=${searchFilter}`) // uses string interpolation to input the user's search bar input
+  .then(function (response) {  
+  return response.json()
+  })
+  .then(function (data) {
+  state.breweryArray = []
+// filters to ensure that results are only returned if they're a micro, regional or brewpub brewery
+  data.filter(currentBrewery => {
+      if (currentBrewery.brewery_type === `micro` || currentBrewery.brewery_type === `regional` || currentBrewery.brewery_type === `brewpub`) {
+          state.breweryArray.push({...currentBrewery, visible: true})                
+          return true
+      } else {
+          return false
+      }})
+
+      renderCards ()
+  })
+
+
+
 }) 
 
 
