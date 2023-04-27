@@ -65,8 +65,8 @@ form.addEventListener('submit', (event) => {
     if (event.target.value === "micro") {
 
         const filteredItems = originalItems.filter((item) => {
-            if(item.brewery_type === "micro") return true // remove items tagged old
-            return false // keep all other items that pass the two filters above
+            if(item.brewery_type === "micro") return true
+            return false 
           })
           state.breweryArray = filteredItems
           renderCards ()
@@ -74,8 +74,8 @@ form.addEventListener('submit', (event) => {
     else if (event.target.value === "regional") {
         console.log("real")
         const filteredItems2 = originalItems.filter((item) => {
-            if(item.brewery_type === "regional") return true // remove items tagged old
-            return false // keep all other items that pass the two filters above
+            if(item.brewery_type === "regional") return true
+            return false
           })
           state.breweryArray = filteredItems2
           renderCards ()
@@ -83,8 +83,8 @@ form.addEventListener('submit', (event) => {
     if (event.target.value === "brewpub") {
         console.log("real")
         const filteredItems3 = originalItems.filter((item) => {
-            if(item.brewery_type === "brewpub") return true // remove items tagged old
-            return false // keep all other items that pass the two filters above
+            if(item.brewery_type === "brewpub") return true 
+            return false
           })
           state.breweryArray = filteredItems3
           renderCards ()
