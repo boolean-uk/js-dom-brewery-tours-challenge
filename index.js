@@ -2,6 +2,12 @@ const state = {}
 
 const searchForm = document.querySelector('#select-state-form')
 const breweryUl = document.querySelector('#breweries-list')
+const filterDropdown = document.querySelector('#filter-by-type')
+
+filterDropdown.addEventListener('change', () => {
+  state.filter = filterDropdown.value
+  renderBreweries()
+})
 
 // Event listener for submit button
 searchForm.addEventListener('submit', (event) => {
@@ -11,7 +17,6 @@ searchForm.addEventListener('submit', (event) => {
   console.log('user input:', userInput)
   state.userInput = userInput
 
-  const filterDropdown = document.querySelector('#filter-by-type')
   state.filter = filterDropdown.value
 
   getBreweriesByState(state.userInput)
