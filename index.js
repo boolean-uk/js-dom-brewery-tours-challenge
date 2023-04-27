@@ -89,3 +89,47 @@ function filter(stateBrewery) {
     renderStateBrewery(filteredBrewery);
   });
 }
+
+// set up search bar -extension 1
+const h1 = document.querySelector("h1");
+const header = document.createElement("header");
+header.setAttribute("class", "search-bar");
+h1.insertAdjacentElement("afterend", header);
+const form = document.createElement("form");
+header.append(form);
+form.setAttribute("id", "search-breweries-form");
+form.setAttribute("autocomplete", "off");
+const label = document.createElement("label");
+form.append(label);
+label.setAttribute("for", "search-breweries");
+const h2_1 = document.createElement("h2");
+label.append(h2_1);
+h2_1.innerText = "Search breweries:";
+const input = document.createElement("input");
+form.append(input);
+input.setAttribute("id", "search-breweries");
+input.setAttribute("name", "search-breweries");
+input.setAttribute("type", "text");
+
+// add event listener to search bar -extension 1
+input.addEventListener("input", (event) => {
+  event.preventDefault();
+  const ul = document.querySelector(".breweries-list");
+  ul.innerText = "";
+  const searchInput = document.getElementById("search-breweries").value;
+  searchBrewery(searchInput);
+});
+
+// fetch data based on the input and render -extension 1
+function searchBrewery(searchInput) {
+  fetch(
+    `https://api.openbrewerydb.org/v1/breweries?by_name=${searchInput}&per_page=3`
+  )
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      const searchBrewery = data;
+      renderStateBrewery(searchBrewery);
+    });
+}
