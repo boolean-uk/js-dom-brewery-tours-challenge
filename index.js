@@ -139,7 +139,7 @@ function renderCards(arr) {
         </section>
         <section class="phone">
           <h3>Phone:</h3>
-          <p>${brewery.phone}</p>
+          ${brewery.phone ? `<p>${brewery.phone}</p>` : `<p>No Phone Number</p>`}
         </section>
         <section class="link">
           <a href="${brewery.website_url}" target="_blank">Visit Website</a>
@@ -242,13 +242,30 @@ function visitEventListener(brewery, li) {
     })
 }
 
+function fetchVisitList() {
+    fetch(`http://localhost:3000/toVisit`)
+    .then(function (response) {
+        return response.json()
+    })
+    .then(function (data) {        
+        state.toVisit = data
+    })
+}
+
 function addVisit(brewery) {
     const newVisit = {
         name: brewery.name,
-        address: brewery.address_1,
+        address_1: brewery.address_1,
         city: brewery.city,
         phone: brewery.phone,
-        website: brewery.website_url
+        brewery_type: brewery.brewery_type,
+        website_url: brewery.website_url
+    }
+
+    const alreadyExists = state.toVisit.some(brewery => brewery.name === newVisit.name)
+
+    if (alreadyExists) {
+        return
     }
 
     const options = {
@@ -271,17 +288,76 @@ function addVisit(brewery) {
 function visitListEventListener() {
     const showVisitButton = document.querySelector(`.show-visit-list`)
     showVisitButton.addEventListener(`click`, () => {
+        const header = document.querySelector(`#brewery-list-header`)
         if (showVisitButton.id === "inactive") {
             breweryList.classList.add(`hidden`)
             visitList.classList.remove(`hidden`)
             showVisitButton.innerText = `Hide Visit List`
             showVisitButton.setAttribute(`id`, `active`)
+            header.innerText = `List of Breweries to Visit`
+            resetPageNumbers()
+            renderVisitList(state.toVisit)
         } else {
             breweryList.classList.remove(`hidden`)
             visitList.classList.add(`hidden`)
             showVisitButton.innerText = `Show Visit List`
             showVisitButton.setAttribute(`id`, `inactive`)
+            header.innerText = `List of Breweries`
+            resetPageNumbers()
+            displayedData(state.breweries)
         }
+    })
+}
+
+function renderVisitList(arr) {
+    numberOfPages = Math.ceil(arr.length / numberPerPage)
+    pageDisplay.innerText = `Page ${pageNumber} of ${numberOfPages}`
+    visitList.innerHTML = ``
+    arr = arr.slice(firstItem, lastItem)    
+    arr.forEach(brewery => {
+        const li = document.createElement(`li`)
+        li.innerHTML = `
+        <h2>${brewery.name}</h2>
+        <div class="type">${brewery.brewery_type}</div>
+        <section class="address">
+          <h3>Address:</h3>
+          ${brewery.address_1 ? `<p>${brewery.address_1}</p>` : `<p>No Address Given</p>`}
+          ${brewery.address_2 ? `<p><strong>${brewery.address_2}</strong></p>` : ''}
+        </section>
+        <section class="phone">
+          <h3>Phone:</h3>
+          ${brewery.phone ? `<p>${brewery.phone}</p>` : `<p>No Phone Number</p>`}
+        </section>
+        <section class="link">
+          <a href="${brewery.website_url}" target="_blank">Visit Website</a>
+          <button class="delete-button">Visited?</button>
+        </section>
+        `
+        deleteEventListener(brewery, li)
+        visitList.append(li)
+    })
+}
+
+function deleteEventListener(brewery, li) {
+    const deleteButton = li.querySelector(`.delete-button`)
+    deleteButton.addEventListener(`click`, () => {
+        if (deleteButton.innerText === `Visited?`) {
+            deleteButton.innerText = `Click to Remove From Your List`
+        } else {
+            const options = {
+                method: "DELETE"
+            }
+            fetch(`http://localhost:3000/toVisit/${brewery.id}`, options)
+            .then(function (response) {
+                return response.json
+            })
+            .then( () => {
+                fetchVisitList()
+            })           
+        }
+        setTimeout(() => {
+            renderVisitList(state.toVisit)
+        }, "1000")
     })
 }
 
@@ -291,9 +367,13 @@ function pageLoad() {
     brewerySearchEventListener()
     paginationEventListener()
     visitListEventListener()
+    fetchVisitList()
 }
 
 
 pageLoad()
 
+// RUN THIS IN TERMINAL TO LAUNCH JSON SERVER
 // npx json-server --watch db/visit.json
+// GO TO THIS IN BROWSER TO SEE STATUS US VISIT.JSON
+// http://localhost:3000/toVisit
