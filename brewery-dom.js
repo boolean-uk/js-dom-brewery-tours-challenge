@@ -7,17 +7,21 @@ const regionalOption = document.querySelector('#regional')
 const brewpubOption = document.querySelector('#brewpub')
 
 
+// defines search query
 let searchQuery = ""
 
+//defines empty state to hold data
 const state = {
     breweryArray: []
 }
 
+
+// function to retrieve the brewery list and input it into the state array
 function getBreweryList() {
 
     console.log("sending get request to server")
 
-    fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchQuery}`)
+    fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchQuery}`) // uses string interpolation to input the user's search bar input
 
     .then(function (response) {
 
@@ -33,6 +37,7 @@ function getBreweryList() {
 
     state.breweryArray = []
 
+// filters to ensure that results are only returned if they're a micro, regional or brewpub brewery
     data.filter(currentBrewery => {
         if (currentBrewery.brewery_type === `micro` || currentBrewery.brewery_type === `regional` || currentBrewery.brewery_type === `brewpub`) {
             state.breweryArray.push({...currentBrewery, visible: true})                
@@ -45,60 +50,93 @@ function getBreweryList() {
     })
 }
 
+// listens for a search bar submit and stores the input as a variable to be used for the URL string interpolation
 form.addEventListener('submit', (event) => {
-    event.preventDefault()
+    event.preventDefault()  // prevents the browser default of refreshing the page
     console.log('creating post request')
     searchQuery = searchInput.value
-    console.log(searchQuery)
   
     getBreweryList()
     form.reset()
   })
 
-
+// listens for a click on the filter dropdown
   dropDown.addEventListener('click', function(event) { 
     event.preventDefault()
     console.log(event.target.value) 
 
     const originalItems = state.breweryArray
 
+// conditional statement to retrieve where the user has clicked specifically and give different outcomes based on which list item they have clicked
     if (event.target.value === "micro") {
 
-        const filteredItems = originalItems.filter((item) => {
-            if(item.brewery_type === "micro") return true
-            return false 
-          })
-          state.breweryArray = filteredItems
-          renderCards ()
+        console.log("sending get request to server")
+        fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchQuery}&by_type=${"micro"}`) // uses string interpolation to input the user's search bar input
+        .then(function (response) {  
+        return response.json()
+        })
+        .then(function (data) {
+        state.breweryArray = []
+    // filters to ensure that results are only returned if they're a micro, regional or brewpub brewery
+        data.filter(currentBrewery => {
+            if (currentBrewery.brewery_type === `micro` || currentBrewery.brewery_type === `regional` || currentBrewery.brewery_type === `brewpub`) {
+                state.breweryArray.push({...currentBrewery, visible: true})                
+                return true
+            } else {
+                return false
+            }})
+    
+            renderCards ()
+        })
 }
-    else if (event.target.value === "regional") {
-        console.log("real")
-        const filteredItems2 = originalItems.filter((item) => {
-            if(item.brewery_type === "regional") return true
-            return false
-          })
-          state.breweryArray = filteredItems2
-          renderCards ()
+    if (event.target.value === "regional") {
+        console.log("sending get request to server")
+        fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchQuery}&by_type=${"regional"}`) // uses string interpolation to input the user's search bar input
+        .then(function (response) {  
+        return response.json()
+        })
+        .then(function (data) {
+        state.breweryArray = []
+    // filters to ensure that results are only returned if they're a micro, regional or brewpub brewery
+        data.filter(currentBrewery => {
+            if (currentBrewery.brewery_type === `micro` || currentBrewery.brewery_type === `regional` || currentBrewery.brewery_type === `brewpub`) {
+                state.breweryArray.push({...currentBrewery, visible: true})                
+                return true
+            } else {
+                return false
+            }})
+    
+            renderCards ()
+        })
     }
     if (event.target.value === "brewpub") {
-        console.log("real")
-        const filteredItems3 = originalItems.filter((item) => {
-            if(item.brewery_type === "brewpub") return true 
-            return false
-          })
-          state.breweryArray = filteredItems3
-          renderCards ()
-    }
-
-    form.reset()
-    renderCards()
-  }) 
+        console.log("sending get request to server")
+        fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchQuery}&by_type=${"brewpub"}`) // uses string interpolation to input the user's search bar input
+        .then(function (response) {  
+        return response.json()
+        })
+        .then(function (data) {
+        state.breweryArray = []
+    // filters to ensure that results are only returned if they're a micro, regional or brewpub brewery
+        data.filter(currentBrewery => {
+            if (currentBrewery.brewery_type === `micro` || currentBrewery.brewery_type === `regional` || currentBrewery.brewery_type === `brewpub`) {
+                state.breweryArray.push({...currentBrewery, visible: true})                
+                return true
+            } else {
+                return false
+            }})
+    
+            renderCards ()
+        })
+  }
+}) 
 
 
 
 function renderCards() {
 
     breweryList.innerHTML = ""
+    // uses a .forEach function to search through a list of data, similar to for loops, but simpler!
     state.breweryArray.forEach(list => {
         const li = document.createElement('li')
         const h2 = document.createElement('h2')
