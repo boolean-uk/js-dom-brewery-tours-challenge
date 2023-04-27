@@ -8,13 +8,14 @@ const state = {
   // TODO: add searchState variable here to store the state the user searched for and submitted in the form ✅ -> ?
 };
 
-// GET
+
 function load() {
   // TODO: add searchState to state js object above ✅
   // TODO: enable the line below, apiLink and use that for fetch ✅
   submitForm();
   filterDropDown();
 }
+
 function submitForm() {
   const form = document.querySelector("form");
   form.addEventListener("submit", (event) => {
@@ -47,6 +48,7 @@ function filterDropDown() {
   });
 }
 
+// GET
 function getData() {
   fetch(`${api}=${state.searchState}`)
     .then(function (response) {
@@ -56,21 +58,7 @@ function getData() {
     .then(function (data) {
       console.log(data.length);
       state.breweryList = data;
-      // LINE 26 TO 37 MY OWN COMMENT
-
-      // const tourBreweries = data.filter((brewery) => {
-      //   return ['micro', 'regional', 'brewpub'].includes(brewery.brewery_type.toLowerCase());
-
-      // EITHER FIX FILTER FUNCTION OR USE FOR LOOP ALONG THE LINES OF:
-      // const breweries = []
-      // for(let i = 0; i < data.length; i++) {
-      //   const brewery = data[i]
-      //   if(I WANT TO KEEP BREWERY) {
-      //     breweries.push(brewery)
-      //   }
-      // }
-      // state.breweries = breweries
-
+  
       displayBrew(); // all good!
     })
     .catch(function (error) {
@@ -78,14 +66,8 @@ function getData() {
     });
 }
 
-// );
-//  TODO: -> move this - getData()- at the bottom of the file, just for clarity ✅
 
-// Displaying cities just by STATE and only 3 types
-
-// function displayByType() {
-//   const byType = state.breweryList.filter(brewType);
-// }
+//  TODO: -> move this - getData()- at the bottom of the file, just for clarity ✅ changed it after 
 
 // // TODO: NOT NEEDED ✅
 // function brewType(item) {
@@ -110,8 +92,13 @@ function getData() {
 // // TODO: not needed ✅
 // displayByState()
 
-// ForEach => display
+// Display after filtering
+
 function displayBrew() {
+  
+  // TODO: -> filter here state.breweryList to only include the breweries of micro, regional, brewpub ✅
+  // store the filter results in a variable ✅
+  // then call forEach on the filtered list only ✅
   const wantedTypes = ["micro", "regional", "brewpub"];
   console.log("state", state.filterType);
 
@@ -126,14 +113,12 @@ function displayBrew() {
         return true;
       }
     });
-
+// NOTE: when you add the dropdown functionality, you can then filter a second time to just keep micro, regional or brewpub
   console.log("Filtered data by Type", filtered.length);
 
-  // TODO: -> filter here state.breweryList to only include the breweries of micro, regional, brewpub ✅
-  // store the filter results in a variable ✅
-  // then call forEach on the filtered list only ✅
+  
+  // For Each => creating elements 
 
-  // NOTE: when you add the dropdown functionality, you can then filter a second time to just keep micro, regional or brewpub
   ul.innerHTML = "";
   filtered.forEach((data) => {
     const li = document.createElement("li");
@@ -187,4 +172,5 @@ function displayBrew() {
     linkSection.append(aEl);
   });
 }
+
 load();
