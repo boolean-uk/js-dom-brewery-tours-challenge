@@ -6,14 +6,13 @@ const breweryUl = document.querySelector('#breweries-list')
 // Event listener for submit button
 searchForm.addEventListener('submit', (event) => {
   event.preventDefault()
+  
   const userInput = document.querySelector('#select-state').value
   console.log('user input:', userInput)
   state.userInput = userInput
 
   const filterDropdown = document.querySelector('#filter-by-type')
-  // console.log('dropdown: ', filterDropdown)
   state.filter = filterDropdown.value
-  // console.log('filter:', state.filter)
 
   getBreweriesByState(state.userInput)
 })
@@ -34,7 +33,7 @@ function addBreweriesToState(arrOfBreweries) {
   state.breweries = arrOfBreweries
 }
 
-// Filter logic for rendering the list
+// Type filter logic for rendering the list
 function filterMatchesType(stateFilter, breweryType) {
   if (stateFilter === '') {
     return true
@@ -45,6 +44,7 @@ function filterMatchesType(stateFilter, breweryType) {
   return false
 }
 
+// Name filter logic for rendering the list
 function filterMatchesName(stateNameFilter, breweryName) {
   console.log(breweryName.toLowerCase())
   console.log(stateNameFilter.toLowerCase())
@@ -113,6 +113,7 @@ function createBreweryLi(breweryObj) {
   return li
 }
 
+// Create the name filter and add it to the page
 function renderNameFilter() {
   const header = document.createElement('header')
   header.classList.add('search-bar')
@@ -141,7 +142,9 @@ function renderNameFilter() {
   main.insertBefore(header, article)
 }
 
-function addCityFilterEvent() {
+// Event listener for the name filter
+function addNameFilterEvent() {
+  state.nameFilter = ''
   const cityFilterForm = document.querySelector('#search-breweries-form')
   cityFilterForm.addEventListener('submit', (event) => event.preventDefault())
   const textInput = document.querySelector('#search-breweries')
@@ -152,11 +155,14 @@ function addCityFilterEvent() {
   })
 }
 
+function createCityFilterList() {
 
+}
+
+// These things should happen on page load
 function init() {
-  state.nameFilter = ''
   renderNameFilter()
-  addCityFilterEvent()
+  addNameFilterEvent()
 }
 
 init()
