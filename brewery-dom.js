@@ -2,7 +2,7 @@ const article = document.querySelector('article')
 const breweryList = document.querySelector('.breweries-list')
 const form = document.querySelector('#select-state-form')
 const searchInput = document.querySelector('input')
-const microOption = document.querySelector('option')
+const dropDown = document.getElementById('filter-by-type')
 const regionalOption = document.querySelector('#regional')
 const brewpubOption = document.querySelector('#brewpub')
 
@@ -55,13 +55,46 @@ form.addEventListener('submit', (event) => {
     form.reset()
   })
 
-  microOption.addEventListener('click', (event) => {
-    // event.preventDefault()
-    console.log('processing micro click')
+
+  dropDown.addEventListener('click', function(event) { 
+    event.preventDefault()
+    console.log(event.target.value) 
+
+    const originalItems = state.breweryArray
+
+    if (event.target.value === "micro") {
+
+        const filteredItems = originalItems.filter((item) => {
+            if(item.brewery_type === "micro") return true // remove items tagged old
+            return false // keep all other items that pass the two filters above
+          })
+          state.breweryArray = filteredItems
+          renderCards ()
+}
+    else if (event.target.value === "regional") {
+        console.log("real")
+        const filteredItems2 = originalItems.filter((item) => {
+            if(item.brewery_type === "regional") return true // remove items tagged old
+            return false // keep all other items that pass the two filters above
+          })
+          state.breweryArray = filteredItems2
+          renderCards ()
+    }
+    if (event.target.value === "brewpub") {
+        console.log("real")
+        const filteredItems3 = originalItems.filter((item) => {
+            if(item.brewery_type === "brewpub") return true // remove items tagged old
+            return false // keep all other items that pass the two filters above
+          })
+          state.breweryArray = filteredItems3
+          renderCards ()
+    }
+
     form.reset()
     renderCards()
+  }) 
 
-  })
+
 
 function renderCards() {
 
