@@ -98,7 +98,7 @@ function renderBreweries(breweries) {
     brewerySectionLink.setAttribute('class', 'link')
     brewerysLi.append(brewerySectionLink)
 
-    const sectionLinkAnchor = document.createComment('a')
+    const sectionLinkAnchor = document.createElement('a')
     sectionLinkAnchor.setAttribute('href', `${brewery.website_url}`)
     sectionLinkAnchor.setAttribute('target', '_blank')
     sectionLinkAnchor.innerText = 'Visit Website'
