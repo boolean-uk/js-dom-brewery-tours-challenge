@@ -130,7 +130,7 @@ function checkRenderConditions() {
 
     let appliedTypeFilter
     let appliedSearchFilter
-    let appliedCityFilter
+    // let appliedCityFilter
 
     //filter the state based on the type filter selected
     appliedTypeFilter = state.breweryList.filter((brewery) => {
@@ -152,40 +152,39 @@ function checkRenderConditions() {
         return true
     })
     console.log('appliedSearchFilter', appliedSearchFilter.length)
-
-
-
-    //if the city matches any of the elements in state.breweryCityFilter array
-    let cityContainer = []
-    // for each of the checked items, filter out any unchecked city match results
-    console.log('applying CITY FILTER logic')
-    //if city search is empty - render all
-     if(state.breweryCityFilter === '') {
-        cityContainer = appliedSearchFilter
-     } else {
-
-
-    for (i = 0; i < state.breweryCityFilter.length; i++) {
-
-        //filter through breweries list looking for a match
-        appliedCityFilter = appliedSearchFilter.filter((brewery) => {
-
-            //if the brewery city matches, add to cityContainer
-            if (brewery.city === state.breweryCityFilter[i]) {
-                cityContainer.push(brewery)
-            }
-            //if the brewery city does not match the state city, don't render
-            else if (brewery.city !== state.breweryCityFilter[i]) return false
-        })
-        console.log('state.breweryCityFilter:', state.breweryCityFilter)
-        console.log('cityContainer', cityContainer)
-        console.log('cityContainer.length', cityContainer.length)
-    }
-
-}
     // call to render based on the sorted data
-    renderBreweryList(cityContainer)
+    renderBreweryList(appliedSearchFilter)
 }
+
+
+
+    // //if the city matches any of the elements in state.breweryCityFilter array
+    // let cityContainer = []
+    // // for each of the checked items, filter out any unchecked city match results
+    // console.log('applying CITY FILTER logic')
+    // //if city search is empty - render all
+    //  if(state.breweryCityFilter === '') {
+    //     cityContainer = appliedSearchFilter
+    //  } else {
+
+
+    // for (i = 0; i < state.breweryCityFilter.length; i++) {
+
+    //     //filter through breweries list looking for a match
+    //     appliedCityFilter = appliedSearchFilter.filter((brewery) => {
+
+    //         //if the brewery city matches, add to cityContainer
+    //         if (brewery.city === state.breweryCityFilter[i]) {
+    //             cityContainer.push(brewery)
+    //         }
+    //         //if the brewery city does not match the state city, don't render
+    //         else if (brewery.city !== state.breweryCityFilter[i]) return false
+    //     })
+    //     console.log('state.breweryCityFilter:', state.breweryCityFilter)
+    //     console.log('cityContainer', cityContainer)
+    //     console.log('cityContainer.length', cityContainer.length)
+    // }
+
 
 
 // * RENDER CITIES FILTER LOGIC
@@ -221,19 +220,14 @@ function renderCityCheckboxes(presentCities) {
       
 
         // event listener to update state when checkbox clicked
-        cityInput.addEventListener('change', () => {
-            if (cityInput.checked === undefined) {
-            state.breweryCityFilter.push(`${brewery.city}`)
-            console.log('state city filter updated:', state.breweryCityFilter)
-            } 
-            // console.log('cityInput'. cityInput)
-            // console.log('cityInput'. cityInput.value)
-            // console.log('cityInput'. cityInput.name)
-            // console.log('cityInput'. cityInput.type)
-            // console.log('brewery.city'. brewery.city)
-            // console.log('cityInput.checked'. cityInput.checked)
-            checkRenderConditions()
-        })
+        // cityInput.addEventListener('change', () => {
+        //     if (cityInput.checked === undefined) {
+        //     state.breweryCityFilter.push(`${brewery.city}`)
+        //     console.log('state city filter updated:', state.breweryCityFilter)
+        //     } 
+
+        //     checkRenderConditions()
+        // })
     
         const cityLabel = document.createElement('label')
             cityLabel.setAttribute('for', `${brewery.city}`)
