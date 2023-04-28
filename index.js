@@ -4,7 +4,7 @@
 const state = {
     breweries: [],
     selectStateValue: "",
-    typeFilter: ""
+    filterByType: "all"
   }
 
 
@@ -30,6 +30,8 @@ function fetchSubmit() {
   fetch(url)
     .then((response) => response.json())
     .then((breweries) => {
+      
+      
 
         // An if statement will be passed this is to filter out the brewery type making sure it solely focuses on [micro , regional , brewpub]
 
@@ -42,6 +44,7 @@ function fetchSubmit() {
           return true;
         }
         return false;
+        
       });
       state.breweries = filterThrBreweries;
       renderBreweries();
@@ -49,9 +52,14 @@ function fetchSubmit() {
 }
 
 
+stateForm.addEventListener("submit" , (event) => {
+  event.preventDefault();
+})
+
 filterByType.addEventListener("change", (event) => {
-  state.typeFilter = event.target.value;
+  state.filterByType = event.target.value;
   renderBreweries();
+  
 });
 
 // Here I will be rendering the code
@@ -114,13 +122,11 @@ function renderSelBrewery(brewery) {
 function renderBreweries() {
   breweriesList.innerHTML = "";
   let filteredBreweries = state.breweries.filter((brewery) => {
-    if (state.typeFilter === "all") return true;
-    if (state.typeFilter === brewery.brewery_type) return true;
+    if (state.filterByType === "all") return true;
+    if (state.filterByType === brewery.brewery_type) return true;
     return false;
   });
 
   filteredBreweries.forEach((brewery) => renderSelBrewery(brewery));
 }
     renderBreweries();
-
-
