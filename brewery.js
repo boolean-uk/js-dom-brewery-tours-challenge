@@ -20,7 +20,12 @@ const getBreweries = (array) => {
             // 4. stores the data into Brews and console
             // logged to double check to see how data 
             // is presented
-            state.Brews = data
+            state.Brews = data.filter((item) => {
+                if(item.brewery_type === 'micro' || item.brewery_type === 'regional' || item.brewery_type === 'brewpub') {
+                    return state.Brews.push(item)
+                }
+            })
+            console.log('state: ', state)
             renderBrews(array, searchValue)
         })
     }
