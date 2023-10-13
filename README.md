@@ -80,4 +80,4 @@ Once this is done, you should also restart VS Code.
 - Remember to filter out breweries that are not of type `micro`, `regional` or `brewpub`.
 - Implement the required functionality using the state pattern. User input updates the state, when the state is updated render the page.
 
-## <a href="js-dom-brewery-tours-challenge.vercel.app">Final output </a>
+## <a href="https://js-dom-brewery-tours-challenge-nkxf7xmr9-klimcuks.vercel.app">Final output </a>
