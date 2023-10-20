@@ -85,6 +85,7 @@ const getBreweries = () => {
         });
 };
 
+//function to clear the brewery list 
 const clearBrewery = () => {
     breweryList.innerHTML = '';
 };
