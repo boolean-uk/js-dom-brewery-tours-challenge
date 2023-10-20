@@ -72,6 +72,5 @@ const renderBreweries = (breweriesArray) => {
 
 const removeCurrentList = () => {
     const currentList = breweriesList.querySelectorAll('li')
-    console.log(currentList)
     currentList.forEach(e => e.remove())
 }
