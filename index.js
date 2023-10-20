@@ -78,25 +78,23 @@ selectStateForm.addEventListener("submit", (event) => {
     const searchState = event.target[0].value;
     // console.log(searchState);
 
-    fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchState}`)
+    fetch(`${root}?by_state=${searchState}`)
         .then((response) => response.json())
         .then((data) => {
 
             let BreweryCanVisit = [];
-
-            data.forEach = (brewery) => {
-
-                if (brewery.brewery_type === 'micro') {
-                    BreweryCanVisit.push(brewery);
+            data.forEach = ((item) => {
+                console.log(data)
+                if (item.brewery_type === 'micro') {
+                    BreweryCanVisit.push(item);
                 }
-
                 return BreweryCanVisit;
-            };
+            });
 
             console.log(BreweryCanVisit);
             state.breweries = data;
 
-            console.log(data);
+            // console.log(data);
             removeBreweries();
             renderBreweryList();
         });
