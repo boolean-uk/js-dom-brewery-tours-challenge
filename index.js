@@ -17,7 +17,7 @@ function renderBreweryList() {
     .then((res) => res.json())
     .then((data) => {
         state.breweries = data
-        console.log(state.breweries)
+        // console.log(state.breweries)
         renderBreweries()
     })
 }
@@ -65,6 +65,7 @@ function breweryAddressSection(brewery) {
     const breweryAddressLine2 = document.createElement('p')
     const breweryAddressLine2Strong = document.createElement('strong')
 
+    breweryAddress.classList.add('address')
     breweryAddressHeader.innerText = 'Address:'
     breweryAddressLine1.innerText = brewery.address_1
     breweryAddressLine2Strong.innerText = `${brewery.city}, ${brewery.postal_code}`
@@ -86,6 +87,7 @@ function breweryPhoneSection(brewery) {
     const breweryPhoneHeader = document.createElement('h3')
     const breweryPhoneNumber = document.createElement('p')
 
+    breweryPhone.classList.add('phone')
     breweryPhoneHeader.innerText = 'Phone:'
 
     if (brewery.phone === null) {
