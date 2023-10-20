@@ -83,20 +83,19 @@ selectStateForm.addEventListener("submit", (event) => {
         .then((data) => {
 
             let BreweryCanVisit = [];
-            data.forEach = ((item) => {
-                console.log(data)
-                if (item.brewery_type === 'micro') {
+            data.forEach((item) => {
+                
+                if (item.brewery_type === "micro" || item.brewery_type === "regional" || item.brewery_type === "brewpub") {
                     BreweryCanVisit.push(item);
+    
                 }
                 return BreweryCanVisit;
             });
-
-            console.log(BreweryCanVisit);
-            state.breweries = data;
-
-            // console.log(data);
+            
+            // console.log(BreweryCanVisit);
+            state.breweries = BreweryCanVisit;
             removeBreweries();
             renderBreweryList();
         });
 });
-// || data.brewery_type === "regional" || data.brewery_type === "brewpub"
+
