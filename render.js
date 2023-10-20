@@ -1,4 +1,4 @@
-console.log('render')
+//RENDERS THE 
 
 const renderBrewery = (brewery) => {
     const breweryContainer = document.createElement('li')
@@ -57,4 +57,21 @@ const renderSectionContent = (sectionClass, section, brewery) => {
          a.innerText = 'Visit Website'
         section.append(a)
     }
+}
+
+
+const renderBreweries = (breweriesArray) => {
+    breweriesArray.forEach(brewery => {
+        //only show the breweries that offer tours
+        if (brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub') {   
+            renderBrewery(brewery)  
+        } 
+    })
+}
+
+
+const removeCurrentList = () => {
+    const currentList = breweriesList.querySelectorAll('li')
+    console.log(currentList)
+    currentList.forEach(e => e.remove())
 }
