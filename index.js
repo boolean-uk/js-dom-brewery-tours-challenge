@@ -10,6 +10,8 @@ const SELECT_STATE_INPUT = SELECT_STATE_FORM.querySelector(
   ":scope > #select-state"
 );
 const BREWERY_LIST = document.querySelector("#breweries-list");
+const PAGINATION = document.querySelector(".pagination");
+const PAGINATION_NUMBERS = PAGINATION.querySelector(":scope .page-numbers");
 
 function init() {
   usStateInput();
@@ -28,24 +30,18 @@ function getBreweries(filter) {
 function getBreweryType(type, filter, page) {
   page = page ? page : 1;
   const perPage = 200;
-  return new Promise((resolve, reject) =>
-    fetch(
-      `https://api.openbrewerydb.org/v1/breweries?per_page=${perPage}&page=${page}&by_type=${type}${
-        filter ? filter : ""
-      }`
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        STATE.breweries[type].push(...res);
-        if (res.length === perPage) {
-          getBreweryType(type, filter, ++page);
-        }
-        resolve();
-      })
-      .catch((error) => {
-        reject(error);
-      })
-  );
+  return fetch(
+    `https://api.openbrewerydb.org/v1/breweries?per_page=${perPage}&page=${page}&by_type=${type}${
+      filter ? filter : ""
+    }`
+  )
+    .then((res) => res.json())
+    .then((res) => {
+      STATE.breweries[type].push(...res);
+      if (res.length === perPage) {
+        getBreweryType(type, filter, ++page);
+      }
+    });
 }
 
 function getBreweriesByState(state) {
@@ -79,11 +75,55 @@ function clearStateBreweryList() {
 }
 
 function paginateBreweryList() {
-  const pageLimit = 10;
-  const pageCount = BREWERY_LIST.children.length / pageLimit;
+  clearElement(PAGINATION_NUMBERS);
 
-  console.log("BREWERY_LIST.children", BREWERY_LIST.childElementCount);
+  const pageLimit = 10;
+  const pageNumberDisplay = 4;
+  const pageCount = Math.ceil(BREWERY_LIST.children.length / pageLimit);
+
   console.log("pageCount", pageCount);
+
+  const numbers = [];
+  for (let i = 1; i <= pageCount; i++) {
+    numbers.push(i);
+  }
+
+  pageNumbers = numbers.map((number, idx) => {
+    const element = makeElement("span", "page-number", number);
+    element.classList.add("page-number");
+
+    if (idx === 0) element.id = "selected-page";
+
+    if (idx > pageNumberDisplay - 2 && idx !== numbers.length - 1) {
+      element.classList.toggle("hidden");
+    }
+    return element;
+  });
+
+  multiAppend(PAGINATION_NUMBERS, ...pageNumbers);
+
+  if (pageCount > pageNumberDisplay) {
+    const morePages = makeElement("span", "page-more", "...");
+    PAGINATION_NUMBERS.children[pageCount - 1].before(morePages);
+  }
+
+  showPagination();
+}
+
+function hidePagination() {
+  PAGINATION.classList.add("hidden");
+}
+
+function showPagination() {
+  PAGINATION.classList.remove("hidden");
 }
 
 init();
+
+function test() {
+  getBreweriesByState("washington")
+    .then(() => renderBreweries())
+    .then(() => paginateBreweryList());
+}
+
+test();

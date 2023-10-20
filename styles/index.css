@@ -6,6 +6,10 @@ body {
   font-weight: bold;
 }
 
+.hidden {
+  display: none;
+}
+
 .main-header {
   padding: 1rem;
   margin-bottom: 2rem;
@@ -45,10 +49,11 @@ main {
   display: grid;
   grid-template-areas:
     "sidebar title"
+    "sidebar pagination"
     "sidebar search-bar"
     "sidebar article";
   grid-template-columns: 1fr 3fr;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto auto 1fr;
 }
 
 .filters-section {
@@ -142,6 +147,71 @@ h1 {
 
 #search-breweries-form h2 {
   font-size: 1rem;
+}
+
+.pagination {
+  display: flex;
+  grid-area: pagination;
+
+  gap: 1ch;
+  
+  justify-content: end;
+  padding-right: 1rem;
+}
+
+.page-container {
+  display: flex;
+  justify-content: right;
+
+  gap: 1ch;
+}
+
+.page-button {
+  border: 1px solid #000;
+  border-radius: 0.25rem;
+
+  cursor: pointer;
+
+  padding-right: 1ch;
+  padding-left: 1ch;
+}
+
+.page-numbers {
+  display: flex;
+
+  justify-content: space-evenly;
+  justify-items: center;
+
+  gap: 1ch;
+}
+
+.page-numbers > span:not(.page-more) {
+  width: 3ch;
+  text-align: center;
+
+
+  border: 1px solid #000;
+  border-radius: 0.25rem;
+
+
+  cursor: pointer;
+  background-color: #1565c0;
+  color: #fff;
+}
+
+#selected-page {
+  color: #1565c0;
+  background-color: #fff;
+}
+
+.page-button {
+  background-color: #1565c0;
+  color: #fff;
+}
+
+.disabled {
+  background-color: #bbb;
+  color: #888;
 }
 
 article {
