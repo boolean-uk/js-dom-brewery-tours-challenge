@@ -6,7 +6,13 @@ const breweriesList = document.querySelector(".breweries-list");
 const root = "https://api.openbrewerydb.org/v1/breweries";
 let breweries = state.breweries;
 
+const clearBreweriesList = () => {
+    const breweriesListAll = breweriesList.querySelectorAll("*");
+    breweriesListAll.forEach(brewery => brewery.remove());
+};
+
 const createBreweryCard = (breweries) => {
+    clearBreweriesList();
     breweries.forEach(brewery => {
         const li = document.createElement("li");
 
@@ -81,11 +87,11 @@ const getData = (state) => {
       .then(res => res.json())
       .then(data => {
         breweries = data.filter(brewery => 
-            // Checking if current brewery.type includes given breweries type,
+            // Checking if current brewery.type includes given brewery types,
             // if so returns true and passes into the state.breweries
             ["micro", "regional", "brewpub"].includes(brewery.brewery_type)
         )
-        createBreweryCard(breweries);
+        createBreweryCard(breweries)
       })
 };
 
