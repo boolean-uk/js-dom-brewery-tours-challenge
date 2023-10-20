@@ -9,6 +9,7 @@ const SELECT_STATE_FORM = document.querySelector("#select-state-form");
 const SELECT_STATE_INPUT = SELECT_STATE_FORM.querySelector(
   ":scope > #select-state"
 );
+const BREWERY_LIST = document.querySelector("#breweries-list")
 
 function init() {
   usStateInput();
@@ -26,17 +27,17 @@ function getBreweries(filter) {
 
 function getBreweryType(type, filter, page) {
   page = page ? page : 1;
-  console.log('page', page)
+  const perPage = 200
   return new Promise((resolve, reject) =>
     fetch(
-      `https://api.openbrewerydb.org/v1/breweries?per_page=200&page=${page}&by_type=${type}${
+      `https://api.openbrewerydb.org/v1/breweries?per_page=${perPage}&page=${page}&by_type=${type}${
         filter ? filter : ""
       }`
     )
       .then((res) => res.json())
       .then((res) => {
         STATE.breweries[type].push(...res);
-        if (res.length === 200) {
+        if (res.length === perPage) {
           getBreweryType(type, filter, ++page);
         }
         resolve();
@@ -49,7 +50,7 @@ function getBreweryType(type, filter, page) {
 
 function getBreweriesByState(state) {
   const filter = `&by_state=${washInput(state)}`;
-  getBreweries(filter).then(() => renderBreweries());
+  getBreweries(filter).then(() => renderBrewery(STATE.breweries.brewpub[0]));
 }
 
 function usStateInput() {
@@ -66,10 +67,6 @@ function washInput(input) {
   return input.trim().replaceAll(" ", "_");
 }
 
-function renderBreweries() {
-  console.log("STATE", STATE);
-}
-
 init();
 
-getBreweriesByState("new_york");
+getBreweriesByState("new york");

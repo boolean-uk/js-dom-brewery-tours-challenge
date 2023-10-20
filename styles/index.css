@@ -2,6 +2,10 @@ body {
   font-family: sans-serif;
 }
 
+.strong {
+  font-weight: bold;
+}
+
 .main-header {
   padding: 1rem;
   margin-bottom: 2rem;
