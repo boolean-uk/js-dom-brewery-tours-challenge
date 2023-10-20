@@ -55,8 +55,48 @@ function renderBreweries() {
 
         // 2. Header
         const breweryHeader = document.createElement("h2")
+        breweryHeader.innerText = eachBrewery.name
+        breweriesListContainer.append(breweryHeader)
 
         // 3. Div
+        const breweryDiv = document.createElement('div')
+        breweryDiv.setAttribute("class", "type")
+        breweryDiv.innerText = 'micro'
+        breweriesListContainer.append(breweryDiv)
+
+        //4. Address Section
+        const breweryAddressSection = document.createElement('section')
+        breweryAddressSection.setAttribute("class", "address")
+        breweriesListContainer.append(breweryAddressSection)
+
+        //5. Within section: create elements
+        // 5a. h3 tag
+        const addressh3 = document.createElement('h3')
+        addressh3.innerText = "Address:"
+        breweryAddressSection.append(addressh3)
+
+        //5b. p tag
+        const addressP = document.createElement('p')
+        addressP.innerText = eachBrewery.address2
+        breweryAddressSection.append(addressP)
+
+        //5c. p tag2
+        const addressPTwo = document.createElement('p')
+        breweryAddressSection.append(addressPTwo)
+        const strongAddressP = document.createElement('strong')
+        addressPTwo.append(strongAddressP)
+        strongAddressP.innerText = eachBrewery.address3
+        
+        // 6. Phone Section
+        const phoneSection = document.createElement('section')
+        phoneSection.setAttribute("class", "phone")
+        breweriesListContainer.append(phoneSection)
+
+        // 6a. h3 tag phone section
+        const phoneSectionh3 = document.createElement('h3')
+        phoneSectionh3.innerText = 'Phone:'
+        phoneSection.append(phoneSectionh3)
+
 
     })
 }
