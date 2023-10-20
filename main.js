@@ -66,6 +66,12 @@ const searchField = document.querySelector("input#select-state")
 entryForm.addEventListener("submit", (event) => {
   event.preventDefault()
   console.log(searchField.value)
+
+  if (USStates.includes(searchField.value.toLowerCase()) === false) {
+    alert(`${searchField.value} is not a US state!`)
+    return
+  }
+
   loadBreweriesByState(searchField.value)
 })
 
