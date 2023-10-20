@@ -61,6 +61,7 @@ const renderSectionContent = (sectionClass, section, brewery) => {
 
 
 const renderBreweries = (breweriesArray) => {
+    removeCurrentList()
     breweriesArray.forEach(brewery => {
         //only show the breweries that offer tours
         if (brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub') {   
