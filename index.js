@@ -50,17 +50,19 @@ function getBreweryType(type, filter, page) {
 
 function getBreweriesByState(state) {
   const filter = `&by_state=${washInput(state)}`;
-  getBreweries(filter).then(() => renderBreweries());
+  return getBreweries(filter);
 }
 
 function usStateInput() {
   SELECT_STATE_FORM.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    clearStateBreweryList()
-    clearElement(BREWERY_LIST)
+    clearStateBreweryList();
+    clearElement(BREWERY_LIST);
 
-    getBreweriesByState(SELECT_STATE_INPUT.value);
+    getBreweriesByState(SELECT_STATE_INPUT.value)
+      .then(() => renderBreweries())
+      .then(() => paginateBreweryList());
 
     SELECT_STATE_FORM.reset();
   });
@@ -72,10 +74,16 @@ function washInput(input) {
 
 function clearStateBreweryList() {
   for (const key in STATE.breweries) {
-    STATE.breweries[key] = []
+    STATE.breweries[key] = [];
   }
 }
 
-init();
+function paginateBreweryList() {
+  const pageLimit = 10;
+  const pageCount = BREWERY_LIST.children.length / pageLimit;
 
-// getBreweriesByState("new york");
+  console.log("BREWERY_LIST.children", BREWERY_LIST.childElementCount);
+  console.log("pageCount", pageCount);
+}
+
+init();
