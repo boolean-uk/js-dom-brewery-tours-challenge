@@ -1,5 +1,14 @@
+function renderBreweries() {
+  const breweryList = [];
+
+  for (const key in STATE.breweries) {
+    breweryList.push(...STATE.breweries[key]);
+  }
+
+  breweryList.forEach((brewery) => renderBrewery(brewery));
+}
+
 function renderBrewery(brewery) {
-  console.log("brewery", brewery);
   const li = makeElement("li");
   const h2 = makeElement("h2", null, brewery.name);
   const typeDiv = makeElement("div", "type", "micro");
@@ -26,10 +35,10 @@ function renderBrewery(brewery) {
   multiAppend(phoneSection, ...phoneLines);
 
   const linkSection = makeElement("section", "link");
-  const anchor = makeElement("a", null, "Visit Website")
-  anchor.href = brewery.website_url
-  anchor.target = "_blank"
-  linkSection.append(anchor)
+  const anchor = makeElement("a", null, "Visit Website");
+  anchor.href = brewery.website_url;
+  anchor.target = "_blank";
+  linkSection.append(anchor);
 
   multiAppend(li, h2, typeDiv, addressSection, phoneSection, linkSection);
   BREWERY_LIST.append(li);
@@ -53,11 +62,39 @@ function multiAppend(parent, ...elements) {
   elements.forEach((element) => parent.append(element));
 }
 
-function formatPhoneNumber(number) {
-  if (number.length === 10) {
-    return `${number.slice(0, 3)} ${number.slice(3, 6)}-${number.slice(6)}`;
+function clearElement(element) {
+  while (element.lastChild) {
+    element.lastChild.remove();
   }
+}
 
-  console.warn("number.length !== 10", number);
+function formatPhoneNumber(number) {
+  switch (!!number) {
+    case true:
+      switch (number.length) {
+        case 12:
+          if (number[3] === "-" && number[7] === "-") {
+            return number.replace("-", " ");
+          } else {
+            console.warn("number not processed:", "numberLength:", number.length)
+          }
+        case 10:
+          return `${number.slice(0, 3)} ${number.slice(3, 6)}-${number.slice(
+            6
+          )}`;
+        case 6:
+          return `${number.slice(0, 3)}-${number.slice(3)}`;
+        default:
+          console.warn(
+            "number not processed:",
+            number,
+            "numberLength:",
+            number.length
+          );
+      }
+
+    default:
+      break;
+  }
   return number;
 }
