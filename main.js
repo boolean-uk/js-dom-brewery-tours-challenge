@@ -62,9 +62,20 @@ const createListItem = (item) => {
   sectionPhone.appendChild(phoneNum)
   
   listentry.appendChild(sectionPhone)
+
+  const sectionWebsite = document.createElement("section")
+  sectionWebsite.setAttribute("class", "link")
+
+  const websiteLink = document.createElement("a")
+  websiteLink.setAttribute("href", item.website_url)
+  websiteLink.setAttribute("target", "_blank")
+  websiteLink.innerText = "Visit Website"
+  sectionWebsite.appendChild(websiteLink)
+
+  listentry.appendChild(sectionWebsite)
+  
   return listentry
 }
 
-
-loadBreweriesByState("ohio")
+loadBreweriesByState("new york")
 renderList()
