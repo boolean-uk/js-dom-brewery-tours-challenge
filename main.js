@@ -12,7 +12,8 @@ const loadBreweriesByState = (stateNameStr) => {
   fetch(`${protocol}://${baseURL}/v1/breweries?by_state=${stateNameStr}`)
     .then(response => response.json())
     .then(data => state.breweries = data)
-    .then(() => console.log(state.breweries))
+    .then(() => renderList())
+    // .then(() => console.log(state.breweries))
 }
 
 const renderList = () => {
@@ -22,8 +23,13 @@ const renderList = () => {
 const createListItem = (item) => {
   const listentry = document.createElement("li")
   const title = document.createElement("h2")
-  title.innerText = item.stateNameStr
+  title.innerText = item.name
   listentry.appendChild(title)
+
+  const divType = document.createElement("div")
+  divType.setAttribute("class", "type")
+  divType.innerText = item.brewery_type
+  listentry.appendChild(divType)
 
   const sectionAddress = document.createElement("section")
   sectionAddress.setAttribute("class", "address")
@@ -37,7 +43,9 @@ const createListItem = (item) => {
   sectionAddress.appendChild(addressStreet)
 
   const addressCity = document.createElement("p")
-  addressCity.innerText = item.state + ", " + item.postal_code
+  const strong = document.createElement("strong")
+  strong.innerText = item.state + ", " + item.postal_code
+  addressCity.appendChild(strong)
   sectionAddress.appendChild(addressCity)
 
   listentry.appendChild(sectionAddress)
@@ -54,7 +62,6 @@ const createListItem = (item) => {
   sectionPhone.appendChild(phoneNum)
   
   listentry.appendChild(sectionPhone)
-  console.log(listentry)
   return listentry
 }
 
