@@ -9,19 +9,27 @@ const protocol = "https"
 const baseURL = "api.openbrewerydb.org"
 
 const loadBreweriesByState = (stateNameStr) => {
-  fetch(`${protocol}://${baseURL}/v1/breweries?by_state=${stateNameStr}`)
+  fetch(`${protocol}://${baseURL}/v1/breweries?by_state=${stateNameStr}&per_page=200`)
     .then(response => response.json())
     .then(data => state.breweries = data)
-    .then(() => generalFilter())
     .then(() => renderList())
     .then(() => console.log(state.breweries))
 }
 
-const generalFilter = () => {
-  state.breweries = state.breweries.filter(brewery => (brewery.brewery_type === "micro" || brewery.brewery_type === "regional" || brewery.brewery_type === "brewpub"))
+let filterArr = ["micro", "regional", "brewpub"]
+const generalFilter = (filterArr) => {
+  state.breweries = state.breweries.filter(brewery => filterArr.includes(brewery.brewery_type.toLowerCase()))
 }
 
+const triggerFilter = document.querySelector("#filter-by-type")
+triggerFilter.addEventListener("change", (event) => {
+  filterArr = [event.target.value]
+  renderList()
+})
+
 const renderList = () => {
+  generalFilter(filterArr)
+  console.log(state.breweries)
   state.breweries.forEach(val => listRender.appendChild(createListItem(val)))
 }
 
