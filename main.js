@@ -13,24 +13,26 @@ const loadBreweriesByState = (stateNameStr) => {
     .then(response => response.json())
     .then(data => state.breweries = data)
     .then(() => renderList())
-    .then(() => console.log(state.breweries))
 }
 
 let filterArr = ["micro", "regional", "brewpub"]
-const generalFilter = (filterArr) => {
-  state.breweries = state.breweries.filter(brewery => filterArr.includes(brewery.brewery_type.toLowerCase()))
-}
+const generalFilter = (filterArr) => state.breweries.filter(brewery => filterArr.includes(brewery.brewery_type.toLowerCase()))
 
 const triggerFilter = document.querySelector("#filter-by-type")
 triggerFilter.addEventListener("change", (event) => {
   filterArr = [event.target.value]
+  clearRenderList()
   renderList()
 })
 
 const renderList = () => {
-  generalFilter(filterArr)
-  console.log(state.breweries)
-  state.breweries.forEach(val => listRender.appendChild(createListItem(val)))
+  const filteredByType = generalFilter(filterArr)
+  filteredByType.forEach(val => listRender.appendChild(createListItem(val)))
+}
+
+const clearRenderList = () => {
+  const listEntries = document.querySelectorAll("#breweries-list li")
+  listEntries.forEach(entry => entry.remove())
 }
 
 const createListItem = (item) => {
