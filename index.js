@@ -5,6 +5,7 @@ const state = {
 // TOP LEVEL VARS
 const root = 'https://api.openbrewerydb.org/v1/breweries'
 const breweriesList = document.querySelector('#breweries-list')
+const stateSearchForm = document.querySelector('#select-state-form')
 
 // FULL PAGE RENDER
 function render() {
@@ -17,15 +18,14 @@ function renderBreweryList() {
     .then((res) => res.json())
     .then((data) => {
         state.breweries = data
-        // console.log(state.breweries)
-        renderBreweries()
+        renderBrewery()
     })
 }
 
 // RENDER INDIVIDUAL BREWERIES
-function renderBreweries() {
+function renderBrewery() {
     state.breweries.forEach((brewery) => {
-        if (brewery.brewery_type === 'micro') {
+            if (brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional'|| brewery.brewery_type === 'brewpub') {
             const breweryLiItem = document.createElement('li')
 
             breweryLiItem.append(
@@ -39,6 +39,7 @@ function renderBreweries() {
         }
     })
 }
+
 
 // BREWERY LIST COMPONENTS
 
@@ -125,5 +126,23 @@ function breweryWebsiteSection(brewery) {
     return breweryWebsite
 }
 
+// SEARCH BY STATE
+stateSearchForm.addEventListener('submit', (event) => {
+    event.preventDefault()
+    clearBreweryList()
+
+    const stateName = event.target[0].value
+    fetch(`${root}?by_state=${stateName}`)
+    .then((res) => res.json())
+    .then((data) => {
+        state.breweries = data
+        renderBrewery()
+    })
+})
+
+// CLEAR BREWERY LIST FUNCTION
+function clearBreweryList() {
+    breweriesList.innerHTML =''
+}
 
 render()
