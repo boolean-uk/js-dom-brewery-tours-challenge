@@ -10,10 +10,9 @@ const selectStateForm = document.querySelector("#select-state-form");
 const removeBreweries = () => {
     const breweryListUl = breweryList.querySelectorAll("*");
     breweryListUl.forEach((child) => child.remove());
-}
+};
 
 const renderBreweryList = () => {
-
     state.breweries.forEach((brewery) => {
         const li = document.createElement("li");
 
@@ -77,13 +76,29 @@ selectStateForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
     const searchState = event.target[0].value;
-    console.log(searchState);
+    // console.log(searchState);
 
     fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchState}`)
         .then((response) => response.json())
         .then((data) => {
+
+            let BreweryCanVisit = [];
+
+            data.forEach = (brewery) => {
+
+                if (brewery.brewery_type === 'micro') {
+                    BreweryCanVisit.push(brewery);
+                }
+
+                return BreweryCanVisit;
+            };
+
+            console.log(BreweryCanVisit);
             state.breweries = data;
+
+            console.log(data);
             removeBreweries();
             renderBreweryList();
         });
 });
+// || data.brewery_type === "regional" || data.brewery_type === "brewpub"
