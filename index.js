@@ -1,6 +1,6 @@
 const search = document.getElementById("select-state");
 const form = document.getElementById("select-state-form");
-const filter = document.getElementById("filter-by-type");
+const filter = document.querySelector("#filter-by-type");
 const breweriesList = document.querySelector(".breweries-list");
 
 const root = "https://api.openbrewerydb.org/v1/breweries";
@@ -96,11 +96,22 @@ const getData = (state) => {
 };
 
 const searchInput = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const userInput = search.value;
 
     getData(userInput);
     form.reset();
 };
 
-form.addEventListener("submit", searchInput)
+form.addEventListener("submit", searchInput);
+
+filter.addEventListener("change", () => {
+    if (filter.value === "") { createBreweryCard(breweries) }
+    else {
+        const filteredBreweries = breweries.filter(brewery => 
+            brewery.brewery_type === filter.value
+        )
+
+        createBreweryCard(filteredBreweries)
+    }
+});
