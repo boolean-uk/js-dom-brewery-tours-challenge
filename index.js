@@ -1,3 +1,11 @@
+const state = {
+    breweries: []
+}
+
+
+
+
+
 // Query selectors / define the root
 
 
@@ -12,6 +20,8 @@
 
 
 // Build a render card function
+
+
 
 
 
