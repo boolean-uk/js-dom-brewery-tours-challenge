@@ -12,8 +12,13 @@ const loadBreweriesByState = (stateNameStr) => {
   fetch(`${protocol}://${baseURL}/v1/breweries?by_state=${stateNameStr}`)
     .then(response => response.json())
     .then(data => state.breweries = data)
+    .then(() => generalFilter())
     .then(() => renderList())
-    // .then(() => console.log(state.breweries))
+    .then(() => console.log(state.breweries))
+}
+
+const generalFilter = () => {
+  state.breweries = state.breweries.filter(brewery => (brewery.brewery_type === "micro" || brewery.brewery_type === "regional" || brewery.brewery_type === "brewpub"))
 }
 
 const renderList = () => {
