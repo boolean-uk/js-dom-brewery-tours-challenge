@@ -8,6 +8,67 @@ const listRender = document.getElementById("breweries-list")
 const protocol = "https"
 const baseURL = "api.openbrewerydb.org"
 
+const USStates = [
+  "alabama",
+  "alaska",
+  "arizona",
+  "arkansas",
+  "california",
+  "colorado",
+  "conneticut",
+  "delaware",
+  "florida",
+  "georgia",
+  "hawaii",
+  "idaho",
+  "illinois",
+  "indiana",
+  "iowa",
+  "kansas",
+  "kentucky",
+  "louisiana",
+  "maine",
+  "maryland",
+  "massachussets",
+  "michigan",
+  "minnesota",
+  "mississippi",
+  "missouri",
+  "montana",
+  "nebraska",
+  "nevada",
+  "new hampshire",
+  "new jersey",
+  "new mexico",
+  "new york",
+  "north carolina",
+  "north dakota",
+  "ohio",
+  "oaklahoma",
+  "oregon",
+  "pennsylvania",
+  "rhode island",
+  "south dakota",
+  "south carolina",
+  "texas",
+  "tennessee",
+  "utah",
+  "vermont",
+  "virginia",
+  "west virginia",
+  "wyoming",
+  "wisconsin",
+  "washington"
+]
+
+const entryForm = document.querySelector("form")
+const searchField = document.querySelector("input#select-state")
+entryForm.addEventListener("submit", (event) => {
+  event.preventDefault()
+  console.log(searchField.value)
+  loadBreweriesByState(searchField.value)
+})
+
 const loadBreweriesByState = (stateNameStr) => {
   fetch(`${protocol}://${baseURL}/v1/breweries?by_state=${stateNameStr}&per_page=200`)
     .then(response => response.json())
@@ -91,6 +152,3 @@ const createListItem = (item) => {
   
   return listentry
 }
-
-loadBreweriesByState("new york")
-renderList()
