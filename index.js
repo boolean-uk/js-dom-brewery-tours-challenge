@@ -1,31 +1,20 @@
-const state = [
-    {
-        address_2: null,
-        address_3: null,
-        brewery_type: "large",
-        city: "San Diego",
-        country: "United States",
-        county_province: null,
-        created_at: "2018-07-24T00:00:00.000Z",
-        id: 8041,
-        latitude: "32.714813",
-        longitude: "-117.129593",
-        name: "10 Barrel Brewing Co",
-        obdb_id: "10-barrel-brewing-co-san-diego",
-        phone: "6195782311",
-        postal_code: "92101-6618",
-        state: "California",
-        street: "1501 E St",
-        updated_at: "2018-08-23T00:00:00.000Z",
-        website_url: "http://10barrel.com",
-    },
-];
+const state = {
+    breweries: [],
+};
 
 const root = "https://api.openbrewerydb.org/v1/breweries";
 const breweryList = document.querySelector("#breweries-list");
+const selectStateForm = document.querySelector("#select-state-form");
+
+// Render brewery list function //
+const removeBreweries = () => {
+    const breweryListUl = breweryList.querySelectorAll("*");
+    breweryListUl.forEach((child) => child.remove());
+}
 
 const renderBreweryList = () => {
-    state.forEach((brewery) => {
+
+    state.breweries.forEach((brewery) => {
         const li = document.createElement("li");
 
         const breweryName = document.createElement("h2");
@@ -83,6 +72,18 @@ const renderBreweryList = () => {
         breweryList.append(li);
     });
 };
+// Event listener to populate state //
+selectStateForm.addEventListener("submit", (event) => {
+    event.preventDefault();
 
-renderBreweryList();
+    const searchState = event.target[0].value;
+    console.log(searchState);
 
+    fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchState}`)
+        .then((response) => response.json())
+        .then((data) => {
+            state.breweries = data;
+            removeBreweries();
+            renderBreweryList();
+        });
+});
