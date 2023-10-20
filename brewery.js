@@ -64,15 +64,21 @@ const breweryFilter = document.querySelector('#filter-by-type');
 //GET request to the API to get all breweries 
 breweryForm.addEventListener('submit', (event) => {
     event.preventDefault();
-    getBreweries(breweryInput.value);
+    state.state = breweryInput.value
+    getBreweries()
 });
 
 
-const getBreweries = (usStates) => {
-    fetch(`${root}?by_state=${usStates}`)
+const getBreweries = () => {
+    let url = `${root}?by_state=${state.state}`
+    if (state.desired_type) {
+        url += `&by_type=${state.desired_type}` 
+    }
+    fetch(url)
         .then(response => response.json())
         .then(breweries => {
             console.log(breweries);
+            state.filteredBreweries = breweries;
             state.breweries = breweries;
             clearBrewery();
             renderBrewery();
@@ -83,14 +89,10 @@ const clearBrewery = () => {
     breweryList.innerHTML = '';
 };
 
-//function to filter breweries based on their type
+//function to filter breweries based on their type, r
 breweryFilter.addEventListener('change', (event) => {
-    const filteredBreweries = state.breweries.filter(brewery => {
-        return brewery.brewery_type === event.target.value;
-    });
-    clearBrewery();
-    state.breweries = filteredBreweries;
-    renderBrewery();
+    state.desired_type = event.target.value
+    getBreweries()
 });
 
 
@@ -98,7 +100,7 @@ breweryFilter.addEventListener('change', (event) => {
 
 
 const renderBrewery = () => {
-    state.breweries.forEach(brewery => {
+    state.filteredBreweries.forEach(brewery => {
         const breweryLi = document.createElement('li');
         breweryLi.classList.add('.breweries-list.li');
 
