@@ -5,6 +5,11 @@ const state = {
 const root = "https://api.openbrewerydb.org/v1/breweries";
 const breweryList = document.querySelector("#breweries-list");
 const selectStateForm = document.querySelector("#select-state-form");
+const filterByType = document.querySelector("filter-by-type")
+
+const filterByMicro = filterByType.nthChild(1)
+const filterByRegional = filterByType.nthChild(2)
+const filterByBrewpub = filterByType.nthChild(3)
 
 // Render brewery list function //
 const removeBreweries = () => {
@@ -98,4 +103,8 @@ selectStateForm.addEventListener("submit", (event) => {
             renderBreweryList();
         });
 });
+
+filterByMicro.addEventListener("click", (event)=> {
+    console.log("found me")
+})
 
