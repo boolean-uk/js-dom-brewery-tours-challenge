@@ -10,10 +10,37 @@ const brewList = document.querySelector ('#breweries-list')
 const stateSelectForm = document.querySelector('#select-state-form')
 const filterByForm = document.querySelector('#filter-by-type-form')
 
-const renderTours = () => {
+const renderTours = () => 
 
-}
+  function micro() {
+    fetch('https://api.openbrewerydb.org/v1/breweries?by_type=micro&per_page=3')
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("read micro", data)
+        state.tours = data
+        renderMicro()
+      })
+  }
+      function regional () {
+        fetch('https://api.openbrewerydb.org/v1/breweries?by_type=regional&per_page=3')
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("read micro", data)
+            state.tours = data
+            renderRegional()
+          })
+        }
 
+      function brewPub() {
+        fetch('https://api.openbrewerydb.org/v1/breweries?by_type=brewpub&per_page=3')
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("read micro", data)
+            state.tours = data
+            renderBrewPub()
+          })
+    renderTours();
+  }
 
 
 
