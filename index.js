@@ -3,24 +3,21 @@ const state = {
   }
   
 // Selecting necessary elements for the future:
-
-  const searchForm = document.querySelector('#select-state-form')
-  const searchInput = document.querySelector('#select-state')
+  const form = document.querySelector('#select-state-form')
+  const input = document.querySelector('#select-state')
 
   const breweryUl = document.querySelector('#breweries-list')
   const filter = document.querySelector('#filter-by-type')
 
 // Submit button function when clicked:
-
-  searchForm.addEventListener('submit', event => { 
+  form.addEventListener('submit', event => { 
       event.preventDefault()
-      const byState = searchInput.value
+      const byState = input.value
       fetchData(byState)
-      searchForm.reset()
+      form.reset()
   })
   
   // Fetch the API from the brewery database:
-
   function fetchData(byState) {
     const url = `https://api.openbrewerydb.org/v1/breweries?by_state=${byState}`
   
@@ -35,7 +32,6 @@ const state = {
   }
 
 // Empty out any existing "search" content and create each element
-
 function renderBreweries(breweries) {
   breweryUl.innerHTML = ''
   breweries.forEach((brewery) => {
@@ -117,3 +113,5 @@ filter.addEventListener('change', event => {
     const filtered = state.breweries.filter((brewery) => brewery.brewery_type === type)
   renderBreweries(filtered)
 }})
+
+// The page seems to load many breweries 
