@@ -1,14 +1,18 @@
 const search = document.getElementById("select-state");
-const searchForm = document.getElementById("select-state-form");
+const form = document.getElementById("select-state-form");
 const filter = document.getElementById("filter-by-type");
 const breweriesList = document.querySelector(".breweries-list");
 
 const root = "https://api.openbrewerydb.org/v1/breweries";
-const breweries = state.breweries;
+let breweries = state.breweries;
 
 const createBreweryCard = (breweries) => {
     breweries.forEach(brewery => {
         const li = document.createElement("li");
+
+        // Card header
+        const header = document.createElement("h2");
+        header.innerText = brewery.name;
 
         // Type of brewery
         const type = document.createElement("div");
@@ -61,6 +65,7 @@ const createBreweryCard = (breweries) => {
 
         // Append all created HTML/data
         li.append(
+            header,
             type, 
             address, 
             phone, 
@@ -70,3 +75,26 @@ const createBreweryCard = (breweries) => {
         breweriesList.append(li);
     });
 };
+
+const getData = (state) => {
+    fetch(`${root}?by_state=${state}`)
+      .then(res => res.json())
+      .then(data => {
+        breweries = data.filter(brewery => 
+            // Checking if current brewery.type includes given breweries type,
+            // if so returns true and passes into the state.breweries
+            ["micro", "regional", "brewpub"].includes(brewery.brewery_type)
+        )
+        createBreweryCard(breweries);
+      })
+};
+
+const searchInput = (e) => {
+    e.preventDefault()
+    const userInput = search.value;
+
+    getData(userInput);
+    form.reset();
+};
+
+form.addEventListener("submit", searchInput)
