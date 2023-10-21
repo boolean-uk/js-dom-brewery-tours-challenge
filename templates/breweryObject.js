@@ -20,3 +20,19 @@ const breweries = [
     website_url: "http://10barrel.com"
   }
 ];
+
+
+const searchInput = document.querySelector('input[type="submit"]');
+searchInput.addEventListener("click", function(event){
+  event.preventDefault();
+  console.log("search has been clicked!")
+})
+// user inputs a state in the search bar
+// event listener on the search bar
+// find function to match the search input to the data
+// display the data and relavent data in a list
+// 
+
+// create a function that renders all the ls elements
+
+function 
