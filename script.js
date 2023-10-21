@@ -56,18 +56,18 @@ function renderBreweries() {
         // 2. Header
         const breweryHeader = document.createElement("h2")
         breweryHeader.innerText = eachBrewery.name
-        breweriesListContainer.append(breweryHeader)
+        breweryLi.append(breweryHeader)
 
         // 3. Div
         const breweryDiv = document.createElement('div')
         breweryDiv.setAttribute("class", "type")
         breweryDiv.innerText = 'micro'
-        breweriesListContainer.append(breweryDiv)
+        breweryLi.append(breweryDiv)
 
         //4. Address Section
         const breweryAddressSection = document.createElement('section')
         breweryAddressSection.setAttribute("class", "address")
-        breweriesListContainer.append(breweryAddressSection)
+        breweryLi.append(breweryAddressSection)
 
         //5. Within section: create elements
         // 5a. h3 tag
@@ -77,7 +77,7 @@ function renderBreweries() {
 
         //5b. p tag
         const addressP = document.createElement('p')
-        addressP.innerText = eachBrewery.address2
+        addressP.innerText = eachBrewery.street
         breweryAddressSection.append(addressP)
 
         //5c. p tag2
@@ -85,18 +85,34 @@ function renderBreweries() {
         breweryAddressSection.append(addressPTwo)
         const strongAddressP = document.createElement('strong')
         addressPTwo.append(strongAddressP)
-        strongAddressP.innerText = eachBrewery.address3
+        strongAddressP.innerText = `${eachBrewery.city }, ${eachBrewery.postal_code}`
         
         // 6. Phone Section
         const phoneSection = document.createElement('section')
         phoneSection.setAttribute("class", "phone")
-        breweriesListContainer.append(phoneSection)
+        breweryLi.append(phoneSection)
 
         // 6a. h3 tag phone section
         const phoneSectionh3 = document.createElement('h3')
         phoneSectionh3.innerText = 'Phone:'
         phoneSection.append(phoneSectionh3)
 
+        // 6b. p tag phone section
+        const phoneSectionP = document.createElement('p')
+        phoneSectionP.innerText = eachBrewery.phone
+        phoneSection.append(phoneSectionP)
 
+        // 7. Link Section
+        const linkSection = document.createElement('section')
+        linkSection.setAttribute('class', 'link')
+        breweryLi.append(linkSection)
+
+        // 7a. Link a tag
+        const aSection = document.createElement('a')
+        aSection.setAttribute('href', 'null')
+        aSection.setAttribute('target', '_blank')
+        aSection.innerText = 'Visit Website'
+        linkSection.append(aSection)
+        
     })
 }
