@@ -82,6 +82,7 @@ const getBreweries = () => {
             state.breweries = breweries;
             clearBrewery();
             renderBrewery();
+            filterByType();
         });
 };
 
@@ -96,7 +97,17 @@ breweryFilter.addEventListener('change', (event) => {
     getBreweries()
 });
 
+//function to only display the breweries that have a brewery_type value of micro, regional or brewpub when a state is searched in the input box, all other values are removed from the list
+let breweryByType = ["micro", "regional", "brewpub"];
 
+const filterByType = () => {
+    if (state.desired_type) {
+        breweryByType = [state.desired_type]
+    }
+    state.filteredBreweries = state.breweries.filter(brewery => breweryByType.includes(brewery.brewery_type));
+    clearBrewery();
+    renderBrewery();
+}
 //RENDER FUNCTION BELOW
 
 
