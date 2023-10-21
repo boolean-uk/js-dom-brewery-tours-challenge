@@ -202,5 +202,49 @@ filterByType.addEventListener('change', (event) => {
     }
 })
 
+// EXTENSION 1
+
+// HIGH LEVEL VARS
+const main = document.querySelector('main')
+
+// CREATE SEARCH BAR FOR BREWERIES
+const searchbarHeader = document.createElement('header')
+searchbarHeader.classList.add('search-bar')
+
+const searchBrewsForm = document.createElement('form')
+searchBrewsForm.id = 'search-breweries-form'
+searchBrewsForm.autocomplete = 'off'
+
+const searchBrewsLabel = document.createElement('label')
+searchBrewsLabel.setAttribute('for', 'search-breweries')
+
+const searchBrewsH2 = document.createElement('h2')
+searchBrewsH2.innerText = 'Search breweries:'
+
+const searchBrewsInput = document.createElement('input')
+searchBrewsInput.id = 'search-breweries'
+searchBrewsInput.name = 'search-breweries'
+searchBrewsInput.type = 'text'
+
+searchBrewsLabel.append(searchBrewsH2)
+searchBrewsForm.append(searchBrewsLabel, searchBrewsInput)
+searchbarHeader.append(searchBrewsForm)
+
+main.append(searchbarHeader)
+
+// TARGET SEARCH BREWS FORM AND USE FETCH
+searchBrewsForm.addEventListener('input', (event) => {
+    clearBreweryList()
+
+    const input = event.target.value
+
+    fetch(`${root}?by_name=${input}`)
+    .then((res) => res.json())
+    .then((data) => {
+        state.breweries = data
+        renderBrewery()
+    })
+})
+
 // --------------------- | CALL INITIAL RENDER | --------------------- \\
 render()
