@@ -25,7 +25,7 @@ const state = {
 };
 
 
-const root = ' https://api.openbrewerydb.org/v1/breweries?by_name=cooper&per_page=3'
+const root = ' https://api.openbrewerydb.org/v1/breweries?by_state'
 console.log(root, " this is root")
 
 // For rendering breweries - select the unordered list
@@ -116,3 +116,27 @@ function renderBreweries() {
         
     })
 }
+
+// Search by State
+// When you search by US state, the type of brewery gets filtered by Micro, Regional and Brewpub 
+
+//Search by State
+// Example, type in "new-york", all the breweries in new-york should come up.
+
+
+
+// Select the search input
+const searchInput = document.querySelector('#select-state-form > input[type=submit]:nth-child(3)')
+console.log(searchInput)
+
+searchInput.addEventListener("click", (e)=> {
+    console.log("search activated")
+    e.preventDefault()
+   
+    
+})
+
+//Filter breweries that offer brewery tours:
+// 1. Mirco
+// 2. Regional
+// 3. Brewpub
