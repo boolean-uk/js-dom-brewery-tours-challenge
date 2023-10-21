@@ -12,7 +12,7 @@ function render() {
     renderBreweryList()
 }
 
-// RENDER BREWERY LIST
+// RENDER BREWERY LIST (DEFAULT BREWERY LIST)
 function renderBreweryList() {
     fetch(`${root}`)
     .then((res) => res.json())
@@ -39,7 +39,6 @@ function renderBrewery() {
         }
     })
 }
-
 
 // BREWERY LIST COMPONENTS
 
@@ -144,5 +143,25 @@ stateSearchForm.addEventListener('submit', (event) => {
 function clearBreweryList() {
     breweriesList.innerHTML =''
 }
+
+// FILTER BY BREWERY TYPE
+const filterByType = document.querySelector('#filter-by-type')
+
+filterByType.addEventListener('change', (event) => {
+    const breweryFilterType = event.target.value
+    clearBreweryList()
+
+    if (breweryFilterType) {
+        fetch(`${root}?by_type=${breweryFilterType}`)
+        .then((res) => res.json())
+        .then((data) => {
+            state.breweries = data
+            renderBrewery()
+        })
+    } 
+    else {
+        renderBreweryList()
+    }
+})
 
 render()
