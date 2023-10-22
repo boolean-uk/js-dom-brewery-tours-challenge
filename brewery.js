@@ -2,65 +2,13 @@ const state = {
     breweries: []
 };
 
-const usStates = [
-    "alabama",
-    "alaska",
-    "arizona",
-    "arkansas",
-    "california",
-    "colorado",
-    "conneticut",
-    "delaware",
-    "florida",
-    "georgia",
-    "hawaii",
-    "idaho",
-    "illinois",
-    "indiana",
-    "iowa",
-    "kansas",
-    "kentucky",
-    "louisiana",
-    "maine",
-    "maryland",
-    "massachussets",
-    "michigan",
-    "minnesota",
-    "mississippi",
-    "missouri",
-    "montana",
-    "nebraska",
-    "nevada",
-    "new hampshire",
-    "new jersey",
-    "new mexico",
-    "new york",
-    "north carolina",
-    "north dakota",
-    "ohio",
-    "oaklahoma",
-    "oregon",
-    "pennsylvania",
-    "rhode island",
-    "south dakota",
-    "south carolina",
-    "texas",
-    "tennessee",
-    "utah",
-    "vermont",
-    "virginia",
-    "west virginia",
-    "wyoming",
-    "wisconsin",
-    "washington"
-]
-
 const root = 'https://api.openbrewerydb.org/v1/breweries';
 const breweryForm = document.querySelector('form');
 const breweryInput = document.querySelector('#select-state');
 const breweryList = document.querySelector('#breweries-list');
 const breweryFilter = document.querySelector('#filter-by-type');
 const breweryNameSearch = document.querySelector('#search-breweries');
+const filterByCityForm = document.querySelector('#filter-by-city-form')
 
 //GET request to the API to get all breweries 
 breweryForm.addEventListener('submit', (event) => {
@@ -87,15 +35,21 @@ const getBreweries = () => {
             clearBrewery();
             renderBrewery();
             filterByType();
+            clearCityCheckboxes();
+            const uniqueCities = removeDuplicates(); 
+            renderCityCheckboxes(uniqueCities);
+            removeDuplicates();
         });
 };
+
+
 
 //function to clear the brewery list 
 const clearBrewery = () => {
     breweryList.innerHTML = '';
 };
 
-//function to filter breweries based on their type, r
+//function to filter breweries based on their type
 breweryFilter.addEventListener('change', (event) => {
     state.desired_type = event.target.value
     getBreweries()
@@ -124,8 +78,24 @@ breweryNameSearch.addEventListener('input', (event) => {
     state.byName = event.target.value;
     filterByName();
 });
-//RENDER FUNCTION BELOW
 
+//CHECKBOX FUNCTIONS
+const clearCityCheckboxes = () => {
+    filterByCityForm.innerHTML = '';
+};
+
+const removeDuplicates = () => {
+    const uniqueCities = [];
+    state.breweries.forEach(brewery => {
+        if (!uniqueCities.includes(brewery.city)) {
+            uniqueCities.push(brewery.city);
+        }
+    });
+    console.log(uniqueCities);
+    return uniqueCities;
+};
+
+//RENDER FUNCTION BELOW
 
 const renderBrewery = () => {
     state.filteredBreweries.forEach(brewery => {
@@ -173,8 +143,23 @@ const renderBrewery = () => {
     });
 }
 
-//function to render a search bar that allows the user to search for breweries by name
+//function to render list of city checkboxes
 
+const renderCityCheckboxes = (uniqueCities) => {
+    uniqueCities.forEach(city => {
+        console.log(city);
+        const cityInput = document.createElement('input');
+        cityInput.type = 'checkbox';
+        cityInput.name = city;
+        cityInput.value = city;
+        
+        const cityLabel = document.createElement('label');
+        cityLabel.for = city;
+        cityLabel.innerText = city;
+        
+        filterByCityForm.append(cityInput, cityLabel);
+    });  
+};
 
 getBreweries(breweryInput.value);
 
