@@ -104,11 +104,11 @@ const renderSearchByNameSearchBar = () => {
 
 
 
-const cities = ['New York', 'Washington', 'Huston', 'Orlando']
+
 
 //RENDERS THE LIST OF CITIES TO CHOOSE FROM 
 
-const renderCityList = () => {
+const renderCityList = (cities) => {
 
     //div
     const filterByCityHeading = document.createElement('div')
@@ -144,8 +144,28 @@ const renderCityList = () => {
         filterByCityForm.append(cityLabel)
     })   
 }
+ 
+const removeCurrentCityList = () => {
+    const filterByCityForm = document.querySelector('#filter-by-city-form')
+    const filterByCityHeading = document.querySelector('.filter-by-city-heading')
+    
+    if (filterByCityForm !== null) {
+    filterByCityForm.remove()
+    filterByCityHeading.remove()
+    }
+}
+
+
+const getAndRenderCities = (array) => {
+    state.cities = []
+    array.forEach(brewery => {
+        if(!state.cities.includes(brewery.city)) {
+            state.cities.push(brewery.city)
+        }
+    })
+    removeCurrentCityList()
+    renderCityList(state.cities)
+}
 
 
 renderSearchByNameSearchBar()
-
-renderCityList()

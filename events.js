@@ -55,8 +55,15 @@ const getBreweriesByState = (usState) => {
     .then(d => {
         state.filteredByState = d 
         renderBreweries(state.filteredByState)
+        getAndRenderCities(state.filteredByState)
     })
 }
+
+
+//FILTER BY CITY
+
+//step one: get the cities 
+
 
 
 //SEARCH BY NAME - THE LIST UPDATES AS THE USER TYPES
