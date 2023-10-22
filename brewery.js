@@ -60,6 +60,7 @@ const breweryForm = document.querySelector('form');
 const breweryInput = document.querySelector('#select-state');
 const breweryList = document.querySelector('#breweries-list');
 const breweryFilter = document.querySelector('#filter-by-type');
+const breweryNameSearch = document.querySelector('#search-breweries');
 
 //GET request to the API to get all breweries 
 breweryForm.addEventListener('submit', (event) => {
@@ -73,11 +74,14 @@ const getBreweries = () => {
     let url = `${root}?by_state=${state.state}`
     if (state.desired_type) {
         url += `&by_type=${state.desired_type}` 
+    } else if (state.byName) {
+        url += `&by_name=${state.byName}`
     }
     fetch(url)
         .then(response => response.json())
         .then(breweries => {
             console.log(breweries);
+            state.byName = breweries;
             state.filteredBreweries = breweries;
             state.breweries = breweries;
             clearBrewery();
@@ -108,6 +112,18 @@ const filterByType = () => {
     clearBrewery();
     renderBrewery();
 }
+
+//function to search and render breweries by name
+const filterByName = () => {
+    state.filteredBreweries = state.breweries.filter(brewery => brewery.name.toLowerCase().includes(state.byName.toLowerCase()));
+    clearBrewery();
+    renderBrewery();
+}
+
+breweryNameSearch.addEventListener('input', (event) => {
+    state.byName = event.target.value;
+    filterByName();
+});
 //RENDER FUNCTION BELOW
 
 
@@ -156,6 +172,9 @@ const renderBrewery = () => {
         breweryList.append(breweryLi);
     });
 }
+
+//function to render a search bar that allows the user to search for breweries by name
+
 
 getBreweries(breweryInput.value);
 
