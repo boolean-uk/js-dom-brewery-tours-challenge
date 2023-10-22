@@ -18,7 +18,6 @@ breweryForm.addEventListener('submit', (event) => {
     getBreweries()
 });
 
-
 const getBreweries = () => {
     let url = `${root}?by_state=${state.state}&per_page=200`
     if (state.desired_type) {
@@ -42,8 +41,6 @@ const getBreweries = () => {
             removeDuplicates();
         });
 };
-
-
 
 //function to clear the brewery list 
 const clearBrewery = () => {
@@ -178,5 +175,3 @@ const renderCityCheckboxes = (uniqueCities) => {
 };
 
 getBreweries(breweryInput.value);
-
-
