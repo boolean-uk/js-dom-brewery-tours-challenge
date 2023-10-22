@@ -1,4 +1,11 @@
-//RENDERS THE 
+
+// removes the current breweries list
+const removeCurrentList = () => {
+    const currentList = breweriesList.querySelectorAll('li')
+    currentList.forEach(e => e.remove())
+}
+
+//RENDERS THE LIST WHERE THE BREWERIES ARE DISPLAYED
 
 const renderBrewery = (brewery) => {
     const breweryContainer = document.createElement('li')
@@ -71,7 +78,74 @@ const renderBreweries = (breweriesArray) => {
 }
 
 
-const removeCurrentList = () => {
-    const currentList = breweriesList.querySelectorAll('li')
-    currentList.forEach(e => e.remove())
+//RENDERS THE NEWLY ADDED SEARCH BAR (SEARCH BY NAME)
+
+const renderSearchByNameSearchBar = () => {
+
+    const header = document.createElement('header')
+        header.setAttribute('class', 'search-bar')
+        main.insertBefore(header, breweriesListContainer)
+    const searchByNameForm = document.createElement('form')
+        searchByNameForm.setAttribute('id', 'search-breweries-form')
+        searchByNameForm.setAttribute('autocomplete', 'off')
+        header.append(searchByNameForm)
+    const searchByNamelabel = document.createElement('label')
+        searchByNamelabel.setAttribute('for', 'search-breweries')
+        searchByNameForm.append(searchByNamelabel)
+    const h2 = document.createElement('h2')
+        h2.innerText = "Search Breweries:"
+        searchByNamelabel.append(h2)
+    const searchByNameInput = document.createElement('input')
+        searchByNameInput.setAttribute('name', 'search-breweries')
+        searchByNameInput.setAttribute('type', 'text')
+        searchByNameInput.setAttribute('id', 'search-breweries')
+        searchByNameForm.append(searchByNameInput)
 }
+
+
+
+const cities = ['New York', 'Washington', 'Huston', 'Orlando']
+
+//RENDERS THE LIST OF CITIES TO CHOOSE FROM 
+
+const renderCityList = () => {
+
+    //div
+    const filterByCityHeading = document.createElement('div')
+    filterByCityHeading.setAttribute('class','filter-by-city-heading')
+    filtersSection.append(filterByCityHeading)
+
+    //div > h3
+    const filterByCityH3 = document.createElement('h3')
+    filterByCityH3.innerText = 'Cities'
+    filterByCityHeading.append(filterByCityH3)
+
+    //div > button
+    const filterByCityButton = document.createElement('button')
+    filterByCityHeading.append(filterByCityButton)
+    filterByCityButton.setAttribute('class', 'clear-all-btn')
+    filterByCityButton.innerText = "clear all"
+
+    //form
+    const filterByCityForm = document.createElement('form')
+    filterByCityForm.setAttribute('id', 'filter-by-city-form')
+    filtersSection.append(filterByCityForm)
+
+    cities.forEach(city => {
+        const cityCheckbox = document.createElement('input')
+        cityCheckbox.setAttribute('type', 'checkbox')
+        cityCheckbox.setAttribute('name', `${city}`)
+        cityCheckbox.setAttribute('value', `${city}`)
+        filterByCityForm.append(cityCheckbox)
+
+        const cityLabel = document.createElement('label')
+        cityLabel.setAttribute('for', `${city}`)
+        cityLabel.innerText = city
+        filterByCityForm.append(cityLabel)
+    })   
+}
+
+
+renderSearchByNameSearchBar()
+
+renderCityList()

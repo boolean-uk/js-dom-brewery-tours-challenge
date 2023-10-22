@@ -16,5 +16,16 @@ const selectStateForm = document.querySelector('#select-state-form')
 
 const inputState = document.querySelector('#select-state')
 
+const main = document.querySelector('main')
+const breweriesListContainer = document.querySelector('article')
 
+
+const filtersSection = document.querySelector('.filters-section')
+
+const spacesToUnderscores =  (word) => {
+  if (!word.includes(' ')) {
+      return word
+  }
+      return word.split(' ').join('_')
+}
 

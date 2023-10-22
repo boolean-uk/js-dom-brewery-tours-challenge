@@ -1,5 +1,4 @@
 
-// renderBreweries(state.breweries)
 
 fetch("https://api.openbrewerydb.org/v1/breweries")
 .then(r => r.json())
@@ -8,5 +7,3 @@ fetch("https://api.openbrewerydb.org/v1/breweries")
     renderBreweries(state.breweries)
 })
 
-
-//TODO: 

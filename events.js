@@ -1,18 +1,5 @@
 
-//FILTER BY TYPE
-
-// const getBreweriesByType = (t) => {
-
-//     // fetch(`https://api.openbrewerydb.org/v1/breweries?by_type=${type}`)
-//     // .then(r => r.json())
-//     // .then(d => {
-//     //     state.filtered = d 
-//     //     removeCurrentList()
-//     //     renderBreweries(state.filtered)
-//     state.filteredByStateAndType = state.filteredByState.filter(brewery => brewery.brewery_type === t)
-//     removeCurrentList()
-//     renderBreweries(state.filteredByStateAndType)
-// }
+//FILTER BY TYPE OR BY STATE AND TYPE
 
 const getBreweriesByStateAndType = (t) => {
 
@@ -54,7 +41,8 @@ chooseFilter.addEventListener('change', change => {
 
 selectStateForm.addEventListener('submit', event => {
         event.preventDefault()
-        state.selectedState = event.target[0].value  
+        const stateName = spacesToUnderscores(event.target[0].value) 
+        state.selectedState = stateName.toLowerCase()  
         getBreweriesByState(state.selectedState )
     
 })
@@ -69,3 +57,23 @@ const getBreweriesByState = (usState) => {
         renderBreweries(state.filteredByState)
     })
 }
+
+
+//SEARCH BY NAME - THE LIST UPDATES AS THE USER TYPES
+
+    const searchBreweries =  document.querySelector('#search-breweries')
+
+    searchBreweries.addEventListener('input', event => {
+
+        event.preventDefault()
+        const searchParameter = event.target.value
+
+        fetch(`https://api.openbrewerydb.org/v1/breweries/search?query={${searchParameter}}`)
+        .then(r => r.json())
+        .then(d => {
+            state.filteredByName = d 
+            renderBreweries(state.filteredByName)
+        })
+
+    })
+
