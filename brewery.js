@@ -9,6 +9,7 @@ const breweryList = document.querySelector('#breweries-list');
 const breweryFilter = document.querySelector('#filter-by-type');
 const breweryNameSearch = document.querySelector('#search-breweries');
 const filterByCityForm = document.querySelector('#filter-by-city-form')
+const clearAllChecks = document.querySelector('#clear-all-btn')
 
 //GET request to the API to get all breweries 
 breweryForm.addEventListener('submit', (event) => {
@@ -19,7 +20,7 @@ breweryForm.addEventListener('submit', (event) => {
 
 
 const getBreweries = () => {
-    let url = `${root}?by_state=${state.state}`
+    let url = `${root}?by_state=${state.state}&per_page=200`
     if (state.desired_type) {
         url += `&by_type=${state.desired_type}` 
     } else if (state.byName) {
@@ -94,6 +95,21 @@ const removeDuplicates = () => {
     console.log(uniqueCities);
     return uniqueCities;
 };
+
+filterByCityForm.addEventListener('change', () => {
+    const checkedCities = Array.from(filterByCityForm.querySelectorAll('input:checked')).map(city => city.value);
+    state.filteredBreweries = state.breweries.filter(brewery => checkedCities.includes(brewery.city));
+    clearBrewery();
+    renderBrewery();
+});
+
+clearAllChecks.addEventListener('click', () => {
+    filterByCityForm.querySelectorAll('input:checked').forEach(input => input.checked = false);
+    state.filteredBreweries = state.breweries;
+    clearBrewery();
+    filterByType();
+    renderBrewery();
+});
 
 //RENDER FUNCTION BELOW
 

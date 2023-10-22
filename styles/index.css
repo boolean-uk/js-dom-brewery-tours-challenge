@@ -76,7 +76,7 @@ main {
   border-bottom: none;
 }
 
-.clear-all-btn {
+#clear-all-btn {
   border: none;
   background-color: transparent;
   color: #1565c0;
