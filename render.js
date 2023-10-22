@@ -137,6 +137,7 @@ const renderCityList = (cities) => {
         cityCheckbox.setAttribute('name', `${city}`)
         cityCheckbox.setAttribute('value', `${city}`)
         filterByCityForm.append(cityCheckbox)
+        addEventToCheckbox(cityCheckbox)
 
         const cityLabel = document.createElement('label')
         cityLabel.setAttribute('for', `${city}`)
@@ -148,7 +149,7 @@ const renderCityList = (cities) => {
 const removeCurrentCityList = () => {
     const filterByCityForm = document.querySelector('#filter-by-city-form')
     const filterByCityHeading = document.querySelector('.filter-by-city-heading')
-    
+
     if (filterByCityForm !== null) {
     filterByCityForm.remove()
     filterByCityHeading.remove()

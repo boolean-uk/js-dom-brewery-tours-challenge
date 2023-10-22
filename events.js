@@ -59,13 +59,6 @@ const getBreweriesByState = (usState) => {
     })
 }
 
-
-//FILTER BY CITY
-
-//step one: get the cities 
-
-
-
 //SEARCH BY NAME - THE LIST UPDATES AS THE USER TYPES
 
     const searchBreweries =  document.querySelector('#search-breweries')
@@ -83,4 +76,18 @@ const getBreweriesByState = (usState) => {
         })
 
     })
+    
 
+//FILTER BY CITY
+
+const filterByCity = (selectedCity) => {
+    return state.filteredByState.filter(brewery => brewery.city === selectedCity)
+}
+let filteredByCities = []
+
+const addEventToCheckbox = (cityCheckbox) => {
+    cityCheckbox.addEventListener('change', event => {     
+        filteredByCities = filteredByCities.concat(filterByCity(event.target.value))
+        renderBreweries(filteredByCities)
+    })
+}
