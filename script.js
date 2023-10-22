@@ -1,5 +1,3 @@
-console.log('testing console')
-
 //In this challenge we explore a common scenario in eCommerce and booking sites, using filters and search to modify what we render from the state. You'll apply all the skills you've learned in the JS DOM unit: dynamic DOM creation, event listeners, state and requesting data from a server.
 
 // Criteria
@@ -26,27 +24,30 @@ const state = {
 
 
 const root = ' https://api.openbrewerydb.org/v1/breweries?by_state'
-console.log(root, " this is root")
 
 // For rendering breweries - select the unordered list
 // '#breweries-list' --> html page
 const breweriesListContainer = document.querySelector('#breweries-list')
-console.log(breweriesListContainer)
+
 
 // READ - GET REQUEST
 
-function usState() {
-    fetch(`${root}`)
+function usState(baseUrl) {
+    fetch(`${baseUrl}`)
     .then((reponse) => reponse.json())
     .then((data)=> {
+        console.log(data)
         state.breweries = data;
-renderBreweries()
+        renderBreweries()
     })
 }
-usState()
+usState(root)
 
 // Render breweries
 function renderBreweries() {
+    // Reset Container
+    breweriesListContainer.innerText = ""
+
     // Render
     state.breweries.forEach((eachBrewery)=> {
         // 1. LIs - Now create the elements within the brewery list, li elements
@@ -109,7 +110,7 @@ function renderBreweries() {
 
         // 7a. Link a tag
         const aSection = document.createElement('a')
-        aSection.setAttribute('href', 'null')
+        aSection.setAttribute('href', eachBrewery.website_url)
         aSection.setAttribute('target', '_blank')
         aSection.innerText = 'Visit Website'
         linkSection.append(aSection)
@@ -127,12 +128,18 @@ function renderBreweries() {
 
 // Select the search input
 const searchInput = document.querySelector('#select-state-form > input[type=submit]:nth-child(3)')
-console.log(searchInput)
 
 searchInput.addEventListener("click", (e)=> {
-    console.log("search activated")
     e.preventDefault()
-   
+    // Get the value of input
+    // if whatever has been searched is a valid state, return a state
+    const inputValue = document.querySelector('#select-state').value
+    const searchURL = `https://api.openbrewerydb.org/v1/breweries/search?query=${inputValue}`
+    usState(searchURL)
+    renderBreweries()
+    // const filteredBreweries = state.breweries.filter((brewery)=> brewery.state.toLowerCase().includes(inputValue))
+    // state.breweries = filteredBreweries // update state
+    
     
 })
 
@@ -140,3 +147,13 @@ searchInput.addEventListener("click", (e)=> {
 // 1. Mirco
 // 2. Regional
 // 3. Brewpub
+// Use if statements
+
+function filterBreweriesByType(breweries, breweryType) {
+    const breweriesFiltered = breweries.filter(brewery => {
+        // if(brewery type) === "mirco" || (brewery type) === "Regional" ||(brewery type) === "Brewpub"  {
+        // return brewery
+        //    }
+    })
+}
+
