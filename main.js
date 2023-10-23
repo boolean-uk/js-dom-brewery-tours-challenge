@@ -158,8 +158,15 @@ const createListItem = (item) => {
   titlePhone.innerText = "Phone:"
   sectionPhone.appendChild(titlePhone)
   
+  const cleanedUpPhoneNum = () => {
+    if (!!item.phone === false) return "unknown"
+    const cleanedStr = item.phone.replaceAll("/[^0-9]/gi")
+    // return cleanedStr
+    return cleanedStr.slice(0, 3) + "-" + cleanedStr.slice(3, 6) + "-" + cleanedStr.slice(7)
+  }
+
   const phoneNum = document.createElement("p")
-  phoneNum.innerText = !!item.phone === true ? ("+" + item.phone) : "no phone number"
+  phoneNum.innerText = cleanedUpPhoneNum()
   sectionPhone.appendChild(phoneNum)
   
   listentry.appendChild(sectionPhone)
