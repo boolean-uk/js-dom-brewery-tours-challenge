@@ -89,28 +89,43 @@ const loadBreweriesByState = (stateNameStr) => {
   fetch(`${protocol}://${baseURL}/v1/breweries?by_state=${stateNameStr}&per_page=200`)
     .then(response => response.json())
     .then(data => state.breweries = data.filter(item => ["micro", "regional", "brewpub"].includes(item.brewery_type.toLowerCase())))
+    .then(() => compileCityArr())
     .then(() => compileRenderedList()) // note that the previous settings of FilterArr and textStr still apply
     .then(() => renderList())
 }
 
 const compileCityArr = () => {
   const listOfCities = []
+
   state.breweries.forEach(brewery => {
     if (listOfCities.includes(brewery.city) === false) listOfCities.push(brewery.city)
   })
-  console.log(listOfCities)
+
+  listOfCities.sort((a, b) => {
+    if (a > b) return 1
+    if (a < b) return -1
+    if (a = b) return 0
+  })
+  
   return listOfCities
+}
+
+const renderCityFilters = () => {
+
 }
 
 // these are the volatile values for the possible filtering by the user
 let filterArr = ["micro", "regional", "brewpub"]
 let textStr = ""
+let pageIndex = 1
 
 const compileRenderedList = () => {
   const filteredForType = state.breweries.filter(brewery => filterArr.includes(brewery.brewery_type.toLowerCase()))
   const additionallyFilteredForString = filteredForType.filter(brewery => brewery.name.match(textStr))
+  // slotting the results into pages
   const calcPage = (index) => Math.ceil(index / 10)
-  state.renderedBreweries = additionallyFilteredForString.forEach(brewery, index => brewery.page = calcPage(index))
+  additionallyFilteredForString.forEach((brewery, index) => brewery.page = calcPage(index))
+  state.renderedBreweries = additionallyFilteredForString
 }
 
 const triggerFilter = document.querySelector("#filter-by-type")
@@ -122,7 +137,8 @@ triggerFilter.addEventListener("change", (event) => {
 })
 
 const renderList = () => {
-  state.renderedBreweries.forEach(val => listRender.appendChild(createListItem(val)))
+  const pageResults = state.renderedBreweries.filter(brewery => brewery.page === pageIndex)
+  pageResults.forEach(val => listRender.appendChild(createListItem(val)))
   updateResultCount()
 }
 
