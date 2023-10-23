@@ -99,7 +99,7 @@ let textStr = ""
 
 const compileRenderedList = () => {
   const filteredForType = state.breweries.filter(brewery => filterArr.includes(brewery.brewery_type.toLowerCase()))
-  const additionallyFilteredForString = filteredForType.filter(val => val.name.match(textStr))
+  const additionallyFilteredForString = filteredForType.filter(brewery => brewery.name.match(textStr))
   state.renderedBreweries = additionallyFilteredForString
 }
 
@@ -111,6 +111,7 @@ triggerFilter.addEventListener("change", (event) => {
 })
 
 const renderList = () => {
+  console.log(state.breweries, state.renderedBreweries)
   state.renderedBreweries.forEach(val => listRender.appendChild(createListItem(val)))
   updateResultCount()
 }
