@@ -1,5 +1,6 @@
 const state = {
-    breweries: []
+    breweries: [],
+    currentPage: 1,
 };
 
 const root = 'https://api.openbrewerydb.org/v1/breweries';
@@ -10,6 +11,8 @@ const breweryFilter = document.querySelector('#filter-by-type');
 const breweryNameSearch = document.querySelector('#search-breweries');
 const filterByCityForm = document.querySelector('#filter-by-city-form')
 const clearAllChecks = document.querySelector('#clear-all-btn')
+
+const itemsPerPage = 10;
 
 //GET request to the API to get all breweries 
 breweryForm.addEventListener('submit', (event) => {
@@ -39,6 +42,8 @@ const getBreweries = () => {
             const uniqueCities = removeDuplicates(); 
             renderCityCheckboxes(uniqueCities);
             removeDuplicates();
+            renderPageButtons();
+            pagination();
         });
 };
 
@@ -108,6 +113,33 @@ clearAllChecks.addEventListener('click', () => {
     renderBrewery();
 });
 
+//function to only display 10 breweries per page
+const pagination = () => {
+    if (state.breweries.length > itemsPerPage) {
+        const start = (state.currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        state.filteredBreweries = state.filteredBreweries.slice(start, end);
+        clearBrewery();
+        renderBrewery();
+        renderPageButtons();
+        console.log(state.filteredBreweries);
+    }
+};
+
+//function to go to the next page of breweries and render the next 10 breweries and go back to the previous page of breweries and render the previous 10 breweries
+breweryList.addEventListener('click', (event) => {
+    if (event.target.id === 'next-button') {
+        state.currentPage++;
+        state.filteredBreweries = state.breweries;
+        filterByType();
+        pagination();
+    } else if (event.target.id === 'previous-button') {
+        state.currentPage--;
+        state.filteredBreweries = state.breweries;
+        filterByType();
+        pagination();
+    }
+});
 //RENDER FUNCTION BELOW
 
 const renderBrewery = () => {
@@ -172,6 +204,23 @@ const renderCityCheckboxes = (uniqueCities) => {
         
         filterByCityForm.append(cityInput, cityLabel);
     });  
+};
+
+//function to render pagination buttons
+const renderPageButtons = () => {
+    const pageButtonsContainer = document.createElement('nav');
+    pageButtonsContainer.id = 'page-buttons-container';
+
+    const previousButton = document.createElement('button');
+    previousButton.id = 'previous-button';
+    previousButton.innerText = 'Previous page';
+
+    const nextButton = document.createElement('button');
+    nextButton.id = 'next-button';
+    nextButton.innerText = 'Next page';
+
+    pageButtonsContainer.append(previousButton, nextButton);
+    breweryList.append(pageButtonsContainer);
 };
 
 getBreweries(breweryInput.value);

@@ -228,3 +228,12 @@ article {
   text-decoration: none;
   font-weight: bold;
 }
+
+#page-buttons-container {
+  margin-top: 1rem;
+
+  display: grid;
+  grid-template-columns: 300px 300px;
+  grid-gap: 1rem;
+  justify-content: center;
+}
