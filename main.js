@@ -153,8 +153,36 @@ const renderCityFilters = () => {
   aside.appendChild(form)
 }
 
-const renderPageNavigation = () => {
+const clearPageNavigation = () => {
+  const navInnerElements = document.querySelector("nav *")
+  navInnerElements.forEach(element => element.remove())
+}
 
+const renderPageNavigation = () => {
+  const nav = document.querySelector("nav")
+
+  const article = document.createElement("article")
+
+  const buttonPrev = document.createElement("button")
+  buttonPrev.innerText = "<"
+  article.appendChild(buttonPrev)
+
+  console.log(state.renderedBreweries.length)
+  
+  for (let i = 0; i < Math.ceil(state.renderedBreweries.length / 10); i++) {
+    console.log(i)
+    const buttonPage = document.createElement("button")
+    if (i+1 === pageIndex) buttonPage.setAttribute("id", "active")
+    buttonPage.innerText = i+1
+    buttonPage.addEventListener("click", () => choosePage(i+1))
+    article.appendChild(buttonPage)
+  }
+
+  const buttonNext = document.createElement("button")
+  buttonNext.innerText = ">"
+  article.appendChild(buttonNext)
+  
+  nav.appendChild(article)
 }
 
 // these are the volatile values for the possible filtering by the user
@@ -171,6 +199,11 @@ const compileRenderedList = () => {
   state.renderedBreweries = additionallyFilteredForString
 }
 
+const choosePage = (num) => {
+  pageIndex = num
+  renderList()
+}
+
 const triggerFilter = document.querySelector("#filter-by-type")
 triggerFilter.addEventListener("change", (event) => {
   event.target.value !== "" ? filterArr = [event.target.value] : filterArr = ["micro", "regional", "brewpub"]
@@ -181,10 +214,14 @@ triggerFilter.addEventListener("change", (event) => {
 })
 
 const renderList = () => {
+  clearRenderList()
+  compileRenderedList()
   const pageResults = state.renderedBreweries.filter(brewery => brewery.page === pageIndex)
   pageResults.forEach(val => listRender.appendChild(createListItem(val)))
   renderCityFilters()
   updateResultCount()
+  clearPageNavigation()
+  renderPageNavigation()
 }
 
 const clearRenderList = () => {

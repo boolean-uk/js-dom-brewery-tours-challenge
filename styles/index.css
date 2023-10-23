@@ -228,3 +228,18 @@ article {
   text-decoration: none;
   font-weight: bold;
 }
+
+nav button {
+  margin: 0 1px;
+  border-radius: 3px;
+  border: none;
+  min-width: 30px;
+}
+
+nav button#active {
+  background-color: #fbc02d;
+}
+
+nav button:hover {
+  background-color: #ffe082;
+}
