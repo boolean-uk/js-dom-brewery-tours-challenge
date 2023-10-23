@@ -1,3 +1,4 @@
+
 const state = {
     breweries: []
 }
@@ -5,19 +6,21 @@ const state = {
 // All the querySelectors
 const breweriesForm = document.querySelector('#select-state-form');
 const breweriesUl = document.querySelector('#breweries-list');
-const filter = document.querySelector('#filter-by-type')
-const breweryInput = document.querySelector('#select-state')
-
+const filter = document.querySelector('#filter-by-type');
+const breweryInput = document.querySelector('#select-state');
+const brewerySearchForm = document.querySelector('#search-breweries-form');
+const eachBrewery = document.querySelector('#search-breweries')
 
 // sumbit button for form and also reset 
 breweriesForm.addEventListener('submit', search)
-    function search(event){
-    event.preventDefault()
+function search(event) {
+    event.preventDefault();
     console.log('text')
     const eachState = breweryInput.value
     getBrewery(eachState)
     breweriesForm.reset()
 }
+
 //GET for each state
 const getBrewery = (eachState) => {
     const root = `https://api.openbrewerydb.org/v1/breweries?by_state=${eachState}`;
@@ -26,24 +29,67 @@ const getBrewery = (eachState) => {
         .then((data) => {
             console.log("show all breweries", data);
             state.breweries = data.filter((brewery) =>
-            ['micro', 'regional', 'brewpub'].includes(brewery.brewery_type)
-          )
-          allBreweries(state.breweries);
+                ['micro', 'regional', 'brewpub'].includes(brewery.brewery_type)
+            )
+            allBreweries(state.breweries);
         })
-}
+    }
 
 //filter for the type of brewery
 filter.addEventListener('change', breweryChange)
-    function breweryChange() {
-        const type = filter.value
-        if (type === 'brew_type') {
-            allBreweries(state.breweries)
-        } else {
-            const filtered = state.breweries.filter(
-                (brewery) => brewery.brewery_type === type)
-                allBreweries(filtered)
-        }}
+function breweryChange() {
+    const type = filter.value
+    if (type === 'brew_type') {
+        allBreweries(state.breweries)
+    } else {
+        const filtered = state.breweries.filter(
+            (brewery) => brewery.brewery_type === type)
+        allBreweries(filtered)
+    }
+}
 
+// submit for the search by name 
+console.log(brewerySearchForm)
+brewerySearchForm.addEventListener('submit', breweryName)
+function breweryName(event){
+    event.preventDefault();
+    const eachName = eachBrewery.value;
+    nameBrewery(eachName);
+    brewerySearchForm.reset();
+}
+
+//Get for each brewery by name
+const nameBrewery = (eachName) => {
+    const root2 = `https://api.openbrewerydb.org/v1/breweries?by_name=${eachName}`;
+    fetch(root2)
+    .then((Response) => Response.json())
+    .then((data) =>  {
+        state.breweries = data.filter((brewery) =>
+        brewery.name)
+    })
+    allBreweries(state.breweries)
+}
+
+//creating search bar 
+function perBrewery(breweries) {
+    const individualForm = document.createElement('id', 'search-breweries-form')
+    individualForm = brewerySearchForm;
+    const header = document.createElement('header')
+    header.setAttribute('class', 'search-bar')
+    brewerySearchForm.append(header);
+
+    const breweryLabel = document.createElement('label')
+    breweryLabel.innerText = breweries.name;
+    breweryLabel.setAttribute('for', 'label')
+    brewerySearchForm.append(breweryLabel)
+
+    const breweryPerInput = document.createElement('input')
+    breweryPerInput.setAttribute('id', 'search-breweries')
+    breweryPerInput.id = 'name';
+    breweryPerInput.type = 'text';
+    breweryPerInput.name = 'name';
+    brewerySearchForm.append(breweryPerInput)
+}
 
 //Creating a brewery card
 function allBreweries(breweries) {
@@ -54,7 +100,7 @@ function allBreweries(breweries) {
         //main li example from the standard html card
         const brewLi = document.createElement('li');
         breweriesUl.append(brewLi);
-        
+
         //Name of each brewery
         const brewH2 = document.createElement('h2');
         brewH2.innerText = brewery.name;
@@ -114,6 +160,6 @@ function allBreweries(breweries) {
         aLink.setAttribute('target', '_blank')
         aLink.innerText = 'Visit Website';
         websiteLink.append(aLink);
+    
     })
 }
-
