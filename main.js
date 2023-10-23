@@ -1,5 +1,6 @@
 const state = {
-  breweries: []
+  breweries: [], // all breweries by state
+  renderedBreweries: [] // this is to be able to reset to all loaded breweries by state
 }
 
 const listRender = document.getElementById("breweries-list")
@@ -9,56 +10,25 @@ const protocol = "https"
 const baseURL = "api.openbrewerydb.org"
 
 const USStates = [
-  "alabama",
-  "alaska",
-  "arizona",
-  "arkansas",
-  "california",
-  "colorado",
-  "conneticut",
+  "alabama","alaska","arizona","arkansas",
+  "california", "colorado", "conneticut",
   "delaware",
   "florida",
   "georgia",
   "hawaii",
-  "idaho",
-  "illinois",
-  "indiana",
-  "iowa",
-  "kansas",
-  "kentucky",
+  "idaho", "illinois", "indiana", "iowa",
+  "kansas", "kentucky",
   "louisiana",
-  "maine",
-  "maryland",
-  "massachussets",
-  "michigan",
-  "minnesota",
-  "mississippi",
-  "missouri",
-  "montana",
-  "nebraska",
-  "nevada",
-  "new hampshire",
-  "new jersey",
-  "new mexico",
-  "new york",
-  "north carolina",
-  "north dakota",
-  "ohio",
-  "oaklahoma",
-  "oregon",
+  "maine", "maryland", "massachussets", "michigan", "minnesota", "mississippi", "missouri", "montana",
+  "nebraska", "nevada", "new hampshire", "new jersey", "new mexico", "new york", "north carolina", "north dakota",
+  "ohio", "oaklahoma", "oregon",
   "pennsylvania",
   "rhode island",
-  "south dakota",
-  "south carolina",
-  "texas",
-  "tennessee",
+  "south dakota", "south carolina",
+  "texas", "tennessee",
   "utah",
-  "vermont",
-  "virginia",
-  "west virginia",
-  "wyoming",
-  "wisconsin",
-  "washington"
+  "vermont", "virginia",
+  "west virginia", "wyoming", "wisconsin", "washington"
 ]
 
 const entryForm = document.querySelector("form")
@@ -73,6 +43,11 @@ entryForm.addEventListener("submit", (event) => {
 
   loadBreweriesByState(searchField.value)
 })
+
+const resultCount = document.querySelector("#resultCount")
+const updateResultCount = () => {
+  resultCount.innerText = `(displaying ${state.renderedBreweries.length} matches out of ${state.breweries.length} found breweries in ${searchField.value})`
+}
 
 const createFreetextSearch = () => {
   // it should be following the "list of breweries"
@@ -105,20 +80,28 @@ const createFreetextSearch = () => {
 }
 
 const liveSearchByText = (textStr) => {
-  const filteredArr = state.breweries.filter(val => val.name.match(textStr))
+  state.renderedBreweries = state.breweries.filter(val => val.name.match(textStr))
   clearRenderList()
-  filteredArr.forEach(val => listRender.appendChild(createListItem(val)))
+  renderList()
 }
 
 const loadBreweriesByState = (stateNameStr) => {
   fetch(`${protocol}://${baseURL}/v1/breweries?by_state=${stateNameStr}&per_page=200`)
     .then(response => response.json())
-    .then(data => state.breweries = data)
+    .then(data => state.breweries = data.filter(item => ["micro", "regional", "brewpub"].includes(item.brewery_type.toLowerCase())))
+    .then(() => state.renderedBreweries = compileRenderedList()) // note that the previous settings of FilterArr and textStr still apply
     .then(() => renderList())
 }
 
+// these are the volatile values for the possible filtering
 let filterArr = ["micro", "regional", "brewpub"]
-const generalFilter = (filterArr) => state.breweries.filter(brewery => filterArr.includes(brewery.brewery_type.toLowerCase()))
+let textStr = ""
+
+const compileRenderedList = () => {
+  const filteredForType = state.breweries.filter(brewery => filterArr.includes(brewery.brewery_type.toLowerCase()))
+  const additionallyFilteredForString = filteredForType.filter(val => val.name.match(textStr))
+  state.renderedBreweries = additionallyFilteredForString
+}
 
 const triggerFilter = document.querySelector("#filter-by-type")
 triggerFilter.addEventListener("change", (event) => {
@@ -128,8 +111,8 @@ triggerFilter.addEventListener("change", (event) => {
 })
 
 const renderList = () => {
-  const filteredByType = generalFilter(filterArr)
-  filteredByType.forEach(val => listRender.appendChild(createListItem(val)))
+  state.renderedBreweries.forEach(val => listRender.appendChild(createListItem(val)))
+  updateResultCount()
 }
 
 const clearRenderList = () => {
@@ -161,7 +144,7 @@ const createListItem = (item) => {
 
   const addressCity = document.createElement("p")
   const strong = document.createElement("strong")
-  strong.innerText = item.state + ", " + item.postal_code
+  strong.innerText = item.city + ", " + item.postal_code
   addressCity.appendChild(strong)
   sectionAddress.appendChild(addressCity)
 
@@ -175,7 +158,7 @@ const createListItem = (item) => {
   sectionPhone.appendChild(titlePhone)
   
   const phoneNum = document.createElement("p")
-  phoneNum.innerText = item.phone
+  phoneNum.innerText = "+" + item.phone
   sectionPhone.appendChild(phoneNum)
   
   listentry.appendChild(sectionPhone)
