@@ -17,7 +17,6 @@ const getBreweriesByStateAndType = (t) => {
         .then(r => r.json())
         .then(d => {
             state.filteredByType = d 
-            // renderBreweries(state.filteredByType)
             filterByPageChosen(state.filteredByType)
             displayPage(1)
         })
@@ -56,7 +55,6 @@ const getBreweriesByState = (usState) => {
     .then(r => r.json())
     .then(d => {
         state.filteredByState = d 
-        // renderBreweries(state.filteredByState)
         filterByPageChosen(state.filteredByState)
         displayPage(1)
         getAndRenderCities(state.filteredByState)
@@ -108,11 +106,8 @@ const addClearAllEvent = (cityCheckbox) => {
     })
 }
 
-//TODO: PAGINATION
+//TODO: PAGINATION: get the arrow back and arrow next working
 
-// html nav (in render.js)
-// css styling
-// js for loop, iterate through data 10 by 10 
 
 const filterByPageChosen = (breweriesArray) => {
     state.byPage = []
@@ -124,3 +119,4 @@ const filterByPageChosen = (breweriesArray) => {
 }
 
 //TODO: myBreweries cart (list)
+

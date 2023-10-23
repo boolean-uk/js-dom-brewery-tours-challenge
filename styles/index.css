@@ -215,7 +215,8 @@ article {
   grid-area: link;
 }
 
-.breweries-list li .link a {
+.breweries-list li .link a, 
+.add-to-visit-list {
   display: block;
   padding: 0.5rem 1rem;
 
@@ -227,4 +228,16 @@ article {
   text-align: center;
   text-decoration: none;
   font-weight: bold;
+}
+
+
+.add-to-visit-list {
+  margin: 10px 0;
+  height: 40px;
+  border: none;
+}
+
+.breweries-list li .link:hover a, 
+.add-to-visit-list:hover {
+  background-color: #98dbff;
 }

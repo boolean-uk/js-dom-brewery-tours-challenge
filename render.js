@@ -211,5 +211,23 @@ const displayPage = (num) => {
     renderBreweries(state.byPage[num -1])
 }
 
+const createAddToVisitListButton = (brewery) => {
+    const addToVisitListButton = document.createElement('button')
+    addToVisitListButton.setAttribute('class', 'add-to-visit-list')
+    addToVisitListButton.innerText = 'add to visit list'
+
+    brewery.append(addToVisitListButton)
+}
+
+const renderAddToVisitListButton = () => {
+    console.log(breweriesList)
+    const currentBreweries = breweriesList.querySelectorAll('li')
+    console.log(currentBreweries)
+    currentBreweries.forEach(brewery => {
+        createAddToVisitListButton(brewery)
+    })
+
+}
+
 renderPaginationControlBar()
 renderSearchByNameSearchBar()

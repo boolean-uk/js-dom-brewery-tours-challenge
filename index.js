@@ -8,6 +8,9 @@ fetch("https://api.openbrewerydb.org/v1/breweries")
     console.log(state.breweries.length)
     filterByPageChosen(state.breweries)
 })
-.then(() => displayPage(1))
+.then(() => {
+    displayPage(1)
+    renderAddToVisitListButton()
+})
 
 
