@@ -231,5 +231,66 @@ searchBrewsForm.addEventListener('input', (event) => {
     }
 })
 
+// EXTENSION 2
+
+// HIGH LEVEL VARS
+const filterSection = document.querySelector('.filters-section .filters-section')
+
+// CITY FILTER DIV
+const cityFilterDiv = document.createElement('div')
+cityFilterDiv.classList.add('filter-by-city-heading')
+
+const cityFilterH3 = document.createElement('h3')
+cityFilterH3.innerText = 'Cities'
+
+const clearAllButton = document.createElement('button')
+clearAllButton.classList.add('clear-all-btn')
+clearAllButton.innerText = 'clear all'
+
+cityFilterDiv.append(cityFilterH3, clearAllButton)
+filterSection.append(cityFilterDiv)
+
+// CITY FILTER FORM
+const cityFilterForm = document.createElement('form')
+cityFilterForm.id = 'filter-by-city-form'
+
+// RENDER CITIES FUNCTION
+function renderCities(city) {
+    const cityFilterFormInput = document.createElement('input')
+    cityFilterFormInput.type = 'checkbox'
+    cityFilterFormInput.name = city
+    cityFilterFormInput.value = city
+
+    const cityFilterFormLabel = document.createElement('label')
+    cityFilterFormLabel.setAttribute('for', city)
+    cityFilterFormLabel.innerText = city
+
+    cityFilterForm.append(cityFilterFormInput, cityFilterFormLabel)
+
+    filterSection.append(cityFilterDiv, cityFilterForm)
+}
+
+// FETCH ALL BREWERIES, LOOP THROUGH AND EXTRACT CITIES REMOVING DUPLICATES 
+// ARRANGE IN ALPHABTICAL ORDER, APPEND TO CITY FILTER SECTION USING RENDER 
+// CITIES FUNCTION
+fetch(`${root}`)
+.then((res) => res.json())
+.then((data) => {
+    state.breweries = data
+    let cities = []
+    state.breweries.forEach((brewery) => {
+        let city = brewery.city
+        if (!cities.includes(city)) {
+            cities.push(city)
+        }
+    })
+    let sortedCities = cities.sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1)
+    sortedCities.forEach((city) => {
+        renderCities(city)
+    })
+})
+
+
+
 // --------------------- | CALL INITIAL RENDER | --------------------- \\
 render()
