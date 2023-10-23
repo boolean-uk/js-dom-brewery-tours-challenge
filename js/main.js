@@ -22,9 +22,8 @@ const state = {
     stateName: "",
     name: "",
     citiesList: [],
+    citiesFilter: [],
     currentPage: 1,
-    totalPages: 0,
-    // citiesFilter: [],
 };
 
 // global functions
@@ -58,11 +57,19 @@ const getCitiesList = () => {
         });
 };
 
-// get count of all the breweries
-const getBreweriesCount = async () => {
-    await fetch(`${defaultLink}/meta`)
-        .then((res) => res.json())
-        .then((data) => (state.totalPages = Math.ceil(data.total / 10)));
+// get breweries by cities
+const getBreweriesByCities = () => {
+    if (state.citiesFilter.length === 0) getAllBreweries();
+    state.breweries = [];
+
+    state.citiesFilter.forEach((city) => {
+        fetch(`${defaultLink}?by_city=${city}`)
+            .then((response) => response.json())
+            .then((data) => {
+                state.breweries = [...state.breweries, ...data];
+                renderBreweries();
+            });
+    });
 };
 
 // RENDERS --------------------------------------------------------------------------------------------------------------------------------------------
@@ -151,13 +158,14 @@ const renderListOfCities = () => {
         cityListInput.value = city.toLowerCase();
 
         cityListInput.addEventListener("change", (e) => {
-            // const value = e.target.value;
-            // e.target.checked
-            //     ? state.citiesFilter.push(value)
-            //     : (state.citiesFilter = state.citiesFilter.filter(
-            //           (item) => item !== value
-            //       ));
-            // getAllBreweries();
+            const value = e.target.value;
+            e.target.checked
+                ? state.citiesFilter.push(value)
+                : (state.citiesFilter = state.citiesFilter.filter(
+                      (item) => item !== value
+                  ));
+
+            getBreweriesByCities();
         });
 
         // configuration
@@ -166,9 +174,6 @@ const renderListOfCities = () => {
         filterByCitiesList.append(cityListContainer);
     });
 };
-
-// render pagination
-const renderPagination = () => {};
 
 // EVENTS ------------------------------------------------------------------------------------------------------------------------------------
 
@@ -207,4 +212,3 @@ clearCitiesList.addEventListener("click", () => {
 
 getAllBreweries();
 getCitiesList();
-getBreweriesCount();
