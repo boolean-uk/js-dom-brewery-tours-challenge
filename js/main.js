@@ -19,7 +19,7 @@ const defaultLink = "https://api.openbrewerydb.org/v1/breweries";
 const state = {
     breweries: [],
     type: "",
-    stateName: "",
+    stateName: "new york",
     name: "",
     citiesList: [],
     citiesFilter: [],
@@ -29,6 +29,8 @@ const state = {
 // global functions
 const updateState = (data) => {
     state.breweries = data;
+    state.citiesList = [...new Set(data.map((item) => item.city))];
+    renderListOfCities();
     renderBreweries();
 };
 
@@ -45,16 +47,6 @@ const getAllBreweries = () => {
     )
         .then((response) => response.json())
         .then((data) => updateState(data));
-};
-
-// get list of cities
-const getCitiesList = () => {
-    fetch(`${defaultLink}?by_city`)
-        .then((response) => response.json())
-        .then((data) => {
-            state.citiesList = [...new Set(data.map((item) => item.city))];
-            renderListOfCities();
-        });
 };
 
 // get breweries by cities
@@ -150,6 +142,9 @@ const renderBreweries = () => {
 
 // render list of cities
 const renderListOfCities = () => {
+    filterByCitiesList
+        .querySelectorAll("label")
+        .forEach((item) => item.remove());
     state.citiesList.forEach((city) => {
         const cityListContainer = document.createElement("label");
 
@@ -211,4 +206,3 @@ clearCitiesList.addEventListener("click", () => {
 // calls main functions
 
 getAllBreweries();
-getCitiesList();
