@@ -89,7 +89,7 @@ const loadBreweriesByState = (stateNameStr) => {
   fetch(`${protocol}://${baseURL}/v1/breweries?by_state=${stateNameStr}&per_page=200`)
     .then(response => response.json())
     .then(data => state.breweries = data.filter(item => ["micro", "regional", "brewpub"].includes(item.brewery_type.toLowerCase())))
-    .then(() => state.renderedBreweries = compileRenderedList()) // note that the previous settings of FilterArr and textStr still apply
+    .then(() => compileRenderedList()) // note that the previous settings of FilterArr and textStr still apply
     .then(() => renderList())
 }
 
@@ -105,13 +105,13 @@ const compileRenderedList = () => {
 
 const triggerFilter = document.querySelector("#filter-by-type")
 triggerFilter.addEventListener("change", (event) => {
-  filterArr = [event.target.value]
+  event.target.value !== "" ? filterArr = [event.target.value] : filterArr = ["micro", "regional", "brewpub"]
   clearRenderList()
+  compileRenderedList()
   renderList()
 })
 
 const renderList = () => {
-  console.log(state.breweries, state.renderedBreweries)
   state.renderedBreweries.forEach(val => listRender.appendChild(createListItem(val)))
   updateResultCount()
 }
