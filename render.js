@@ -138,6 +138,7 @@ const renderCityList = (cities) => {
         cityCheckbox.setAttribute('value', `${city}`)
         filterByCityForm.append(cityCheckbox)
         addEventToCheckbox(cityCheckbox)
+        addClearAllEvent(cityCheckbox)
 
         const cityLabel = document.createElement('label')
         cityLabel.setAttribute('for', `${city}`)

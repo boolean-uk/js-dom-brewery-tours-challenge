@@ -91,3 +91,17 @@ const addEventToCheckbox = (cityCheckbox) => {
         renderBreweries(filteredByCities)
     })
 }
+
+//TODO:CLEAR ALL FILTERS
+
+const addClearAllEvent = (cityCheckbox) => {
+    const clearAllButton = document.querySelector(".clear-all-btn")
+    clearAllButton.addEventListener('click', event => {
+        cityCheckbox.checked = false
+        removeCurrentList()
+    })
+}
+
+//TODO: PAGINATION
+
+//TODO: myBreweries cart (list)
