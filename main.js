@@ -136,9 +136,15 @@ const renderCityFilters = () => {
     input.setAttribute("name", allCities[i].toLowerCase())  
     input.setAttribute("value", allCities[i].toLowerCase())  
 
+    const capitalizeCityStr = (str) => {
+      const wordArr = str.split(" ")
+      wordArr.forEach(val => val[0].toUpperCase() + val.slice(1).toLowerCase())
+      return wordArr.join(" ")
+    }
+
     const label = document.createElement("label")
     label.setAttribute("for", allCities[i].toLowerCase())
-    label.innerText = allCities[i][0].toUpperCase() + allCities[i].toLowerCase().slice(1)
+    label.innerText = capitalizeCityStr(allCities[i])
 
     form.appendChild(input)
     form.appendChild(label)
