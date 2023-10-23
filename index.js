@@ -195,15 +195,21 @@ const renderFilterByCity = () => {
     form.setAttribute("id", "filter-by-city-form");
 
     state.breweries.forEach((brewery) => {
-        const inputLabel = document.createElement("label");
-        inputLabel.innerText = `${brewery.city}`;
-        const checkbox = document.createElement("input");
-        checkbox.setAttribute("type", "checkbox");
-        checkbox.setAttribute("name", "filter-by-city");
-        checkbox.setAttribute("value", `${brewery.city}`);
-        checkbox.setAttribute("id", `${brewery.city}`);
-        form.append(checkbox);
-        form.append(inputLabel);
+        const cityNameCheck = []
+        if (cityNameCheck.includes(brewery.city) === false) 
+        {
+            const inputLabel = document.createElement("label");
+            inputLabel.innerText = `${brewery.city}`;
+            const checkbox = document.createElement("input");
+            checkbox.setAttribute("type", "checkbox");
+            checkbox.setAttribute("name", "filter-by-city");
+            checkbox.setAttribute("value", `${brewery.city}`);
+            checkbox.setAttribute("id", `${brewery.city}`);
+            cityNameCheck.push(brewery.city)
+            console.log(cityNameCheck)
+            form.append(checkbox);
+            form.append(inputLabel);
+        } 
     });
 
     filterSection.append(sectionHeader);
@@ -222,8 +228,8 @@ searchBarInput.addEventListener("input", (event) => {
         .then((data) => {
             state.breweries = data;
             removeBreweries();
-            removeFilterbyCityItems()
-            renderFilterByCity()
+            removeFilterbyCityItems();
+            renderFilterByCity();
             renderBreweryList(state);
         });
 });
