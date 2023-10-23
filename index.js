@@ -23,25 +23,33 @@ function searchFunc(event) {
 
 function renderCard(breweries) {
     
+    document.createElement('li')
+
+    document.createElement('h3')
+
+    document.createElement('div')
+
+    document.createElement('section')
+
+    document.createElement('h3')
+
+    document.createElement('p')
+
+    document.createElement('p')
+
+    document.createElement('section')
+
+    document.createElement('h3')
+
+    document.createElement('p')
+
+    document.createElement('section')
+
+    document.createComment('a')
+
+
 }
 
 
-/* <li>
-  <h2>Snow Belt Brew</h2>
-  <div class="type">micro</div>
-  <section class="address">
-    <h3>Address:</h3>
-    <p>9511 Kile Rd</p>
-    <p><strong>Chardon, 44024</strong></p>
-  </section>
-  <section class="phone">
-    <h3>Phone:</h3>
-    <p>N/A</p>
-  </section>
-  <section class="link">
-    <a href="null" target="_blank">Visit Website</a>
-  </section>
-</li> */
 
-
-// Add an event listener. 
+// Add a filter
