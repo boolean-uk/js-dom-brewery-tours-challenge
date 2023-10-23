@@ -4,24 +4,26 @@ const state = {
 
 const root = 'https://api.openbrewerydb.org/v1/breweries'
 
-// Query selectors / define the root
-
-select-state-section
-select-state
-breweries-list
-filter-by-type
-
+const form = document.querySelector('#select-state-section')
+const searchInput = document.querySelector('#select-state')
+const breweryList = document.querySelector('#breweries-list')
+const filter = document.querySelector('#filter-by-type')
 
 
 // Build a fetch function that works based on the state entered in search. Filter out all breweries that aren't Micro, Regional or Brewpub.
 
+form.addEventListener('submit', search)
 
+function searchFunc(event) {
+    event.preventDefault()
+    const stateSearch = searchInput.value
+    retrieveData(byState)
+    form.reset()
+}
 
-
-
-
-// Build a render card function
-
+function renderCard(breweries) {
+    
+}
 
 
 /* <li>
