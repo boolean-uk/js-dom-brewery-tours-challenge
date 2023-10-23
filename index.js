@@ -28,9 +28,9 @@ function getBreweryType(type, filter, page) {
     .then((res) => {
       STATE.breweries[type].push(...res);
       if (res.length === perPage) {
-        getBreweryType(type, filter, ++page);
+        return getBreweryType(type, filter, ++page);
       }
-    });
+    })
 }
 
 function getBreweriesByState(state) {
@@ -51,8 +51,7 @@ function clearStateBreweryList() {
 init();
 
 function test() {
-  getBreweriesByState("washington")
-    .then(() => renderBreweries())
+  getBreweriesByState("washington").then(() => renderBreweries());
 }
 
 // test();

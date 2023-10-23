@@ -1,8 +1,6 @@
 function renderBreweries(type) {
   clearElement(BREWERY_LIST);
 
-  console.log('STATE.breweries.micro', STATE.breweries.micro)
-
   const breweryList = [];
   if (Object.keys(STATE.breweries).includes(type)) {
     breweryList.push(...STATE.breweries[type]);
@@ -84,7 +82,7 @@ function renderPaginateSelector() {
 
   if (
     currentPage < pageCount - additionalPage &&
-    pageCount > additionalPage * 2 + 1
+    pageCount > additionalPage * 2 + 2
   ) {
     const morePagesRight = makeElement("span", "page-more", "...");
     PAGINATION_NUMBERS.children[STATE.page.pageCount - 1].before(
@@ -92,7 +90,7 @@ function renderPaginateSelector() {
     );
   }
 
-  if (currentPage > additionalPage + 1 && pageCount > additionalPage * 2 + 1) {
+  if (currentPage > additionalPage + 1 && pageCount > additionalPage * 2 + 2) {
     const morePagesLeft = makeElement("span", "page-more", "...");
     PAGINATION_NUMBERS.children[0].after(morePagesLeft);
   }
