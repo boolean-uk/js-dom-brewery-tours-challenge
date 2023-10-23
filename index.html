@@ -40,21 +40,23 @@
       </aside>
       <h1>List of Breweries</h1>
       <nav class="pagination hidden">
+        <div class="search-result-counter">Showing 1-10 of 20 results</div>
         <div class="page-container">
           <span class="page-button page-previous">Previous</span>
           <span class="page-numbers"></span>
           <span class="page-button page-next">Next</span>
         </div>
-        <select name="page-amount" id="page-amount" class="page-amount">
-          <option value="10">Show: 10</option>
-          <option value="20">Show: 20</option>
-          <option value="50">Show: 50</option>
-          <option value="100">Show: 100</option>
-          <option value="1000">Show: 1000</option>
-        </select>
+        <div class="select-container">
+          <select name="page-amount" id="page-amount" class="page-amount">
+            <option value="10">Show: 10</option>
+            <option value="20">Show: 20</option>
+            <option value="50">Show: 50</option>
+            <option value="100">Show: 100</option>
+            <option value="1000">Show: 1000</option>
+          </select>
+        </div>
       </nav>
       <article>
-        <div class="result-counter hidden">Showing 1-10 of 20 results</div>
         <ul id="breweries-list" class="breweries-list">
           <!--
           For each brewery returned in the search, 

@@ -146,7 +146,7 @@ h1 {
 }
 
 .pagination {
-  display: flex;
+  display: grid;
   grid-area: pagination;
 
   gap: 1ch;
@@ -192,10 +192,10 @@ h1 {
   border-radius: 0.25rem;
 
   height: 4ch;
+  width: 4ch;
 }
 
 .page-numbers > span:not(.page-more) {
-  width: 4ch;
   cursor: pointer;
 
   background-color: #1565c0;
@@ -204,6 +204,11 @@ h1 {
 
 .page-numbers > span.hidden {
   display: none;
+}
+
+.select-container {
+  display: flex;
+  justify-content: end;
 }
 
 #selected-page {
@@ -233,6 +238,10 @@ article {
   grid-area: article;
 
   padding: 1rem;
+}
+
+.search-result-counter {
+  text-align: end;
 }
 
 .breweries-list > * {

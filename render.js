@@ -121,10 +121,10 @@ function renderPaginateSelector() {
 
     if (idx === currentPage - 1) element.id = "selected-page";
 
-    if (idx > currentPage + 1 && idx !== numbers.length - 1) {
-      element.classList.toggle("hidden");
-    } else if (idx < currentPage - 3 && idx !== 0) {
-      element.classList.toggle("hidden");
+    if (idx > currentPage + 1 && idx !== pageCount - 1 && idx > 6) {
+      element.classList.add("hidden");
+    } else if (idx < currentPage - 3 && idx !== 0 && idx < pageCount - 7) {
+      element.classList.add("hidden");
     }
 
     return element;
@@ -132,14 +132,17 @@ function renderPaginateSelector() {
 
   multiAppend(PAGINATION_NUMBERS, ...pageNumbers);
 
-  if (currentPage < pageCount - additionalPage) {
+  if (
+    currentPage < pageCount - additionalPage &&
+    pageCount > additionalPage * 2 + 1
+  ) {
     const morePagesRight = makeElement("span", "page-more", "...");
     PAGINATION_NUMBERS.children[STATE.page.pageCount - 1].before(
       morePagesRight
     );
   }
 
-  if (currentPage > additionalPage + 1) {
+  if (currentPage > additionalPage + 1 && pageCount > additionalPage * 2 + 1) {
     const morePagesLeft = makeElement("span", "page-more", "...");
     PAGINATION_NUMBERS.children[0].after(morePagesLeft);
   }
@@ -148,17 +151,17 @@ function renderPaginateSelector() {
 }
 
 function togglePaginateAdjacentButtons() {
-  const buttons = PAGINATION.querySelectorAll(".page-button")
+  const buttons = PAGINATION.querySelectorAll(".page-button");
 
   for (const button of buttons) {
-    button.classList.remove("disabled")
+    button.classList.remove("disabled");
   }
 
   if (STATE.page.currentPage <= 1) {
-    buttons[0].classList.add("disabled")
+    buttons[0].classList.add("disabled");
   }
 
   if (STATE.page.currentPage >= STATE.page.pageCount) {
-    buttons[1].classList.add("disabled")
+    buttons[1].classList.add("disabled");
   }
 }
