@@ -154,8 +154,9 @@ const renderCityFilters = () => {
 }
 
 const clearPageNavigation = () => {
-  const navInnerElements = document.querySelector("nav *")
-  navInnerElements.forEach(element => element.remove())
+  const navInnerElements = document.querySelectorAll("nav *")
+  console.log(!!navInnerElements, navInnerElements)
+  if (!!navInnerElements === true) navInnerElements.forEach(element => element.remove())
 }
 
 const renderPageNavigation = () => {
@@ -166,8 +167,6 @@ const renderPageNavigation = () => {
   const buttonPrev = document.createElement("button")
   buttonPrev.innerText = "<"
   article.appendChild(buttonPrev)
-
-  console.log(state.renderedBreweries.length)
   
   for (let i = 0; i < Math.ceil(state.renderedBreweries.length / 10); i++) {
     console.log(i)
@@ -226,7 +225,7 @@ const renderList = () => {
 
 const clearRenderList = () => {
   const listEntries = document.querySelectorAll("#breweries-list li")
-  listEntries.forEach(entry => entry.remove())
+  if (!!listEntries.length === true) listEntries.forEach(entry => entry.remove())
 }
 
 const createListItem = (item) => {
