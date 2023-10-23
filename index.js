@@ -140,5 +140,56 @@ filterByType.addEventListener('click',(event)=> {
     }
 })
 
+//for the extensions
+//main 
+const mainBody = document.querySelector('main')
 
+//for the extension 1 
+function searchName(){
+    //create the entire header for extions1
+    const header = document.createElement('header')
+    header.classList.add('search-bar')
+
+        //create form inside the header
+        const form = document.createElement('form')
+        form.setAttribute('id','search-breweries-form')
+        // form.setAttribute('autocomplete','off')
+        form.autocomplete = 'off'
+
+            //label inside the header
+            const label = document.createElement('label')
+            label.setAttribute('for','search-breweries')
+
+                //h2 insdie the label 
+                const h2 = document.createElement('h2')
+                h2.innerText = 'Search Breweries:'
+                label.append(h2)
+
+            const input = document.createElement('input')
+            input.setAttribute('id','search-breweries')   
+            input.setAttribute('name','search-breweries') 
+            input.setAttribute('type','text') 
+
+            form.append(label,input)
+        header.append(form)
+    mainBody.append(header)
+
+    //adding addEventListener for the form to search name
+    form.addEventListener('input',(event)=>{
+        event.preventDefault();
+        remove();
+        fetch(`${root}?by_name=${input.value}`)
+            .then((response)=>response.json())
+            .then((data)=>{
+                state.breweries = data;
+                renderBreweryList();
+            })
+    })
+}
+searchName();
+
+
+
+
+//for the amin fucntion 
 main();
