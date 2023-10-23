@@ -4,6 +4,7 @@ const state = {
 }
 
 const listRender = document.getElementById("breweries-list")
+const aside = document.querySelector("aside aside.filters-section")
 
 // API consts
 const protocol = "https"
@@ -111,6 +112,41 @@ const compileCityArr = () => {
 }
 
 const renderCityFilters = () => {
+  const div = document.createElement("div")
+  div.setAttribute("class", "filter-by-city-heading")
+
+  const h3 = document.createElement("h3")
+  h3.innerText = "Cities"
+  div.appendChild(h3)
+
+  const button = document.createElement("button")
+  button.setAttribute("class", "clear-all-btn")
+  button.innerText = "clear all"
+  div.appendChild(button)
+
+  const form = document.createElement("form")
+  form.setAttribute("id", "filter-by-city-form")
+
+  for (let i = 0; i < compileCityArr().length; i++) {
+    const input = document.createElement("input")
+    input.setAttribute("type", "checkbox")  
+    input.setAttribute("name", compileCityArr()[i].toLowerCase())  
+    input.setAttribute("value", compileCityArr()[i].toLowerCase())  
+
+    const label = document.createElement("label")
+    label.setAttribute("for", compileCityArr()[i].toLowerCase())
+    label.innerText = compileCityArr()[i][0].toUpperCase() + compileCityArr()[i].toLowerCase().slice(1)
+
+    form.appendChild(input)
+    form.appendChild(label)
+  }
+
+  div.append(form)
+
+  aside.appendChild(div)
+}
+
+const renderPageNavigation = () => {
 
 }
 
@@ -212,3 +248,4 @@ const createListItem = (item) => {
 }
 
 createFreetextSearch()
+renderCityFilters()
