@@ -159,7 +159,7 @@ const createListItem = (item) => {
   sectionPhone.appendChild(titlePhone)
   
   const phoneNum = document.createElement("p")
-  phoneNum.innerText = "+" + item.phone
+  phoneNum.innerText = !!item.phone === true ? ("+" + item.phone) : "no phone number"
   sectionPhone.appendChild(phoneNum)
   
   listentry.appendChild(sectionPhone)
