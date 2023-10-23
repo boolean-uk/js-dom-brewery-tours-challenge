@@ -1,4 +1,3 @@
-
 // removes the current breweries list
 const removeCurrentList = () => {
     const currentList = breweriesList.querySelectorAll('li')
@@ -13,6 +12,8 @@ const renderBrewery = (brewery) => {
     renderBreweryLayout(breweryContainer, brewery)
 }
 
+
+// creates and renders the high-level layout for each brewery
 const renderBreweryLayout = (breweryContainer, brewery) => {
 
     const h2 = document.createElement('h2')
@@ -32,7 +33,7 @@ const renderBreweryLayout = (breweryContainer, brewery) => {
         renderSectionContent(sectionClass, section, brewery)
     })
 
-    //extension 4
+    //extension 4: adds the button that allows a user to add the select breweries to their list of visits (needs refactor)
     const addToVisitListButton = document.createElement('button')
     addToVisitListButton.setAttribute('class', 'add-to-visit-list')
     addToVisitListButton.innerText = 'add to visit list'
@@ -45,16 +46,12 @@ const renderBreweryLayout = (breweryContainer, brewery) => {
         }
     
         fetch("http://localhost:3000/myList", options)
-        .then( () => {
-            fetch("http://localhost:3000/myList")
-            .then(r => r.json())
-            .then(data => state.myList.push(data))
-        })
-    
+        // .then( () => {})
     })
 
 }
 
+//renders the more detailed layout and contents for each brewery
 const renderSectionContent = (sectionClass, section, brewery) => {
 
     if (sectionClass === "address") {
@@ -88,7 +85,7 @@ const renderSectionContent = (sectionClass, section, brewery) => {
     }
 }
 
-
+//renders all breweries as part of a list
 const renderBreweries = (breweriesArray) => {
     removeCurrentList()
     breweriesArray.forEach(brewery => {
@@ -100,7 +97,10 @@ const renderBreweries = (breweriesArray) => {
 }
 
 
-//RENDERS THE NEWLY ADDED SEARCH BAR (SEARCH BY NAME)
+
+
+//EXTENSION 1
+//RENDERS THE NEWLY ADDED SEARCH BAR (SEARCH BY NAME) - 
 
 const renderSearchByNameSearchBar = () => {
 
@@ -127,28 +127,30 @@ const renderSearchByNameSearchBar = () => {
 
 
 
-
+//EXTENSION 2
 //RENDERS THE LIST OF CITIES TO CHOOSE FROM 
 
+
+//needs refactor
 const renderCityList = (cities) => {
 
-    //div
+    //creates and renders the city list container
     const filterByCityHeading = document.createElement('div')
     filterByCityHeading.setAttribute('class','filter-by-city-heading')
     filtersSection.append(filterByCityHeading)
 
-    //div > h3
+    //creates and renders the title for this section
     const filterByCityH3 = document.createElement('h3')
     filterByCityH3.innerText = 'Cities'
     filterByCityHeading.append(filterByCityH3)
 
-    //div > button
+    //creates and renders the clear all button
     const filterByCityButton = document.createElement('button')
     filterByCityHeading.append(filterByCityButton)
     filterByCityButton.setAttribute('class', 'clear-all-btn')
     filterByCityButton.innerText = "clear all"
 
-    //form
+    //creates and render a list of all the cities found within one state (as returned by the GET request)
     const filterByCityForm = document.createElement('form')
     filterByCityForm.setAttribute('id', 'filter-by-city-form')
     filtersSection.append(filterByCityForm)
@@ -168,7 +170,8 @@ const renderCityList = (cities) => {
         filterByCityForm.append(cityLabel)
     })   
 }
- 
+
+//clears up the space when a new state is selected and the list of cities displayed must change
 const removeCurrentCityList = () => {
     const filterByCityForm = document.querySelector('#filter-by-city-form')
     const filterByCityHeading = document.querySelector('.filter-by-city-heading')
@@ -179,7 +182,7 @@ const removeCurrentCityList = () => {
     }
 }
 
-
+//stores all the cities names returns by a GET request for a given state into an array within the state object
 const getAndRenderCities = (array) => {
     state.cities = []
     array.forEach(brewery => {
@@ -192,20 +195,28 @@ const getAndRenderCities = (array) => {
 }
 
 
+// EXTENSION 3 : PAGINATION
+
+
+//TODO: change const pages so that the number of pages depends on the number of results that are available to be displayed (eg: if smaller than 10: no pagination navbar displayed / if between 10 and 20, 2 pages available / etc )
 const renderPaginationControlBar = () => {
+
+    //to  be swapped for an array created using the number of results obtained given the current search parameters
     const pages = [1, 2, 3, 4, 5]
+
+    //renders the pagination bar itself (at the bottom of the page)
     const pagesList = document.createElement('ul')
     pagesList.setAttribute('id', 'page-list')
     const body = document.querySelector('body')
     body.append(pagesList)
 
-    //go back
+    //go back (no functionality as of yet)
     const arrowBack = document.createElement('li')
     arrowBack.innerText = '<'
     arrowBack.setAttribute('class', 'pagination-nav')
     pagesList.append(arrowBack)
 
-    //page by page
+    //page by page - renders page numbers, allows navigation (needs refactor)
     pages.forEach(p => {
         const pageNumber = document.createElement('li')
         pageNumber.innerText = `${p}`
@@ -221,26 +232,30 @@ const renderPaginationControlBar = () => {
         }
     }
 
-    //go to the next page
+    //go to the next page (no functionality as of yet)
     const arrowNext = document.createElement('li')
     arrowNext.innerText = '>'
     arrowNext.setAttribute('class', 'pagination-nav')
     pagesList.append(arrowNext)
 }
 
-
+//displays the results page by page
 const displayPage = (num) => {
     renderBreweries(state.byPage[num -1])
 }
 
 
-// "Cart"
+// EXTENSION 4 - creates the button linking to my-visit-list.html
 
 const displayMyVisitList = () => {
-    
+    const selectStateSection = document.querySelector(".select-state-section")
+    const displayMyVisitListButton = document.createElement('a')
+    selectStateSection.prepend(displayMyVisitListButton)
+    displayMyVisitListButton.innerText = "My brewery tours list"
+    displayMyVisitListButton.setAttribute('href', './my-visit-list.html')
 }
 
-
+displayMyVisitList()
 renderPaginationControlBar()
 renderSearchByNameSearchBar()
 

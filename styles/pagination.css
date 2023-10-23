@@ -1,3 +1,6 @@
+/*TODO: add styling that shows which pages is currently active (using :focus?*/
+
+
 .hidden {
     visibility: collapse;
 }

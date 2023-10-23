@@ -216,7 +216,9 @@ article {
 }
 
 .breweries-list li .link a, 
-.add-to-visit-list {
+.add-to-visit-list,
+.select-state-section a, 
+.breweries-list button {
   display: block;
   padding: 0.5rem 1rem;
 
@@ -238,6 +240,22 @@ article {
 }
 
 .breweries-list li .link:hover a, 
-.add-to-visit-list:hover {
+.add-to-visit-list:hover, 
+.breweries-list button:hover  {
   background-color: #98dbff;
+}
+
+.select-state-section a {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+  background-color: black;
+  border: 2px solid white;
+  color:#fbc02d;
+}
+
+.select-state-section a:hover {
+  box-shadow: 2px 2px 5px rgb(0, 0, 0);
+  color: white;
+  border: none;
 }

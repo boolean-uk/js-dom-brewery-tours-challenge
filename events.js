@@ -1,5 +1,5 @@
 
-//FILTER BY TYPE OR BY STATE AND TYPE
+//FILTER BY TYPE OR BY STATE AND TYPE (core)
 
 const getBreweriesByStateAndType = (t) => {
 
@@ -37,7 +37,7 @@ chooseFilter.addEventListener('change', change => {
 })
 
 
-//FILTER BY STATE
+//FILTER BY STATE (core)
 
 
 selectStateForm.addEventListener('submit', event => {
@@ -61,6 +61,8 @@ const getBreweriesByState = (usState) => {
     })
 }
 
+
+//EXTENSION 1
 //SEARCH BY NAME - THE LIST UPDATES AS THE USER TYPES
 
     const searchBreweries =  document.querySelector('#search-breweries')
@@ -80,7 +82,7 @@ const getBreweriesByState = (usState) => {
 
     })
     
-
+//EXTENSION 2
 //FILTER BY CITY
 
 const filterByCity = (selectedCity) => {
@@ -96,8 +98,6 @@ const addEventToCheckbox = (cityCheckbox) => {
     })
 }
 
-//TODO:CLEAR ALL FILTERS
-
 const addClearAllEvent = (cityCheckbox) => {
     const clearAllButton = document.querySelector(".clear-all-btn")
     clearAllButton.addEventListener('click', event => {
@@ -106,8 +106,8 @@ const addClearAllEvent = (cityCheckbox) => {
     })
 }
 
-//TODO: PAGINATION: get the arrow back and arrow next working
-
+//EXTENSION 3
+//ensures that only the search results belonging to one page appear as said page number is selected
 
 const filterByPageChosen = (breweriesArray) => {
     state.byPage = []
@@ -118,6 +118,6 @@ const filterByPageChosen = (breweriesArray) => {
     }
 }
 
-//TODO: myBreweries cart (list)
+
 
 

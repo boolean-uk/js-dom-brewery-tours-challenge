@@ -13,3 +13,12 @@ fetch("https://api.openbrewerydb.org/v1/breweries")
 })
 
 
+
+//TODO: PAGINATION: get the arrow back and arrow next working
+
+//TODO: FILTER BY CITY: update event listener so that unchecking a checkbox remove the results for that city from the list of breweries displayed on screen
+
+//TODO: FILTER BY TYPE: add the possibility to filter by type one a city (or more) has(have) been selected (as of now, this only works with states)
+
+//TODO: general refactor (especially for extension 4 code), aiming to 1) break longer streches of code into smaller functions, each of which has one clear job AND 2) ensure that code is not repeated unecessarily
+
