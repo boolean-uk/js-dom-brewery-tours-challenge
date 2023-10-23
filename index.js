@@ -10,7 +10,6 @@ fetch("https://api.openbrewerydb.org/v1/breweries")
 })
 .then(() => {
     displayPage(1)
-    renderAddToVisitListButton()
 })
 
 

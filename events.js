@@ -120,3 +120,4 @@ const filterByPageChosen = (breweriesArray) => {
 
 //TODO: myBreweries cart (list)
 
+

@@ -29,3 +29,6 @@ const spacesToUnderscores =  (word) => {
       return word.split(' ').join('_')
 }
 
+//extension 4
+state.myList = []
+

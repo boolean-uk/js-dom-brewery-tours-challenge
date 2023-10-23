@@ -31,6 +31,28 @@ const renderBreweryLayout = (breweryContainer, brewery) => {
         breweryContainer.append(section)
         renderSectionContent(sectionClass, section, brewery)
     })
+
+    //extension 4
+    const addToVisitListButton = document.createElement('button')
+    addToVisitListButton.setAttribute('class', 'add-to-visit-list')
+    addToVisitListButton.innerText = 'add to visit list'
+    breweryContainer.append(addToVisitListButton)
+    addToVisitListButton.addEventListener('click', () => {
+        const options = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify(brewery)
+        }
+    
+        fetch("http://localhost:3000/myList", options)
+        .then( () => {
+            fetch("http://localhost:3000/myList")
+            .then(r => r.json())
+            .then(data => state.myList.push(data))
+        })
+    
+    })
+
 }
 
 const renderSectionContent = (sectionClass, section, brewery) => {
@@ -72,7 +94,7 @@ const renderBreweries = (breweriesArray) => {
     breweriesArray.forEach(brewery => {
         //only show the breweries that offer tours
         if (brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub') {   
-            renderBrewery(brewery)  
+            renderBrewery(brewery) 
         } 
     })
 }
@@ -211,23 +233,14 @@ const displayPage = (num) => {
     renderBreweries(state.byPage[num -1])
 }
 
-const createAddToVisitListButton = (brewery) => {
-    const addToVisitListButton = document.createElement('button')
-    addToVisitListButton.setAttribute('class', 'add-to-visit-list')
-    addToVisitListButton.innerText = 'add to visit list'
 
-    brewery.append(addToVisitListButton)
+// "Cart"
+
+const displayMyVisitList = () => {
+    
 }
 
-const renderAddToVisitListButton = () => {
-    console.log(breweriesList)
-    const currentBreweries = breweriesList.querySelectorAll('li')
-    console.log(currentBreweries)
-    currentBreweries.forEach(brewery => {
-        createAddToVisitListButton(brewery)
-    })
-
-}
 
 renderPaginationControlBar()
 renderSearchByNameSearchBar()
+
