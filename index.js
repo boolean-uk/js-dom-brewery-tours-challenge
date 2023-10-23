@@ -2,7 +2,9 @@ const search = document.getElementById("select-state");
 const searchForm = document.getElementById("select-state-form");
 const filter = document.getElementById("filter-by-type");
 const searchBreweryName = document.getElementById("search-breweries-form");
+const filterByCityForm = document.getElementById("filter-by-city-form");
 const breweriesList = document.querySelector(".breweries-list");
+const clearAllBtn = document.querySelector(".clear-all-btn");
 
 const root = "https://api.openbrewerydb.org/v1/breweries";
 let breweries = state.breweries;
@@ -14,7 +16,8 @@ const getData = (state) => {
         breweries = data.filter(brewery => 
             ["micro", "regional", "brewpub"].includes(brewery.brewery_type)
         )
-        createBreweryCard(breweries)
+        createBreweryCard(breweries);
+        createCities();
       })
 };
 
@@ -88,6 +91,48 @@ const createBreweryCard = (breweries) => {
     });
 };
 
+const createCities = () => {
+    filterByCityForm.innerHTML = "";
+
+    const cities = [];
+    breweries.forEach(brewery => cities.push(brewery.city));
+    const filteredCities = Array.from(new Set(cities));
+
+    filteredCities.forEach(city => {
+        const lowerCaseCity = city.toLowerCase();
+
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.name = lowerCaseCity;
+        input.setAttribute("value", lowerCaseCity);
+
+        const label = document.createElement("label");
+        label.for = lowerCaseCity;
+        label.innerText = city
+
+        filterByCityForm.append(input, label);
+    })
+};
+
+const clearAll = () => {
+    for (let i = 0; i < filterByCityForm.length; i++) {
+        filterByCityForm[i].checked = false;
+    };
+    createBreweryCard(breweries);
+};
+
+const filterByCity = () => {
+    let filteredBreweries;
+    const checkedCities = Array.from(
+        filterByCityForm.querySelectorAll("input:checked")
+        ).map(checked => checked.value);
+
+    checkedCities.length == 0 ? createBreweryCard(breweries)
+    : (filteredBreweries = breweries.filter(brewery =>
+         checkedCities.includes(brewery.city.toLowerCase())),
+         createBreweryCard(filteredBreweries));
+};
+
 const searchName = (e) => {
     e.preventDefault();
     const searchBreweries = document.querySelector("#search-breweries");
@@ -116,6 +161,8 @@ const filterType = () => {
         createBreweryCard(filteredBreweries))
 };
 
+clearAllBtn.addEventListener("click", clearAll);
+filterByCityForm.addEventListener("change", filterByCity)
 searchBreweryName.addEventListener("input", searchName);
 searchForm.addEventListener("submit", searchInput);
 filter.addEventListener("change",filterType);

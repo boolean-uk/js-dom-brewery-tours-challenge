@@ -80,7 +80,7 @@ main {
   border: none;
   background-color: transparent;
   color: #1565c0;
-
+  cursor: pointer;
   text-decoration: underline;
   font-size: 0.725rem;
 }

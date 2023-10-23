@@ -1,3 +1,4 @@
 const state = {
-    breweries: []
+    breweries: [],
+    filtered: []
 };
