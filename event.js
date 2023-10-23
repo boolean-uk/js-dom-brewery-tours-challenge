@@ -3,11 +3,8 @@ function usStateInput() {
     e.preventDefault();
 
     clearStateBreweryList();
-    clearElement(BREWERY_LIST);
-
     getBreweriesByState(SELECT_STATE_INPUT.value)
       .then(() => renderBreweries())
-      .then(() => paginateBreweryList());
 
     SELECT_STATE_FORM.reset();
   });
@@ -49,4 +46,12 @@ function pageNumberSelect() {
       paginate();
     });
   }
+}
+
+function breweryTypeFilter() {
+  const select = document.querySelector("#filter-by-type")
+
+  select.addEventListener("input", e => {
+    renderBreweries(e.target.value)
+  })
 }

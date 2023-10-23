@@ -1,11 +1,20 @@
-function renderBreweries() {
-  const breweryList = [];
+function renderBreweries(type) {
+  clearElement(BREWERY_LIST);
 
-  for (const key in STATE.breweries) {
-    breweryList.push(...STATE.breweries[key]);
+  console.log('STATE.breweries.micro', STATE.breweries.micro)
+
+  const breweryList = [];
+  if (Object.keys(STATE.breweries).includes(type)) {
+    breweryList.push(...STATE.breweries[type]);
+  } else {
+    for (const key in STATE.breweries) {
+      breweryList.push(...STATE.breweries[key]);
+    }
   }
 
   breweryList.forEach((brewery) => renderBrewery(brewery));
+  STATE.page.currentPage = 1
+  paginate();
 }
 
 function renderBrewery(brewery) {
@@ -42,65 +51,6 @@ function renderBrewery(brewery) {
 
   multiAppend(li, h2, typeDiv, addressSection, phoneSection, linkSection);
   BREWERY_LIST.append(li);
-}
-
-function makeElement(elementName, className, innerText) {
-  const element = document.createElement(elementName);
-
-  if (Array.isArray(className)) {
-    className.forEach((classItem) => element.classList.add(classItem));
-  } else if (typeof className === "string" || typeof className === "number") {
-    element.classList.add(className);
-  }
-
-  element.innerText = innerText ? innerText : null;
-
-  return element;
-}
-
-function multiAppend(parent, ...elements) {
-  elements.forEach((element) => parent.append(element));
-}
-
-function clearElement(element) {
-  while (element.lastChild) {
-    element.lastChild.remove();
-  }
-}
-
-function formatPhoneNumber(number) {
-  switch (!!number) {
-    case true:
-      switch (number.length) {
-        case 12:
-          if (number[3] === "-" && number[7] === "-") {
-            return number.replace("-", " ");
-          } else {
-            console.warn(
-              "number not processed:",
-              "numberLength:",
-              number.length
-            );
-          }
-        case 10:
-          return `${number.slice(0, 3)} ${number.slice(3, 6)}-${number.slice(
-            6
-          )}`;
-        case 6:
-          return `${number.slice(0, 3)}-${number.slice(3)}`;
-        default:
-          console.warn(
-            "number not processed:",
-            number,
-            "numberLength:",
-            number.length
-          );
-      }
-
-    default:
-      break;
-  }
-  return number;
 }
 
 function renderPaginateSelector() {
@@ -148,20 +98,4 @@ function renderPaginateSelector() {
   }
 
   togglePaginateAdjacentButtons();
-}
-
-function togglePaginateAdjacentButtons() {
-  const buttons = PAGINATION.querySelectorAll(".page-button");
-
-  for (const button of buttons) {
-    button.classList.remove("disabled");
-  }
-
-  if (STATE.page.currentPage <= 1) {
-    buttons[0].classList.add("disabled");
-  }
-
-  if (STATE.page.currentPage >= STATE.page.pageCount) {
-    buttons[1].classList.add("disabled");
-  }
 }
