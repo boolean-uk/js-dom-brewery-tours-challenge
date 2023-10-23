@@ -7,10 +7,18 @@ const state = {
 const root = "https://api.openbrewerydb.org/v1/breweries";
 //breweries list for the ul
 const breweryList = document.querySelector('.breweries-list');
+//form to submit the seach value
+const selectStateForm = document.querySelector('#select-state-form')
+
 
 //render fucntion to display the created items
 function renderBreweryList() {
     state.breweries.forEach((brewery) => {
+        // only for the type micro,regional,brewpub
+        if (brewery.brewery_type === 'micro' ||
+            brewery.brewery_type === 'regional' ||
+            brewery.brewery_type === 'brewpub' ){
+            
         //for the li 
         const li = document.createElement('li')
 
@@ -68,6 +76,7 @@ function renderBreweryList() {
 
         li.append(breweryName,breweryType,sectionAddress,sectionPhone,sectionLink)
     breweryList.append(li)
+            }
 
     })
 }
@@ -79,5 +88,29 @@ function main(){
             state.breweries = data;
             renderBreweryList()
         })
+}
+
+//for submitting the form 
+selectStateForm.addEventListener('submit',(event) =>{
+    event.preventDefault();
+
+    //for the value that is searched
+    const searchValue =  event.target[0].value;
+    console.log(searchValue)
+
+    fetch(`${root}?by_state=${searchValue}`)
+        .then((response)=>response.json())
+        .then((data)=>{
+           
+            state.breweries = data
+            remove();
+            renderBreweryList();
+        })
+})
+
+
+//to remove the items from the ul
+function remove (){
+    breweryList.innerHTML = '';
 }
 main();
