@@ -21,31 +21,44 @@ function searchFunc(event) {
     form.reset()
 }
 
+function retrieveData(state) {
+    const url = `${$root}by_state=${byState}`
+    fetch(url)
+    .then((res) => res.json())
+    .then((data) => {
+      state.breweries = data.filter((brewery) => ['micro', 'regional', 'brewpub'].includes(brewery.brewery_type))
+      renderCard(state.breweries)
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+}
+
 function renderCard(breweries) {
-    
-    document.createElement('li')
 
-    document.createElement('h3')
+    const carList = document.createElement('li')
 
-    document.createElement('div')
+    const cardTitle = document.createElement('h3')
 
-    document.createElement('section')
+    const breweryDiv = document.createElement('div')
 
-    document.createElement('h3')
+    const addressSec = document.createElement('section')
 
-    document.createElement('p')
+    const addressTitle = document.createElement('h3')
 
-    document.createElement('p')
+    const addressBody = document.createElement('p')
 
-    document.createElement('section')
+    const addressBodyTwo =  document.createElement('p')
 
-    document.createElement('h3')
+    const phoneSection = document.createElement('section')
 
-    document.createElement('p')
+    const phoneTitle = document.createElement('h3')
 
-    document.createElement('section')
+    const phoneNumber = document.createElement('p')
 
-    document.createComment('a')
+    const linkSection = document.createElement('section')
+
+    const linkAnchor = document.createComment('a')
 
 
 }
