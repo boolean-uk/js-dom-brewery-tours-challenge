@@ -36,7 +36,7 @@ function usState(baseUrl) {
     fetch(`${baseUrl}`)
     .then((reponse) => reponse.json())
     .then((data)=> {
-        console.log(data)
+        console.log("Data:",data)
         state.breweries = data;
         renderBreweries()
     })
@@ -62,7 +62,7 @@ function renderBreweries() {
         // 3. Div
         const breweryDiv = document.createElement('div')
         breweryDiv.setAttribute("class", "type")
-        breweryDiv.innerText = 'micro'
+        breweryDiv.innerText = eachBrewery.brewery_type
         breweryLi.append(breweryDiv)
 
         //4. Address Section
@@ -126,7 +126,7 @@ function renderBreweries() {
 
 
 
-// Select the search input
+// Select the search input --> When you enter a state
 const searchInput = document.querySelector('#select-state-form > input[type=submit]:nth-child(3)')
 
 searchInput.addEventListener("click", (e)=> {
@@ -136,24 +136,27 @@ searchInput.addEventListener("click", (e)=> {
     const inputValue = document.querySelector('#select-state').value
     const searchURL = `https://api.openbrewerydb.org/v1/breweries/search?query=${inputValue}`
     usState(searchURL)
-    renderBreweries()
     // const filteredBreweries = state.breweries.filter((brewery)=> brewery.state.toLowerCase().includes(inputValue))
-    // state.breweries = filteredBreweries // update state
-    
+    // state.breweries = filteredBreweries // update state 
     
 })
 
-//Filter breweries that offer brewery tours:
-// 1. Mirco
+//Filter breweries that offer brewery tours by:
+// 1. Micro
 // 2. Regional
 // 3. Brewpub
-// Use if statements
 
-function filterBreweriesByType(breweries, breweryType) {
-    const breweriesFiltered = breweries.filter(brewery => {
-        // if(brewery type) === "mirco" || (brewery type) === "Regional" ||(brewery type) === "Brewpub"  {
-        // return brewery
-        //    }
-    })
-}
 
+// Select the filter input
+const typeOfBrewInput = document.querySelector('#filter-by-type')
+// console.log(typeOfBrewInput)
+
+typeOfBrewInput.addEventListener('change', () => {
+    // Select input val
+    const value = typeOfBrewInput.value
+    const URLtypeOfBrew = `https://api.openbrewerydb.org/v1/breweries?by_type=${value}`
+
+    // API call and render
+    usState(URLtypeOfBrew)
+
+})
