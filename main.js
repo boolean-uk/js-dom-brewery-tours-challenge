@@ -4,7 +4,7 @@ const state = {
 }
 
 const listRender = document.getElementById("breweries-list")
-const aside = document.querySelector("aside aside.filters-section")
+const aside = document.querySelector("aside.filters-section aside.filters-section")
 
 // API consts
 const protocol = "https"
@@ -98,7 +98,7 @@ const loadBreweriesByState = (stateNameStr) => {
 const compileCityArr = () => {
   const listOfCities = []
 
-  state.breweries.forEach(brewery => {
+  state.renderedBreweries.forEach(brewery => {
     if (listOfCities.includes(brewery.city) === false) listOfCities.push(brewery.city)
   })
 
@@ -111,39 +111,40 @@ const compileCityArr = () => {
   return listOfCities
 }
 
+const deleteCityFilters = () => {
+  const form = document.querySelector("form#filter-by-city-form")
+  form.remove()
+}
+
 const renderCityFilters = () => {
-  const div = document.createElement("div")
-  div.setAttribute("class", "filter-by-city-heading")
+  const form = document.createElement("form")
+  form.setAttribute("id", "filter-by-city-form")
 
   const h3 = document.createElement("h3")
   h3.innerText = "Cities"
-  div.appendChild(h3)
+  form.appendChild(h3)
 
   const button = document.createElement("button")
   button.setAttribute("class", "clear-all-btn")
   button.innerText = "clear all"
-  div.appendChild(button)
+  form.appendChild(button)
 
-  const form = document.createElement("form")
-  form.setAttribute("id", "filter-by-city-form")
-
-  for (let i = 0; i < compileCityArr().length; i++) {
+  const allCities = compileCityArr()
+  for (let i = 0; i < allCities.length; i++) {
     const input = document.createElement("input")
     input.setAttribute("type", "checkbox")  
-    input.setAttribute("name", compileCityArr()[i].toLowerCase())  
-    input.setAttribute("value", compileCityArr()[i].toLowerCase())  
+    input.setAttribute("name", allCities[i].toLowerCase())  
+    input.setAttribute("value", allCities[i].toLowerCase())  
 
     const label = document.createElement("label")
-    label.setAttribute("for", compileCityArr()[i].toLowerCase())
-    label.innerText = compileCityArr()[i][0].toUpperCase() + compileCityArr()[i].toLowerCase().slice(1)
+    label.setAttribute("for", allCities[i].toLowerCase())
+    label.innerText = allCities[i][0].toUpperCase() + allCities[i].toLowerCase().slice(1)
 
     form.appendChild(input)
     form.appendChild(label)
   }
 
-  div.append(form)
-
-  aside.appendChild(div)
+  aside.appendChild(form)
 }
 
 const renderPageNavigation = () => {
@@ -169,12 +170,14 @@ triggerFilter.addEventListener("change", (event) => {
   event.target.value !== "" ? filterArr = [event.target.value] : filterArr = ["micro", "regional", "brewpub"]
   clearRenderList()
   compileRenderedList()
+  deleteCityFilters()
   renderList()
 })
 
 const renderList = () => {
   const pageResults = state.renderedBreweries.filter(brewery => brewery.page === pageIndex)
   pageResults.forEach(val => listRender.appendChild(createListItem(val)))
+  renderCityFilters()
   updateResultCount()
 }
 
@@ -223,7 +226,6 @@ const createListItem = (item) => {
   const cleanedUpPhoneNum = () => {
     if (!!item.phone === false) return "unknown"
     const cleanedStr = item.phone.replaceAll("/[^0-9]/gi")
-    // return cleanedStr
     return cleanedStr.slice(0, 3) + "-" + cleanedStr.slice(3, 6) + "-" + cleanedStr.slice(7)
   }
 
@@ -248,4 +250,3 @@ const createListItem = (item) => {
 }
 
 createFreetextSearch()
-renderCityFilters()
