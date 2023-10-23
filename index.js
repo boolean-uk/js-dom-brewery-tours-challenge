@@ -9,7 +9,9 @@ const root = "https://api.openbrewerydb.org/v1/breweries";
 const breweryList = document.querySelector('.breweries-list');
 //form to submit the seach value
 const selectStateForm = document.querySelector('#select-state-form')
-
+//for the filter 
+const filterByType = document.querySelector('#filter-by-type')
+const selectState = document.querySelector('#select-state')
 
 //render fucntion to display the created items
 function renderBreweryList() {
@@ -60,7 +62,11 @@ function renderBreweryList() {
                 phoneH3.innerText = 'Phone :'
                 //for the phone number insdie tthe p 
                 const phoneNumber = document.createElement('p')
-                phoneNumber.innerText = `${brewery.phone}`
+                if(brewery.phone === null){
+                    phoneNumber.innerText = `N/A`
+                }else{
+                    phoneNumber.innerText = `${brewery.phone}`
+                }
                 //appeding the section 
             sectionPhone.append(phoneH3,phoneNumber)
 
@@ -90,27 +96,49 @@ function main(){
         })
 }
 
-//for submitting the form 
-selectStateForm.addEventListener('submit',(event) =>{
-    event.preventDefault();
-
-    //for the value that is searched
-    const searchValue =  event.target[0].value;
-    console.log(searchValue)
-
-    fetch(`${root}?by_state=${searchValue}`)
-        .then((response)=>response.json())
-        .then((data)=>{
-           
-            state.breweries = data
-            remove();
-            renderBreweryList();
-        })
-})
-
 
 //to remove the items from the ul
 function remove (){
     breweryList.innerHTML = '';
 }
+
+function filter(){
+    fetch(`${root}?by_state=${selectState.value}&by_type=${filterByType.value}`)
+        .then((res)=>res.json())
+        .then((data)=>{
+            state.breweries = data;
+            renderBreweryList();
+        })
+}
+
+//for submitting the form 
+selectStateForm.addEventListener('submit',(event) =>{
+    event.preventDefault();
+    remove();
+    //for the value that is searched
+    // const searchValue =  event.target[0].value;
+    // console.log(searchValue)
+    if(filterByType.value === ''){
+        fetch(`${root}?by_state=${selectState.value}`)
+            .then((response)=>response.json())
+            .then((data)=>{
+                state.breweries = data;
+                renderBreweryList();
+            })
+    }else{
+        filter();
+    }
+})
+
+filterByType.addEventListener('click',(event)=> {
+    event.preventDefault();
+    remove();
+    if(filterByType.value === ''){
+        renderBreweryList();
+    }else{
+        filter();
+    }
+})
+
+
 main();
