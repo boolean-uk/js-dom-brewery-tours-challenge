@@ -12,6 +12,7 @@ const root = "https://api.openbrewerydb.org/v1/breweries";
 const breweryList = document.querySelector("#breweries-list");
 const selectStateForm = document.querySelector("#select-state-form");
 const filterByType = document.getElementById("filter-by-type");
+const article = document.querySelector("article")
 
 // Render brewery list function //
 const removeBreweries = () => {
@@ -19,6 +20,32 @@ const removeBreweries = () => {
     breweryListUl.forEach((child) => child.remove());
 };
 
+
+const renderSearch = () => {
+    const section = document.createElement('section')
+
+    const form = document.createElement ('form')
+    form.setAttribute("id", "search-breweries-form")
+
+    const label = document.createElement('label')
+    label.setAttribute("for", "searchBarInput")
+    form.append(label)
+
+    const h2 = document.createElement('h2')
+    h2.innerText = "Search Breweries:"
+    label.append(h2)
+    
+    const input = document.createElement('input')
+    input.setAttribute("type", "text")
+    input.setAttribute("id", "searchBarInput")
+    form.append(input)
+
+    section.append(form)
+    article.append(section)
+
+}
+
+renderSearch()
 // The main render for the page based on value/state entered in search bar //
 const renderBreweryList = (breweryState) => {
     breweryState.breweries.forEach((brewery) => {
