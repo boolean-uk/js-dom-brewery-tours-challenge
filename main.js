@@ -74,15 +74,14 @@ const createFreetextSearch = () => {
   input.setAttribute("name", "search-breweries")
   input.setAttribute("type", "text")
   form.appendChild(input)
-  form.addEventListener("input", () => liveSearchByText(input.value))
+  form.addEventListener("input", () => textStr = liveSearchByText(input.value))
 
   header.appendChild(form)
   heading.append(header)
 }
 
-const liveSearchByText = (textStr) => {
-  state.renderedBreweries = state.breweries.filter(val => val.name.match(textStr))
-  clearRenderList()
+const liveSearchByText = (inputStr) => {
+  textStr = inputStr
   renderList()
 }
 
@@ -113,10 +112,13 @@ const compileCityArr = () => {
 
 const deleteCityFilters = () => {
   const form = document.querySelector("form#filter-by-city-form")
-  form.remove()
+  if (!!form === true) form.remove()
 }
 
 const renderCityFilters = () => {
+
+  deleteCityFilters()
+
   const form = document.createElement("form")
   form.setAttribute("id", "filter-by-city-form")
 
@@ -155,31 +157,24 @@ const renderCityFilters = () => {
 
 const clearPageNavigation = () => {
   const navInnerElements = document.querySelectorAll("nav *")
-  console.log(!!navInnerElements, navInnerElements)
   if (!!navInnerElements === true) navInnerElements.forEach(element => element.remove())
 }
 
 const renderPageNavigation = () => {
+  
+  clearPageNavigation()
+
   const nav = document.querySelector("nav")
 
   const article = document.createElement("article")
-
-  const buttonPrev = document.createElement("button")
-  buttonPrev.innerText = "<"
-  article.appendChild(buttonPrev)
   
   for (let i = 0; i < Math.ceil(state.renderedBreweries.length / 10); i++) {
-    console.log(i)
     const buttonPage = document.createElement("button")
     if (i+1 === pageIndex) buttonPage.setAttribute("id", "active")
     buttonPage.innerText = i+1
     buttonPage.addEventListener("click", () => choosePage(i+1))
     article.appendChild(buttonPage)
   }
-
-  const buttonNext = document.createElement("button")
-  buttonNext.innerText = ">"
-  article.appendChild(buttonNext)
   
   nav.appendChild(article)
 }
@@ -193,7 +188,7 @@ const compileRenderedList = () => {
   const filteredForType = state.breweries.filter(brewery => filterArr.includes(brewery.brewery_type.toLowerCase()))
   const additionallyFilteredForString = filteredForType.filter(brewery => brewery.name.match(textStr))
   // slotting the results into pages
-  const calcPage = (index) => Math.ceil(index / 10)
+  const calcPage = (index) => Math.ceil((index + 1) / 10)
   additionallyFilteredForString.forEach((brewery, index) => brewery.page = calcPage(index))
   state.renderedBreweries = additionallyFilteredForString
 }
@@ -206,20 +201,18 @@ const choosePage = (num) => {
 const triggerFilter = document.querySelector("#filter-by-type")
 triggerFilter.addEventListener("change", (event) => {
   event.target.value !== "" ? filterArr = [event.target.value] : filterArr = ["micro", "regional", "brewpub"]
-  clearRenderList()
-  compileRenderedList()
-  deleteCityFilters()
   renderList()
 })
 
 const renderList = () => {
   clearRenderList()
+  
   compileRenderedList()
   const pageResults = state.renderedBreweries.filter(brewery => brewery.page === pageIndex)
   pageResults.forEach(val => listRender.appendChild(createListItem(val)))
+  
   renderCityFilters()
   updateResultCount()
-  clearPageNavigation()
   renderPageNavigation()
 }
 
