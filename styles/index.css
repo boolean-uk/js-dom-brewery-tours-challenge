@@ -6,10 +6,6 @@ body {
   font-weight: bold;
 }
 
-.hidden {
-  display: none;
-}
-
 .main-header {
   padding: 1rem;
   margin-bottom: 2rem;
@@ -154,7 +150,7 @@ h1 {
   grid-area: pagination;
 
   gap: 1ch;
-  
+
   justify-content: end;
   padding-right: 1rem;
 }
@@ -185,33 +181,52 @@ h1 {
   gap: 1ch;
 }
 
-.page-numbers > span:not(.page-more) {
-  width: 3ch;
-  text-align: center;
+.page-numbers > span {
+  display: flex;
+  place-items: center;
+  place-content: center;
 
+  user-select: none;
 
-  border: 1px solid #000;
+  border: none;
   border-radius: 0.25rem;
 
+  height: 4ch;
+}
 
+.page-numbers > span:not(.page-more) {
+  width: 4ch;
   cursor: pointer;
+
   background-color: #1565c0;
   color: #fff;
 }
 
+.page-numbers > span.hidden {
+  display: none;
+}
+
 #selected-page {
-  color: #1565c0;
+  color: #002171;
+  border: 1px solid #002171;
   background-color: #fff;
 }
 
 .page-button {
-  background-color: #1565c0;
+  display: flex;
+  place-items: center;
+
+  border: none;
+  user-select: none;
+
   color: #fff;
+  background-color: #1565c0;
 }
 
 .disabled {
   background-color: #bbb;
   color: #888;
+  pointer-events: none;
 }
 
 article {
@@ -220,8 +235,8 @@ article {
   padding: 1rem;
 }
 
-.breweries-list > * + * {
-  margin-top: 1rem;
+.breweries-list > * {
+  margin-bottom: 1rem;
 }
 
 .breweries-list li {
@@ -301,4 +316,9 @@ article {
   text-align: center;
   text-decoration: none;
   font-weight: bold;
+}
+
+.hidden,
+#breweries-list > li.hidden {
+  display: none;
 }

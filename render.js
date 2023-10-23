@@ -11,7 +11,7 @@ function renderBreweries() {
 function renderBrewery(brewery) {
   const li = makeElement("li");
   const h2 = makeElement("h2", null, brewery.name);
-  const typeDiv = makeElement("div", "type", "micro");
+  const typeDiv = makeElement("div", "type", brewery.brewery_type);
 
   const addressSection = makeElement("section", "address");
   const addressLines = [];
@@ -76,7 +76,11 @@ function formatPhoneNumber(number) {
           if (number[3] === "-" && number[7] === "-") {
             return number.replace("-", " ");
           } else {
-            console.warn("number not processed:", "numberLength:", number.length)
+            console.warn(
+              "number not processed:",
+              "numberLength:",
+              number.length
+            );
           }
         case 10:
           return `${number.slice(0, 3)} ${number.slice(3, 6)}-${number.slice(
@@ -97,4 +101,64 @@ function formatPhoneNumber(number) {
       break;
   }
   return number;
+}
+
+function renderPaginateSelector() {
+  clearElement(PAGINATION_NUMBERS);
+
+  const { currentPage, pageCount } = STATE.page;
+
+  const additionalPage = 3;
+
+  const numbers = [];
+  for (let i = 1; i <= STATE.page.pageCount; i++) {
+    numbers.push(i);
+  }
+
+  pageNumbers = numbers.map((number, idx) => {
+    const element = makeElement("span", "page-number", number);
+    element.classList.add("page-number");
+
+    if (idx === currentPage - 1) element.id = "selected-page";
+
+    if (idx > currentPage + 1 && idx !== numbers.length - 1) {
+      element.classList.toggle("hidden");
+    } else if (idx < currentPage - 3 && idx !== 0) {
+      element.classList.toggle("hidden");
+    }
+
+    return element;
+  });
+
+  multiAppend(PAGINATION_NUMBERS, ...pageNumbers);
+
+  if (currentPage < pageCount - additionalPage) {
+    const morePagesRight = makeElement("span", "page-more", "...");
+    PAGINATION_NUMBERS.children[STATE.page.pageCount - 1].before(
+      morePagesRight
+    );
+  }
+
+  if (currentPage > additionalPage + 1) {
+    const morePagesLeft = makeElement("span", "page-more", "...");
+    PAGINATION_NUMBERS.children[0].after(morePagesLeft);
+  }
+
+  togglePaginateAdjacentButtons();
+}
+
+function togglePaginateAdjacentButtons() {
+  const buttons = PAGINATION.querySelectorAll(".page-button")
+
+  for (const button of buttons) {
+    button.classList.remove("disabled")
+  }
+
+  if (STATE.page.currentPage <= 1) {
+    buttons[0].classList.add("disabled")
+  }
+
+  if (STATE.page.currentPage >= STATE.page.pageCount) {
+    buttons[1].classList.add("disabled")
+  }
 }

@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles/reset.css" />
     <link rel="stylesheet" href="styles/index.css" />
+    <script defer src="const.js"></script>
+    <script defer src="event.js"></script>
     <script defer src="render.js"></script>
     <script defer src="index.js"></script>
     <title>Brewery Tours</title>
@@ -39,7 +41,7 @@
       <h1>List of Breweries</h1>
       <nav class="pagination hidden">
         <div class="page-container">
-          <span class="page-button page-previous disabled">Previous</span>
+          <span class="page-button page-previous">Previous</span>
           <span class="page-numbers"></span>
           <span class="page-button page-next">Next</span>
         </div>
@@ -52,6 +54,7 @@
         </select>
       </nav>
       <article>
+        <div class="result-counter hidden">Showing 1-10 of 20 results</div>
         <ul id="breweries-list" class="breweries-list">
           <!--
           For each brewery returned in the search, 

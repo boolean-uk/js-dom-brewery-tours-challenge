@@ -1,20 +1,8 @@
-const STATE = {
-  breweries: {
-    micro: [],
-    regional: [],
-    brewpub: [],
-  },
-};
-const SELECT_STATE_FORM = document.querySelector("#select-state-form");
-const SELECT_STATE_INPUT = SELECT_STATE_FORM.querySelector(
-  ":scope > #select-state"
-);
-const BREWERY_LIST = document.querySelector("#breweries-list");
-const PAGINATION = document.querySelector(".pagination");
-const PAGINATION_NUMBERS = PAGINATION.querySelector(":scope .page-numbers");
-
 function init() {
   usStateInput();
+  pageLengthSelect();
+  pageNextEnable();
+  pagePreviousEnable();
 }
 
 function getBreweries(filter) {
@@ -49,21 +37,6 @@ function getBreweriesByState(state) {
   return getBreweries(filter);
 }
 
-function usStateInput() {
-  SELECT_STATE_FORM.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    clearStateBreweryList();
-    clearElement(BREWERY_LIST);
-
-    getBreweriesByState(SELECT_STATE_INPUT.value)
-      .then(() => renderBreweries())
-      .then(() => paginateBreweryList());
-
-    SELECT_STATE_FORM.reset();
-  });
-}
-
 function washInput(input) {
   return input.trim().replaceAll(" ", "_");
 }
@@ -74,40 +47,16 @@ function clearStateBreweryList() {
   }
 }
 
-function paginateBreweryList() {
-  clearElement(PAGINATION_NUMBERS);
+function paginate() {
+  STATE.page.pageCount = Math.ceil(
+    BREWERY_LIST.children.length / STATE.page.pageLimit
+  );
 
-  const pageLimit = 10;
-  const pageNumberDisplay = 4;
-  const pageCount = Math.ceil(BREWERY_LIST.children.length / pageLimit);
-
-  console.log("pageCount", pageCount);
-
-  const numbers = [];
-  for (let i = 1; i <= pageCount; i++) {
-    numbers.push(i);
-  }
-
-  pageNumbers = numbers.map((number, idx) => {
-    const element = makeElement("span", "page-number", number);
-    element.classList.add("page-number");
-
-    if (idx === 0) element.id = "selected-page";
-
-    if (idx > pageNumberDisplay - 2 && idx !== numbers.length - 1) {
-      element.classList.toggle("hidden");
-    }
-    return element;
-  });
-
-  multiAppend(PAGINATION_NUMBERS, ...pageNumbers);
-
-  if (pageCount > pageNumberDisplay) {
-    const morePages = makeElement("span", "page-more", "...");
-    PAGINATION_NUMBERS.children[pageCount - 1].before(morePages);
-  }
+  renderPaginateSelector();
 
   showPagination();
+  paginateShowPage();
+  pageNumberSelect();
 }
 
 function hidePagination() {
@@ -118,12 +67,34 @@ function showPagination() {
   PAGINATION.classList.remove("hidden");
 }
 
+function paginateShowPage() {
+  const breweries = BREWERY_LIST.querySelectorAll(":scope > li");
+
+  const { currentPage, pageLimit, pageCount } = STATE.page;
+
+  const startBrewery = currentPage * pageLimit - pageLimit;
+  const endBrewery = currentPage * pageLimit;
+
+  for (const [idx, brewery] of breweries.entries()) {
+    brewery.classList.add("hidden");
+
+    if (idx >= startBrewery && idx <= endBrewery)
+      brewery.classList.remove("hidden");
+  }
+}
+
+function changePage(page) {
+  STATE.page.currentPage = page;
+  renderPaginateSelector();
+  paginateShowPage();
+}
+
 init();
 
 function test() {
   getBreweriesByState("washington")
     .then(() => renderBreweries())
-    .then(() => paginateBreweryList());
+    .then(() => paginate());
 }
 
 test();
