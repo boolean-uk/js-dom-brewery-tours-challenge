@@ -75,6 +75,43 @@ entryForm.addEventListener("submit", (event) => {
   loadBreweriesByState(searchField.value)
 })
 
+
+// <header class="search-bar">
+//   <form id="search-breweries-form" autocomplete="off">
+//     <label for="search-breweries"><h2>Search breweries:</h2></label>
+//     <input id="search-breweries" name="search-breweries" type="text">
+//   </form>
+// </header>
+const createFreetextSearch = () => {
+  // it should be following the "list of breweries"
+  const heading = document.querySelector("main h1")
+
+  const header = document.createElement("header")
+  header.setAttribute("class", "search-bar")
+
+  const form = document.createElement("form")
+  form.setAttribute("id", "search-breweries-form")
+  form.setAttribute("autocomplete", "off")
+
+  const label = document.createElement("label")
+  label.setAttribute("for", "search-breweries")
+
+  const h2 = document.createElement("h2")
+  h2.innerText = "Search breweries:"
+  label.appendChild(h2)
+  form.appendChild(label)
+  
+  const input = document.createElement("input")
+  input.setAttribute("id", "search-breweries")
+  input.setAttribute("name", "search-breweries")
+  input.setAttribute("type", "text")
+  form.appendChild(input)
+  
+  
+  header.appendChild(form)
+  heading.append(header)
+}
+
 const loadBreweriesByState = (stateNameStr) => {
   fetch(`${protocol}://${baseURL}/v1/breweries?by_state=${stateNameStr}&per_page=200`)
     .then(response => response.json())
@@ -158,3 +195,5 @@ const createListItem = (item) => {
   
   return listentry
 }
+
+createFreetextSearch()
