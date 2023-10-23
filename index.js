@@ -1,10 +1,22 @@
 const search = document.getElementById("select-state");
-const form = document.getElementById("select-state-form");
-const filter = document.querySelector("#filter-by-type");
+const searchForm = document.getElementById("select-state-form");
+const filter = document.getElementById("filter-by-type");
+const searchBreweryName = document.getElementById("search-breweries-form");
 const breweriesList = document.querySelector(".breweries-list");
 
 const root = "https://api.openbrewerydb.org/v1/breweries";
 let breweries = state.breweries;
+
+const getData = (state) => {
+    fetch(`${root}?by_state=${state}`)
+      .then(res => res.json())
+      .then(data => {
+        breweries = data.filter(brewery => 
+            ["micro", "regional", "brewpub"].includes(brewery.brewery_type)
+        )
+        createBreweryCard(breweries)
+      })
+};
 
 const clearBreweriesList = () => {
     const breweriesListAll = breweriesList.querySelectorAll("*");
@@ -15,38 +27,34 @@ const createBreweryCard = (breweries) => {
     clearBreweriesList();
     breweries.forEach(brewery => {
         const li = document.createElement("li");
-
-        // Card header
+        
         const header = document.createElement("h2");
         header.innerText = brewery.name;
 
-        // Type of brewery
         const type = document.createElement("div");
         type.setAttribute("class", "type");
         type.innerText = brewery.brewery_type;
 
-        // Address of brewery
         const address = document.createElement("section");
         address.setAttribute("class", "address");
         
         const addressHeader = document.createElement("h3");
         addressHeader.innerText = "Address:"
 
-        const addressParaI = document.createElement("p");
-        addressParaI.innerText = brewery.street;
+        const addressPara1 = document.createElement("p");
+        addressPara1.innerText = brewery.street;
 
-        const addressParaII = document.createElement("p");
+        const addressPara2 = document.createElement("p");
         const strong = document.createElement("strong");
-        addressParaII.append(strong);
+        addressPara2.append(strong);
         strong.innerText = `${brewery.city}, ${brewery.postal_code}`;
 
         address.append(
             addressHeader,
-            addressParaI,
-            addressParaII
+            addressPara1,
+            addressPara2
             );
-    
-        // Phone no. of brewery
+
         const phone = document.createElement("section");
         phone.setAttribute("class", "phone");
 
@@ -58,7 +66,6 @@ const createBreweryCard = (breweries) => {
 
         phone.append(phoneHeader, phonePara);
     
-        // Link to brewery website
         const link = document.createElement("section");
         link.setAttribute("class", "link");
 
@@ -69,7 +76,6 @@ const createBreweryCard = (breweries) => {
 
         link.append(a);
 
-        // Append all created HTML/data
         li.append(
             header,
             type, 
@@ -82,17 +88,15 @@ const createBreweryCard = (breweries) => {
     });
 };
 
-const getData = (state) => {
-    fetch(`${root}?by_state=${state}`)
-      .then(res => res.json())
-      .then(data => {
-        breweries = data.filter(brewery => 
-            // Checking if current brewery.type includes given brewery types,
-            // if so returns true and passes into the state.breweries
-            ["micro", "regional", "brewpub"].includes(brewery.brewery_type)
-        )
-        createBreweryCard(breweries)
-      })
+const searchName = (e) => {
+    e.preventDefault();
+    const searchBreweries = document.querySelector("#search-breweries");
+    const userInput = searchBreweries.value.toLowerCase();
+
+    const filteredBreweries = breweries.filter(brewery =>
+        brewery.name.toLowerCase().includes(userInput)
+        );
+    createBreweryCard(filteredBreweries);
 };
 
 const searchInput = (e) => {
@@ -100,18 +104,18 @@ const searchInput = (e) => {
     const userInput = search.value;
 
     getData(userInput);
-    form.reset();
+    searchForm.reset();
 };
 
-form.addEventListener("submit", searchInput);
+const filterType = () => {
+    let filteredBreweries;
 
-filter.addEventListener("change", () => {
-    if (filter.value === "") { createBreweryCard(breweries) }
-    else {
-        const filteredBreweries = breweries.filter(brewery => 
-            brewery.brewery_type === filter.value
-        )
+    filter.value === "" ? createBreweryCard(breweries)
+    : (filteredBreweries = breweries.filter(brewery => 
+        brewery.brewery_type === filter.value), 
+        createBreweryCard(filteredBreweries))
+};
 
-        createBreweryCard(filteredBreweries)
-    }
-});
+searchBreweryName.addEventListener("input", searchName);
+searchForm.addEventListener("submit", searchInput);
+filter.addEventListener("change",filterType);
