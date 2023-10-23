@@ -170,4 +170,46 @@ const getAndRenderCities = (array) => {
 }
 
 
+const renderPaginationControlBar = () => {
+    const pages = [1, 2, 3, 4, 5]
+    const pagesList = document.createElement('ul')
+    pagesList.setAttribute('id', 'page-list')
+    const body = document.querySelector('body')
+    body.append(pagesList)
+
+    //go back
+    const arrowBack = document.createElement('li')
+    arrowBack.innerText = '<'
+    arrowBack.setAttribute('class', 'pagination-nav')
+    pagesList.append(arrowBack)
+
+    //page by page
+    pages.forEach(p => {
+        const pageNumber = document.createElement('li')
+        pageNumber.innerText = `${p}`
+        pageNumber.setAttribute('class', 'pagination-nav')
+        pageNumber.setAttribute('value', p)
+        pagesList.append(pageNumber)
+        pageNumber.addEventListener('click', event => displayPage(event.target.value))
+    })
+    if (pages.length > 5) {
+        for (let i = 5; i <pages.length; i++) {
+            const pageAtIndexI = pagesList.querySelector('li')
+            pageAtIndexI.setAttribute('class', 'hidden')
+        }
+    }
+
+    //go to the next page
+    const arrowNext = document.createElement('li')
+    arrowNext.innerText = '>'
+    arrowNext.setAttribute('class', 'pagination-nav')
+    pagesList.append(arrowNext)
+}
+
+
+const displayPage = (num) => {
+    renderBreweries(state.byPage[num -1])
+}
+
+renderPaginationControlBar()
 renderSearchByNameSearchBar()

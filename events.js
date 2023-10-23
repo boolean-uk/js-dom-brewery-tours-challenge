@@ -8,7 +8,8 @@ const getBreweriesByStateAndType = (t) => {
         .then(r => r.json())
         .then(d => {
             state.filteredByStateAndType = d 
-            renderBreweries(state.filteredByStateAndType)
+            filterByPageChosen(state.filteredByStateAndType)
+            displayPage(1)
         })
      } else {
         console.log('no state chosen')
@@ -16,8 +17,9 @@ const getBreweriesByStateAndType = (t) => {
         .then(r => r.json())
         .then(d => {
             state.filteredByType = d 
-            console.log(state.filteredByType)
-            renderBreweries(state.filteredByType)
+            // renderBreweries(state.filteredByType)
+            filterByPageChosen(state.filteredByType)
+            displayPage(1)
         })
      }
 }
@@ -54,7 +56,9 @@ const getBreweriesByState = (usState) => {
     .then(r => r.json())
     .then(d => {
         state.filteredByState = d 
-        renderBreweries(state.filteredByState)
+        // renderBreweries(state.filteredByState)
+        filterByPageChosen(state.filteredByState)
+        displayPage(1)
         getAndRenderCities(state.filteredByState)
     })
 }
@@ -72,7 +76,8 @@ const getBreweriesByState = (usState) => {
         .then(r => r.json())
         .then(d => {
             state.filteredByName = d 
-            renderBreweries(state.filteredByName)
+            filterByPageChosen(state.filteredByName)
+            displayPage(1)
         })
 
     })
@@ -88,7 +93,8 @@ let filteredByCities = []
 const addEventToCheckbox = (cityCheckbox) => {
     cityCheckbox.addEventListener('change', event => {     
         filteredByCities = filteredByCities.concat(filterByCity(event.target.value))
-        renderBreweries(filteredByCities)
+        filterByPageChosen(filteredByCities)
+        displayPage(1)
     })
 }
 
@@ -103,5 +109,18 @@ const addClearAllEvent = (cityCheckbox) => {
 }
 
 //TODO: PAGINATION
+
+// html nav (in render.js)
+// css styling
+// js for loop, iterate through data 10 by 10 
+
+const filterByPageChosen = (breweriesArray) => {
+    state.byPage = []
+    console.log(breweriesArray.length)
+    for (let i = 0; i < breweriesArray.length; i+=10) {
+        const filteredArray = breweriesArray.slice(i, i + 10) 
+        state.byPage.push(filteredArray)
+    }
+}
 
 //TODO: myBreweries cart (list)
