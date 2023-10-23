@@ -7,7 +7,7 @@ const api = (str) => {
 
 const getBreweries = (type) => {
     console.log('fetching')
-    if (type == null) {
+    if (type == null || type == '') {
         fetch(api())
             .then((response) => response.json())
             .then((data) => {
@@ -76,6 +76,7 @@ const renderBreweries = () => {
 
 const typeButton = document.querySelector('#filter-by-type')
 typeButton.addEventListener('change', event => {
+    console.log(typeButton.value)
     getBreweries(typeButton.value)
 })
 
