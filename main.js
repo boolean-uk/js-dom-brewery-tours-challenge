@@ -93,14 +93,24 @@ const loadBreweriesByState = (stateNameStr) => {
     .then(() => renderList())
 }
 
-// these are the volatile values for the possible filtering
+const compileCityArr = () => {
+  const listOfCities = []
+  state.breweries.forEach(brewery => {
+    if (listOfCities.includes(brewery.city) === false) listOfCities.push(brewery.city)
+  })
+  console.log(listOfCities)
+  return listOfCities
+}
+
+// these are the volatile values for the possible filtering by the user
 let filterArr = ["micro", "regional", "brewpub"]
 let textStr = ""
 
 const compileRenderedList = () => {
   const filteredForType = state.breweries.filter(brewery => filterArr.includes(brewery.brewery_type.toLowerCase()))
   const additionallyFilteredForString = filteredForType.filter(brewery => brewery.name.match(textStr))
-  state.renderedBreweries = additionallyFilteredForString
+  const calcPage = (index) => Math.ceil(index / 10)
+  state.renderedBreweries = additionallyFilteredForString.forEach(brewery, index => brewery.page = calcPage(index))
 }
 
 const triggerFilter = document.querySelector("#filter-by-type")
