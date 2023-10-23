@@ -7,7 +7,7 @@ const root = 'https://api.openbrewerydb.org/v1/breweries'
 const breweriesList = document.querySelector('#breweries-list')
 const stateSearchForm = document.querySelector('#select-state-form')
 const stateVal = document.getElementById('select-state')
-const filterVal = document.querySelector('#filter-by-type')
+const filterVal = document.getElementById('filter-by-type')
 
 // FULL PAGE RENDER ON INITIAL LOAD
 function render() {
@@ -135,8 +135,8 @@ function breweryWebsiteSection(brewery) {
 // SEARCH/FILTER OPTIONS
 
 // FILTER FUNCTION
-function filter() {
-    fetch(`${root}?by_state=${stateVal.value}&by_type=${filterVal.value}`)
+function filter(link) {
+    fetch(link)
         .then((res) => res.json())
         .then((data) => {
             state.breweries = data
@@ -149,18 +149,11 @@ stateSearchForm.addEventListener('submit', (event) => {
     event.preventDefault()
     clearBreweryList()
 
-    if (filterVal.value === '') {
-    // state only
-        fetch(`${root}?by_state=${stateVal.value}`)
-        .then((res) => res.json())
-        .then((data) => {
-            state.breweries = data
-            renderBrewery()
-        })
+    if (!filterVal.value) {
+        filter(`${root}?by_state=${stateVal.value}`)
     }
-    else {
-        // state with filter selected
-        filter()
+        else {
+        filter(`${root}?by_state=${stateVal.value}&by_type=${filterVal.value}`)
     }
 })
 
@@ -169,11 +162,14 @@ filterVal.addEventListener('change', (event) => {
     event.preventDefault()
     clearBreweryList()
 
-    if (filterVal.value === '' && stateVal.value === '') {
+    if (!filterVal.value && !stateVal.value) {
         renderBreweryList()
     }
+    else if (filterVal.value) {
+        filter(`${root}?by_type=${filterVal.value}`)
+    }
     else {
-        filter()
+        filter(`${root}?by_state=${stateVal.value}`)
     }
 })
 
@@ -207,18 +203,32 @@ searchbarHeader.append(searchBrewsForm)
 
 main.append(searchbarHeader)
 
-// TARGET SEARCH BREWS FORM AND UPDATE LIST
+// SEARCH BREWS - UPDATES LIST WHILE TYPING INCL. ANY CURRENT FILTERS/STATES
 searchBrewsForm.addEventListener('input', (event) => {
     clearBreweryList()
+    const input = event.target
 
-    const input = event.target.value
-
-    fetch(`${root}?by_name=${input}`)
-    .then((res) => res.json())
-    .then((data) => {
-        state.breweries = data
-        renderBrewery()
-    })
+    if (!filterVal.value && !stateVal.value) {
+        // no filter, no state
+        fetch(`${root}?by_name=${input.value}`)
+        .then((res) => res.json())
+        .then((data) => {
+            state.breweries = data
+            renderBrewery()
+        })
+    }
+    else if (filterVal.value && stateVal.value) {
+        // filter & state
+        filter(`${root}?by_state=${stateVal.value}&by_type=${filterVal.value}&by_name=${input.value}`)
+    }
+    else if (filterVal.value) {
+        // filter only
+        filter(`${root}?by_type=${filterVal.value}&by_name=${input.value}`)
+    }
+    else {
+        // state only
+        filter(`${root}?by_state=${stateVal.value}&by_name=${input.value}`)
+    }
 })
 
 // --------------------- | CALL INITIAL RENDER | --------------------- \\
