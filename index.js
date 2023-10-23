@@ -6,7 +6,8 @@ const state = {
 const root = 'https://api.openbrewerydb.org/v1/breweries'
 const breweriesList = document.querySelector('#breweries-list')
 const stateSearchForm = document.querySelector('#select-state-form')
-const filterByType = document.querySelector('#filter-by-type')
+const stateVal = document.getElementById('select-state')
+const filterVal = document.querySelector('#filter-by-type')
 
 // FULL PAGE RENDER ON INITIAL LOAD
 function render() {
@@ -133,72 +134,46 @@ function breweryWebsiteSection(brewery) {
 
 // SEARCH/FILTER OPTIONS
 
-// SEARCH BY STATE
-stateSearchForm.addEventListener('submit', (event) => {
-    event.preventDefault()
-    clearBreweryList()
-
-    const stateName = event.target[0].value
-    const filterVal = document.getElementById('filter-by-type').value
-
-    if (filterVal) {
-        // if filter applied
-        fetch(`${root}?by_state=${stateName}&by_type=${filterVal}`)
-        .then((res) => res.json())
-        .then((data) => {
-        state.breweries = data
-        renderBrewery()
-    })
-    }
-    else {
-        // state only
-        fetch(`${root}?by_state=${stateName}`)
-        .then((res) => res.json())
-        .then((data) => {
-        state.breweries = data
-        renderBrewery()
-    })
-    }
-})
-
-// FILTER OPTIONS TO UPDATE BREWERIES IN REAL TIME (STATE ALREADY IN SEARCH BAR)
-const stateVal = document.getElementById('select-state')
-
-filterByType.addEventListener('change', (event) => {
-    event.preventDefault()
-    const breweryFilterType = event.target.value
-    clearBreweryList()
-
-    if (stateVal.value && breweryFilterType) {
-        // filter applied, state already searched
-        fetch(`${root}?by_state=${stateVal.value}&by_type=${breweryFilterType}`)
+// FILTER FUNCTION
+function filter() {
+    fetch(`${root}?by_state=${stateVal.value}&by_type=${filterVal.value}`)
         .then((res) => res.json())
         .then((data) => {
             state.breweries = data
             renderBrewery()
         })
-    } 
-    else if (breweryFilterType) {
-        // filter only
-            fetch(`${root}?by_type=${breweryFilterType}`)
-            .then((res) => res.json())
-            .then((data) => {
-                state.breweries = data
-                renderBrewery()
-            })
-    }
-    else if (stateVal.value) {
-        // no filter, state already searched
-            fetch(`${root}?by_state=${stateVal.value}`)
-            .then((res) => res.json())
-            .then((data) => {
-                state.breweries = data
-                renderBrewery()
-            })
+}
+
+// SEARCH BY STATE
+stateSearchForm.addEventListener('submit', (event) => {
+    event.preventDefault()
+    clearBreweryList()
+
+    if (filterVal.value === '') {
+    // state only
+        fetch(`${root}?by_state=${stateVal.value}`)
+        .then((res) => res.json())
+        .then((data) => {
+            state.breweries = data
+            renderBrewery()
+        })
     }
     else {
-        // no filter, no state
-            renderBreweryList()
+        // state with filter selected
+        filter()
+    }
+})
+
+// EVENT LISTENER ADDED TO FILTER LIST TO UPDATE BREWERIES IN REAL TIME WHEN SELECTED
+filterVal.addEventListener('change', (event) => {
+    event.preventDefault()
+    clearBreweryList()
+
+    if (filterVal.value === '' && stateVal.value === '') {
+        renderBreweryList()
+    }
+    else {
+        filter()
     }
 })
 
@@ -232,7 +207,7 @@ searchbarHeader.append(searchBrewsForm)
 
 main.append(searchbarHeader)
 
-// TARGET SEARCH BREWS FORM AND USE FETCH
+// TARGET SEARCH BREWS FORM AND UPDATE LIST
 searchBrewsForm.addEventListener('input', (event) => {
     clearBreweryList()
 
