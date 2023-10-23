@@ -1,26 +1,7 @@
 //state for the main source 
-const state = [
-    {
-        address_2: null,
-        address_3: null,
-        brewery_type: "large",
-        city: "San Diego",
-        country: "United States",
-        county_province: null,
-        created_at: "2018-07-24T00:00:00.000Z",
-        id: 8041,
-        latitude: "32.714813",
-        longitude: "-117.129593",
-        name: "10 Barrel Brewing Co",
-        obdb_id: "10-barrel-brewing-co-san-diego",
-        phone: "6195782311",
-        postal_code: "92101-6618",
-        state: "California",
-        street: "1501 E St",
-        updated_at: "2018-08-23T00:00:00.000Z",
-        website_url: "http://10barrel.com"
-      }
-];
+const state = {
+    breweries : []
+};
     
 //root url for the fetch
 const root = "https://api.openbrewerydb.org/v1/breweries";
@@ -29,7 +10,7 @@ const breweryList = document.querySelector('.breweries-list');
 
 //render fucntion to display the created items
 function renderBreweryList() {
-    state.forEach((brewery) => {
+    state.breweries.forEach((brewery) => {
         //for the li 
         const li = document.createElement('li')
 
@@ -56,7 +37,7 @@ function renderBreweryList() {
                 const addressCity = document.createElement('p')
                     //for the strong 
                     const addressStrong = document.createElement('strong')
-                    addressStrong.innerText = brewery.city,brewery.postal_code
+                    addressStrong.innerText = `${brewery.city},${brewery.postal_code}`
 
                     //appending evrything inside 
                 addressCity.append(addressStrong)
@@ -64,14 +45,14 @@ function renderBreweryList() {
 
             //for the  sectionPhone 
             const sectionPhone = document.createElement('section')
-            sectionPhone.classList.add('phone')
+            sectionPhone.setAttribute('class','phone')
 
                 //for the h3 insdei the phone 
                 const phoneH3 = document.createElement('h3')
                 phoneH3.innerText = 'Phone :'
                 //for the phone number insdie tthe p 
                 const phoneNumber = document.createElement('p')
-                phoneNumber.innertext = `${brewery.phone}`
+                phoneNumber.innerText = `${brewery.phone}`
                 //appeding the section 
             sectionPhone.append(phoneH3,phoneNumber)
 
@@ -86,8 +67,17 @@ function renderBreweryList() {
             sectionLink.append(link)    
 
         li.append(breweryName,breweryType,sectionAddress,sectionPhone,sectionLink)
+    breweryList.append(li)
 
     })
 }
 
-renderBreweryList()
+function main(){
+    fetch(`${root}`)
+        .then((response)=> response.json())
+        .then((data)=> {
+            state.breweries = data;
+            renderBreweryList()
+        })
+}
+main();
