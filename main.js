@@ -65,7 +65,6 @@ const entryForm = document.querySelector("form")
 const searchField = document.querySelector("input#select-state")
 entryForm.addEventListener("submit", (event) => {
   event.preventDefault()
-  console.log(searchField.value)
 
   if (USStates.includes(searchField.value.toLowerCase()) === false) {
     alert(`${searchField.value} is not a US state!`)
@@ -75,13 +74,6 @@ entryForm.addEventListener("submit", (event) => {
   loadBreweriesByState(searchField.value)
 })
 
-
-// <header class="search-bar">
-//   <form id="search-breweries-form" autocomplete="off">
-//     <label for="search-breweries"><h2>Search breweries:</h2></label>
-//     <input id="search-breweries" name="search-breweries" type="text">
-//   </form>
-// </header>
 const createFreetextSearch = () => {
   // it should be following the "list of breweries"
   const heading = document.querySelector("main h1")
@@ -106,10 +98,16 @@ const createFreetextSearch = () => {
   input.setAttribute("name", "search-breweries")
   input.setAttribute("type", "text")
   form.appendChild(input)
-  
-  
+  form.addEventListener("input", () => liveSearchByText(input.value))
+
   header.appendChild(form)
   heading.append(header)
+}
+
+const liveSearchByText = (textStr) => {
+  const filteredArr = state.breweries.filter(val => val.name.match(textStr))
+  clearRenderList()
+  filteredArr.forEach(val => listRender.appendChild(createListItem(val)))
 }
 
 const loadBreweriesByState = (stateNameStr) => {
