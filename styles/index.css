@@ -228,3 +228,7 @@ article {
   text-decoration: none;
   font-weight: bold;
 }
+
+.clear-all-btn:hover{
+  cursor: pointer;
+}

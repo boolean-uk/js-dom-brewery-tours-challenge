@@ -2,16 +2,16 @@ const ulContainer = document.querySelector('#breweries-list');
 const main = document.querySelector('main');
 const state = {
     breweries: []
-}
+};
 
 const renderSearchItems = (theSearchInput) => {
     theSearchInput.addEventListener('keyup', (e) => {
         ulContainer.innerHTML = '';
         const searchValue = e.target.value.toLowerCase();
-        const filterSearch = state.breweries.filter((brewery) => brewery.name.toLowerCase().includes(searchValue) );
+        const filterSearch = state.breweries.filter((brewery) => brewery.name.toLowerCase().includes(searchValue));
         renderBreweryList(filterSearch);
     });
-}
+};
 
 const renderSearchBar = () => {
     const searchBar = document.createElement('header');
@@ -19,6 +19,7 @@ const renderSearchBar = () => {
     searchBreweryForm.id = 'search-breweries-form';
     searchBreweryForm.autocomplete = 'off';
     searchBar.append(searchBreweryForm);
+
     const searchLabel = document.createElement('label');
     searchLabel.setAttribute('for', 'search-breweries');
 
@@ -37,23 +38,22 @@ const renderSearchBar = () => {
     heading.insertAdjacentElement("afterend", searchBreweryForm);
     main.append(searchBar);
 
-    renderSearchItems(searchInput);// call renderSearchItems so i will be able to have access to the searchInput, which stands as arguement
-}
+    renderSearchItems(searchInput);
+};
 
-const filterByType = document.querySelector('#filter-by-type');
 const renderByType = () => {
-   
+    const filterByType = document.querySelector('#filter-by-type');
+
     filterByType.addEventListener('change', () => {
         ulContainer.innerHTML = '';
         const selectedByType = filterByType.value;
         const filteredBreweries = state.breweries.filter((brewery) => brewery.brewery_type === selectedByType && selectedByType !== "");
         renderBreweryList(filteredBreweries);
     });
-}
+};
 
 const renderBreweryList = (breweries) => {
     breweries.forEach((brewery) => {
-
         const listContainer = document.createElement('li');
         ulContainer.append(listContainer);
 
@@ -75,14 +75,14 @@ const renderBreweryList = (breweries) => {
         AddressSection.append(addressTitle);
 
         const addressNumber = document.createElement('p');
-        addressNumber.innerText = brewery.address_1;
+        addressNumber.innerText = brewery.street;
         AddressSection.append(addressNumber);
 
         const postCodeContainer = document.createElement('p');
         AddressSection.append(postCodeContainer);
 
         const postCode = document.createElement('strong');
-        postCode.innerText = `${brewery.city} ${brewery.postal_code}`;
+        postCode.innerText = `${brewery.city}, ${brewery.postal_code}`;
         postCodeContainer.append(postCode);
 
         const phoneSection = document.createElement('section');
@@ -107,63 +107,90 @@ const renderBreweryList = (breweries) => {
         link.target = '_blank';
         link.innerText = 'Visit Website';
     });
-}
+};
 
-const filterByCity = (cities) =>{
+
+const renderwithEachCity = (input, breweries) => {
+    input.addEventListener('change', () => {
+        if(input.checked){
+            ulContainer.innerHTML = '';
+            const filterCities = breweries.filter((brewery) => brewery.city === input.value);
+            renderBreweryList(filterCities);
+
+        }
+        else{
+            ulContainer.innerHTML = '';
+            renderBreweryList(state.breweries);
+        }
+       
+    });
+
+};
+
+
+
+const filterByCity = (location) => {
     const filterMainSection = document.querySelector('.filters-section');
-    
+
     const filterByCityHeading = document.createElement('div');
     filterByCityHeading.classList.add('filter-by-city-heading');
-    
-    const cityHeading =document.createElement('h3');
+
+    const cityHeading = document.createElement('h3');
     cityHeading.innerText = 'Cities';
-    filterByCityHeading.append(cityHeading)
-    
-    const cityButton =document.createElement('button')
-    cityButton.innerText = 'clear all'
-    cityButton.classList.add('clear-all-btn')
-    filterByCityHeading.append(cityButton)
-    
+    filterByCityHeading.append(cityHeading);
+
+    const cityButton = document.createElement('button');
+    cityButton.innerText = 'clear all';
+    cityButton.classList.add('clear-all-btn');
+    filterByCityHeading.append(cityButton);
+
+    const clearAll = (inputElement)=>{
+        cityButton.addEventListener('click', ()=>{
+            inputElement.checked = false
+            ulContainer.innerHTML = '';
+            renderBreweryList(state.breweries);
+        
+        })
+    }
+
     const cityForm = document.createElement('form');
-   
-    cities.forEach((city) =>{
+    location.forEach((city) => {
         const cityInput = document.createElement('input');
         cityInput.type = 'checkbox';
         cityInput.name = city.city;
-        cityInput.value = city.city
-        cityForm.append(cityInput)
-        
-        const cityLabel = document.createElement('label');
-        cityLabel.setAttribute('for', city.city)
-        cityLabel.innerText = city.city
-        cityForm.append(cityLabel)
+        cityInput.value = city.city;
 
-    })
-  
-    filterMainSection.append(filterByCityHeading)
-    filterMainSection.append(cityForm)
-    
-}
+        const cityLabel = document.createElement('label');
+        cityLabel.setAttribute('for', city.city);
+        cityLabel.innerText = city.city;
+
+        cityForm.append(cityInput);
+        cityForm.append(cityLabel);
+
+        clearAll(cityInput)
+
+        renderwithEachCity(cityInput, state.breweries);
+    });
+
+    filterMainSection.append(filterByCityHeading);
+    filterMainSection.append(cityForm);
+};
 
 const getBreweryDetails = () => {
-    fetch('https://api.openbrewerydb.org/v1/breweries')
+    fetch('https://api.openbrewerydb.org/breweries')
         .then((response) => response.json())
         .then((data) => {
             state.breweries = data;
-            renderBreweryList(state.breweries); // This argument Will be used in replace of the breweries forEach
-            filterByCity(state.breweries)
-           
+            renderBreweryList(state.breweries);
+            renderByType();
+            filterByCity(state.breweries);
         })
-        .catch((err) => console.log('Here is the error in my code', err));  //This argument Will be used in replace of the breweries forEach
-}
-
-
+        .catch((err) => console.log('Error in my code', err));
+};
 
 
 
 renderSearchBar();
-renderByType();
 getBreweryDetails();
 
-filterByCity() 
 
