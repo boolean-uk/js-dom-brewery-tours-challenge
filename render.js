@@ -33,23 +33,9 @@ const renderBreweryLayout = (breweryContainer, brewery) => {
         renderSectionContent(sectionClass, section, brewery)
     })
 
-    //extension 4: adds the button that allows a user to add the select breweries to their list of visits (needs refactor)
-    const addToVisitListButton = document.createElement('button')
-    addToVisitListButton.setAttribute('class', 'add-to-visit-list')
-    addToVisitListButton.innerText = 'add to visit list'
-    breweryContainer.append(addToVisitListButton)
-    addToVisitListButton.addEventListener('click', () => {
-        const options = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify(brewery)
-        }
-    
-        fetch("http://localhost:3000/myList", options)
-        // .then( () => {})
-    })
-
+    createAndRenderAddToListButton(breweryContainer, brewery)
 }
+
 
 //renders the more detailed layout and contents for each brewery
 const renderSectionContent = (sectionClass, section, brewery) => {
@@ -131,7 +117,26 @@ const renderSearchByNameSearchBar = () => {
 //RENDERS THE LIST OF CITIES TO CHOOSE FROM 
 
 
-//needs refactor
+//renders each city
+const renderCities = (cities, form) => {
+    cities.forEach(city => {
+        const cityCheckbox = document.createElement('input')
+        cityCheckbox.setAttribute('type', 'checkbox')
+        cityCheckbox.setAttribute('name', `${city}`)
+        cityCheckbox.setAttribute('value', `${city}`)
+        form.append(cityCheckbox)
+        addEventToCheckbox(cityCheckbox)
+        addClearAllEvent(cityCheckbox)
+
+        const cityLabel = document.createElement('label')
+        cityLabel.setAttribute('for', `${city}`)
+        cityLabel.innerText = city
+        form.append(cityLabel)
+    })   
+
+}
+
+//renders the list containing the cities
 const renderCityList = (cities) => {
 
     //creates and renders the city list container
@@ -155,20 +160,7 @@ const renderCityList = (cities) => {
     filterByCityForm.setAttribute('id', 'filter-by-city-form')
     filtersSection.append(filterByCityForm)
 
-    cities.forEach(city => {
-        const cityCheckbox = document.createElement('input')
-        cityCheckbox.setAttribute('type', 'checkbox')
-        cityCheckbox.setAttribute('name', `${city}`)
-        cityCheckbox.setAttribute('value', `${city}`)
-        filterByCityForm.append(cityCheckbox)
-        addEventToCheckbox(cityCheckbox)
-        addClearAllEvent(cityCheckbox)
-
-        const cityLabel = document.createElement('label')
-        cityLabel.setAttribute('for', `${city}`)
-        cityLabel.innerText = city
-        filterByCityForm.append(cityLabel)
-    })   
+    renderCities(cities, filterByCityForm) 
 }
 
 //clears up the space when a new state is selected and the list of cities displayed must change
@@ -190,6 +182,7 @@ const getAndRenderCities = (array) => {
             state.cities.push(brewery.city)
         }
     })
+    state.cities = state.cities.sort()
     removeCurrentCityList()
     renderCityList(state.cities)
 }
@@ -198,21 +191,27 @@ const getAndRenderCities = (array) => {
 // EXTENSION 3 : PAGINATION
 
 
-//TODO: change const pages so that the number of pages depends on the number of results that are available to be displayed (eg: if smaller than 10: no pagination navbar displayed / if between 10 and 20, 2 pages available / etc )
+//Ideally, I would have liked to have the variable const pages generated based on the search result, so that the number of pages depends on the number of breweries that to be displayed (eg: if smaller than 10: no pagination navbar displayed / if between 10 and 20, 2 pages available / etc ). That said, I never seem to get more than 50 (probably because of how the API is set up, so going with 5 works).
+const displayPage = (num) => {
+    renderBreweries(state.byPage[num -1])
+}
+
 const renderPaginationControlBar = () => {
-
-    //to  be swapped for an array created using the number of results obtained given the current search parameters
     const pages = [1, 2, 3, 4, 5]
-
     let currentPage = 1
 
-    //renders the pagination bar itself (at the bottom of the page)
+
     const pagesList = document.createElement('ul')
     pagesList.setAttribute('id', 'page-list')
     const body = document.querySelector('body')
     body.append(pagesList)
 
-    //go back (no functionality as of yet)
+    renderAndSetEventForArrowBack(pagesList, currentPage)
+    renderAndSetEventForPageNumbers(pages, currentPage, pagesList)
+    renderAndSetEventForArrowNext(pagesList, currentPage)
+}
+
+const renderAndSetEventForArrowBack = (pagesList, currentPage) => {
     const arrowBack = document.createElement('li')
     arrowBack.innerText = '<'
     arrowBack.setAttribute('class', 'pagination-nav')
@@ -225,7 +224,26 @@ const renderPaginationControlBar = () => {
     })
     pagesList.append(arrowBack)
 
-    //page by page - renders page numbers, allows navigation (needs refactor)
+}
+
+const renderAndSetEventForArrowNext = (pagesList, currentPage) => {
+    const arrowNext = document.createElement('li')
+    arrowNext.innerText = '>'
+    arrowNext.addEventListener('click', event => {
+        if (currentPage === 5) {
+            
+        } else {       
+            currentPage = currentPage + 1
+            displayPage(currentPage)
+        }
+    })
+    arrowNext.setAttribute('class', 'pagination-nav')
+    pagesList.append(arrowNext)
+
+}
+
+const renderAndSetEventForPageNumbers = (pages, currentPage, pagesList) => {
+
     pages.forEach(p => {
         const pageNumber = document.createElement('li')
         pageNumber.innerText = `${p}`
@@ -244,28 +262,23 @@ const renderPaginationControlBar = () => {
         }
     }
 
-    //go to the next page (no functionality as of yet)
-    const arrowNext = document.createElement('li')
-    arrowNext.innerText = '>'
-    arrowNext.addEventListener('click', event => {
-        if (currentPage === 5) {
-            
-        } else {       
-            currentPage = currentPage + 1
-            displayPage(currentPage)
-        }
-    })
-    arrowNext.setAttribute('class', 'pagination-nav')
-    pagesList.append(arrowNext)
-}
-
-//displays the results page by page
-const displayPage = (num) => {
-    renderBreweries(state.byPage[num -1])
 }
 
 
 // EXTENSION 4 - creates the button linking to my-visit-list.html
+
+const createAndRenderAddToListButton = (breweryContainer, brewery) => {
+
+    //generate and render button
+    const addToVisitListButton = document.createElement('button')
+    addToVisitListButton.setAttribute('class', 'add-to-visit-list')
+    addToVisitListButton.innerText = 'add to visit list'
+    breweryContainer.append(addToVisitListButton)
+
+    //event
+    addToVisitListButtonEvent(addToVisitListButton, brewery)
+}
+
 
 const displayMyVisitList = () => {
     const selectStateSection = document.querySelector(".select-state-section")

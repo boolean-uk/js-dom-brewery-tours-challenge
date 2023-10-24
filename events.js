@@ -146,6 +146,17 @@ const filterByPageChosen = (breweriesArray) => {
 }
 
 
+//EXTENSION 4
+const addToVisitListButtonEvent = (addToVisitListButton, brewery) => {
+    addToVisitListButton.addEventListener('click', () => {
+        const options = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify(brewery)
+        }
+    
+        fetch("http://localhost:3000/myList", options)
+    })  
 
-
+}
  
