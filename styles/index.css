@@ -2,6 +2,14 @@ body {
   font-family: sans-serif;
 }
 
+.strong {
+  font-weight: bold;
+}
+
+.highlight {
+  background-color: #ffe082;
+}
+
 .main-header {
   padding: 1rem;
   margin-bottom: 2rem;
@@ -42,9 +50,10 @@ main {
   grid-template-areas:
     "sidebar title"
     "sidebar search-bar"
+    "sidebar pagination"
     "sidebar article";
   grid-template-columns: 1fr 3fr;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto auto 1fr;
 }
 
 .filters-section {
@@ -110,6 +119,10 @@ main {
   border-radius: 0 0 0.25rem 0.25rem;
   border: 1px solid #000;
   border-top: none;
+
+  min-height: auto;
+  max-height: 600px;
+  overflow-y: scroll;
 }
 
 h1 {
@@ -123,6 +136,9 @@ h1 {
   grid-area: search-bar;
 
   padding: 0 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-bottom: 1ch;
 }
 
 #search-breweries-form {
@@ -136,8 +152,101 @@ h1 {
   background-color: #ffe082;
 }
 
+#search-breweries-form.hidden {
+  display: none;
+}
+
 #search-breweries-form h2 {
   font-size: 1rem;
+}
+
+.pagination {
+  display: grid;
+  grid-area: pagination;
+
+  gap: 1ch;
+
+  justify-content: end;
+  padding-right: 1rem;
+}
+
+.page-container {
+  display: flex;
+  justify-content: right;
+
+  gap: 1ch;
+}
+
+.page-button {
+  border: 1px solid #000;
+  border-radius: 0.25rem;
+
+  cursor: pointer;
+
+  padding-right: 1ch;
+  padding-left: 1ch;
+}
+
+.page-numbers {
+  display: flex;
+
+  justify-content: space-evenly;
+  justify-items: center;
+
+  gap: 1ch;
+}
+
+.page-numbers > span {
+  display: flex;
+  place-items: center;
+  place-content: center;
+
+  user-select: none;
+
+  border: none;
+  border-radius: 0.25rem;
+
+  height: 4ch;
+  width: 4ch;
+}
+
+.page-numbers > span:not(.page-more) {
+  cursor: pointer;
+
+  background-color: #1565c0;
+  color: #fff;
+}
+
+.page-numbers > span.hidden {
+  display: none;
+}
+
+.select-container {
+  display: flex;
+  justify-content: end;
+}
+
+#selected-page {
+  color: #002171;
+  border: 1px solid #002171;
+  background-color: #fff;
+}
+
+.page-button {
+  display: flex;
+  place-items: center;
+
+  border: none;
+  user-select: none;
+
+  color: #fff;
+  background-color: #1565c0;
+}
+
+.disabled {
+  background-color: #bbb;
+  color: #888;
+  pointer-events: none;
 }
 
 article {
@@ -146,8 +255,12 @@ article {
   padding: 1rem;
 }
 
-.breweries-list > * + * {
-  margin-top: 1rem;
+.search-result-counter {
+  text-align: end;
+}
+
+.breweries-list > * {
+  margin-bottom: 1rem;
 }
 
 .breweries-list li {
@@ -227,4 +340,9 @@ article {
   text-align: center;
   text-decoration: none;
   font-weight: bold;
+}
+
+.hidden,
+#breweries-list > li.hidden {
+  display: none;
 }

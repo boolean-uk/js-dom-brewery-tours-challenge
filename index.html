@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles/reset.css" />
     <link rel="stylesheet" href="styles/index.css" />
+    <script defer src="const.js"></script>
+    <script defer src="visit-list.js"></script>
+    <script defer src="paginate.js"></script>
+    <script defer src="util.js"></script>
+    <script defer src="event.js"></script>
+    <script defer src="render.js"></script>
+    <script defer src="index.js"></script>
     <title>Brewery Tours</title>
   </head>
   <body>
@@ -32,9 +39,35 @@
               <option value="brewpub">Brewpub</option>
             </select>
           </form>
+          <div class="filter-by-city-heading">
+            <h3>City</h3>
+            <button class="clear-all-btn">Clear All</button>
+          </div>
+          <form id="filter-by-city-form"></form>
         </aside>
       </aside>
       <h1>List of Breweries</h1>
+      <form id="search-breweries-form" class="search-bar hidden">
+          <h2>Search breweries</h2>
+        <input type="text"/>
+      </form>
+      <nav class="pagination hidden">
+        <div class="search-result-counter"></div>
+        <div class="page-container">
+          <span class="page-button page-previous">Previous</span>
+          <span class="page-numbers"></span>
+          <span class="page-button page-next">Next</span>
+        </div>
+        <div class="select-container">
+          <select name="page-amount" id="page-amount" class="page-amount">
+            <option value="10">Show: 10</option>
+            <option value="20">Show: 20</option>
+            <option value="50">Show: 50</option>
+            <option value="100">Show: 100</option>
+            <option value="1000">Show: 1000</option>
+          </select>
+        </div>
+      </nav>
       <article>
         <ul id="breweries-list" class="breweries-list">
           <!--
@@ -45,6 +78,5 @@
         </ul>
       </article>
     </main>
-    <script src="index.js"></script>
   </body>
 </html>

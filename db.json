@@ -1,0 +1,40 @@
+{
+  "brewery": [
+    {
+      "id": "4ccad9b9-f9cf-4d21-b6d5-ab005ee1532d",
+      "name": "192 Brewing",
+      "brewery_type": "micro",
+      "address_1": "7324 NE 175th St",
+      "address_2": null,
+      "address_3": null,
+      "city": "Kenmore",
+      "state_province": "Washington",
+      "postal_code": "98028-2500",
+      "country": "United States",
+      "longitude": "-122.2415652",
+      "latitude": "47.75670075",
+      "phone": "4254242337",
+      "website_url": "http://www.192brewing.com",
+      "state": "Washington",
+      "street": "7324 NE 175th St"
+    },
+    {
+      "id": "5c99b790-e00d-4ca6-86a5-37723f728690",
+      "name": "5 Rights Brewing Co",
+      "brewery_type": "micro",
+      "address_1": "1514 3rd St",
+      "address_2": null,
+      "address_3": null,
+      "city": "Marysville",
+      "state_province": "Washington",
+      "postal_code": "98270",
+      "country": "United States",
+      "longitude": "-122.1762906",
+      "latitude": "48.05156015",
+      "phone": "4253341026",
+      "website_url": "http://www.5rightsbrewing.com",
+      "state": "Washington",
+      "street": "1514 3rd St"
+    }
+  ]
+}
