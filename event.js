@@ -7,6 +7,7 @@ function usStateInput() {
       .then(() => renderBreweries())
 
     SELECT_STATE_FORM.reset();
+    resetBreweryFilter();
   });
 }
 
@@ -49,9 +50,7 @@ function pageNumberSelect() {
 }
 
 function breweryTypeFilter() {
-  const select = document.querySelector("#filter-by-type")
-
-  select.addEventListener("input", e => {
+  BREWERY_TYPE_FILTER.addEventListener("input", e => {
     renderBreweries(e.target.value)
   })
 }

@@ -56,3 +56,7 @@ function clearElement(element) {
 function multiAppend(parent, ...elements) {
   elements.forEach((element) => parent.append(element));
 }
+
+function resetBreweryFilter() {
+  BREWERY_TYPE_FILTER.value = ""
+}
