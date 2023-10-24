@@ -4,7 +4,7 @@ const state = {
 }
 const USStates = [
   "alabama","alaska","arizona","arkansas",
-  "california", "colorado", "conneticut",
+  "california", "colorado", "connecticut",
   "delaware",
   "florida",
   "georgia",
@@ -12,7 +12,7 @@ const USStates = [
   "idaho", "illinois", "indiana", "iowa",
   "kansas", "kentucky",
   "louisiana",
-  "maine", "maryland", "massachussets", "michigan", "minnesota", "mississippi", "missouri", "montana",
+  "maine", "maryland", "massachusetts", "michigan", "minnesota", "mississippi", "missouri", "montana",
   "nebraska", "nevada", "new hampshire", "new jersey", "new mexico", "new york", "north carolina", "north dakota",
   "ohio", "oaklahoma", "oregon",
   "pennsylvania",
@@ -151,8 +151,7 @@ const renderCityFilters = () => {
   button.addEventListener("click", (event) => {
     event.preventDefault()
     resetAllCityFilters()
-    const allCityInputs = document.querySelectorAll("form#filter-by-city-form input")
-    allCityInputs.forEach(input => input.removeAttribute("checked"))
+    form.reset()
   })
   form.appendChild(button)
 
