@@ -44,6 +44,7 @@ const renderSearchBar = () => {
     section.append(form);
     article.prepend(section);
 };
+
 // The main render for the page based on value/state entered in search bar //
 const renderBreweryList = (breweryState) => {
     breweryState.breweries.forEach((brewery) => {
@@ -132,6 +133,8 @@ selectStateForm.addEventListener("submit", (event) => {
             state.breweries = BreweryCanVisit;
             removeBreweries();
             renderBreweryList(state);
+            selectedCityRender();
+            
         });
 });
 // Event listener that looks at different selcted options in dropdown list //
@@ -149,6 +152,8 @@ filterByType.addEventListener("click", (event) => {
         changeState("brewpub");
     } else {
         removeBreweries();
+        removeFilterbyCityItems();
+        renderFilterByCity();
         renderBreweryList(state);
     }
 });
@@ -195,9 +200,8 @@ const renderFilterByCity = () => {
     form.setAttribute("id", "filter-by-city-form");
 
     state.breweries.forEach((brewery) => {
-        const cityNameCheck = []
-        if (cityNameCheck.includes(brewery.city) === false) 
-        {
+        const cityNameCheck = [];
+        if (cityNameCheck.includes(brewery.city) === false) {
             const inputLabel = document.createElement("label");
             inputLabel.innerText = `${brewery.city}`;
             const checkbox = document.createElement("input");
@@ -205,11 +209,11 @@ const renderFilterByCity = () => {
             checkbox.setAttribute("name", "filter-by-city");
             checkbox.setAttribute("value", `${brewery.city}`);
             checkbox.setAttribute("id", `${brewery.city}`);
-            cityNameCheck.push(brewery.city)
-            console.log(cityNameCheck)
+            cityNameCheck.push(brewery.city);
+            // console.log(cityNameCheck);
             form.append(checkbox);
             form.append(inputLabel);
-        } 
+        }
     });
 
     filterSection.append(sectionHeader);
@@ -218,18 +222,39 @@ const renderFilterByCity = () => {
 
 renderSearchBar();
 
+function selectedCityRender () {
+const filterByCityForm = document.getElementById("filter-by-city-form")
+const clearAll = document.querySelector(".clear-all-btn")
+    let cityDb = [];
+    filterByCityForm.addEventListener("click", (event) => {
+
+        cityDb.push(event.target.value);
+ 
+        console.log(cityDb);
+    });
+    clearAll.addEventListener("click", (event)=> {
+        filterByCityForm.checked === false
+        cityDb = []
+    })
+
+}
+
+
 const searchBarInput = document.getElementById("searchBarInput");
 searchBarInput.addEventListener("input", (event) => {
     const inputedBrewery = event.target.value;
     // console.log(inputedBrewery);
-
+    
     fetch(`${root}?by_name=${inputedBrewery}`)
-        .then((response) => response.json())
-        .then((data) => {
-            state.breweries = data;
-            removeBreweries();
-            removeFilterbyCityItems();
-            renderFilterByCity();
-            renderBreweryList(state);
-        });
+    .then((response) => response.json())
+    .then((data) => {
+        state.breweries = data;
+        removeBreweries();
+        removeFilterbyCityItems();
+        renderFilterByCity();
+        renderBreweryList(state);
+    });
 });
+
+
+
