@@ -2,14 +2,6 @@ const state = {
   breweries: [], // all breweries by state
   renderedBreweries: [] // this is to be able to reset to all loaded breweries by state
 }
-
-const listRender = document.getElementById("breweries-list")
-const aside = document.querySelector("aside.filters-section aside.filters-section")
-
-// API consts
-const protocol = "https"
-const baseURL = "api.openbrewerydb.org"
-
 const USStates = [
   "alabama","alaska","arizona","arkansas",
   "california", "colorado", "conneticut",
@@ -32,8 +24,27 @@ const USStates = [
   "west virginia", "wyoming", "wisconsin", "washington"
 ]
 
+// API consts
+const protocol = "https"
+const baseURL = "api.openbrewerydb.org"
+
+// important page sections 
+const listRender = document.getElementById("breweries-list")
+const aside = document.querySelector("aside.filters-section aside.filters-section")
 const entryForm = document.querySelector("form")
 const searchField = document.querySelector("input#select-state")
+const resultCount = document.querySelector("#resultCount p")
+const triggerFilter = document.querySelector("#filter-by-type")
+
+// these are the volatile values for the possible filtering by the user
+let filterArr = ["micro", "regional", "brewpub"]
+let textStr = ""
+// these are filters that will only affect the display
+let pageIndex = 1
+let citiesFilter = []
+
+// page elements
+
 entryForm.addEventListener("submit", (event) => {
   event.preventDefault()
 
@@ -45,10 +56,11 @@ entryForm.addEventListener("submit", (event) => {
   loadBreweriesByState(searchField.value)
 })
 
-const resultCount = document.querySelector("#resultCount")
 const updateResultCount = () => {
-  resultCount.innerText = `(displaying ${state.renderedBreweries.length} matches out of ${state.breweries.length} found breweries in ${searchField.value})`
+  resultCount.innerText = `displaying ${state.renderedBreweries.length} matches out of ${state.breweries.length} found breweries in ${searchField.value}`
 }
+
+// interactive search elements
 
 const createFreetextSearch = () => {
   // it should be following the "list of breweries"
@@ -70,6 +82,7 @@ const createFreetextSearch = () => {
   form.appendChild(label)
   
   const input = document.createElement("input")
+  
   input.setAttribute("id", "search-breweries")
   input.setAttribute("name", "search-breweries")
   input.setAttribute("type", "text")
@@ -85,14 +98,14 @@ const liveSearchByText = (inputStr) => {
   renderList()
 }
 
-const loadBreweriesByState = (stateNameStr) => {
-  fetch(`${protocol}://${baseURL}/v1/breweries?by_state=${stateNameStr}&per_page=200`)
-    .then(response => response.json())
-    .then(data => state.breweries = data.filter(item => ["micro", "regional", "brewpub"].includes(item.brewery_type.toLowerCase())))
-    .then(() => compileCityArr())
-    .then(() => compileRenderedList()) // note that the previous settings of FilterArr and textStr still apply
-    .then(() => renderList())
-}
+// filter
+
+triggerFilter.addEventListener("change", (event) => {
+  event.target.value !== "" ? filterArr = [event.target.value] : filterArr = ["micro", "regional", "brewpub"]
+  renderList()
+})
+
+// city sidebar
 
 const compileCityArr = () => {
   const listOfCities = []
@@ -108,11 +121,6 @@ const compileCityArr = () => {
   })
   
   return listOfCities
-}
-
-const deleteCityFilters = () => {
-  const form = document.querySelector("form#filter-by-city-form")
-  if (!!form === true) form.remove()
 }
 
 const renderCityFilters = () => {
@@ -136,8 +144,8 @@ const renderCityFilters = () => {
     const input = document.createElement("input")
     input.setAttribute("type", "checkbox")  
     input.setAttribute("name", allCities[i].toLowerCase())  
-    input.setAttribute("value", allCities[i].toLowerCase())  
-
+    input.setAttribute("value", allCities[i].toLowerCase())
+    
     const capitalizeCityStr = (str) => {
       const wordArr = str.split(" ")
       wordArr.forEach(val => val[0].toUpperCase() + val.slice(1).toLowerCase())
@@ -154,6 +162,21 @@ const renderCityFilters = () => {
 
   aside.appendChild(form)
 }
+
+const deleteCityFilters = () => {
+  const form = document.querySelector("form#filter-by-city-form")
+  if (!!form === true) form.remove()
+}
+
+const addCityToFilter = (city) => {
+  if (citiesFilter.includes(city) === false) citiesFilter.push(city)
+}
+
+const removeCityFromFilter = (city) => {
+  if (citiesFilter.includes(city) === true) citiesFilter.slice(citiesFilter.indexOf(city), 1)
+}
+
+// pagination
 
 const clearPageNavigation = () => {
   const navInnerElements = document.querySelectorAll("nav *")
@@ -179,36 +202,40 @@ const renderPageNavigation = () => {
   nav.appendChild(article)
 }
 
-// these are the volatile values for the possible filtering by the user
-let filterArr = ["micro", "regional", "brewpub"]
-let textStr = ""
-let pageIndex = 1
-
-const compileRenderedList = () => {
-  const filteredForType = state.breweries.filter(brewery => filterArr.includes(brewery.brewery_type.toLowerCase()))
-  const additionallyFilteredForString = filteredForType.filter(brewery => brewery.name.match(textStr))
-  // slotting the results into pages
-  const calcPage = (index) => Math.ceil((index + 1) / 10)
-  additionallyFilteredForString.forEach((brewery, index) => brewery.page = calcPage(index))
-  state.renderedBreweries = additionallyFilteredForString
-}
-
 const choosePage = (num) => {
   pageIndex = num
   renderList()
 }
 
-const triggerFilter = document.querySelector("#filter-by-type")
-triggerFilter.addEventListener("change", (event) => {
-  event.target.value !== "" ? filterArr = [event.target.value] : filterArr = ["micro", "regional", "brewpub"]
-  renderList()
-})
+// data fetching and processing
+
+const loadBreweriesByState = (stateNameStr) => {
+  fetch(`${protocol}://${baseURL}/v1/breweries?by_state=${stateNameStr}&per_page=200`)
+    .then(response => response.json())
+    .then(data => state.breweries = data.filter(item => ["micro", "regional", "brewpub"].includes(item.brewery_type.toLowerCase())))
+    .then(() => compileCityArr())
+    .then(() => compileRenderedList()) // note that the previous settings of FilterArr and textStr still apply
+    .then(() => renderList())
+}
+
+const compileRenderedList = () => {
+  const filteredForType = state.breweries.filter(brewery => filterArr.includes(brewery.brewery_type.toLowerCase()))
+  const filteredForString = filteredForType.filter(brewery => brewery.name.match(textStr))
+  const filteredForCity = filteredForString.filter(brewery => citiesFilter.includes(brewery.city))
+  // slotting the results into pages
+  const calcPage = (index) => Math.ceil((index + 1) / 10)
+  filteredForString.forEach((brewery, index) => brewery.page = calcPage(index))
+  state.renderedBreweries = filteredForString
+}
+
+// render main portion
 
 const renderList = () => {
   clearRenderList()
   
   compileRenderedList()
   const pageResults = state.renderedBreweries.filter(brewery => brewery.page === pageIndex)
+  
   pageResults.forEach(val => listRender.appendChild(createListItem(val)))
   
   renderCityFilters()

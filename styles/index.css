@@ -243,3 +243,9 @@ nav button#active {
 nav button:hover {
   background-color: #ffe082;
 }
+
+#resultCount p {
+  color: gray;
+  text-align: end;
+  padding: 1em 0;
+}
