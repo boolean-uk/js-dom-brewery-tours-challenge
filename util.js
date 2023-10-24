@@ -124,6 +124,10 @@ function filterCities(inputArray) {
   return inputArray
 }
 
+function filterName(inputArray) {
+  return inputArray.filter(brewery => brewery.name.toLowerCase().includes(NAME_FILTER.value.toLowerCase()))
+}
+
 function obtainSelectedCities() {
   const checkBoxes = CITY_FILTER_FORM.querySelectorAll("input")
 
@@ -132,8 +136,8 @@ function obtainSelectedCities() {
 
 function collateFilters() {
   const type = filterBreweryType(makeRenderList())
-
   const cities = filterCities(type)
+  const name = filterName(cities)
 
-  return cities
+  return name
 }

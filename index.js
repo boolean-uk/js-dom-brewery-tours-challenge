@@ -3,6 +3,7 @@ function init() {
   pageLengthSelect();
   pageNextEnable();
   pagePreviousEnable();
+  nameSearchFilter();
   breweryTypeFilter();
   clearCityFilter();
 }
@@ -54,7 +55,7 @@ init();
 function test() {
   getBreweriesByState("washington")
     .then(() => renderBreweries(makeRenderList()))
-    .then(() => obtainCityList());
+    .then(() => renderCityFilterList());
 }
 
-// test();
+test();

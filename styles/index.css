@@ -6,6 +6,10 @@ body {
   font-weight: bold;
 }
 
+.highlight {
+  background-color: #ffe082;
+}
+
 .main-header {
   padding: 1rem;
   margin-bottom: 2rem;
@@ -45,8 +49,8 @@ main {
   display: grid;
   grid-template-areas:
     "sidebar title"
-    "sidebar pagination"
     "sidebar search-bar"
+    "sidebar pagination"
     "sidebar article";
   grid-template-columns: 1fr 3fr;
   grid-template-rows: auto auto auto 1fr;
@@ -116,7 +120,8 @@ main {
   border: 1px solid #000;
   border-top: none;
 
-  height: minmax(auto, 600px);
+  min-height: auto;
+  max-height: 600px;
   overflow-y: scroll;
 }
 
@@ -131,6 +136,8 @@ h1 {
   grid-area: search-bar;
 
   padding: 0 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 #search-breweries-form {

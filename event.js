@@ -63,3 +63,28 @@ function clearCityFilter() {
     renderBreweries(collateFilters());
   });
 }
+
+function nameSearchFilter() {
+  NAME_FILTER.addEventListener("input", (e) => {
+    renderBreweries(collateFilters());
+
+    const filterResults = BREWERY_LIST.querySelectorAll("li");
+    const searchLower = e.target.value.toLowerCase()
+    const searchLength = e.target.value.length
+
+    filterResults.forEach((result) => {
+      const h2 = result.querySelector("h2").firstChild;
+      const h2Text = h2.textContent
+      const h2Start = h2Text.toLowerCase().indexOf(searchLower)
+      const h2End = h2Start + searchLength
+
+      const range = document.createRange()
+      range.setStart(h2, h2Start)
+      range.setEnd(h2, h2End)
+
+      const highlight = makeElement("span", "highlight")
+
+      range.surroundContents(highlight)
+    });
+  });
+}

@@ -19,5 +19,6 @@ const BREWERY_LIST = document.querySelector("#breweries-list");
 const PAGINATION = document.querySelector(".pagination");
 const PAGINATION_NUMBERS = PAGINATION.querySelector(":scope .page-numbers");
 
-const BREWERY_TYPE_FILTER = document.querySelector("#filter-by-type")
-const CITY_FILTER_FORM = document.querySelector("#filter-by-city-form")
+const NAME_FILTER = document.querySelector("#search-breweries-form > input");
+const BREWERY_TYPE_FILTER = document.querySelector("#filter-by-type");
+const CITY_FILTER_FORM = document.querySelector("#filter-by-city-form");
