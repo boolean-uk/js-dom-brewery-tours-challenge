@@ -4,7 +4,8 @@ function usStateInput() {
 
     clearStateBreweryList();
     getBreweriesByState(SELECT_STATE_INPUT.value)
-      .then(() => renderBreweries())
+      .then(() => renderBreweries(makeRenderList()))
+      .then(() => renderCityFilterList());
 
     SELECT_STATE_FORM.reset();
     resetBreweryFilter();
@@ -50,7 +51,15 @@ function pageNumberSelect() {
 }
 
 function breweryTypeFilter() {
-  BREWERY_TYPE_FILTER.addEventListener("input", e => {
-    renderBreweries(e.target.value)
-  })
+  BREWERY_TYPE_FILTER.addEventListener("input", (e) => {
+    renderBreweries(collateFilters());
+  });
+}
+
+function clearCityFilter() {
+  const button = document.querySelector(".clear-all-btn");
+  button.addEventListener("click", (e) => {
+    CITY_FILTER_FORM.reset();
+    renderBreweries(collateFilters());
+  });
 }

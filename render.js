@@ -1,25 +1,9 @@
-function renderBreweries(type) {
+function renderBreweries(renderList) {
   clearElement(BREWERY_LIST);
 
-  makeRenderList(type)
-
-  STATE.render.forEach((brewery) => renderBrewery(brewery));
-  STATE.page.currentPage = 1
+  renderList.forEach((brewery) => renderBrewery(brewery));
+  STATE.page.currentPage = 1;
   paginate();
-}
-
-function makeRenderList(type) {
-  const breweryList = [];
-
-  if (Object.keys(STATE.breweries).includes(type)) {
-    breweryList.push(...STATE.breweries[type]);
-  } else {
-    for (const key in STATE.breweries) {
-      breweryList.push(...STATE.breweries[key]);
-    }
-  }
-
-  STATE.render = sortArray(breweryList, "name")
 }
 
 function renderBrewery(brewery) {
@@ -103,4 +87,24 @@ function renderPaginateSelector() {
   }
 
   togglePaginateAdjacentButtons();
+}
+
+function renderCityFilterList() {
+  const cityList = obtainCityList();
+
+  cityList.forEach((city) => {
+    const checkBox = makeElement("input");
+    checkBox.id = `city-${city.toLowerCase()}`;
+    checkBox.type = "checkbox";
+    checkBox.value = city.toLowerCase();
+    checkBox.addEventListener("change", e => {
+      renderBreweries(collateFilters())
+    })
+
+    const label = makeElement("label", null, city);
+    label.htmlFor = `city-${city.toLowerCase()}`;
+
+    CITY_FILTER_FORM.append(checkBox);
+    CITY_FILTER_FORM.append(label);
+  });
 }

@@ -115,6 +115,9 @@ main {
   border-radius: 0 0 0.25rem 0.25rem;
   border: 1px solid #000;
   border-top: none;
+
+  height: minmax(auto, 600px);
+  overflow-y: scroll;
 }
 
 h1 {

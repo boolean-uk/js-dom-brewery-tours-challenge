@@ -4,6 +4,7 @@ function init() {
   pageNextEnable();
   pagePreviousEnable();
   breweryTypeFilter();
+  clearCityFilter();
 }
 
 function getBreweries(filter) {
@@ -30,7 +31,7 @@ function getBreweryType(type, filter, page) {
       if (res.length === perPage) {
         return getBreweryType(type, filter, ++page);
       }
-    })
+    });
 }
 
 function getBreweriesByState(state) {
@@ -51,7 +52,9 @@ function clearStateBreweryList() {
 init();
 
 function test() {
-  getBreweriesByState("washington").then(() => renderBreweries());
+  getBreweriesByState("washington")
+    .then(() => renderBreweries(makeRenderList()))
+    .then(() => obtainCityList());
 }
 
 // test();

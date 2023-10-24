@@ -58,11 +58,18 @@ function multiAppend(parent, ...elements) {
 }
 
 function resetBreweryFilter() {
-  BREWERY_TYPE_FILTER.value = ""
+  BREWERY_TYPE_FILTER.value = "";
 }
 
 function obtainCityList() {
+  const set = new Set();
+  makeRenderList().forEach(brewery => {
+    set.add(brewery.city)
+  });
 
+  const result = Array.from(set).sort()
+
+  return result
 }
 
 function sortArray(array, objectProperty) {
@@ -70,8 +77,63 @@ function sortArray(array, objectProperty) {
     const aUpper = a[objectProperty].toUpperCase();
     const bUpper = b[objectProperty].toUpperCase();
 
-    if (aUpper < bUpper) return -1
-    if (aUpper > bUpper) return 1
-    return 0
+    if (aUpper < bUpper) return -1;
+    if (aUpper > bUpper) return 1;
+    return 0;
+  });
+}
+
+function makeRenderList(type) {
+  const breweryList = [];
+
+  if (Object.keys(STATE.breweries).includes(type)) {
+    breweryList.push(...STATE.breweries[type]);
+  } else {
+    for (const key in STATE.breweries) {
+      breweryList.push(...STATE.breweries[key]);
+    }
+  }
+
+  return sortArray(breweryList, "name");
+}
+
+function filterBreweryType(inputArray) {
+  const selectedType = BREWERY_TYPE_FILTER.value
+
+  if (!!selectedType) {
+    return filterResults = inputArray.filter(brewery => brewery.brewery_type === selectedType)
+  }
+
+  return inputArray
+}
+
+function filterCities(inputArray) {
+  const checked = obtainSelectedCities()
+  
+  const filterResults = checked.map(checkBox => {
+    return inputArray.filter(brewery => brewery.city.toLowerCase().includes(checkBox.value))
   })
+
+  const results = []
+
+  if (filterResults.length > 0) {
+    filterResults.forEach(set => results.push(...set))
+    return sortArray(results, "name")
+  }
+
+  return inputArray
+}
+
+function obtainSelectedCities() {
+  const checkBoxes = CITY_FILTER_FORM.querySelectorAll("input")
+
+  return Array.from(checkBoxes).filter(child => child.checked)
+}
+
+function collateFilters() {
+  const type = filterBreweryType(makeRenderList())
+
+  const cities = filterCities(type)
+
+  return cities
 }
