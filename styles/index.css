@@ -290,3 +290,26 @@ article {
 #select-name {
   width: 100%;
 }
+
+#pagination {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 5px 0 20px 0;
+}
+
+#pagination button {
+  margin: 0 10px;
+  padding: 5px 25px;
+  cursor: pointer;
+  background: none;
+  border: 1px solid black;
+  border-radius: 15px;
+  transition: all .1s ease-in;
+}
+
+#pagination button:hover {
+  color: #fff;
+  background-color: #000;
+}

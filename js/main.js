@@ -19,11 +19,12 @@ const defaultLink = "https://api.openbrewerydb.org/v1/breweries";
 const state = {
     breweries: [],
     type: "",
-    stateName: "new york",
+    stateName: "",
     name: "",
     citiesList: [],
     citiesFilter: [],
     currentPage: 1,
+    totalPages: 0,
 };
 
 // global functions
@@ -47,6 +48,8 @@ const getAllBreweries = () => {
     )
         .then((response) => response.json())
         .then((data) => updateState(data));
+
+    getPaginationPages();
 };
 
 // get breweries by cities
@@ -62,6 +65,22 @@ const getBreweriesByCities = () => {
                 renderBreweries();
             });
     });
+};
+
+// get total pages for pagination
+const getPaginationPages = () => {
+    fetch(
+        `${defaultLink}/meta?${
+            state.type ? "by_type=" + state.type + "&" : ""
+        }${state.stateName ? "by_state=" + state.stateName + "&" : ""}${
+            state.name ? "by_name=" + state.name + "&" : ""
+        }`
+    )
+        .then((res) => res.json())
+        .then((data) => {
+            state.totalPages = Math.ceil(data.total / 10);
+            renderPagination();
+        });
 };
 
 // RENDERS --------------------------------------------------------------------------------------------------------------------------------------------
@@ -170,6 +189,39 @@ const renderListOfCities = () => {
     });
 };
 
+// render pagination
+const renderPagination = () => {
+    // clear pagination block
+    paginationBlock.querySelectorAll("*").forEach((item) => item.remove());
+
+    // create elements
+    const buttonPrev = document.createElement("button");
+    buttonPrev.innerText = "Prev";
+
+    buttonPrev.addEventListener("click", () => {
+        if (state.currentPage > 1) {
+            state.currentPage--;
+            getAllBreweries();
+        }
+    });
+
+    const count = document.createElement("span");
+    count.innerText = `${state.currentPage} / ${state.totalPages}`;
+
+    const buttonNext = document.createElement("button");
+    buttonNext.innerText = "Next";
+
+    buttonNext.addEventListener("click", () => {
+        if (state.currentPage < state.totalPages) {
+            state.currentPage++;
+            getAllBreweries();
+        }
+    });
+
+    // configuration
+    paginationBlock.append(buttonPrev, count, buttonNext);
+};
+
 // EVENTS ------------------------------------------------------------------------------------------------------------------------------------
 
 // search by state of brewery
@@ -178,6 +230,7 @@ formSearchState.addEventListener("submit", (e) => {
 
     state.stateName = e.target["select-state"].value;
     e.target["select-state"].value = "";
+    state.currentPage = 1;
     getAllBreweries();
 });
 
