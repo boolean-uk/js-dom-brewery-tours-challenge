@@ -228,3 +228,40 @@ article {
   text-decoration: none;
   font-weight: bold;
 }
+
+button.visitList {
+  background-color: none;
+  border: none;
+  border-radius: 100%;
+  margin-right: 0.5em;
+}
+
+button.visitList#marked {
+  background-color: rgb(129, 196, 82);
+}
+
+nav {
+  display: grid;
+  height: 50px;
+}
+
+nav button {
+  margin: 0 1px;
+  border-radius: 3px;
+  border: none;
+  min-width: 30px;
+}
+
+nav button#active {
+  background-color: #fbc02d;
+}
+
+nav button:hover, button.visitList:hover {
+  background-color: #ffe082;
+}
+
+#resultCount p {
+  color: gray;
+  text-align: end;
+  padding: 1em 0;
+}

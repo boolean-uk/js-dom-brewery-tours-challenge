@@ -1,0 +1,9 @@
+{
+  "name": "js-dom-brewery-tours-challenge",
+  "version": "1.0.0",
+  "main": "main.js",
+  "license": "ISC",
+  "dependencies": {
+    "json-server": "^0.17.4"
+  }
+}
