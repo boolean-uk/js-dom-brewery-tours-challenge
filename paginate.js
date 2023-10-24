@@ -24,9 +24,7 @@ function paginateShowPage() {
   const { currentPage, pageLimit } = STATE.page;
   const resultCount = BREWERY_LIST.children.length;
 
-  const startBrewery = resultCount
-    ? currentPage * pageLimit - pageLimit
-    : 0;
+  const startBrewery = resultCount ? currentPage * pageLimit - pageLimit : 0;
   const endBrewery = currentPage * pageLimit;
 
   for (const [idx, brewery] of breweries.entries()) {

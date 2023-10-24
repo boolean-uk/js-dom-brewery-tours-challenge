@@ -65,26 +65,31 @@ function clearCityFilter() {
 }
 
 function nameSearchFilter() {
+  SEARCH_CONTAINER.addEventListener("submit", (e) => {
+    e.preventDefault();
+  });
+
   NAME_FILTER.addEventListener("input", (e) => {
+    e.preventDefault();
     renderBreweries(collateFilters());
 
     const filterResults = BREWERY_LIST.querySelectorAll("li");
-    const searchLower = e.target.value.toLowerCase()
-    const searchLength = e.target.value.length
+    const searchLower = e.target.value.toLowerCase();
+    const searchLength = e.target.value.length;
 
     filterResults.forEach((result) => {
       const h2 = result.querySelector("h2").firstChild;
-      const h2Text = h2.textContent
-      const h2Start = h2Text.toLowerCase().indexOf(searchLower)
-      const h2End = h2Start + searchLength
+      const h2Text = h2.textContent;
+      const h2Start = h2Text.toLowerCase().indexOf(searchLower);
+      const h2End = h2Start + searchLength;
 
-      const range = document.createRange()
-      range.setStart(h2, h2Start)
-      range.setEnd(h2, h2End)
+      const range = document.createRange();
+      range.setStart(h2, h2Start);
+      range.setEnd(h2, h2End);
 
-      const highlight = makeElement("span", "highlight")
+      const highlight = makeElement("span", "highlight");
 
-      range.surroundContents(highlight)
+      range.surroundContents(highlight);
     });
   });
 }

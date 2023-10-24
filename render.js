@@ -8,7 +8,7 @@ function renderBreweries(renderList) {
 
 function renderBrewery(brewery) {
   const li = makeElement("li");
-  li.id = brewery.id
+  li.id = brewery.id;
 
   const h2 = makeElement("h2", null, brewery.name);
   const typeDiv = makeElement("div", "type", brewery.brewery_type);
@@ -99,9 +99,9 @@ function renderCityFilterList() {
     checkBox.id = `city-${city.toLowerCase()}`;
     checkBox.type = "checkbox";
     checkBox.value = city.toLowerCase();
-    checkBox.addEventListener("change", e => {
-      renderBreweries(collateFilters())
-    })
+    checkBox.addEventListener("change", (e) => {
+      renderBreweries(collateFilters());
+    });
 
     const label = makeElement("label", null, city);
     label.htmlFor = `city-${city.toLowerCase()}`;

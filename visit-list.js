@@ -16,7 +16,7 @@ function saveBrewery(brewery) {
 
 function loadSavedBreweries(id) {
   id = id ? id : "";
-  const idString = id ? `id=${id}` : ""
+  const idString = id ? `id=${id}` : "";
 
   return fetch(`${LIVE_SERVER_ROOT}/brewery?${idString}`)
     .then((res) => res.json())
@@ -36,10 +36,10 @@ function postTest() {
 // half code ideas for extension 4:
 
 function checkIfSaved(e) {
-  const elementId = e.target.id
+  const elementId = e.target.id;
   // if loadSavedBreweries(elementId) returns result:
-    // toggleDeleteButton()
-    // toggleAddButton
+  // toggleDeleteButton()
+  // toggleAddButton
 }
 
 function renderSaved() {

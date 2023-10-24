@@ -8,7 +8,7 @@ const STATE = {
     currentPage: 1,
     pageLimit: 10,
   },
-  savedBreweries: []
+  savedBreweries: [],
 };
 
 const SELECT_STATE_FORM = document.querySelector("#select-state-form");
@@ -20,8 +20,9 @@ const BREWERY_LIST = document.querySelector("#breweries-list");
 const PAGINATION = document.querySelector(".pagination");
 const PAGINATION_NUMBERS = PAGINATION.querySelector(":scope .page-numbers");
 
+const SEARCH_CONTAINER = document.querySelector("#search-breweries-form");
 const NAME_FILTER = document.querySelector("#search-breweries-form > input");
 const BREWERY_TYPE_FILTER = document.querySelector("#filter-by-type");
 const CITY_FILTER_FORM = document.querySelector("#filter-by-city-form");
 
-const LIVE_SERVER_ROOT = "http://127.0.0.1:3000"
+const LIVE_SERVER_ROOT = "http://127.0.0.1:3000";
