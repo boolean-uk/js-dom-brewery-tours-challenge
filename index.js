@@ -1,34 +1,44 @@
 const root = 'https://api.openbrewerydb.org/v1/breweries'
 let breweries = []
-
+let types = [
+    'micro',
+    'brewpub',
+    'regional',
+];
 const api = (str) => {
-    return `${root}?${str}?per_page=10`;
+    return `${root}?${str}`;
 }
 
-const getBreweries = (type) => {
-    console.log('fetching')
-    if (type == null || type == '') {
-        fetch(api())
-            .then((response) => response.json())
-            .then((data) => {
-                breweries = data;
-                renderBreweries();
-            })
-    } else {
-        fetch(api(`by_type=${typeButton.value}&`))
+const typeFilter = (dat) => {
+    let out = []
+    dat.forEach((item) => {
+        for (let i = 0; i < types.length; i++) {
+            if (item.brewery_type === types[i]) {
+                out.push(item);
+            };
+        };
+    });
+    return out
+}
+
+const getBreweries = (state) => {
+    breweries = [];
+
+    fetch(`${root}/random?size=50`)
         .then((response) => response.json())
         .then((data) => {
-            breweries = data;
-            renderBreweries();
-        })
+            breweries = typeFilter(data)
+            renderBreweries(); 
+            console.log(breweries);
+        });
 
-    }
 }
 
 const renderBreweries = () => {
     const list = document.querySelector('#breweries-list')
     list.textContent = ''
     breweries.forEach((item) => {
+        
         const container = document.createElement('li')
         
         const title = document.createElement('h2')
@@ -70,14 +80,51 @@ const renderBreweries = () => {
         container.append(title, type, addressContainer, phoneContainer, link)
         list.append(container)
     })
-    
-
 }
 
+
+
 const typeButton = document.querySelector('#filter-by-type')
-typeButton.addEventListener('change', event => {
-    console.log(typeButton.value)
-    getBreweries(typeButton.value)
+typeButton.addEventListener('change', () => {
+    
+})
+
+const search = document.querySelector('#select-state-form')
+const searchInput = document.querySelector('#select-state')
+search.addEventListener('submit', (event) => {
+    event.preventDefault()
+    
+    if (searchInput.value != '' && typeButton.value != '') {
+        console.log(api(`by_state=${searchInput.value}&by_type=${typeButton.value}`))
+        console.log(typeButton.value)
+        fetch(api(`by_state=${searchInput.value}&by_type=${typeButton.value}`))
+        .then((response) => response.json())
+        .then((data) => {
+            breweries = data;
+            console.log(breweries)
+            renderBreweries();
+        })
+    } else if (searchInput.value != '') {
+        fetch(api(`by_state=${searchInput.value}`))
+        .then((response) => response.json())
+        .then((data) => {
+            breweries = typeFilter(data);
+            console.log(breweries)
+            renderBreweries();
+        })
+    } else if (typeButton.value != '') {
+        fetch(api(`by_type=${typeButton.value}`))
+        .then((response) => response.json())
+        .then((data) => {
+            breweries = data;
+            console.log(breweries)
+            renderBreweries();
+        })
+    } else {
+        console.log(breweries)
+        getBreweries()
+    }
+    
 })
 
 getBreweries()
