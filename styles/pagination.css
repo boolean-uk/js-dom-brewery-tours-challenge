@@ -1,0 +1,32 @@
+/*TODO: add styling that shows which pages is currently active (using :focus?*/
+
+
+.hidden {
+    visibility: collapse;
+}
+
+.pagination-nav {
+    display: inline;
+    list-style: none;
+    text-align: center;
+    font-weight: bold;
+    padding: 5px 20px;
+}
+
+#page-list {
+    display: inline-block;
+    width:fit-content;
+    margin: 5px 30% 10px 30%;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.pagination-nav:hover{
+    text-shadow: 1px 0.5px 1px rgb(0, 0, 0);
+    color: white;
+}
+
+#page-list:hover {
+    background-color: rgba(49, 49, 49, 0.744);
+    transition-duration: 1s;
+}
