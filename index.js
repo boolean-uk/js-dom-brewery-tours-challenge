@@ -29,7 +29,6 @@ const getBreweries = (state) => {
         .then((data) => {
             breweries = typeFilter(data)
             renderBreweries(); 
-            console.log(breweries);
         });
 
 }
@@ -85,9 +84,6 @@ const renderBreweries = () => {
 
 
 const typeButton = document.querySelector('#filter-by-type')
-typeButton.addEventListener('change', () => {
-    
-})
 
 const search = document.querySelector('#select-state-form')
 const searchInput = document.querySelector('#select-state')
@@ -101,7 +97,6 @@ search.addEventListener('submit', (event) => {
         .then((response) => response.json())
         .then((data) => {
             breweries = data;
-            console.log(breweries)
             renderBreweries();
         })
     } else if (searchInput.value != '') {
@@ -109,7 +104,6 @@ search.addEventListener('submit', (event) => {
         .then((response) => response.json())
         .then((data) => {
             breweries = typeFilter(data);
-            console.log(breweries)
             renderBreweries();
         })
     } else if (typeButton.value != '') {
@@ -117,11 +111,9 @@ search.addEventListener('submit', (event) => {
         .then((response) => response.json())
         .then((data) => {
             breweries = data;
-            console.log(breweries)
             renderBreweries();
         })
     } else {
-        console.log(breweries)
         getBreweries()
     }
     
