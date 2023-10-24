@@ -204,6 +204,8 @@ const renderPaginationControlBar = () => {
     //to  be swapped for an array created using the number of results obtained given the current search parameters
     const pages = [1, 2, 3, 4, 5]
 
+    let currentPage = 1
+
     //renders the pagination bar itself (at the bottom of the page)
     const pagesList = document.createElement('ul')
     pagesList.setAttribute('id', 'page-list')
@@ -214,6 +216,13 @@ const renderPaginationControlBar = () => {
     const arrowBack = document.createElement('li')
     arrowBack.innerText = '<'
     arrowBack.setAttribute('class', 'pagination-nav')
+    arrowBack.addEventListener('click', event => {
+        if (currentPage === 1) {
+        } else {
+        currentPage = currentPage - 1
+        displayPage(currentPage)
+        }
+    })
     pagesList.append(arrowBack)
 
     //page by page - renders page numbers, allows navigation (needs refactor)
@@ -223,7 +232,10 @@ const renderPaginationControlBar = () => {
         pageNumber.setAttribute('class', 'pagination-nav')
         pageNumber.setAttribute('value', p)
         pagesList.append(pageNumber)
-        pageNumber.addEventListener('click', event => displayPage(event.target.value))
+        pageNumber.addEventListener('click', event => {
+            currentPage = event.target.value
+            displayPage(currentPage)
+        })
     })
     if (pages.length > 5) {
         for (let i = 5; i <pages.length; i++) {
@@ -235,6 +247,14 @@ const renderPaginationControlBar = () => {
     //go to the next page (no functionality as of yet)
     const arrowNext = document.createElement('li')
     arrowNext.innerText = '>'
+    arrowNext.addEventListener('click', event => {
+        if (currentPage === 5) {
+            
+        } else {       
+            currentPage = currentPage + 1
+            displayPage(currentPage)
+        }
+    })
     arrowNext.setAttribute('class', 'pagination-nav')
     pagesList.append(arrowNext)
 }

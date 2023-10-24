@@ -1,4 +1,29 @@
 
+//FILTER BY STATE (core)
+selectStateForm.addEventListener('submit', event => {
+    event.preventDefault()
+    const stateName = spacesToUnderscores(event.target[0].value) 
+    state.selectedState = stateName.toLowerCase()  
+    getBreweriesByState(state.selectedState )
+
+})
+
+
+const getBreweriesByState = (usState) => {
+
+fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${usState}`)
+.then(r => r.json())
+.then(d => {
+    state.filteredByState = d 
+    filterByPageChosen(state.filteredByState)
+    displayPage(1)
+    getAndRenderCities(state.filteredByState)
+})
+}
+
+
+
+
 //FILTER BY TYPE OR BY STATE AND TYPE (core)
 
 const getBreweriesByStateAndType = (t) => {
@@ -34,32 +59,11 @@ chooseFilter.addEventListener('change', change => {
     if (change.target.value === "brewpub") {
         getBreweriesByStateAndType("brewpub")
     }
-})
-
-
-//FILTER BY STATE (core)
-
-
-selectStateForm.addEventListener('submit', event => {
-        event.preventDefault()
-        const stateName = spacesToUnderscores(event.target[0].value) 
-        state.selectedState = stateName.toLowerCase()  
-        getBreweriesByState(state.selectedState )
-    
-})
-
-
-const getBreweriesByState = (usState) => {
-    
-    fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${usState}`)
-    .then(r => r.json())
-    .then(d => {
-        state.filteredByState = d 
+    if (change.target.value === "") {
         filterByPageChosen(state.filteredByState)
         displayPage(1)
-        getAndRenderCities(state.filteredByState)
-    })
-}
+    }
+})
 
 
 //EXTENSION 1
@@ -119,6 +123,13 @@ const addClearAllEvent = (cityCheckbox) => {
     clearAllButton.addEventListener('click', () => {
         cityCheckbox.checked = false
         removeCurrentList()
+        if (state.filteredByStateAndType){
+            filterByPageChosen(state.filteredByStateAndType)
+        } else {
+            filterByPageChosen(state.filteredByState)
+        }
+        displayPage(1)
+
     })
 }
 
@@ -137,3 +148,4 @@ const filterByPageChosen = (breweriesArray) => {
 
 
 
+ 
