@@ -37,7 +37,9 @@ const resultCount = document.querySelector("#resultCount p")
 const triggerFilter = document.querySelector("#filter-by-type")
 
 // these are the volatile values for the possible filtering by the user
-let filterArr = ["micro", "regional", "brewpub"]
+const filterArrDefault = ["micro", "regional", "brewpub"]
+let loadedUSState = ""
+let filterArr = filterArrDefault
 let textStr = ""
 // these are filters that will only affect the display
 let pageIndex = 1
@@ -53,18 +55,19 @@ entryForm.addEventListener("submit", (event) => {
     return
   }
 
-  loadBreweriesByState(searchField.value)
+  loadedUSState = capitalizeCityStr(searchField.value)
+  loadBreweriesByState(loadedUSState)
 })
 
 const updateResultCount = () => {
-  resultCount.innerText = `displaying ${state.renderedBreweries.length} matches out of ${state.breweries.length} found breweries in ${searchField.value}`
+  resultCount.innerText = `displaying ${state.renderedBreweries.length} matches out of ${state.breweries.length} found breweries in ${loadedUSState}`
 }
 
 // filter
 
 triggerFilter.addEventListener("change", (event) => {
-  event.target.value !== "" ? filterArr = [event.target.value] : filterArr = ["micro", "regional", "brewpub"]
-  renderList()
+  event.target.value !== "" ? filterArr = [event.target.value] : filterArr = filterArrDefault
+  compileRenderList()
 })
 
 // EXTENSION 1: interactive search elements
@@ -94,17 +97,14 @@ const createFreetextSearch = () => {
   input.setAttribute("name", "search-breweries")
   input.setAttribute("type", "text")
   form.appendChild(input)
-  form.addEventListener("input", () => textStr = liveSearchByText(input.value))
+  form.addEventListener("input", () => {
+    textStr = input.value
+    compileRenderList()
+  })
 
   header.appendChild(form)
   heading.append(header)
 }
-
-const liveSearchByText = (inputStr) => {
-  textStr = inputStr
-  renderList()
-}
-
 
 // EXTENSION 2: city sidebar
 
@@ -125,11 +125,9 @@ const compileCityArr = () => {
   return listOfCities
 }
 
-const capitalizeCityStr = (str) => {
-  const wordArr = str.split(" ")
-  wordArr.forEach(val => val[0].toUpperCase() + val.slice(1).toLowerCase())
-  return wordArr.join(" ")
-}
+const capitalize = (word) => word[0].toUpperCase() + word.slice(1).toLowerCase()
+
+const capitalizeCityStr = (str) => str.split(" ").map(val => capitalize(val)).join(" ")
 
 const deleteCityFilters = () => {
   const form = document.querySelector("form#filter-by-city-form")
@@ -159,7 +157,11 @@ const renderCityFilters = () => {
     input.setAttribute("name", allCities[i].toLowerCase())  
     input.setAttribute("value", allCities[i].toLowerCase())
 
-    input.addEventListener("click", (event) => console.log(event.target.checked))
+    input.addEventListener("click", (event) => {
+      event.preventDefault()
+      const cityName = event.target.value
+      event.target.checked ? addCityToFilter(cityName) : removeCityFromFilter(cityName)
+    })
 
     const label = document.createElement("label")
     label.setAttribute("for", allCities[i].toLowerCase())
@@ -174,10 +176,13 @@ const renderCityFilters = () => {
 
 const addCityToFilter = (city) => {
   if (citiesFilter.includes(city) === false) citiesFilter.push(city)
+  compileRenderList()
 }
 
 const removeCityFromFilter = (city) => {
-  if (citiesFilter.includes(city) === true) citiesFilter.slice(citiesFilter.indexOf(city), 1)
+  const indexToDelete = citiesFilter.indexOf(city)
+  if (citiesFilter.includes(city) === true) citiesFilter.splice(indexToDelete, 1)
+  compileRenderList()
 }
 
 // EXTENSION 3: pagination
@@ -218,31 +223,52 @@ const loadBreweriesByState = (stateNameStr) => {
     .then(response => response.json())
     .then(data => state.breweries = data.filter(item => ["micro", "regional", "brewpub"].includes(item.brewery_type.toLowerCase())))
     .then(() => compileCityArr())
-    .then(() => compileRenderedList()) // note that the previous settings of FilterArr and textStr still apply
+    .then(() => renderCityFilters())
+    .then(() => compileRenderList()) // note that the previous settings of FilterArr and textStr still apply
     .then(() => renderList())
 }
 
-const compileRenderedList = () => {
-  const filteredForType = state.breweries.filter(brewery => filterArr.includes(brewery.brewery_type.toLowerCase()))
-  const filteredForString = filteredForType.filter(brewery => brewery.name.match(textStr))
-  const filteredForCity = filteredForString.filter(brewery => citiesFilter.includes(brewery.city))
+const filterForType = (arr) => {
+  return arr.filter(brewery => filterArr.includes(brewery.brewery_type.toLowerCase()))
+}
+
+const filterForStr = (arr) => {
+  if (textStr !== "") return arr.filter(brewery => brewery.name.match(textStr))
+  return arr
+}
+
+const filterForCity = (arr) => {
+  console.log(citiesFilter)
+  if (citiesFilter.length > 0) return arr.filter(brewery => citiesFilter.includes(brewery.city.toLowerCase()))
+  return arr
+}
+
+const compileRenderList = () => {
+  
+  let finalRenderList = state.breweries
+  
+  finalRenderList = filterForType(finalRenderList)
+  finalRenderList = filterForStr(finalRenderList)
+  console.log(finalRenderList)
+  finalRenderList = filterForCity(finalRenderList)
+
+    
   // slotting the results into pages
   const calcPage = (index) => Math.ceil((index + 1) / 10)
-  filteredForString.forEach((brewery, index) => brewery.page = calcPage(index))
-  state.renderedBreweries = filteredForString
+  finalRenderList.forEach((brewery, index) => brewery.page = calcPage(index))
+  
+  state.renderedBreweries = finalRenderList
+  console.log(state.renderedBreweries)
+  renderList()
 }
 
 // render main portion
 
 const renderList = () => {
   clearRenderList()
-  
-  compileRenderedList()
+
   const pageResults = state.renderedBreweries.filter(brewery => brewery.page === pageIndex)
-  
   pageResults.forEach(val => listRender.appendChild(createListItem(val)))
-  
-  renderCityFilters()
   updateResultCount()
   renderPageNavigation()
 }
@@ -316,3 +342,5 @@ const createListItem = (item) => {
 }
 
 createFreetextSearch()
+loadedUSState = capitalizeCityStr("new york")
+loadBreweriesByState(loadedUSState)
