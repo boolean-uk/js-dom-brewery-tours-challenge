@@ -60,3 +60,18 @@ function multiAppend(parent, ...elements) {
 function resetBreweryFilter() {
   BREWERY_TYPE_FILTER.value = ""
 }
+
+function obtainCityList() {
+
+}
+
+function sortArray(array, objectProperty) {
+  return array.sort((a, b) => {
+    const aUpper = a[objectProperty].toUpperCase();
+    const bUpper = b[objectProperty].toUpperCase();
+
+    if (aUpper < bUpper) return -1
+    if (aUpper > bUpper) return 1
+    return 0
+  })
+}

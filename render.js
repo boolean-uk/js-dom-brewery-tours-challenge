@@ -1,7 +1,16 @@
 function renderBreweries(type) {
   clearElement(BREWERY_LIST);
 
+  makeRenderList(type)
+
+  STATE.render.forEach((brewery) => renderBrewery(brewery));
+  STATE.page.currentPage = 1
+  paginate();
+}
+
+function makeRenderList(type) {
   const breweryList = [];
+
   if (Object.keys(STATE.breweries).includes(type)) {
     breweryList.push(...STATE.breweries[type]);
   } else {
@@ -10,9 +19,7 @@ function renderBreweries(type) {
     }
   }
 
-  breweryList.forEach((brewery) => renderBrewery(brewery));
-  STATE.page.currentPage = 1
-  paginate();
+  STATE.render = sortArray(breweryList, "name")
 }
 
 function renderBrewery(brewery) {
