@@ -43,7 +43,7 @@ let textStr = ""
 let pageIndex = 1
 let citiesFilter = []
 
-// page elements
+// result counter – I found this helpful when programming for checking the current results in the state object
 
 entryForm.addEventListener("submit", (event) => {
   event.preventDefault()
@@ -60,7 +60,14 @@ const updateResultCount = () => {
   resultCount.innerText = `displaying ${state.renderedBreweries.length} matches out of ${state.breweries.length} found breweries in ${searchField.value}`
 }
 
-// interactive search elements
+// filter
+
+triggerFilter.addEventListener("change", (event) => {
+  event.target.value !== "" ? filterArr = [event.target.value] : filterArr = ["micro", "regional", "brewpub"]
+  renderList()
+})
+
+// EXTENSION 1: interactive search elements
 
 const createFreetextSearch = () => {
   // it should be following the "list of breweries"
@@ -98,14 +105,8 @@ const liveSearchByText = (inputStr) => {
   renderList()
 }
 
-// filter
 
-triggerFilter.addEventListener("change", (event) => {
-  event.target.value !== "" ? filterArr = [event.target.value] : filterArr = ["micro", "regional", "brewpub"]
-  renderList()
-})
-
-// city sidebar
+// EXTENSION 2: city sidebar
 
 const compileCityArr = () => {
   const listOfCities = []
@@ -114,6 +115,7 @@ const compileCityArr = () => {
     if (listOfCities.includes(brewery.city) === false) listOfCities.push(brewery.city)
   })
 
+  // let's sort this alphabetically
   listOfCities.sort((a, b) => {
     if (a > b) return 1
     if (a < b) return -1
@@ -121,6 +123,17 @@ const compileCityArr = () => {
   })
   
   return listOfCities
+}
+
+const capitalizeCityStr = (str) => {
+  const wordArr = str.split(" ")
+  wordArr.forEach(val => val[0].toUpperCase() + val.slice(1).toLowerCase())
+  return wordArr.join(" ")
+}
+
+const deleteCityFilters = () => {
+  const form = document.querySelector("form#filter-by-city-form")
+  if (!!form === true) form.remove()
 }
 
 const renderCityFilters = () => {
@@ -145,12 +158,8 @@ const renderCityFilters = () => {
     input.setAttribute("type", "checkbox")  
     input.setAttribute("name", allCities[i].toLowerCase())  
     input.setAttribute("value", allCities[i].toLowerCase())
-    
-    const capitalizeCityStr = (str) => {
-      const wordArr = str.split(" ")
-      wordArr.forEach(val => val[0].toUpperCase() + val.slice(1).toLowerCase())
-      return wordArr.join(" ")
-    }
+
+    input.addEventListener("click", (event) => console.log(event.target.checked))
 
     const label = document.createElement("label")
     label.setAttribute("for", allCities[i].toLowerCase())
@@ -163,11 +172,6 @@ const renderCityFilters = () => {
   aside.appendChild(form)
 }
 
-const deleteCityFilters = () => {
-  const form = document.querySelector("form#filter-by-city-form")
-  if (!!form === true) form.remove()
-}
-
 const addCityToFilter = (city) => {
   if (citiesFilter.includes(city) === false) citiesFilter.push(city)
 }
@@ -176,7 +180,7 @@ const removeCityFromFilter = (city) => {
   if (citiesFilter.includes(city) === true) citiesFilter.slice(citiesFilter.indexOf(city), 1)
 }
 
-// pagination
+// EXTENSION 3: pagination
 
 const clearPageNavigation = () => {
   const navInnerElements = document.querySelectorAll("nav *")
