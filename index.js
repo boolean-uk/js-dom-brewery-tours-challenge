@@ -9,8 +9,8 @@ const state = {
 }
 // for delete
 const DeleteLiAll = () => {
-   const deleteall = ContainerForList.querySelectorAll('*')
-   deleteall.forEach((child) => child.remove())
+   const deleteAll = listUl.querySelectorAll('*')
+   deleteAll.forEach((child) => child.remove())
 }
 
 //main funtion to create li elements to show in the list 
@@ -43,23 +43,23 @@ function renderBreweries() {
       sectionAddress.append(addressH3, p1, p2)
 
       const sectionPhone = document.createElement('section')
-      PhoneSection.setAttribute('class', 'phone')
+      sectionPhone.setAttribute('class', 'phone')
       const h3 = document.createElement('h3')
       h3.innerText = 'Phone :'
 
       const PhoneNumber = document.createElement('p')
       PhoneNumber.innerText = brewery.phone
-      sectionPhone.append(h3, p)
+      sectionPhone.append(h3, PhoneNumber)
 
       const sectionLink = document.createElement('section')
-      LinkSection.setAttribute('class', 'link')
+      sectionLink.setAttribute('class', 'link')
       const link = document.createElement('a')
       link.href = brewery.website_url
       link.target = '_blank'
       link.innerText = 'Visit Website'
       sectionLink.append(link)
       li.append(h2, div, sectionAddress, sectionPhone, sectionLink)
-      ul.append(li)
+      listUl.append(li)
    })
 }
 
