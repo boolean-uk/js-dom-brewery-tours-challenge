@@ -12,6 +12,7 @@ const filterVal = document.getElementById('filter-by-type')
 // FULL PAGE RENDER ON INITIAL LOAD
 function render() {
     renderBreweryList()
+    renderCities()
 }
 
 // CLEAR BREWERY LIST FUNCTION
@@ -255,42 +256,59 @@ const cityFilterForm = document.createElement('form')
 cityFilterForm.id = 'filter-by-city-form'
 
 // RENDER CITIES FUNCTION
-function renderCities(city) {
-    const cityFilterFormInput = document.createElement('input')
-    cityFilterFormInput.type = 'checkbox'
-    cityFilterFormInput.name = city
-    cityFilterFormInput.value = city
+function renderCities() {
 
-    const cityFilterFormLabel = document.createElement('label')
-    cityFilterFormLabel.setAttribute('for', city)
-    cityFilterFormLabel.innerText = city
-
-    cityFilterForm.append(cityFilterFormInput, cityFilterFormLabel)
-
-    filterSection.append(cityFilterDiv, cityFilterForm)
-}
-
-// FETCH ALL BREWERIES, LOOP THROUGH AND EXTRACT CITIES REMOVING DUPLICATES 
-// ARRANGE IN ALPHABTICAL ORDER, APPEND TO CITY FILTER SECTION USING RENDER 
-// CITIES FUNCTION
-fetch(`${root}`)
-.then((res) => res.json())
-.then((data) => {
-    state.breweries = data
-    let cities = []
-    state.breweries.forEach((brewery) => {
-        let city = brewery.city
-        if (!cities.includes(city)) {
-            cities.push(city)
-        }
+    // FETCH ALL BREWERIES, LOOP THROUGH AND EXTRACT CITIES REMOVING DUPLICATES 
+    // ARRANGE IN ALPHABTICAL ORDER, APPEND TO CITY FILTER SECTION
+    fetch(`${root}`)
+    .then((res) => res.json())
+    .then((data) => {
+        state.breweries = data
+        let cities = []
+        state.breweries.forEach((brewery) => {
+            let city = brewery.city
+            if (!cities.includes(city)) {
+                cities.push(city)
+            }
+        })
+        let sortedCities = cities.sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1)
+        sortedCities.forEach((city) => {
+            const cityFilterFormInput = document.createElement('input')
+            cityFilterFormInput.type = 'checkbox'
+            cityFilterFormInput.name = city
+            cityFilterFormInput.value = city
+        
+            const cityFilterFormLabel = document.createElement('label')
+            cityFilterFormLabel.setAttribute('for', city)
+            cityFilterFormLabel.innerText = city
+        
+            cityFilterForm.append(cityFilterFormInput, cityFilterFormLabel)
+        })
     })
-    let sortedCities = cities.sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1)
-    sortedCities.forEach((city) => {
-        renderCities(city)
+}
+filterSection.append(cityFilterDiv, cityFilterForm)
+
+// CITY FILTER LIST FUNCTIONALITY
+cityFilterForm.addEventListener('click', (event) => {
+    const citySelect = event.target.name
+    clearBreweryList()
+
+    fetch(`${root}?by_city=${citySelect}`)
+    .then((res) => res.json())
+    .then((data) => {
+        state.breweries = data
+        renderBrewery()
     })
 })
 
-
+// CLEAR ALL BUTTON
+clearAllButton.addEventListener('click', () => {
+    console.log('clicked')
+    cityFilterForm.innerHTML = ''
+    renderCities()
+    clearBreweryList()
+    renderBreweryList()
+})
 
 // --------------------- | CALL INITIAL RENDER | --------------------- \\
 render()
