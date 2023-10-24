@@ -6,6 +6,7 @@ function init() {
   nameSearchFilter();
   breweryTypeFilter();
   clearCityFilter();
+  loadSavedBreweries();
 }
 
 function getBreweries(filter) {
