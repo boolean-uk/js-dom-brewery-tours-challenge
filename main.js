@@ -37,9 +37,9 @@ const resultCount = document.querySelector("#resultCount p")
 const triggerFilter = document.querySelector("#filter-by-type")
 
 // these are the volatile values for the possible filtering by the user
-const filterArrDefault = ["micro", "regional", "brewpub"]
+const filterTypeDefault = ["micro", "regional", "brewpub"]
 let loadedUSState = ""
-let filterArr = filterArrDefault
+let filterArr = filterTypeDefault
 let textStr = ""
 // these are filters that will only affect the display
 let pageIndex = 1
@@ -66,7 +66,7 @@ const updateResultCount = () => {
 // filter
 
 triggerFilter.addEventListener("change", (event) => {
-  event.target.value !== "" ? filterArr = [event.target.value] : filterArr = filterArrDefault
+  event.target.value !== "" ? filterArr = [event.target.value] : filterArr = filterTypeDefault
   compileRenderList()
 })
 
@@ -111,7 +111,7 @@ const createFreetextSearch = () => {
 const compileCityArr = () => {
   const listOfCities = []
 
-  state.renderedBreweries.forEach(brewery => {
+  state.breweries.forEach(brewery => {
     if (listOfCities.includes(brewery.city) === false) listOfCities.push(brewery.city)
   })
 
@@ -148,24 +148,31 @@ const renderCityFilters = () => {
   const button = document.createElement("button")
   button.setAttribute("class", "clear-all-btn")
   button.innerText = "clear all"
+  button.addEventListener("click", (event) => {
+    event.preventDefault()
+    resetAllCityFilters()
+    const allCityInputs = document.querySelectorAll("form#filter-by-city-form input")
+    allCityInputs.forEach(input => input.removeAttribute("checked"))
+  })
   form.appendChild(button)
 
   const allCities = compileCityArr()
+
   for (let i = 0; i < allCities.length; i++) {
+    const city = allCities[i]
     const input = document.createElement("input")
     input.setAttribute("type", "checkbox")  
-    input.setAttribute("name", allCities[i].toLowerCase())  
-    input.setAttribute("value", allCities[i].toLowerCase())
+    input.setAttribute("name", city.toLowerCase())  
+    input.setAttribute("value", city.toLowerCase())
 
     input.addEventListener("click", (event) => {
-      event.preventDefault()
       const cityName = event.target.value
       event.target.checked ? addCityToFilter(cityName) : removeCityFromFilter(cityName)
     })
 
     const label = document.createElement("label")
-    label.setAttribute("for", allCities[i].toLowerCase())
-    label.innerText = capitalizeCityStr(allCities[i])
+    label.setAttribute("for", city.toLowerCase())
+    label.innerText = capitalizeCityStr(city)
 
     form.appendChild(input)
     form.appendChild(label)
@@ -184,6 +191,8 @@ const removeCityFromFilter = (city) => {
   if (citiesFilter.includes(city) === true) citiesFilter.splice(indexToDelete, 1)
   compileRenderList()
 }
+
+const resetAllCityFilters = () => citiesFilter = []
 
 // EXTENSION 3: pagination
 
@@ -221,11 +230,10 @@ const choosePage = (num) => {
 const loadBreweriesByState = (stateNameStr) => {
   fetch(`${protocol}://${baseURL}/v1/breweries?by_state=${stateNameStr}&per_page=200`)
     .then(response => response.json())
-    .then(data => state.breweries = data.filter(item => ["micro", "regional", "brewpub"].includes(item.brewery_type.toLowerCase())))
+    .then(data => state.breweries = data.filter(item => filterTypeDefault.includes(item.brewery_type.toLowerCase())))
     .then(() => compileCityArr())
     .then(() => renderCityFilters())
     .then(() => compileRenderList()) // note that the previous settings of FilterArr and textStr still apply
-    .then(() => renderList())
 }
 
 const filterForType = (arr) => {
@@ -238,7 +246,6 @@ const filterForStr = (arr) => {
 }
 
 const filterForCity = (arr) => {
-  console.log(citiesFilter)
   if (citiesFilter.length > 0) return arr.filter(brewery => citiesFilter.includes(brewery.city.toLowerCase()))
   return arr
 }
@@ -249,16 +256,13 @@ const compileRenderList = () => {
   
   finalRenderList = filterForType(finalRenderList)
   finalRenderList = filterForStr(finalRenderList)
-  console.log(finalRenderList)
   finalRenderList = filterForCity(finalRenderList)
 
-    
   // slotting the results into pages
   const calcPage = (index) => Math.ceil((index + 1) / 10)
   finalRenderList.forEach((brewery, index) => brewery.page = calcPage(index))
   
   state.renderedBreweries = finalRenderList
-  console.log(state.renderedBreweries)
   renderList()
 }
 
