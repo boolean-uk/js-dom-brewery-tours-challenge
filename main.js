@@ -1,3 +1,5 @@
+const { response } = require("express")
+
 const state = {
   breweries: [], // all breweries by state
   renderedBreweries: [] // this is to be able to reset to all loaded breweries by state
@@ -44,6 +46,7 @@ let textStr = ""
 // these are filters that will only affect the display
 let pageIndex = 1
 let citiesFilter = []
+let markedForVisitArr
 
 // result counter – I found this helpful when programming for checking the current results in the state object
 
@@ -283,8 +286,17 @@ const clearRenderList = () => {
 
 const createListItem = (item) => {
   const listentry = document.createElement("li")
+
+  
   const title = document.createElement("h2")
   title.innerText = item.name
+
+  const markForVisit = document.createElement("button")
+  markForVisit.setAttribute("class", "visitList")
+  // markForVisit.setAttribute("id", "marked")
+  markForVisit.innerText = "🍺"
+  title.prepend(markForVisit)
+
   listentry.appendChild(title)
 
   const divType = document.createElement("div")
@@ -344,4 +356,58 @@ const createListItem = (item) => {
   return listentry
 }
 
+// EXTENSION 4
+const isMarked = (id) => {
+  loadMarkedBreweries()
+    .then(() => {
+      console.log("yeehaw")
+      markedForVisitArr.length > 0 ? console.log(markedForVisitArr.includes(id)) : console.log("nothing marked")
+    })
+}
+
+const loadMarkedBreweries = () => {
+  const headers = {
+    "Content-Type": "application/json"
+  }
+
+  const options = {
+      method: "GET",
+      headers: headers
+    }
+
+  fetch("http://localhost:3000/markedbreweries", options)
+    .then((response) => response.json())
+    .then((data) => {
+      markedForVisitArr = data.map(element => element.id)
+    })
+}
+
+// theoretically we'd only need the database-id because we can fetch a list of breweries from the API by comma separated values with e.g.
+// GET https://api.openbrewerydb.org/v1/breweries?by_ids=701239cb-5319-4d2e-92c1-129ab0b3b440,06e9fffb-e820-45c9-b107-b52b51013e8f
+// we'll do this properly though
+
+const markBreweryForVisit = (brewery) => {
+  // re-fresh the array of ids!
+  loadMarkedBreweries()
+
+  const headers = {
+    "Content-Type": "application/json"
+  }
+
+  const body = JSON.stringify(brewery)
+
+  const options = {
+    method: "POST",
+    headers: headers,
+    body: body
+  }
+
+  fetch("http://localhost:3000/markedbreweries", options)
+    .then((response) => response.json())
+    .then((data) => console.log(data))
+
+}
+
 createFreetextSearch()
+
+isMarked(213)

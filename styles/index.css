@@ -229,6 +229,17 @@ article {
   font-weight: bold;
 }
 
+button.visitList {
+  background-color: none;
+  border: none;
+  border-radius: 100%;
+  margin-right: 0.5em;
+}
+
+button.visitList#marked {
+  background-color: rgb(129, 196, 82);
+}
+
 nav {
   display: grid;
   height: 50px;
@@ -245,7 +256,7 @@ nav button#active {
   background-color: #fbc02d;
 }
 
-nav button:hover {
+nav button:hover, button.visitList:hover {
   background-color: #ffe082;
 }
 
