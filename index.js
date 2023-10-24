@@ -8,6 +8,7 @@ const clearAllBtn = document.querySelector(".clear-all-btn");
 
 const root = "https://api.openbrewerydb.org/v1/breweries";
 let breweries = state.breweries;
+let filtered = state.filtered;
 
 const getData = (state) => {
     fetch(`${root}?by_state=${state}`)
@@ -65,7 +66,8 @@ const createBreweryCard = (breweries) => {
         phoneHeader.innerText = "Phone:"
 
         const phonePara = document.createElement("p");
-        phonePara.innerText = brewery.phone
+        brewery.phone ? phonePara.innerText = brewery.phone 
+        : phonePara.innerText = "N/A"; 
 
         phone.append(phoneHeader, phonePara);
     
@@ -118,14 +120,15 @@ const clearAll = () => {
     for (let i = 0; i < filterByCityForm.length; i++) {
         filterByCityForm[i].checked = false;
     };
-    createBreweryCard(breweries);
+    filter.value === "" ? createBreweryCard(breweries) 
+    : createBreweryCard(filtered) 
 };
 
 const filterByCity = () => {
     let filteredBreweries;
     const checkedCities = Array.from(
         filterByCityForm.querySelectorAll("input:checked")
-        ).map(checked => checked.value);
+        ).map(checkedCity => checkedCity.value);
 
     checkedCities.length == 0 ? createBreweryCard(breweries)
     : (filteredBreweries = breweries.filter(brewery =>
@@ -137,8 +140,13 @@ const searchName = (e) => {
     e.preventDefault();
     const searchBreweries = document.querySelector("#search-breweries");
     const userInput = searchBreweries.value.toLowerCase();
+    let filteredBreweries;
 
-    const filteredBreweries = breweries.filter(brewery =>
+    filter.value === "" ? (
+        filteredBreweries = breweries.filter(brewery =>
+            brewery.name.toLowerCase().includes(userInput)
+            ))
+    : filteredBreweries = filtered.filter(brewery =>
         brewery.name.toLowerCase().includes(userInput)
         );
     createBreweryCard(filteredBreweries);
@@ -153,12 +161,10 @@ const searchInput = (e) => {
 };
 
 const filterType = () => {
-    let filteredBreweries;
-
     filter.value === "" ? createBreweryCard(breweries)
-    : (filteredBreweries = breweries.filter(brewery => 
+    : (filtered = breweries.filter(brewery => 
         brewery.brewery_type === filter.value), 
-        createBreweryCard(filteredBreweries))
+        createBreweryCard(filtered))
 };
 
 clearAllBtn.addEventListener("click", clearAll);
