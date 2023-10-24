@@ -60,7 +60,7 @@ entryForm.addEventListener("submit", (event) => {
 })
 
 const updateResultCount = () => {
-  resultCount.innerText = `displaying ${state.renderedBreweries.length} matches out of ${state.breweries.length} found breweries in ${loadedUSState}`
+  state.renderedBreweries.length > 0 ? resultCount.innerText = `displaying ${state.renderedBreweries.length} matches out of ${state.breweries.length} found breweries in ${loadedUSState}` : resultCount.innerText = `That's a bummer. This combination of filters has no matches.`
 }
 
 // filter
@@ -345,5 +345,3 @@ const createListItem = (item) => {
 }
 
 createFreetextSearch()
-loadedUSState = capitalizeCityStr("new york")
-loadBreweriesByState(loadedUSState)
