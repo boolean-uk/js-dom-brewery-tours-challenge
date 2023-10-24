@@ -428,11 +428,8 @@ const markBreweryForVisit = (brewery) => {
     body: body
   }
 
-  console.log(body)
-
   fetch("http://localhost:3000/markedbreweries", options)
     .then((response) => response.json())
-    .then((data) => console.log(data))
 
 }
 
