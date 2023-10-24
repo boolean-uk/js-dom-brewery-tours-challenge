@@ -362,13 +362,29 @@ const createListItem = (item) => {
 
 // EXTENSION 4
 const isMarked = (id) => {
-  loadMarkedBreweries()
+
+  const headers = {
+    "Content-Type": "application/json"
+  }
+
+  const options = {
+      method: "GET",
+      headers: headers
+    }
+
+  fetch("http://localhost:3000/markedbreweries", options)
+    .then((response) => response.json())
+    .then((data) => {
+      markedForVisitArr = data.map(element => element.id)
+    })
+    .then(() => {
+      if (!!markedForVisitArr === false) return false
+      return markedForVisitArr.includes(id)
+    })
 
   // yes this should wait for the loading of all the ids! This is not very clean I'm sorry
 
-  if (!!markedForVisitArr === false) return false
-  console.log(markedForVisitArr)
-  return markedForVisitArr.includes(id)
+  
 }
 
 const loadMarkedBreweries = () => {
@@ -411,6 +427,8 @@ const markBreweryForVisit = (brewery) => {
     headers: headers,
     body: body
   }
+
+  console.log(body)
 
   fetch("http://localhost:3000/markedbreweries", options)
     .then((response) => response.json())
