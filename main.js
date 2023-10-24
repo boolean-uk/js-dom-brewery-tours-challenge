@@ -363,6 +363,8 @@ const createListItem = (item) => {
 // EXTENSION 4
 const isMarked = (id) => {
 
+  // yes this a duplicate and not very clean. dw it doesn't properly work either! :D
+  
   const headers = {
     "Content-Type": "application/json"
   }
@@ -381,9 +383,6 @@ const isMarked = (id) => {
       if (!!markedForVisitArr === false) return false
       return markedForVisitArr.includes(id)
     })
-
-  // yes this should wait for the loading of all the ids! This is not very clean I'm sorry
-
   
 }
 
