@@ -92,6 +92,8 @@ function renderPaginateSelector() {
 }
 
 function renderCityFilterList() {
+  clearElement(CITY_FILTER_FORM)
+  CITY_FILTER_FORM.scroll(top)
   const cityList = obtainCityList();
 
   cityList.forEach((city) => {
