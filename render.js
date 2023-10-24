@@ -198,7 +198,6 @@ const displayPage = (num) => {
 
 const renderPaginationControlBar = () => {
     const pages = [1, 2, 3, 4, 5]
-    let currentPage = 1
 
 
     const pagesList = document.createElement('ul')

@@ -14,5 +14,4 @@ fetch("https://api.openbrewerydb.org/v1/breweries")
 
 
 
-//TODO: general refactor (especially for extension 4 code), aiming to 1) break longer streches of code into smaller functions, each of which has one clear job AND 2) ensure that code is not repeated unecessarily
 

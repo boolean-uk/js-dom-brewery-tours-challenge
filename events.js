@@ -37,7 +37,6 @@ const getBreweriesByStateAndType = (t) => {
             displayPage(1)
         })
      } else {
-        console.log('no state chosen')
         fetch(`https://api.openbrewerydb.org/v1/breweries?by_type=${t}`)
         .then(r => r.json())
         .then(d => {
@@ -100,36 +99,45 @@ state.filteredByCities = []
 
 const addEventToCheckbox = (cityCheckbox) => {
     cityCheckbox.addEventListener('change', event => {
-       
+        event.preventDefault()
         if (cityCheckbox.checked === true) {
             //when a city is first selected, add its breweris to state.filteredByCities, then render all the breweries stored there
             state.filteredByCities = state.filteredByCities.concat(filterByCity(event.target.value))
             filterByPageChosen(state.filteredByCities)
-            displayPage(1)
+            displayPage(currentPage)
 
         } else {
             //if a city is then unselected, filter through state.filterdByCities and only keep the breweries that are NOT located in the un-selected city
-            state.filteredByCities.forEach(b => console.log(b.city))
-            state.filteredByCities = state.filteredByCities.filter(brewery => brewery.city !== cityCheckbox.value)                
-            filterByPageChosen(state.filteredByCities)
-            displayPage(1)
-        }
-  
+            state.filteredByCities = state.filteredByCities.filter(brewery => brewery.city !== cityCheckbox.value)
+
+            //handles cases where unselecting that one city results in no cities at all being selected
+            if (state.filteredByCities.length === 0) {
+                renderBreweriesByStateOrByStateAndType()
+            } else {   
+                filterByPageChosen(state.filteredByCities)
+                displayPage(currentPage)          
+            }
+        } 
     })
 }
+
+const renderBreweriesByStateOrByStateAndType = () => {
+    if (state.filteredByStateAndType){
+        filterByPageChosen(state.filteredByStateAndType)
+    } else {
+        filterByPageChosen(state.filteredByState)
+    }
+    displayPage(currentPage)
+}
+
+
 
 const addClearAllEvent = (cityCheckbox) => {
     const clearAllButton = document.querySelector(".clear-all-btn")
     clearAllButton.addEventListener('click', () => {
         cityCheckbox.checked = false
         removeCurrentList()
-        if (state.filteredByStateAndType){
-            filterByPageChosen(state.filteredByStateAndType)
-        } else {
-            filterByPageChosen(state.filteredByState)
-        }
-        displayPage(1)
-
+        renderBreweriesByStateOrByStateAndType()
     })
 }
 
@@ -138,12 +146,12 @@ const addClearAllEvent = (cityCheckbox) => {
 
 const filterByPageChosen = (breweriesArray) => {
     state.byPage = []
-    console.log(breweriesArray.length)
     for (let i = 0; i < breweriesArray.length; i+=10) {
         const filteredArray = breweriesArray.slice(i, i + 10) 
         state.byPage.push(filteredArray)
     }
 }
+
 
 
 //EXTENSION 4
