@@ -14,6 +14,7 @@ const paginationBlock = document.querySelector("#pagination");
 
 // global variables
 const defaultLink = "https://api.openbrewerydb.org/v1/breweries";
+const jsonServerLink = "http://localhost:3000/visitBreweries/";
 
 // state
 const state = {
@@ -25,6 +26,7 @@ const state = {
     citiesFilter: [],
     currentPage: 1,
     totalPages: 0,
+    visitBreweries: [],
 };
 
 // global functions
@@ -47,7 +49,14 @@ const getAllBreweries = () => {
         }`
     )
         .then((response) => response.json())
-        .then((data) => updateState(data));
+        .then((data) => {
+            fetch(jsonServerLink)
+                .then((res) => res.json())
+                .then((visit) => {
+                    state.visitBreweries = visit;
+                    updateState(data);
+                });
+        });
 
     getPaginationPages();
 };
@@ -81,6 +90,24 @@ const getPaginationPages = () => {
             state.totalPages = Math.ceil(data.total / 10);
             renderPagination();
         });
+};
+
+// post brewery to visit list
+const postBreweryVisit = (brewery) => {
+    const options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: brewery.id }),
+    };
+
+    fetch(jsonServerLink, options).then(() => getAllBreweries());
+};
+
+// delete brewery from visit list
+const deleteBreweryVisit = (brewery) => {
+    fetch(jsonServerLink + brewery.id, { method: "DELETE" }).then(() =>
+        getAllBreweries()
+    );
 };
 
 // RENDERS --------------------------------------------------------------------------------------------------------------------------------------------
@@ -144,7 +171,27 @@ const renderBreweries = () => {
         breweryLinkContent.href = brewery.website_url;
         breweryLinkContent.innerText = "Visit Website";
 
-        breweryLink.append(breweryLinkContent);
+        // add brewery to visit list button
+
+        const breweryVisitButton = document.createElement("button");
+
+        if (state.visitBreweries.find((item) => item.id === brewery.id)) {
+            breweryVisitButton.innerText = "Remove from visit list";
+            breweryVisitButton.style.backgroundColor = "red";
+
+            breweryVisitButton.addEventListener("click", () =>
+                deleteBreweryVisit(brewery)
+            );
+        } else {
+            breweryVisitButton.innerText = "Add to visit list";
+            breweryVisitButton.style.backgroundColor = "green";
+
+            breweryVisitButton.addEventListener("click", () =>
+                postBreweryVisit(brewery)
+            );
+        }
+
+        breweryLink.append(breweryLinkContent, breweryVisitButton);
 
         // configuration
         breweryContainer.append(
