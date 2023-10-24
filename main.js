@@ -1,4 +1,4 @@
-const { response } = require("express")
+// const { response } = require("express")
 
 const state = {
   breweries: [], // all breweries by state
@@ -295,6 +295,8 @@ const createListItem = (item) => {
   markForVisit.setAttribute("class", "visitList")
   // markForVisit.setAttribute("id", "marked")
   markForVisit.innerText = "🍺"
+  markForVisit.addEventListener("click", () => markBreweryForVisit(item))
+
   title.prepend(markForVisit)
 
   listentry.appendChild(title)
@@ -356,13 +358,17 @@ const createListItem = (item) => {
   return listentry
 }
 
+
+
 // EXTENSION 4
 const isMarked = (id) => {
   loadMarkedBreweries()
-    .then(() => {
-      console.log("yeehaw")
-      markedForVisitArr.length > 0 ? console.log(markedForVisitArr.includes(id)) : console.log("nothing marked")
-    })
+
+  // yes this should wait for the loading of all the ids! This is not very clean I'm sorry
+
+  if (!!markedForVisitArr === false) return false
+  console.log(markedForVisitArr)
+  return markedForVisitArr.includes(id)
 }
 
 const loadMarkedBreweries = () => {
@@ -382,13 +388,17 @@ const loadMarkedBreweries = () => {
     })
 }
 
-// theoretically we'd only need the database-id because we can fetch a list of breweries from the API by comma separated values with e.g.
-// GET https://api.openbrewerydb.org/v1/breweries?by_ids=701239cb-5319-4d2e-92c1-129ab0b3b440,06e9fffb-e820-45c9-b107-b52b51013e8f
+// theoretically we'd only need the database-id because we can fetch a list of breweries from the API by comma separated values with e.g. GET https://api.openbrewerydb.org/v1/breweries?by_ids=701239cb-5319-4d2e-92c1-129ab0b3b440,06e9fffb-e820-45c9-b107-b52b51013e8f
 // we'll do this properly though
 
 const markBreweryForVisit = (brewery) => {
   // re-fresh the array of ids!
   loadMarkedBreweries()
+
+  if (isMarked(brewery.id) === true) {
+    alert("This brewery is already marked for visit!")
+    return
+  }
 
   const headers = {
     "Content-Type": "application/json"
@@ -409,5 +419,3 @@ const markBreweryForVisit = (brewery) => {
 }
 
 createFreetextSearch()
-
-isMarked(213)
