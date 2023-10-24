@@ -7,6 +7,7 @@ function paginate() {
   showPagination();
   paginateShowPage();
   pageNumberSelect();
+  showNameSearch();
 }
 
 function hidePagination() {
@@ -23,7 +24,9 @@ function paginateShowPage() {
   const { currentPage, pageLimit } = STATE.page;
   const resultCount = BREWERY_LIST.children.length;
 
-  const startBrewery = resultCount ? currentPage * pageLimit - pageLimit + 1 : 0;
+  const startBrewery = resultCount
+    ? currentPage * pageLimit - pageLimit
+    : 0;
   const endBrewery = currentPage * pageLimit;
 
   for (const [idx, brewery] of breweries.entries()) {
@@ -34,7 +37,7 @@ function paginateShowPage() {
   }
 
   const resultCounter = document.querySelector(".search-result-counter");
-  resultCounter.innerText = `Showing ${startBrewery}-${
+  resultCounter.innerText = `Showing ${resultCount ? startBrewery + 1 : 0}-${
     endBrewery < resultCount ? endBrewery : resultCount
   } of ${resultCount} results`;
 }
@@ -44,7 +47,6 @@ function changePage(page) {
   renderPaginateSelector();
   paginateShowPage();
 }
-
 
 function togglePaginateAdjacentButtons() {
   const buttons = PAGINATION.querySelectorAll(".page-button");

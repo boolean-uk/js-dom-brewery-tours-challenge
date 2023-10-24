@@ -8,6 +8,8 @@ function renderBreweries(renderList) {
 
 function renderBrewery(brewery) {
   const li = makeElement("li");
+  li.id = brewery.id
+
   const h2 = makeElement("h2", null, brewery.name);
   const typeDiv = makeElement("div", "type", brewery.brewery_type);
 

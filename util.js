@@ -63,13 +63,13 @@ function resetBreweryFilter() {
 
 function obtainCityList() {
   const set = new Set();
-  makeRenderList().forEach(brewery => {
-    set.add(brewery.city)
+  makeRenderList().forEach((brewery) => {
+    set.add(brewery.city);
   });
 
-  const result = Array.from(set).sort()
+  const result = Array.from(set).sort();
 
-  return result
+  return result;
 }
 
 function sortArray(array, objectProperty) {
@@ -98,46 +98,56 @@ function makeRenderList(type) {
 }
 
 function filterBreweryType(inputArray) {
-  const selectedType = BREWERY_TYPE_FILTER.value
+  const selectedType = BREWERY_TYPE_FILTER.value;
 
   if (!!selectedType) {
-    return filterResults = inputArray.filter(brewery => brewery.brewery_type === selectedType)
+    return (filterResults = inputArray.filter(
+      (brewery) => brewery.brewery_type === selectedType
+    ));
   }
 
-  return inputArray
+  return inputArray;
 }
 
 function filterCities(inputArray) {
-  const checked = obtainSelectedCities()
-  
-  const filterResults = checked.map(checkBox => {
-    return inputArray.filter(brewery => brewery.city.toLowerCase().includes(checkBox.value))
-  })
+  const checked = obtainSelectedCities();
 
-  const results = []
+  const filterResults = checked.map((checkBox) => {
+    return inputArray.filter((brewery) =>
+      brewery.city.toLowerCase().includes(checkBox.value)
+    );
+  });
+
+  const results = [];
 
   if (filterResults.length > 0) {
-    filterResults.forEach(set => results.push(...set))
-    return sortArray(results, "name")
+    filterResults.forEach((set) => results.push(...set));
+    return sortArray(results, "name");
   }
 
-  return inputArray
+  return inputArray;
 }
 
 function filterName(inputArray) {
-  return inputArray.filter(brewery => brewery.name.toLowerCase().includes(NAME_FILTER.value.toLowerCase()))
+  return inputArray.filter((brewery) =>
+    brewery.name.toLowerCase().includes(NAME_FILTER.value.toLowerCase())
+  );
 }
 
 function obtainSelectedCities() {
-  const checkBoxes = CITY_FILTER_FORM.querySelectorAll("input")
+  const checkBoxes = CITY_FILTER_FORM.querySelectorAll("input");
 
-  return Array.from(checkBoxes).filter(child => child.checked)
+  return Array.from(checkBoxes).filter((child) => child.checked);
 }
 
 function collateFilters() {
-  const type = filterBreweryType(makeRenderList())
-  const cities = filterCities(type)
-  const name = filterName(cities)
+  const type = filterBreweryType(makeRenderList());
+  const cities = filterCities(type);
+  const name = filterName(cities);
 
-  return name
+  return name;
+}
+
+function showNameSearch() {
+  document.querySelector("#search-breweries-form").classList.remove("hidden");
 }
