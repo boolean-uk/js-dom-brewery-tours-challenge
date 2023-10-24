@@ -88,19 +88,31 @@ const getBreweriesByState = (usState) => {
 const filterByCity = (selectedCity) => {
     return state.filteredByState.filter(brewery => brewery.city === selectedCity)
 }
-let filteredByCities = []
+state.filteredByCities = []
 
 const addEventToCheckbox = (cityCheckbox) => {
-    cityCheckbox.addEventListener('change', event => {     
-        filteredByCities = filteredByCities.concat(filterByCity(event.target.value))
-        filterByPageChosen(filteredByCities)
-        displayPage(1)
+    cityCheckbox.addEventListener('change', event => {
+       
+        if (cityCheckbox.checked === true) {
+            //when a city is first selected, add its breweris to state.filteredByCities, then render all the breweries stored there
+            state.filteredByCities = state.filteredByCities.concat(filterByCity(event.target.value))
+            filterByPageChosen(state.filteredByCities)
+            displayPage(1)
+
+        } else {
+            //if a city is then unselected, filter through state.filterdByCities and only keep the breweries that are NOT located in the un-selected city
+            state.filteredByCities.forEach(b => console.log(b.city))
+            state.filteredByCities = state.filteredByCities.filter(brewery => brewery.city !== cityCheckbox.value)                
+            filterByPageChosen(state.filteredByCities)
+            displayPage(1)
+        }
+  
     })
 }
 
 const addClearAllEvent = (cityCheckbox) => {
     const clearAllButton = document.querySelector(".clear-all-btn")
-    clearAllButton.addEventListener('click', event => {
+    clearAllButton.addEventListener('click', () => {
         cityCheckbox.checked = false
         removeCurrentList()
     })
