@@ -58,4 +58,4 @@ function test() {
     .then(() => renderCityFilterList());
 }
 
-test();
+// test();

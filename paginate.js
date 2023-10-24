@@ -23,7 +23,7 @@ function paginateShowPage() {
   const { currentPage, pageLimit } = STATE.page;
   const resultCount = BREWERY_LIST.children.length;
 
-  const startBrewery = currentPage * pageLimit - pageLimit;
+  const startBrewery = resultCount ? currentPage * pageLimit - pageLimit + 1 : 0;
   const endBrewery = currentPage * pageLimit;
 
   for (const [idx, brewery] of breweries.entries()) {
@@ -34,7 +34,7 @@ function paginateShowPage() {
   }
 
   const resultCounter = document.querySelector(".search-result-counter");
-  resultCounter.innerText = `Showing ${startBrewery + 1}-${
+  resultCounter.innerText = `Showing ${startBrewery}-${
     endBrewery < resultCount ? endBrewery : resultCount
   } of ${resultCount} results`;
 }
