@@ -86,7 +86,11 @@ const getBreweriesByState = (usState) => {
 //FILTER BY CITY
 
 const filterByCity = (selectedCity) => {
-    return state.filteredByState.filter(brewery => brewery.city === selectedCity)
+    if (state.filteredByStateAndType) {
+        return state.filteredByStateAndType.filter(brewery => brewery.city === selectedCity)
+    } else {
+        return state.filteredByState.filter(brewery => brewery.city === selectedCity)
+    }
 }
 state.filteredByCities = []
 
