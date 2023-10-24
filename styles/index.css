@@ -228,3 +228,8 @@ article {
   text-decoration: none;
   font-weight: bold;
 }
+
+
+.hidden {
+  display: none;
+}
