@@ -7,7 +7,7 @@ const listUl = document.querySelector('#breweries-list')
 const state = {
    ListOfBreweries: []
 }
-// for delete
+//for delete the items from the ul
 const DeleteLiAll = () => {
    const deleteAll = listUl.querySelectorAll('*')
    deleteAll.forEach((child) => child.remove())
@@ -16,6 +16,12 @@ const DeleteLiAll = () => {
 //main funtion to create li elements to show in the list 
 function renderBreweries() {
    state.ListOfBreweries.forEach((brewery) => {
+
+      state.ListOfBreweries.forEach((brewery)=>{
+         if (brewery.brewery_type === 'micro' ||
+         brewery.brewery_type === 'regional' ||
+         brewery.brewery_type === 'brewpub'
+         ){
       //li
       const li = document.createElement('li')
       const h2 = document.createElement('h2')
@@ -60,7 +66,11 @@ function renderBreweries() {
       sectionLink.append(link)
       li.append(h2, div, sectionAddress, sectionPhone, sectionLink)
       listUl.append(li)
+
+   }
+
    })
+})
 }
 
 const FetchAndCreateData = (UserState) => {
@@ -94,7 +104,7 @@ const FilterByType = (SelectedOption) => {
       })
 
 }
-
+//for the filter 
 const Filter = document.querySelector('#filter-by-type')
 console.log(Filter)
 
@@ -123,3 +133,56 @@ Filter.addEventListener('change', (event) => {
    }
 
 })
+
+//for the extensions1
+const main = document.querySelector('main')
+
+
+function searchName(){
+    
+    const header = document.createElement('header')
+    header.classList.add('search-bar')
+
+        //create form 
+        const form = document.createElement('form')
+        form.setAttribute('id','search-breweries-form')
+        // form.setAttribute('autocomplete','off')
+        form.autocomplete = 'off'
+
+            //label 
+            const label = document.createElement('label')
+            label.setAttribute('for','search-breweries')
+
+                //h2  
+                const h2 = document.createElement('h2')
+                h2.innerText = 'Search Breweries:'
+                label.append(h2)
+
+            const input = document.createElement('input')
+            input.setAttribute('id','search-breweries')   
+            input.setAttribute('name','search-breweries') 
+            input.setAttribute('type','text') 
+
+            form.append(label,input)
+        header.append(form)
+    main.append(header)
+
+    // addEventListener for another form of search name
+    form.addEventListener('input',(event)=>{
+        event.preventDefault();
+        DeleteLiAll();
+        fetch(`${root}?by_name=${input.value}`)
+            .then((response)=>response.json())
+            .then((data)=>{
+                state.ListOfBreweries = data;
+                renderBreweries();
+            })
+    })
+}
+searchName();
+
+
+
+
+
+FetchAndCreateData();
