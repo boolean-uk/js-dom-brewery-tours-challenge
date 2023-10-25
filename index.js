@@ -15,43 +15,39 @@ const state = {
     breweries : []
 }
 
+const data = state.breweries
 
-const selectBreweryByState = document.querySelector('#select-state-form')
-const root = 'https://api.openbrewerydb.org/v1/breweries'
-const breweriesList = document.querySelector('.breweries-list')
+const form = document.querySelector('#select-state-form')
+const searchInput = document.querySelector('#select-state')
+const brewUl = document.querySelector('#breweries-list')
+const filter = document.querySelector('#filter-by-type')
 
-        //Getting the data from the API
+//EVENT LISTENER TO SEARCH
+form.addEventListener('submit', search)
 
-function getData() {
-    const data = localStorage.getItem('data');
-    if (data) {
-        return JSON.parse(data);
-    }
+function search(event) {
+  event.preventDefault()
+  const byState = searchInput.value
+  fetchData(byState)
+  form.reset()
 }
 
-function setData(data) {
-    localStorage.setItem('data', JSON.stringify(data))
+//FETCH AND FILTER THE DATA
+function fetchData(byState) {
+  const url = `https://api.openbrewerydb.org/v1/breweries?by_state=${byState}`
+
+  fetch(url)
+  .then((res) => res.json())
+  .then((data) => {
+    state.breweries = data.filter((brewery) =>
+      ['micro', 'regional', 'brewpub'].includes(brewery.brewery_type))
+      renderListOfBreweries(state.breweries)
+    })
 }
 
-function fetchData() {
-    fetch('https://api.openbrewerydb.org/v1/breweries')
-    .then(response => response.json())
-    .then(data => {
-        setData(data)
-})
-}
-
-const data = getData()
-if (!data) {
-    fetchData()
-}
-console.log(data)
-
-state.breweries = data;
-
-            //Listing the Breweries
-
-const renderListOfBreweries = () => {
+//LIST OF BREWERIES
+function renderListOfBreweries(breweries) {
+    brewUl.innerHTML = ''
 
     state.breweries.forEach((brewery) => {
         const li = document.createElement('li')
@@ -90,37 +86,21 @@ const renderListOfBreweries = () => {
         section3.append(breweryWebsiteLink)
         li.append(section3)
 
-        breweriesList.append(li)
+        brewUl.append(li)
 
 
     })
 }
 
-renderListOfBreweries()
-
-         //displaying the breweries by state
-
-/*selectBreweryByState.addEventListener('submit', (event) => {
-    event.preventDefault()
-    const inputValue = event.target.value
-    console.log(inputValue)
-    numbersFiltered
-  
-})*/
-
-
-
-/*const numbersFiltered = state.breweries.filter(function(brewery) {
-    return brewery.brewery_type
+//EVENT LISTENER TO FILTER
+filter.addEventListener('change', event => {
+  const type = filter.value
+  if (type === 'no_filter') {
+    renderListOfBreweries(state.breweries)
+  } else {
+    const filtered = state.breweries.filter(
+      (brewery) => brewery.brewery_type === type
+    )
+    renderListOfBreweries(filtered)
+  }
 })
-console.log(numbersFiltered)*/
-
-const getValue = document.getElementById('select-state')
-const displayValue = document.getElementById('breweries-list')
-const form = document.getElementById('select-state-form"')
-
-function getAndDisplay() {
-    displayValue.innerHTML = getValue.value
-}
-
-form.addEventListener('submit', getAndDisplay())
