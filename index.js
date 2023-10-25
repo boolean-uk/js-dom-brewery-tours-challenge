@@ -34,8 +34,9 @@ form.addEventListener("submit", function (event) {
   )
     .then((response) => response.json())
     .then(function (data) {
-      state.breweries = data;
-      renderListOfBreweries();
+      state.breweries = data.filter((brewery) =>
+      ['micro', 'regional', 'brewpub'].includes(brewery.brewery_type))
+      renderListOfBreweries(state.breweries)
     });
 });
 
