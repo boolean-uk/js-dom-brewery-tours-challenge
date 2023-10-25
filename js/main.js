@@ -97,7 +97,7 @@ const postBreweryVisit = (brewery) => {
     const options = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: brewery.id }),
+        body: JSON.stringify(brewery),
     };
 
     fetch(jsonServerLink, options).then(() => getAllBreweries());
