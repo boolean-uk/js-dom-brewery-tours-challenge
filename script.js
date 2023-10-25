@@ -154,9 +154,18 @@ const typeOfBrewInput = document.querySelector('#filter-by-type')
 typeOfBrewInput.addEventListener('change', () => {
     // Select input val
     const value = typeOfBrewInput.value
-    const URLtypeOfBrew = `https://api.openbrewerydb.org/v1/breweries?by_type=${value}`
+    const URLtypeOfBrew = `https://api.openbrewerydb.org/v1/breweries?by_type=${value}` 
+
+    const filteredTypeOfBrew = state.breweries.filter((brewery)=>  {
+        return brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub'
+    })
+
+    // Update to filteredTypeOfBrew
+    state.breweries = filteredTypeOfBrew
+
 
     // API call and render
     usState(URLtypeOfBrew)
+    
 
 })
