@@ -11,39 +11,51 @@
 // 2. From the list of breweries a user can visit their website
 // 3. From the "filter by type" section, a user can filter by type a brewery
 
+
+
+const form = document.querySelector("#select-state-form");
+const searchInput = document.querySelector("#select-state");
+const brewUl = document.querySelector("#breweries-list");
+const filterForm = document.querySelector("#filter-by-type-form");
+const filter = document.querySelector("#filter-by-type");
+
+
 const state = {
-    breweries : []
-}
+  breweries: [],
+};
 
-const data = state.breweries
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
 
-const form = document.querySelector('#select-state-form')
-const searchInput = document.querySelector('#select-state')
-const brewUl = document.querySelector('#breweries-list')
-const filter = document.querySelector('#filter-by-type')
+  const type = searchInput.value;
 
-//EVENT LISTENER TO SEARCH
-form.addEventListener('submit', search)
+  fetch(
+    `https://api.openbrewerydb.org/v1/breweries?by_state=${type}&per_page=50`
+  )
+    .then((response) => response.json())
+    .then(function (data) {
+      state.breweries = data;
+      renderListOfBreweries();
+    });
+});
 
-function search(event) {
-  event.preventDefault()
-  const byState = searchInput.value
-  fetchData(byState)
-  form.reset()
-}
+filterForm.addEventListener("change", function (event) {
+  event.preventDefault();
 
-//FETCH AND FILTER THE DATA
-function fetchData(byState) {
-  const url = `https://api.openbrewerydb.org/v1/breweries?by_state=${byState}`
+  const filtered = filter.value;
+  const type = searchInput.value;
 
-  fetch(url)
-  .then((res) => res.json())
-  .then((data) => {
-    state.breweries = data.filter((brewery) =>
-      ['micro', 'regional', 'brewpub'].includes(brewery.brewery_type))
-      renderListOfBreweries(state.breweries)
-    })
-}
+  fetch(
+    `https://api.openbrewerydb.org/v1/breweries?by_type=${filtered}&by_state=${type}&per_page=50`
+  )
+    .then((response) => response.json())
+    .then(function (filteredBreweryData) {
+      state.breweries = filteredBreweryData;
+      renderListOfBreweries();
+    });
+});
+
+
 
 //LIST OF BREWERIES
 function renderListOfBreweries(breweries) {
@@ -92,15 +104,4 @@ function renderListOfBreweries(breweries) {
     })
 }
 
-//EVENT LISTENER TO FILTER
-filter.addEventListener('change', event => {
-  const type = filter.value
-  if (type === 'no_filter') {
-    renderListOfBreweries(state.breweries)
-  } else {
-    const filtered = state.breweries.filter(
-      (brewery) => brewery.brewery_type === type
-    )
-    renderListOfBreweries(filtered)
-  }
-})
+
