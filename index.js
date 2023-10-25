@@ -13,6 +13,29 @@ const renderSearchItems = (theSearchInput) => {
     });
 };
 
+//Not Working yet
+
+const renderSearchByState = (breweries) => {
+    const SearchByStateForm = document.querySelector('#select-state-form');
+    const search = document.querySelector('input[type="submit"]');
+    SearchByStateForm.addEventListener('submit', (e) => {
+        e.preventDefault(); 
+
+        ulContainer.innerHTML = '';
+
+        const searchValue = search.value.toLowerCase();
+
+        const searchByState = breweries.filter((brewery) => brewery.state.toLowerCase() === searchValue);
+        console.log(brewery.state)
+
+        renderBreweryList(searchByState);
+    });
+
+
+}
+
+
+
 const renderSearchBar = () => {
     const searchBar = document.createElement('header');
     const searchBreweryForm = document.createElement('form');
@@ -181,9 +204,11 @@ const getBreweryDetails = () => {
         .then((response) => response.json())
         .then((data) => {
             state.breweries = data;
+            renderSearchByState(state.breweries)
             renderBreweryList(state.breweries);
             renderByType();
             filterByCity(state.breweries);
+          
         })
         .catch((err) => console.log('Error in my code', err));
 };
@@ -192,5 +217,5 @@ const getBreweryDetails = () => {
 
 renderSearchBar();
 getBreweryDetails();
-
+renderBreweryList(searchByState);
 
