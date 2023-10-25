@@ -13,28 +13,24 @@ const renderSearchItems = (theSearchInput) => {
     });
 };
 
-//Not Working yet
-
 const renderSearchByState = (breweries) => {
     const SearchByStateForm = document.querySelector('#select-state-form');
-    const search = document.querySelector('input[type="submit"]');
-    SearchByStateForm.addEventListener('submit', (e) => {
-        e.preventDefault(); 
+    const search = document.querySelector('input[type="text"]');
 
+    SearchByStateForm.addEventListener('submit', (e) => {
+        e.preventDefault();
         ulContainer.innerHTML = '';
 
         const searchValue = search.value.toLowerCase();
 
-        const searchByState = breweries.filter((brewery) => brewery.state.toLowerCase() === searchValue);
-        console.log(brewery.state)
-
-        renderBreweryList(searchByState);
+        if (searchValue.trim() !== '') {
+            const searchByState = breweries.filter((brewery) => brewery.state.toLowerCase() === searchValue);
+            renderBreweryList(searchByState);
+        } else {
+            renderBreweryList(breweries);
+        }
     });
-
-
-}
-
-
+};
 
 const renderSearchBar = () => {
     const searchBar = document.createElement('header');
@@ -132,25 +128,18 @@ const renderBreweryList = (breweries) => {
     });
 };
 
-
 const renderwithEachCity = (input, breweries) => {
     input.addEventListener('change', () => {
-        if(input.checked){
+        if (input.checked) {
             ulContainer.innerHTML = '';
             const filterCities = breweries.filter((brewery) => brewery.city === input.value);
             renderBreweryList(filterCities);
-
-        }
-        else{
+        } else {
             ulContainer.innerHTML = '';
             renderBreweryList(state.breweries);
         }
-       
     });
-
 };
-
-
 
 const filterByCity = (location) => {
     const filterMainSection = document.querySelector('.filters-section');
@@ -167,12 +156,11 @@ const filterByCity = (location) => {
     cityButton.classList.add('clear-all-btn');
     filterByCityHeading.append(cityButton);
 
-    const clearAll = (inputElement)=>{
-        cityButton.addEventListener('click', ()=>{
+    const clearAll = (inputElement) => {
+        cityButton.addEventListener('click', () => {
             inputElement.checked = false
             ulContainer.innerHTML = '';
             renderBreweryList(state.breweries);
-        
         })
     }
 
@@ -204,18 +192,14 @@ const getBreweryDetails = () => {
         .then((response) => response.json())
         .then((data) => {
             state.breweries = data;
-            renderSearchByState(state.breweries)
+            renderSearchByState(state.breweries);
             renderBreweryList(state.breweries);
             renderByType();
             filterByCity(state.breweries);
-          
         })
         .catch((err) => console.log('Error in my code', err));
 };
 
-
-
 renderSearchBar();
 getBreweryDetails();
-renderBreweryList(searchByState);
 
