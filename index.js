@@ -26,10 +26,20 @@ const renderSearchByState = (breweries) => {
         if (searchValue.trim() !== '') {
             const searchByState = breweries.filter((brewery) => brewery.state.toLowerCase() === searchValue);
             renderBreweryList(searchByState);
-        } else {
+        } else{
             renderBreweryList(breweries);
         }
+
+        search.addEventListener('input', (e) => {
+            const searchValue = e.target.value.toLowerCase();
+            renderBreweryList(breweries);
+        });
+
     });
+
+
+
+
 };
 
 const renderSearchBar = () => {
