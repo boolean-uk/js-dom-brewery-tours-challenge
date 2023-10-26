@@ -23,7 +23,8 @@ const state = {
 };
 
 
-const root = ' https://api.openbrewerydb.org/v1/breweries?by_state'
+const root = `https://api.openbrewerydb.org/v1/breweries`
+
 
 // For rendering breweries - select the unordered list
 // '#breweries-list' --> html page
@@ -127,18 +128,13 @@ function renderBreweries() {
 
 
 // Select the search input --> When you enter a state
-const searchInput = document.querySelector('#select-state-form > input[type=submit]:nth-child(3)')
+const searchButton = document.querySelector('#select-state-form > input[type=submit]:nth-child(3)')
+const typeOfBrewInput = document.querySelector('#filter-by-type')
+const searchInput = document.querySelector('#select-state')
 
-searchInput.addEventListener("click", (e)=> {
+searchButton.addEventListener("click", (e)=> {
     e.preventDefault()
-    // Get the value of input
-    // if whatever has been searched is a valid state, return a state
-    const inputValue = document.querySelector('#select-state').value
-    const searchURL = `https://api.openbrewerydb.org/v1/breweries/search?query=${inputValue}`
-    usState(searchURL)
-    // const filteredBreweries = state.breweries.filter((brewery)=> brewery.state.toLowerCase().includes(inputValue))
-    // state.breweries = filteredBreweries // update state 
-    
+    stateAndTypeAPIs() 
 })
 
 //Filter breweries that offer brewery tours by:
@@ -146,26 +142,15 @@ searchInput.addEventListener("click", (e)=> {
 // 2. Regional
 // 3. Brewpub
 
+typeOfBrewInput.addEventListener('change', stateAndTypeAPIs)
 
-// Select the filter input
-const typeOfBrewInput = document.querySelector('#filter-by-type')
-// console.log(typeOfBrewInput)
+function stateAndTypeAPIs() {
+    // Get the value for the state
+    const stateValue = searchInput.value
+    // Get the value for the type of brew
+    const brewTypeValue = typeOfBrewInput.value
 
-typeOfBrewInput.addEventListener('change', () => {
-    // Select input val
-    const value = typeOfBrewInput.value
-    const URLtypeOfBrew = `https://api.openbrewerydb.org/v1/breweries?by_type=${value}` 
-
-    const filteredTypeOfBrew = state.breweries.filter((brewery)=>  {
-        return brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub'
-    })
-
-    // Update to filteredTypeOfBrew
-    state.breweries = filteredTypeOfBrew
-
-
+    const searchURL = root+`?by_state=${stateValue}&by_type=${brewTypeValue}`
     // API call and render
-    usState(URLtypeOfBrew)
-    
-
-})
+    usState(searchURL)
+}
