@@ -123,17 +123,19 @@ function renderBreweries() {
 // When you search by US state, the type of brewery gets filtered by Micro, Regional and Brewpub 
 
 //Search by State
-// Example, type in "new-york", all the breweries in new-york should come up.
+// Example, type in "new-york", all the breweries in new-york should come up, once filtered applied, this should change accordingly.
 
 
-
-// Select the search input --> When you enter a state
+// Select the search button 
+// Select the search input
+// Select the type of brew input
 const searchButton = document.querySelector('#select-state-form > input[type=submit]:nth-child(3)')
 const typeOfBrewInput = document.querySelector('#filter-by-type')
 const searchInput = document.querySelector('#select-state')
 
 searchButton.addEventListener("click", (e)=> {
     e.preventDefault()
+    // Call function
     stateAndTypeAPIs() 
 })
 
@@ -142,14 +144,16 @@ searchButton.addEventListener("click", (e)=> {
 // 2. Regional
 // 3. Brewpub
 
+// Call function
 typeOfBrewInput.addEventListener('change', stateAndTypeAPIs)
 
 function stateAndTypeAPIs() {
-    // Get the value for the state
+    // Get the value for the state (event listener)
     const stateValue = searchInput.value
-    // Get the value for the type of brew
+    // Get the value for the type of brew (event listener)
     const brewTypeValue = typeOfBrewInput.value
 
+    // Get the root, followed by the state and type of brewery API.
     const searchURL = root+`?by_state=${stateValue}&by_type=${brewTypeValue}`
     // API call and render
     usState(searchURL)
