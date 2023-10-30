@@ -13,6 +13,7 @@ const renderSearchItems = (theSearchInput) => {
     });
 };
 
+
 const renderSearchByState = (breweries) => {
     const SearchByStateForm = document.querySelector('#select-state-form');
     const search = document.querySelector('input[type="text"]');
@@ -20,8 +21,10 @@ const renderSearchByState = (breweries) => {
     SearchByStateForm.addEventListener('submit', (e) => {
         e.preventDefault();
         ulContainer.innerHTML = '';
+        const search = document.querySelector('input[type="text"]');
 
         const searchValue = search.value.toLowerCase();
+
 
         if (searchValue.trim() !== '') {
             const searchByState = breweries.filter((brewery) => brewery.state.toLowerCase() === searchValue);
@@ -37,6 +40,7 @@ const renderSearchByState = (breweries) => {
             renderBreweryList(breweries);
         });
 
+        getBreweryDetails(searchValue)
     });
 
 
@@ -214,8 +218,8 @@ const filterByCity = (location) => {
  
 };
 
-const getBreweryDetails = () => {
-    fetch('https://api.openbrewerydb.org/v1/breweries')
+const getBreweryDetails = (searchValue) => {
+    fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${searchValue}`)
         .then((response) => response.json())
         .then((data) => {
             state.breweries = data;
@@ -224,25 +228,10 @@ const getBreweryDetails = () => {
             renderByType();
             filterByCity(state.breweries);
 
-            const typeRegion = state.breweries.filter((brewery) => brewery.brewery_type === 'regional')
-            const typeMicro = state.breweries.filter((brewery) => brewery.brewery_type === 'micro')
-            const brewpub = state.breweries.filter((brewery) => brewery.brewery_type === 'brewpub')
-            const large = state.breweries.filter((brewery) => brewery.brewery_type === 'large')
-
-            const lastType = state.breweries.filter((brewery) => brewery.brewery_type !== 'regional' &&  brewery.brewery_type !== 'micro' &&  brewery.brewery_type !== 'large' &&  brewery.brewery_type !== 'brewpub')
-
-
-
-            console.log(typeMicro)
-            console.log(typeRegion)
-            console.log(brewpub)
-            console.log(large)
-            console.log(lastType)
-
         })
         .catch((err) => console.log('Error in my code', err));
 };
 
 renderSearchBar();
-getBreweryDetails();
+getBreweryDetails('');
 
