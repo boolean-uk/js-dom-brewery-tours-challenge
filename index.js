@@ -74,11 +74,11 @@ const renderSearchBar = () => {
 
 const renderByType = () => {
     const filterByType = document.querySelector('#filter-by-type');
-
     filterByType.addEventListener('change', () => {
         ulContainer.innerHTML = '';
         const selectedByType = filterByType.value;
-        const filteredBreweries = state.breweries.filter((brewery) => brewery.brewery_type === selectedByType && selectedByType !== "");
+
+        const filteredBreweries = state.breweries.filter((brewery) => brewery.brewery_type === selectedByType);
         renderBreweryList(filteredBreweries);
     });
 };
@@ -140,17 +140,26 @@ const renderBreweryList = (breweries) => {
     });
 };
 
-const renderwithEachCity = (input, breweries) => {
+const renderwithEachCity = (form, input, breweries) => {
     input.addEventListener('change', () => {
-        if (input.checked) {
-            ulContainer.innerHTML = '';
-            const filterCities = breweries.filter((brewery) => brewery.city === input.value);
-            renderBreweryList(filterCities);
-        } else {
-            ulContainer.innerHTML = '';
-            renderBreweryList(state.breweries);
+
+        const selectedCheckBoxes = Array.from(form.querySelectorAll('input:checked')).map((checkbox) => checkbox.value)
+
+        if(selectedCheckBoxes.length === 0){
+            renderBreweryList(breweries)
         }
+        
+        else{
+            const filteredBreweries = breweries.filter((brewery) => selectedCheckBoxes.includes(brewery.brewery_type));
+            renderBreweryList(filteredBreweries);
+        }
+        
+
     });
+
+
+
+
 };
 
 const filterByCity = (location) => {
@@ -176,8 +185,9 @@ const filterByCity = (location) => {
         })
     }
 
-    const cityForm = document.createElement('form');
     location.forEach((city) => {
+        const cityForm = document.createElement('form');
+
         const cityInput = document.createElement('input');
         cityInput.type = 'checkbox';
         cityInput.name = city.city;
@@ -192,15 +202,20 @@ const filterByCity = (location) => {
 
         clearAll(cityInput)
 
-        renderwithEachCity(cityInput, state.breweries);
+        filterMainSection.append(cityForm);
+        filterMainSection.append(filterByCityHeading);
+
+        renderwithEachCity(cityForm, cityInput, state.breweries);
+
+
+
     });
 
-    filterMainSection.append(filterByCityHeading);
-    filterMainSection.append(cityForm);
+ 
 };
 
 const getBreweryDetails = () => {
-    fetch('https://api.openbrewerydb.org/breweries')
+    fetch('https://api.openbrewerydb.org/v1/breweries')
         .then((response) => response.json())
         .then((data) => {
             state.breweries = data;
@@ -208,6 +223,22 @@ const getBreweryDetails = () => {
             renderBreweryList(state.breweries);
             renderByType();
             filterByCity(state.breweries);
+
+            const typeRegion = state.breweries.filter((brewery) => brewery.brewery_type === 'regional')
+            const typeMicro = state.breweries.filter((brewery) => brewery.brewery_type === 'micro')
+            const brewpub = state.breweries.filter((brewery) => brewery.brewery_type === 'brewpub')
+            const large = state.breweries.filter((brewery) => brewery.brewery_type === 'large')
+
+            const lastType = state.breweries.filter((brewery) => brewery.brewery_type !== 'regional' &&  brewery.brewery_type !== 'micro' &&  brewery.brewery_type !== 'large' &&  brewery.brewery_type !== 'brewpub')
+
+
+
+            console.log(typeMicro)
+            console.log(typeRegion)
+            console.log(brewpub)
+            console.log(large)
+            console.log(lastType)
+
         })
         .catch((err) => console.log('Error in my code', err));
 };
