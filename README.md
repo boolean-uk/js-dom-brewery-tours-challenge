@@ -2,7 +2,7 @@
 
 In this challenge, I tackled a common scenario encountered in eCommerce and booking websites, focusing on the use of filters and search to dynamically modify rendered content based on user interactions. Leveraging the skills acquired in the JS DOM unit, including dynamic DOM creation, event listener implementation, state management, and data retrieval from a server, alongside HTML and CSS, I accomplished the following tasks. I also added a search and filter features, and leveraged json-server.
 
-I have deployed the repo on vercel and it is available to view a live demo. I would really appreciate if you viewed the work I am so proud of and see it in action <a href='[https://spotify-clone-amber-six.vercel.app/](https://js-dom-brewery-tours-challenge-five.vercel.app/)'> Link to deployed app<a/>
+I have deployed the repo on vercel and it is available to view a live demo. I would really appreciate if you viewed the work I am so proud of and see it in action <a href='https://js-dom-brewery-tours-challenge-five.vercel.app'> Link to deployed app<a/>
 
 ## Setup
 1. Fork this repository to your GitHub account
