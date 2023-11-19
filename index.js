@@ -1,58 +1,90 @@
-const brewerylistContainer = document.querySelector("#article")
+const breweryListContainer = document.querySelector("#breweries-list");
 const state = {
-    breweries:[]
-}
-const renderBreweryList =(breweries)=> {
-    breweries.forEach((brewery) => {
-        const breweries =document.querySelector("ul")
-        const brewerylistContainer= document.createElement("li")
-        const breweryh2= document.createElement("h2")
-        breweryh2.innerText= brewery.name
-        const brewerydiv= document.createElement("div")
-        brewerydiv.innerText=brewery.brewery_type
-        const section1= document.createElement("section")
-        const breweryaddress = document.createElement("h3")
-        breweryaddress.innerText = brewery.address_1
-        const breweryp= document.createElement("p")
-        breweryp.innerText= brewery.address_2
-        const breweryp2= document.createElement("p")
-        const bstrong = document.createElement("strong")
-        bstrong.innerText=brewery.city
-        const section2 = document.createElement("section")
-        const section2h3 = document.createElement("h3")
-        section2h3.innerText=brewery.phone
-        const section2p = document.createElement("p")
-        section2p.innerText =brewery.postal_code
-        const section3 = document.createElement("section")
-        const section3link = document.createElement("a")
-        section3link.innerText = brewery.website
+  breweries: []
+};
 
-        brewerylistContainer.append(breweryh2)
-        brewerylistContainer.append(brewerydiv)
-        brewerylistContainer.append(section1)
-        brewerylistContainer.append(section2)
-        brewerylistContainer.append(section3)
-        section1.append(breweryaddress)
-        section1.append(breweryp)
-        breweryp2.append(bstrong)
-        section1.append(breweryp2)
-        section2.append(section2h3)
-        section2.append(section2p)
-        section3.append(section3link)
-        breweries.append(brewerylistContainer)
+const renderBreweryList = (breweries) => {
+  breweryListContainer.innerHTML = ''; // Clear previous content
 
-    })
+  breweries.forEach((brewery) => {
+    const breweryItem = document.createElement("li");
+    const breweryName = document.createElement("h2");
+    breweryName.innerText = brewery.name;
 
-    console.log(state.breweries)
-}
+    const breweryType = document.createElement("div");
+    breweryType.innerText = brewery.brewery_type;
 
-const getDataandRender =() => {
-    fetch('https://api.openbrewerydb.org/v1/breweries')
-  .then((Response)=>Response.json()) //promise asynchronous
-  .then((data)=> {
-    state.breweries = data;
-    renderBreweryList(state.breweries);
-   });
-   
-}
+    const addressSection = document.createElement("section");
+    const breweryAddress = document.createElement("h3");
+    breweryAddress.innerText = brewery.address_1;
+
+    const addressLine2 = document.createElement("p");
+    addressLine2.innerText = brewery.address_2;
+
+    const city = document.createElement("p");
+    const cityStrong = document.createElement("strong");
+    cityStrong.innerText = brewery.city;
+    city.appendChild(cityStrong);
+
+    const contactSection = document.createElement("section");
+    const phone = document.createElement("h3");
+    phone.innerText = brewery.phone;
+
+    const postalCode = document.createElement("p");
+    postalCode.innerText = brewery.postal_code;
+
+    const websiteSection = document.createElement("section");
+    const websiteLink = document.createElement("a");
+    websiteLink.innerText = brewery.website;
+    websiteLink.href = brewery.website;
+
+    breweryItem.appendChild(breweryName);
+    breweryItem.appendChild(breweryType);
+    breweryItem.appendChild(addressSection);
+    breweryItem.appendChild(contactSection);
+    breweryItem.appendChild(websiteSection);
+
+    addressSection.appendChild(breweryAddress);
+    addressSection.appendChild(addressLine2);
+    addressSection.appendChild(city);
+
+    contactSection.appendChild(phone);
+    contactSection.appendChild(postalCode);
+
+    websiteSection.appendChild(websiteLink);
+
+    breweryListContainer.appendChild(breweryItem);
+  });
+};
+
+const renderSearch = (breweries) => {
+  const searchStateForm = document.querySelector('#select-state-form');
+  const searchInput = document.querySelector('input[type="text"]');
+
+  searchStateForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const stateValue = searchInput.value.toLowerCase().trim();
+
+    if (stateValue !== '') {
+      const stateSearch = breweries.filter((brewery) =>
+        brewery.state_province && brewery.state_province.toLowerCase() === stateValue
+      );
+      renderBreweryList(stateSearch);
+    } else {
+      renderBreweryList(breweries);
+    }console.log(stateValue)
+  });
+};
+
+const getDataandRender = () => {
+  fetch('https://api.openbrewerydb.org/v1/breweries')
+    .then((response) => response.json())
+    .then((data) => {
+      state.breweries = data;
+      renderBreweryList(state.breweries);
+      renderSearch(state.breweries);
+    });
+};
+
 getDataandRender();
