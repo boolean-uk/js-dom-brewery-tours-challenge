@@ -1,90 +1,94 @@
-const breweryListContainer = document.querySelector("#breweries-list");
-const state = {
+const appState = {
   breweries: []
-};
+}
 
-const renderBreweryList = (breweries) => {
-  breweryListContainer.innerHTML = ''; // Clear previous content
+const selectStateForm = document.querySelector('#select-state-form')
+const selectStateInput = document.querySelector('#select-state')
+const breweriesList = document.querySelector('#breweries-list')
+const filterByType = document.querySelector('#filter-by-type')
 
-  breweries.forEach((brewery) => {
-    const breweryItem = document.createElement("li");
-    const breweryName = document.createElement("h2");
-    breweryName.innerText = brewery.name;
+selectStateForm.addEventListener('submit', event => {
+  event.preventDefault()
+  const stateToFetch = selectStateInput.value
+  fetchData(stateToFetch)
+  selectStateForm.reset()
+})
 
-    const breweryType = document.createElement("div");
-    breweryType.innerText = brewery.brewery_type;
+function fetchData(state) {
+  const apiUrl = `https://api.openbrewerydb.org/v1/breweries?by_state=${state}`
 
-    const addressSection = document.createElement("section");
-    const breweryAddress = document.createElement("h3");
-    breweryAddress.innerText = brewery.address_1;
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      appState.breweries = data.filter(brewery => ['micro', 'regional', 'brewpub'].includes(brewery.brewery_type))
+      renderBreweries(appState.breweries)
+    })
+}
 
-    const addressLine2 = document.createElement("p");
-    addressLine2.innerText = brewery.address_2;
+function renderBreweries(breweries) {
+  breweriesList.innerHTML = ''
+  breweries.forEach(brewery => {
+    const breweryListItem = document.createElement('li')
+    breweriesList.append(breweryListItem)
 
-    const city = document.createElement("p");
-    const cityStrong = document.createElement("strong");
-    cityStrong.innerText = brewery.city;
-    city.appendChild(cityStrong);
+    const breweryTitle = document.createElement('h3')
+    breweryTitle.innerText = brewery.name
+    breweryListItem.append(breweryTitle)
 
-    const contactSection = document.createElement("section");
-    const phone = document.createElement("h3");
-    phone.innerText = brewery.phone;
+    const breweryType = document.createElement('div')
+    breweryType.setAttribute('class', 'type')
+    breweryType.innerText = brewery.brewery_type
+    breweryListItem.append(breweryType)
 
-    const postalCode = document.createElement("p");
-    postalCode.innerText = brewery.postal_code;
+    const addressSection = document.createElement('section')
+    addressSection.setAttribute('class', 'address')
+    breweryListItem.append(addressSection)
 
-    const websiteSection = document.createElement("section");
-    const websiteLink = document.createElement("a");
-    websiteLink.innerText = brewery.website;
-    websiteLink.href = brewery.website;
+    const addressTitle = document.createElement('h3')
+    addressTitle.innerText = 'Address:'
+    addressSection.append(addressTitle)
 
-    breweryItem.appendChild(breweryName);
-    breweryItem.appendChild(breweryType);
-    breweryItem.appendChild(addressSection);
-    breweryItem.appendChild(contactSection);
-    breweryItem.appendChild(websiteSection);
+    const addressLine1 = document.createElement('p')
+    addressLine1.innerText = brewery.address_1
+    addressSection.append(addressLine1)
 
-    addressSection.appendChild(breweryAddress);
-    addressSection.appendChild(addressLine2);
-    addressSection.appendChild(city);
+    const addressLine2 = document.createElement('p')
+    addressSection.append(addressLine2)
 
-    contactSection.appendChild(phone);
-    contactSection.appendChild(postalCode);
+    const addressDetails = document.createElement('strong')
+    addressDetails.innerText = `${brewery.city}, ${brewery.postal_code}`
+    addressLine2.append(addressDetails)
 
-    websiteSection.appendChild(websiteLink);
+    const phoneSection = document.createElement('section')
+    phoneSection.setAttribute('class', 'phone')
+    breweryListItem.append(phoneSection)
 
-    breweryListContainer.appendChild(breweryItem);
-  });
-};
+    const phoneTitle = document.createElement('h3')
+    phoneTitle.innerText = 'Phone:'
+    phoneSection.append(phoneTitle)
 
-const renderSearch = (breweries) => {
-  const searchStateForm = document.querySelector('#select-state-form');
-  const searchInput = document.querySelector('input[type="text"]');
+    const phoneNumber = document.createElement('p')
+    phoneNumber.innerText = brewery.phone
+    phoneSection.append(phoneNumber)
 
-  searchStateForm.addEventListener('submit', (event) => {
-    event.preventDefault();
+    const linkSection = document.createElement('section')
+    linkSection.setAttribute('class', 'link')
+    breweryListItem.append(linkSection)
 
-    const stateValue = searchInput.value.toLowerCase().trim();
+    const websiteLink = document.createElement('a')
+    websiteLink.setAttribute('href', `${brewery.website_url}`)
+    websiteLink.setAttribute('target', '_blank')
+    websiteLink.innerText = 'Visit Website'
+    linkSection.append(websiteLink)
+  })
+}
 
-    if (stateValue !== '') {
-      const stateSearch = breweries.filter((brewery) =>
-        brewery.state_province && brewery.state_province.toLowerCase() === stateValue
-      );
-      renderBreweryList(stateSearch);
-    } else {
-      renderBreweryList(breweries);
-    }console.log(stateValue)
-  });
-};
-
-const getDataandRender = () => {
-  fetch('https://api.openbrewerydb.org/v1/breweries')
-    .then((response) => response.json())
-    .then((data) => {
-      state.breweries = data;
-      renderBreweryList(state.breweries);
-      renderSearch(state.breweries);
-    });
-};
-
-getDataandRender();
+filterByType.addEventListener('change', event => {
+  const selectedType = filterByType.value
+  if (selectedType === 'no_filter') {
+    renderBreweries(appState.breweries)
+  } else {
+    const filteredBreweries = appState.breweries.filter(brewery => brewery.brewery_type === selectedType)
+    renderBreweries(filteredBreweries)
+  }
+})
