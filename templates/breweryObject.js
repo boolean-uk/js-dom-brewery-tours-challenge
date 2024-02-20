@@ -17,6 +17,6 @@ const breweries = [
     state: "California",
     street: "1501 E St",
     updated_at: "2018-08-23T00:00:00.000Z",
-    website_url: "http://10barrel.com"
-  }
+    website_url: "http://10barrel.com",
+  },
 ];

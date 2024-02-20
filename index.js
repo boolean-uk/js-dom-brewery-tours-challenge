@@ -1,0 +1,27 @@
+function initialize() {
+  console.log("Initializing...");
+
+  console.log("Initialized!");
+}
+
+initialize();
+
+// TEMPLATES
+/*
+<li>
+  <h2>Snow Belt Brew</h2>
+  <div class="type">micro</div>
+  <section class="address">
+    <h3>Address:</h3>
+    <p>9511 Kile Rd</p>
+    <p><strong>Chardon, 44024</strong></p>
+  </section>
+  <section class="phone">
+    <h3>Phone:</h3>
+    <p>N/A</p>
+  </section>
+  <section class="link">
+    <a href="null" target="_blank">Visit Website</a>
+  </section>
+</li>
+*/
