@@ -218,9 +218,22 @@ article {
 .breweries-list li .link a {
   display: block;
   padding: 0.5rem 1rem;
-
+  margin: 5px;
   border-radius: 0.25rem;
   background-color: #1565c0;
+  color: #fff;
+
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.breweries-list button {
+  display: block;
+  padding: 0.5rem 1rem;
+  margin: 5px;
+  background-color: rgb(155, 25, 25);
   color: #fff;
 
   text-transform: uppercase;
