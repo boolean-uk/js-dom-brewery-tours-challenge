@@ -1,41 +1,30 @@
 const state = {
   breweries: [],
-  titleFilter: "",
+  typeofFilter: "",
   locationFilter: "",
 };
 
 // SELECT STATIC ELEMENT
 const brewerUlElement = document.getElementById("breweries-list");
+const filterform = document.getElementById("filter-by-type-form");
 
 // INITIALIZE FUNCTIONS
 function renderWebsite() {
   brewerUlElement.innerHTML = "";
 
-  for (const brewerie of state.breweries) {
+  // FILTERS
+  let filteredBreweries = state.breweries.filter((brewery) => {
+    return brewery.brewery_type.includes(state.typeofFilter);
+  });
+
+  // START RENDERING
+  for (const brewerie of filteredBreweries) {
     const liElement = createCardElement(brewerie);
     brewerUlElement.appendChild(liElement);
   }
 }
 
 function createCardElement(brewerie) {
-  /*
-<li>
-  <h2>Snow Belt Brew</h2>
-  <div class="type">micro</div>
-  <section class="address">
-    <h3>Address:</h3>
-    <p>9511 Kile Rd</p>
-    <p><strong>Chardon, 44024</strong></p>
-  </section>
-  <section class="phone">
-    <h3>Phone:</h3>
-    <p>N/A</p>
-  </section>
-  <section class="link">
-    <a href="null" target="_blank">Visit Website</a>
-  </section>
-</li>
-*/
   const liElement = document.createElement("li");
 
   const h2Element = document.createElement("h2");
@@ -69,11 +58,11 @@ function createCardElement(brewerie) {
   section2Element.className = "phone";
 
   const section2h3Element = document.createElement("h3");
-  section2h3Element.innerText = brewerie.phone;
+  section2h3Element.innerText = "Phone:";
   section2Element.appendChild(section2h3Element);
 
   const section2pElement = document.createElement("p");
-  section2pElement.innerText = "N/A"; // <-- ?
+  section2pElement.innerText = brewerie.phone;
   section2Element.appendChild(section2pElement);
   liElement.appendChild(section2Element);
 
@@ -107,6 +96,13 @@ function getBreweriesApi() {
       renderWebsite();
     });
 }
+
+// EVENTLISTNERS
+filterform.addEventListener("change", (event) => {
+  state.typeofFilter = event.target.value;
+  console.log(state.typeofFilter);
+  getBreweriesApi();
+});
 function initialize() {
   console.log("Initializing...");
   getBreweriesApi();
