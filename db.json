@@ -1,0 +1,26 @@
+{
+  "visits": [
+    {
+      "id": "80d2",
+      "name": "1 of Us Brewing Company",
+      "brewery_type": "micro",
+      "street": "8100 Washington Ave",
+      "city": "Mount Pleasant",
+      "state": "Wisconsin",
+      "postal_code": "53406-3920",
+      "phone": "2624847553",
+      "website_url": "https://www.1ofusbrewing.com"
+    },
+    {
+      "id": "6334",
+      "name": "10 Barrel Brewing Co",
+      "brewery_type": "large",
+      "street": "1501 E St",
+      "city": "San Diego",
+      "state": "California",
+      "postal_code": "92101-6618",
+      "phone": "6195782311",
+      "website_url": "http://10barrel.com"
+    }
+  ]
+}

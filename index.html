@@ -12,17 +12,14 @@
     <header class="main-header">
       <section class="select-state-section">
         <h2>Welcome to Brewery Tours</h2>
-        <form id="select-state-form" autocomplete="off">
-          <label for="select-state">Which state are you visiting?</label>
-          <input id="select-state" name="select-state" type="text" />
-          <input type="submit" value="Search" />
-        </form>
+        Search Breweries<input id="select-state" name="select-state" type="text" />
+        <button id="visit" style="background-color: red;">Visit-list</button>
       </section>
     </header>
     <main>
       <aside class="filters-section">
         <aside class="filters-section">
-          <h2>Filter By:</h2>
+          <h2 class="filters-section-heading">Filter By:</h2>
           <form id="filter-by-type-form" autocompete="off">
             <label for="filter-by-type"><h3>Type of Brewery</h3></label>
             <select name="filter-by-type" id="filter-by-type">
@@ -31,6 +28,95 @@
               <option value="regional">Regional</option>
               <option value="brewpub">Brewpub</option>
             </select>
+          </form>
+          <div class="filter-by-city-heading">
+            <h3>Cities</h3>
+            <button class="clear-all-btn">clear all</button>
+          </div>
+          <form id="filter-by-city-form">
+            <input type="checkbox" name="chardon" value="chardon" />
+            <label for="chardon">Chardon</label>
+    
+            <input type="checkbox" name="mason" value="mason" />
+            <label for="mason">Mason</label>
+    
+            <input type="checkbox" name="whitehall" value="whitehall" />
+            <label for="whitehall">Whitehall</label>
+    
+            <input type="checkbox" name="defiance" value="defiance" />
+            <label for="defiance">Defiance</label>
+    
+            <input type="checkbox" name="columbus" value="columbus" />
+            <label for="columbus">Columbus</label>
+    
+            <input type="checkbox" name="akron" value="akron" />
+            <label for="akron">Akron</label>
+    
+            <input type="checkbox" name="cleveland" value="cleveland" />
+            <label for="cleveland">Cleveland</label>
+    
+            <input type="checkbox" name="mount-orab" value="mount-orab" />
+            <label for="mount-orab">Mount Orab</label>
+    
+            <input type="checkbox" name="lorain" value="lorain" />
+            <label for="lorain">Lorain</label>
+    
+            <input type="checkbox" name="austintown" value="austintown" />
+            <label for="austintown">Austintown</label>
+    
+            <input type="checkbox" name="columbiana" value="columbiana" />
+            <label for="columbiana">Columbiana</label>
+    
+            <input type="checkbox" name="toledo" value="toledo" />
+            <label for="toledo">Toledo</label>
+    
+            <input type="checkbox" name="holland" value="holland" />
+            <label for="holland">Holland</label>
+    
+            <input type="checkbox" name="lakewood" value="lakewood" />
+            <label for="lakewood">Lakewood</label>
+    
+            <input type="checkbox" name="bowling-green" value="bowling-green" />
+            <label for="bowling-green">Bowling Green</label>
+    
+            <input type="checkbox" name="dayton" value="dayton" />
+            <label for="dayton">Dayton</label>
+    
+            <input type="checkbox" name="wilmington" value="wilmington" />
+            <label for="wilmington">Wilmington</label>
+    
+            <input type="checkbox" name="cleveland-heights" value="cleveland-heights" />
+            <label for="cleveland-heights">Cleveland Heights</label>
+    
+            <input type="checkbox" name="strongsville" value="strongsville" />
+            <label for="strongsville">Strongsville</label>
+    
+            <input type="checkbox" name="canal-winchester" value="canal-winchester" />
+            <label for="canal-winchester">Canal Winchester</label>
+    
+            <input type="checkbox" name="logan" value="logan" />
+            <label for="logan">Logan</label>
+    
+            <input type="checkbox" name="willoughby" value="willoughby" />
+            <label for="willoughby">Willoughby</label>
+    
+            <input type="checkbox" name="buckeye-lake" value="buckeye-lake" />
+            <label for="buckeye-lake">Buckeye Lake</label>
+    
+            <input type="checkbox" name="newark" value="newark" />
+            <label for="newark">Newark</label>
+    
+            <input type="checkbox" name="canton" value="canton" />
+            <label for="canton">Canton</label>
+    
+            <input type="checkbox" name="port-clinton" value="port-clinton" />
+            <label for="port-clinton">Port Clinton</label>
+    
+            <input type="checkbox" name="mentor" value="mentor" />
+            <label for="mentor">Mentor</label>
+    
+            <input type="checkbox" name="warren" value="warren" />
+            <label for="warren">Warren</label>
           </form>
         </aside>
       </aside>
@@ -43,8 +129,10 @@
           in templates/standard-list-items.html
           -->
         </ul>
+        <button id="prev-page">Previous</button>
+        <button id="next-page">Next</button>
       </article>
     </main>
-    <script src="index.js"></script>
+    <script type="module" src="./src/index.js"></script>
   </body>
 </html>
