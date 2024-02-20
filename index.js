@@ -20,19 +20,25 @@ function renderWebsite() {
   // FILTERS
   if (state.typeofFilter != "") {
     filteredBreweries = state.breweries.filter((brewery) => {
-      return brewery.brewery_type.includes(state.typeofFilter);
+      return brewery.brewery_type
+        .toLowerCase()
+        .includes(state.typeofFilter.toLowerCase());
     });
   }
 
   if (state.locationFilter != "") {
     filteredBreweries = filteredBreweries.filter((brewery) => {
-      return brewery.city.includes(state.locationFilter);
+      return brewery.city
+        .toLowerCase()
+        .includes(state.locationFilter.toLowerCase());
     });
   }
 
   if (state.breweryName != "") {
     filteredBreweries = filteredBreweries.filter((brewery) => {
-      return brewery.name.includes(state.breweryName);
+      return brewery.name
+        .toLowerCase()
+        .includes(state.breweryName.toLowerCase());
     });
   }
   // END FILTERS
