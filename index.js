@@ -5,15 +5,19 @@ const state = {
   breweryName: "",
 };
 
+const cities = [];
+
 // SELECT STATIC ELEMENT
 const brewerUlElement = document.getElementById("breweries-list");
 const formFilter = document.getElementById("filter-by-type-form");
 const searchFilter = document.getElementById("select-state-form");
 const searchBreweryFilter = document.getElementById("search-breweries-form");
+const cityFormFilter = document.getElementById("filter-by-city-form");
 
 // INITIALIZE FUNCTIONS
 function renderWebsite() {
   brewerUlElement.innerHTML = "";
+  renderCitiesFiltering(state.breweries);
 
   let filteredBreweries = state.breweries;
 
@@ -105,6 +109,35 @@ function createCardElement(brewerie) {
   liElement.appendChild(section3Element);
 
   return liElement;
+}
+
+// CITIES FILTERIN CHECKBOX CREATION
+function renderCitiesFiltering(resdata) {
+  cityFormFilter.innerHTML = "";
+  generateCitiesList(resdata);
+
+  for (const city of cities) {
+    const checkboxElement = document.createElement("input");
+    checkboxElement.setAttribute("type", "checkbox");
+    checkboxElement.setAttribute("name", `${city}`);
+    checkboxElement.setAttribute("value", `${city}`);
+    checkboxElement.setAttribute("id", `${city}`);
+
+    const labelElement = document.createElement("label");
+    labelElement.htmlFor = city;
+    labelElement.textContent = city;
+
+    cityFormFilter.appendChild(checkboxElement);
+    cityFormFilter.appendChild(labelElement);
+  }
+}
+
+function generateCitiesList(resData) {
+  resData.forEach((element) => {
+    if (!cities.includes(element.city)) {
+      cities.push(element.city);
+    }
+  });
 }
 
 // CRUD FUNCTIONS
