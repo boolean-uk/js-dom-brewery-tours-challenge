@@ -6,16 +6,26 @@ const state = {
 
 // SELECT STATIC ELEMENT
 const brewerUlElement = document.getElementById("breweries-list");
-const filterform = document.getElementById("filter-by-type-form");
+const formFilter = document.getElementById("filter-by-type-form");
+const SearchFilter = document.getElementById("select-state-form");
 
 // INITIALIZE FUNCTIONS
 function renderWebsite() {
   brewerUlElement.innerHTML = "";
 
+  let filteredBreweries = state.breweries;
   // FILTERS
-  let filteredBreweries = state.breweries.filter((brewery) => {
-    return brewery.brewery_type.includes(state.typeofFilter);
-  });
+  if (state.typeofFilter != "") {
+    filteredBreweries = state.breweries.filter((brewery) => {
+      return brewery.brewery_type.includes(state.typeofFilter);
+    });
+  }
+
+  if (state.locationFilter != "") {
+    filteredBreweries = filteredBreweries.filter((brewery) => {
+      return brewery.city.includes(state.locationFilter);
+    });
+  }
 
   // START RENDERING
   for (const brewerie of filteredBreweries) {
@@ -85,11 +95,9 @@ function getBreweriesApi() {
   console.log("FETCH /breweries");
   fetch("http://localhost:3000/breweries", {})
     .then((res) => {
-      console.log("2");
       return res.json();
     })
     .then((resData) => {
-      console.log("3");
       console.log("FETCH response data: ", resData);
 
       state.breweries = resData;
@@ -98,11 +106,20 @@ function getBreweriesApi() {
 }
 
 // EVENTLISTNERS
-filterform.addEventListener("change", (event) => {
+formFilter.addEventListener("change", (event) => {
   state.typeofFilter = event.target.value;
-  console.log(state.typeofFilter);
+
   getBreweriesApi();
 });
+
+SearchFilter.addEventListener("submit", function (event) {
+  event.preventDefault(); // Prevents the default form submission behavior
+
+  state.locationFilter = event.target[0].value;
+
+  getBreweriesApi();
+});
+
 function initialize() {
   console.log("Initializing...");
   getBreweriesApi();
