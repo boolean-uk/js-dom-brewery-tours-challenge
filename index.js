@@ -2,18 +2,21 @@ const state = {
   breweries: [],
   typeofFilter: "",
   locationFilter: "",
+  breweryName: "",
 };
 
 // SELECT STATIC ELEMENT
 const brewerUlElement = document.getElementById("breweries-list");
 const formFilter = document.getElementById("filter-by-type-form");
-const SearchFilter = document.getElementById("select-state-form");
+const searchFilter = document.getElementById("select-state-form");
+const searchBreweryFilter = document.getElementById("search-breweries-form");
 
 // INITIALIZE FUNCTIONS
 function renderWebsite() {
   brewerUlElement.innerHTML = "";
 
   let filteredBreweries = state.breweries;
+
   // FILTERS
   if (state.typeofFilter != "") {
     filteredBreweries = state.breweries.filter((brewery) => {
@@ -27,6 +30,13 @@ function renderWebsite() {
     });
   }
 
+  if (state.breweryName != "") {
+    filteredBreweries = filteredBreweries.filter((brewery) => {
+      return brewery.name.includes(state.breweryName);
+    });
+  }
+  // END FILTERS
+
   // START RENDERING
   for (const brewerie of filteredBreweries) {
     const liElement = createCardElement(brewerie);
@@ -34,6 +44,7 @@ function renderWebsite() {
   }
 }
 
+// BREWERY CARD CREATION
 function createCardElement(brewerie) {
   const liElement = document.createElement("li");
 
@@ -92,33 +103,45 @@ function createCardElement(brewerie) {
 
 // CRUD FUNCTIONS
 function getBreweriesApi() {
-  console.log("FETCH /breweries");
   fetch("http://localhost:3000/breweries", {})
     .then((res) => {
       return res.json();
     })
     .then((resData) => {
-      console.log("FETCH response data: ", resData);
-
       state.breweries = resData;
       renderWebsite();
     });
 }
 
 // EVENTLISTNERS
+// FILTER BY TYPE
 formFilter.addEventListener("change", (event) => {
+  event.preventDefault();
+
   state.typeofFilter = event.target.value;
 
   getBreweriesApi();
 });
 
-SearchFilter.addEventListener("submit", function (event) {
+// FILTER BY SEARCH LOCATION
+searchFilter.addEventListener("submit", (event) => {
   event.preventDefault(); // Prevents the default form submission behavior
 
   state.locationFilter = event.target[0].value;
 
   getBreweriesApi();
 });
+
+// FILTER BY SEARCH NAME OF BREWERY
+searchBreweryFilter.addEventListener("input", (event) => {
+  event.preventDefault();
+
+  state.breweryName = event.target.value;
+
+  getBreweriesApi();
+});
+
+// FILTER BE SEARCH BREWERY NAME
 
 function initialize() {
   console.log("Initializing...");
