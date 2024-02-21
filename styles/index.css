@@ -242,3 +242,30 @@ article {
   justify-content: center;
   align-items: center;
 }
+
+.filter-by-city-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1rem 0;
+  border: 1px solid #000;
+  border-bottom: none;
+}
+.clear-all{
+  background: none;
+  border: none;
+  font-size: small;
+  color: #1565c0;
+}
+
+.clear-all:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.filter-by-city-form{
+  padding: 1rem;
+  border: 1px solid #000;
+  border-top: none;
+  border-radius: 0 0 0.25rem 0.25rem;
+}

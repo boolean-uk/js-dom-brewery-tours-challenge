@@ -1,19 +1,23 @@
 
 const validBreweryTypes = ['micro', 'regional', 'brewpub'];
 let breweryData;
-let state;
-let filter;
+let stateSearch;
+let filterByType;
 let search;
+let displayCities = [];
+let filterByCities = [];
 
 async function getData(){
     let requestURL = 'https://api.openbrewerydb.org/v1/breweries';
-    if (state){
-        requestURL += `?by_state=${state}`;
+    if (stateSearch){
+        requestURL += `?by_state=${stateSearch}`;
     }
     await fetch(requestURL)
         .then(response => response.json())
         .then(data => {
             breweryData = data.filter(brewery => validBreweryTypes.includes(brewery.brewery_type));
+            displayCities = breweryData.map(brewery => brewery.city).filter((value, index, self) => self.indexOf(value) === index);
+            displayFilterByCities();
         })
         .catch(error => console.error(error));
 }
@@ -23,8 +27,11 @@ async function displayBreweries(){
     breweryList.innerHTML = '';
     if(!breweryData) await getData();
     breweryData.forEach(brewery => {
-        if (filter && brewery.brewery_type !== filter) return;
+        if (filterByType && brewery.brewery_type !== filterByType) return;
         if (search && !brewery.name.toLowerCase().includes(search.toLowerCase())) return;
+        console.log(filterByCities)
+        console.log(brewery.city)
+        if (filterByCities.length > 0 && !filterByCities.includes(brewery.city)) return;
         const breweryLi = document.createElement('li');
         breweryLi.innerHTML = `
             <h2>${brewery.name}</h2>
@@ -46,11 +53,22 @@ async function displayBreweries(){
     });
 }
 
+function displayFilterByCities(){
+    const filterByCityDiv = document.querySelector('#filter-by-city-form');
+    filterByCityDiv.innerHTML = '';
+    displayCities.forEach(city => {
+        filterByCityDiv.innerHTML += `
+        <input type="checkbox" id="${city}" name="${city}" value="${city}">
+        <label for="${city}">${city}</label>
+        `;
+    });
+}
+
 // State input form
 const selectStateInput = document.querySelector('#select-state-form');
 selectStateInput.addEventListener('submit', async (event) => {
     event.preventDefault();
-    state = event.target[0].value;
+    stateSearch = event.target[0].value;
     await getData();
     displayBreweries();
 });
@@ -58,7 +76,7 @@ selectStateInput.addEventListener('submit', async (event) => {
 // Filter dropdown
 const filterByTypeDropdown = document.querySelector('#filter-by-type');
 filterByTypeDropdown.addEventListener('change', async (event) => {
-    filter = event.target.value;
+    filterByType = event.target.value;
     await getData();
     displayBreweries();
 });
@@ -67,6 +85,20 @@ filterByTypeDropdown.addEventListener('change', async (event) => {
 const searchBreweryInput = document.querySelector('.search-breweries');
 searchBreweryInput.addEventListener('input', (event) => {
     search = event.target.value;
+    displayBreweries();
+});
+
+// Filter by city form
+const filterByCityForm = document.querySelector('#filter-by-city-form');
+filterByCityForm.addEventListener('change', async (event) => {
+    event.preventDefault();
+    const city = event.target.value;
+    if (event.target.checked){
+        filterByCities.push(city);
+    } 
+    else {
+        filterByCities = filterByCities.filter(c => c !== city);
+    }
     displayBreweries();
 });
 
