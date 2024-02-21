@@ -3,6 +3,7 @@ const validBreweryTypes = ['micro', 'regional', 'brewpub'];
 let breweryData;
 let state;
 let filter;
+let search;
 
 async function getData(){
     let requestURL = 'https://api.openbrewerydb.org/v1/breweries';
@@ -17,20 +18,13 @@ async function getData(){
         .catch(error => console.error(error));
 }
 
-// State input form
-const selectStateInput = document.querySelector('#select-state-form');
-selectStateInput.addEventListener('submit', (event) => {
-    event.preventDefault();
-    state = event.target[0].value;
-    displayBreweries();
-});
-
 async function displayBreweries(){
     const breweryList = document.querySelector('#breweries-list');
     breweryList.innerHTML = '';
-    await getData();
+    if(!breweryData) await getData();
     breweryData.forEach(brewery => {
         if (filter && brewery.brewery_type !== filter) return;
+        if (search && !brewery.name.toLowerCase().includes(search.toLowerCase())) return;
         const breweryLi = document.createElement('li');
         breweryLi.innerHTML = `
             <h2>${brewery.name}</h2>
@@ -52,12 +46,29 @@ async function displayBreweries(){
     });
 }
 
-// Filter dropdown
-const filterByTypeDropdown = document.querySelector('#filter-by-type');
-filterByTypeDropdown.addEventListener('change', (event) => {
-    filter = event.target.value;
+// State input form
+const selectStateInput = document.querySelector('#select-state-form');
+selectStateInput.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    state = event.target[0].value;
+    await getData();
     displayBreweries();
 });
 
-// Initial data load
+// Filter dropdown
+const filterByTypeDropdown = document.querySelector('#filter-by-type');
+filterByTypeDropdown.addEventListener('change', async (event) => {
+    filter = event.target.value;
+    await getData();
+    displayBreweries();
+});
+
+// Search brewery input
+const searchBreweryInput = document.querySelector('.search-breweries');
+searchBreweryInput.addEventListener('input', (event) => {
+    search = event.target.value;
+    displayBreweries();
+});
+
+// Initial display of breweries
 displayBreweries();

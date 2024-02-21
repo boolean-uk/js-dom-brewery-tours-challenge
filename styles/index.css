@@ -228,3 +228,17 @@ article {
   text-decoration: none;
   font-weight: bold;
 }
+
+.search-breweries{
+  width: 400px;
+}
+
+.search-text{
+  margin-right: 20px;
+}
+
+.brewery-search-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
