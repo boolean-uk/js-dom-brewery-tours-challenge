@@ -6,6 +6,8 @@ let filterByType;
 let search;
 let displayCities = [];
 let filterByCities = [];
+let countpages = 0;
+let currentpage = 0;
 
 async function getData(){
     let requestURL = 'https://api.openbrewerydb.org/v1/breweries';
@@ -26,12 +28,14 @@ async function displayBreweries(){
     const breweryList = document.querySelector('#breweries-list');
     breweryList.innerHTML = '';
     if(!breweryData) await getData();
+    let count = 0;
+    displayPagination();
     breweryData.forEach(brewery => {
+        count++;
         if (filterByType && brewery.brewery_type !== filterByType) return;
-        if (search && !brewery.name.toLowerCase().includes(search.toLowerCase())) return;
-        console.log(filterByCities)
-        console.log(brewery.city)
-        if (filterByCities.length > 0 && !filterByCities.includes(brewery.city)) return;
+        if (search && !brewery.name.toLowerCase().includes(search.toLowerCase())) return; // If the search input is not in the brewery name skip this iteration
+        if (filterByCities.length > 0 && !filterByCities.includes(brewery.city)) return; // If the brewery city is not in the filterByCities array skip this iteration
+        if (count <= currentpage * 10 || count > (currentpage + 1) * 10) return; // If the count is not within the current page range skip this iteration
         const breweryLi = document.createElement('li');
         breweryLi.innerHTML = `
             <h2>${brewery.name}</h2>
@@ -51,6 +55,36 @@ async function displayBreweries(){
         `;
         breweryList.appendChild(breweryLi);
     });
+}
+
+function displayPagination(){
+    const paginationList = document.querySelector('.pagination');
+    paginationList.innerHTML = '';
+    countpages = Math.ceil(breweryData.length / 10);
+    console.log(countpages)
+    createPaginationButton(1, paginationList);
+    for (let i = 1; i < breweryData.length; i++){
+        if (i % 10 === 0){ // If the count is a multiple of 10 add a page button
+            const page = i / 10;
+            createPaginationButton(page + 1, paginationList);
+        }
+    }
+}
+
+function createPaginationButton(pageNumber, paginationList){
+    const pageButton = document.createElement('button');
+    pageButton.textContent = pageNumber;
+    pageButton.addEventListener('click', (event) => {
+        currentpage = event.target.textContent - 1;
+        displayBreweries();
+    });
+    if(currentpage+1 === pageNumber){ // If this pagebutton is the current page add custom styling
+        pageButton.classList.add('pagination-active');
+    }
+    else{
+        pageButton.classList.add('pagination-inactive');
+    }
+    paginationList.appendChild(pageButton);
 }
 
 function displayFilterByCities(){
@@ -99,6 +133,29 @@ filterByCityForm.addEventListener('change', async (event) => {
     else {
         filterByCities = filterByCities.filter(c => c !== city);
     }
+    displayBreweries();
+});
+
+// Clear city filter button
+const clearCityFilter = document.querySelector('.clear-all');
+clearCityFilter.addEventListener('click', () => {
+    filterByCities = [];
+    displayFilterByCities();
+    displayBreweries();
+});
+
+// Pagination buttons
+const nextPageButton = document.querySelector('.next-page');
+nextPageButton.addEventListener('click', () => {
+    if(currentpage+1 == countpages) return;
+    currentpage++;
+    displayBreweries();
+});
+
+const prevPageButton = document.querySelector('.previous-page');
+prevPageButton.addEventListener('click', () => {
+    if(currentpage == 0) return;
+    currentpage--;
     displayBreweries();
 });
 

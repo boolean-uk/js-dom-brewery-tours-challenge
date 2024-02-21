@@ -269,3 +269,28 @@ article {
   border-top: none;
   border-radius: 0 0 0.25rem 0.25rem;
 }
+
+.brewery-pagination{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+.previous-page, .next-page, .pagination-inactive, .pagination-active{
+  padding: 10px;
+  margin: 0 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: #fbc02d;
+}
+
+.previous-page:hover, .next-page:hover, .pagination-inactive:hover, .pagination-active:hover{
+  background-color: #ffb06b;
+  cursor: pointer;
+  transform: scale(1.05);
+  transition: all linear 0.2s;
+}
+
+.pagination-active{
+  background-color: #ffd9d8 !important;
+}
