@@ -2,7 +2,7 @@
  *
  * @param {Array} breweries
  */
-export default function renderBreweries(breweries) {
+export default function renderBreweries(breweries, rerender = true) {
   const breweriesListElement = document.getElementById("breweries-list");
   breweriesListElement.innerHTML = "";
   breweries.forEach((brewery) => {
@@ -24,5 +24,36 @@ export default function renderBreweries(breweries) {
     </section>
   `;
     breweriesListElement.appendChild(container);
+  });
+  if (rerender === true) {
+    renderFilterCitiesForm(breweries);
+  }
+}
+
+/**
+ *
+ * @param {Array} breweries
+ */
+function renderFilterCitiesForm(breweries) {
+  const filterCitiesForm = document.getElementById("filter-by-city-form");
+  filterCitiesForm.innerHTML = "";
+  const filterSections = [];
+  breweries.forEach((brewery) => {
+    if (!filterSections.includes(brewery.city)) {
+      filterSections.push(brewery.city);
+    }
+  });
+  filterSections.forEach((city) => {
+    const cityInput = document.createElement("input");
+    cityInput.type = "checkbox";
+    cityInput.name = city;
+    cityInput.value = city;
+
+    const cityLabel = document.createElement("label");
+    cityLabel.htmlFor = city;
+    cityLabel.innerText = city;
+
+    filterCitiesForm.appendChild(cityInput);
+    filterCitiesForm.appendChild(cityLabel);
   });
 }

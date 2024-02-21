@@ -27,3 +27,20 @@ searchByNameElement.addEventListener("input", () => {
   const filtered = currentBreweries.filter((x) => x.name.includes(value));
   renderBreweries(filtered);
 });
+
+const filterByCityFormElement = document.getElementById("filter-by-city-form");
+filterByCityFormElement.addEventListener("change", () => {
+  const cityElements = document.querySelectorAll(
+    "input[type=checkbox]:checked"
+  );
+  const cities = [];
+  cityElements.forEach((cityElement) => {
+    cities.push(cityElement.value);
+  });
+  const filtered = currentBreweries.filter((x) => cities.includes(x.city));
+  if (filtered.length === 0) {
+    renderBreweries(currentBreweries, false);
+    return;
+  }
+  renderBreweries(filtered, false);
+});
