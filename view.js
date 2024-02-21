@@ -1,17 +1,21 @@
-import { breweryByState, breweryByStateAndFilter } from './controller.js';
+import { getBreweries } from './controller.js';
 
 window.addEventListener("load", init);
 
 const state = {
     state: "",
+    type: "",
+    cities: [],
 }
 
 function init(){
     const form = document.getElementById("select-state-form");
-    form.addEventListener("submit", (e) => fetchBreweries(e));
+    form.addEventListener("submit", (e) => setState(e));
 
     const selectElement = document.getElementById('filter-by-type');
-    selectElement.addEventListener('change', (e) => filterBreweries(e))
+    selectElement.addEventListener('change', (e) => setType(e))
+
+    document.querySelector(".clear-all-btn").addEventListener("click", () => clearCities)
 }
 
 function renderList(breweryData){
@@ -88,27 +92,56 @@ function renderList(breweryData){
     });
 }
 
-async function filterBreweries(e){
-    e.preventDefault();
-    console.log(e.target.value);
-    if (state.state === "") {
-        return
-    }
-    let response = await breweryByStateAndFilter(state.state, e.target.value);
+async function fetchBreweries(){
+    console.log(state);
+    let response = await getBreweries(state.state, state.type, state.cities);
     if(response === null || response.length === 0) {
         return;
     }
-    renderList(response);
+
+    renderList(response.breweries);
+    if(response.cities.length !== 0){
+        renderCities(response.cities)
+    }
 }
 
-async function fetchBreweries(e){
+function clearCities(){
+
+}
+
+function renderCities(cities){
+    const form = document.getElementById("filter-by-city-form")
+    cities.forEach((city) => {
+        const input = document.createElement("input")
+        input.type = "checkbox";
+        input.name = city
+        input.value = city
+        input.addEventListener("change", () => setCities(city))
+        const label = document.createElement("label")
+        label.for = city
+        label.innerHTML = city
+        form.appendChild(input);
+        form.appendChild(label);
+    });
+}
+
+async function setCities(city){
+    if (!state.cities.includes(city)) {
+        state.cities.push(city)
+    }
+    fetchBreweries();
+}
+
+async function setState(e){
     e.preventDefault();
     const chosenstate = document.getElementById("select-state").value;
     state.state = chosenstate
-    let response = await breweryByState(chosenstate);
-    if(response === null || response.length === 0) {
-        return;
-    }
-    console.log(response);
-    renderList(response);
+    fetchBreweries();
+}
+
+async function setType(e){
+    e.preventDefault();
+    console.log(e.target.value);
+    state.type =  e.target.value;
+    fetchBreweries();
 }

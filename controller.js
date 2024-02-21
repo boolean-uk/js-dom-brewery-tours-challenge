@@ -1,41 +1,24 @@
-import { modelBreweryByState, modelBreweryByStateAndFilter } from "./model.js";
+import { modelGetBreweries } from "./model.js";
 
-export async function breweryByStateAndFilter(state, type)
-{
-    if (state === "" || state === null || type === "" || type === null) {
-        return null
-    }
-    try {
-        const data = await modelBreweryByStateAndFilter(state, type);
-        let returnArr = []
-        for (let i = 0; i < data.length; i++) {
-            let returnObject = {
-                name: data[i].name,
-                brewery_type: data[i].brewery_type,
-                address: data[i].street,
-                city: data[i].city,
-                state: data[i].state,
-                postal_code: data[i].postal_code,
-                phone: data[i].phone || "N/A",
-                website_url: data[i].website_url || "#"
-            };
-            returnArr.push(returnObject);
-        }
-        
-        return returnArr;
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
-}
-
-export async function breweryByState(state) {
+export async function getBreweries(state, filter, cities) {
     if (state === "") {
         return null
     }
     try {
-        const data = await modelBreweryByState(state);
+        let data = []
+        if (cities.length !== 0) {
+            for (let i = 0; i < cities.length; i++) {
+                let fetchdata = await modelGetBreweries(state, filter, cities[i]);
+                let currentdata = data
+                data = currentdata.concat(fetchdata)
+            }
+        }else{
+            let fetchdata = await modelGetBreweries(state, filter, cities);
+            data = fetchdata;
+        }
+
         let returnArr = []
+        let cityarr = []
         for (let i = 0; i < data.length; i++) {
             let returnObject = {
                 name: data[i].name,
@@ -47,10 +30,16 @@ export async function breweryByState(state) {
                 phone: data[i].phone || "N/A",
                 website_url: data[i].website_url || "#"
             };
+            if (!cityarr.includes(data[i].city)) {
+                cityarr.push(data[i].city)
+            }
             returnArr.push(returnObject);
         }
-        
-        return returnArr;
+
+        return {
+            breweries: returnArr,
+            cities: cityarr
+        }
     } catch (error) {
         console.error(error);
         throw error;
