@@ -20,3 +20,10 @@ filterByTypeElement.addEventListener("change", () => {
   const filtered = currentBreweries.filter((x) => x.brewery_type === value);
   renderBreweries(filtered);
 });
+
+const searchByNameElement = document.getElementById("search-breweries");
+searchByNameElement.addEventListener("input", () => {
+  const value = searchByNameElement.value;
+  const filtered = currentBreweries.filter((x) => x.name.includes(value));
+  renderBreweries(filtered);
+});
