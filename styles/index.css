@@ -146,7 +146,7 @@ article {
   padding: 1rem;
 }
 
-.breweries-list > * + * {
+.breweries-list>*+* {
   margin-top: 1rem;
 }
 
@@ -229,21 +229,21 @@ article {
   font-weight: bold;
 }
 
-.search-breweries{
+.search-breweries {
   width: 400px;
 }
 
-.search-text{
+.search-text {
   margin-right: 20px;
 }
 
-.brewery-search-container{
+.brewery-search-container {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.filter-by-city-header{
+.filter-by-city-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -251,32 +251,37 @@ article {
   border: 1px solid #000;
   border-bottom: none;
 }
-.clear-all{
+
+.clear-all {
   background: none;
   border: none;
   font-size: small;
   color: #1565c0;
 }
 
-.clear-all:hover{
+.clear-all:hover {
   text-decoration: underline;
   cursor: pointer;
 }
 
-.filter-by-city-form{
+.filter-by-city-form {
   padding: 1rem;
   border: 1px solid #000;
   border-top: none;
   border-radius: 0 0 0.25rem 0.25rem;
 }
 
-.brewery-pagination{
+.brewery-pagination {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 20px;
 }
-.previous-page, .next-page, .pagination-inactive, .pagination-active{
+
+.previous-page,
+.next-page,
+.pagination-inactive,
+.pagination-active {
   padding: 10px;
   margin: 0 10px;
   border: 1px solid black;
@@ -284,18 +289,21 @@ article {
   background-color: #fbc02d;
 }
 
-.previous-page:hover, .next-page:hover, .pagination-inactive:hover, .pagination-active:hover{
+.previous-page:hover,
+.next-page:hover,
+.pagination-inactive:hover,
+.pagination-active:hover {
   background-color: #ffb06b;
   cursor: pointer;
   transform: scale(1.05);
   transition: all linear 0.2s;
 }
 
-.pagination-active{
+.pagination-active {
   background-color: #ffd9d8 !important;
 }
 
-.add-to-visit-list{
+.add-to-visit-list {
   height: 50px;
   width: 150px;
   background-color: rgb(255, 253, 230);
@@ -304,7 +312,7 @@ article {
   margin-top: 12px;
 }
 
-.add-to-visit-list:hover{
+.add-to-visit-list:hover {
   background-color: #ffe3ba;
   cursor: pointer;
   transform: scale(1.05);

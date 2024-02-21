@@ -10,9 +10,9 @@ let countpages = 0;
 let currentpage = 0;
 let visitList = [];
 
-async function getData(){
+async function getData() {
     let requestURL = 'https://api.openbrewerydb.org/v1/breweries';
-    if (stateSearch){
+    if (stateSearch) {
         req
         uestURL += `?by_state=${stateSearch}`;
     }
@@ -26,10 +26,10 @@ async function getData(){
         .catch(error => console.error(error));
 }
 
-async function displayBreweries(){
+async function displayBreweries() {
     const breweryList = document.querySelector('#breweries-list');
     breweryList.innerHTML = '';
-    if(!breweryData) await getData();
+    if (!breweryData) await getData();
     const filteredData = filterData();
     let count = 0;
     displayPagination();
@@ -58,7 +58,7 @@ async function displayBreweries(){
         visitListButton.textContent = visitList.includes(brewery.name) ? 'Remove from visit list 🌠' : 'Add to visit list ⭐';
         visitListButton.addEventListener('click', async () => {
             console.log("Button clicked")
-            if (visitList.includes(brewery.name)){
+            if (visitList.includes(brewery.name)) {
                 console.log("Sending DELETE")
                 // todo send delete request
                 visitList = visitList.filter(b => b !== brewery.name);
@@ -73,7 +73,7 @@ async function displayBreweries(){
         breweryList.appendChild(breweryLi);
     });
 }
-function filterData(){
+function filterData() {
     return breweryData.filter(brewery => {
         if (filterByType && brewery.brewery_type !== filterByType) return false;
         if (search && !brewery.name.toLowerCase().includes(search.toLowerCase())) return false;
@@ -82,37 +82,37 @@ function filterData(){
     });
 }
 
-function displayPagination(){
+function displayPagination() {
     const paginationList = document.querySelector('.pagination');
     paginationList.innerHTML = '';
     const filteredData = filterData();
     countpages = Math.ceil(filteredData.length / 10);
     createPaginationButton(1, paginationList);
-    for (let i = 1; i < filteredData.length; i++){
-        if (i % 10 === 0){ // If the count is a multiple of 10 add a page button
+    for (let i = 1; i < filteredData.length; i++) {
+        if (i % 10 === 0) { // If the count is a multiple of 10 add a page button
             const page = i / 10;
             createPaginationButton(page + 1, paginationList);
         }
     }
 }
 
-function createPaginationButton(pageNumber, paginationList){
+function createPaginationButton(pageNumber, paginationList) {
     const pageButton = document.createElement('button');
     pageButton.textContent = pageNumber;
     pageButton.addEventListener('click', (event) => {
         currentpage = event.target.textContent - 1;
         displayBreweries();
     });
-    if(currentpage+1 === pageNumber){ // If this pagebutton is the current page add custom styling
+    if (currentpage + 1 === pageNumber) { // If this pagebutton is the current page add custom styling
         pageButton.classList.add('pagination-active');
     }
-    else{
+    else {
         pageButton.classList.add('pagination-inactive');
     }
     paginationList.appendChild(pageButton);
 }
 
-function displayFilterByCities(){
+function displayFilterByCities() {
     const filterByCityDiv = document.querySelector('#filter-by-city-form');
     filterByCityDiv.innerHTML = '';
     displayCities.forEach(city => {
@@ -152,9 +152,9 @@ const filterByCityForm = document.querySelector('#filter-by-city-form');
 filterByCityForm.addEventListener('change', async (event) => {
     event.preventDefault();
     const city = event.target.value;
-    if (event.target.checked){
+    if (event.target.checked) {
         filterByCities.push(city);
-    } 
+    }
     else {
         filterByCities = filterByCities.filter(c => c !== city);
     }
@@ -172,14 +172,14 @@ clearCityFilter.addEventListener('click', () => {
 // Pagination buttons
 const nextPageButton = document.querySelector('.next-page');
 nextPageButton.addEventListener('click', () => {
-    if(currentpage+1 == countpages) return;
+    if (currentpage + 1 == countpages) return;
     currentpage++;
     displayBreweries();
 });
 
 const prevPageButton = document.querySelector('.previous-page');
 prevPageButton.addEventListener('click', () => {
-    if(currentpage == 0) return;
+    if (currentpage == 0) return;
     currentpage--;
     displayBreweries();
 });
