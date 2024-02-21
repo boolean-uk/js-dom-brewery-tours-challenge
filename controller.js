@@ -1,4 +1,4 @@
-import { modelGetBreweries } from "./model.js";
+import { modelGetBreweries, getSavedBreweries, PostSavedBreweries, DeleteSavedBrewery, getSavedBreweryById } from "./model.js";
 
 export async function getBreweries(state, filter, cities, search) {
     if (state === "") {
@@ -13,8 +13,6 @@ export async function getBreweries(state, filter, cities, search) {
                 data = currentdata.concat(fetchdata)
             }
         }else{
-            console.log(state, filter, cities, search);
-
             let fetchdata = await modelGetBreweries(state, filter, cities, search);
             data = fetchdata;
         }
@@ -23,6 +21,7 @@ export async function getBreweries(state, filter, cities, search) {
         let cityarr = []
         for (let i = 0; i < data.length; i++) {
             let returnObject = {
+                id: data[i].id,
                 name: data[i].name,
                 brewery_type: data[i].brewery_type,
                 address: data[i].street,
@@ -43,7 +42,42 @@ export async function getBreweries(state, filter, cities, search) {
             cities: cityarr
         }
     } catch (error) {
-        console.error(error);
+        throw error;
+    }
+}
+
+export async function saveBrewery(brewery) {
+    try {
+        const response = await PostSavedBreweries(brewery);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function removeSavedBreweries(id) {
+    try {
+        const response = await DeleteSavedBrewery(id);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function retrieveSavedBreweries() {
+    try {
+        const savedBreweries = await getSavedBreweries();
+        return savedBreweries;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function retrieveSavedBreweryById(id) {
+    try {
+        const savedBreweries = await getSavedBreweryById(id);
+        return savedBreweries;
+    } catch (error) {
         throw error;
     }
 }

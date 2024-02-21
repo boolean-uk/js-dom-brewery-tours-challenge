@@ -1,4 +1,4 @@
-import { getBreweries } from './controller.js';
+import { getBreweries, saveBrewery, removeSavedBreweries, retrieveSavedBreweryById, retrieveSavedBreweries } from './controller.js';
 
 window.addEventListener("load", init);
 
@@ -22,10 +22,15 @@ function init(){
     const searchElement = document.getElementById("search-breweries")
     searchElement.addEventListener('input', (e) => setSearch(e));
 
+    const showSavedElement = document.getElementById("show-saved-btn")
+    showSavedElement.addEventListener("click", (e) => showSaved(e))
+
     document.querySelector(".clear-all-btn").addEventListener("click", () => clearCities())
+
+    showSaved()
 }
 
-function renderList(breweryData){
+async function renderList(breweryData){
     const breweriesList = document.getElementById("breweries-list");
     // Clear previous content
     breweriesList.innerHTML = '';
@@ -34,7 +39,7 @@ function renderList(breweryData){
 
     const breweriesToRender = breweryData.slice(startIndex, endIndex);
 
-    breweriesToRender.forEach(brewery => {
+    breweriesToRender.forEach(async brewery => {
         // Create li element
         const li = document.createElement('li');
 
@@ -96,6 +101,21 @@ function renderList(breweryData){
         websiteLink.target = '_blank';
         linkSection.appendChild(websiteLink);
 
+        // Check if brewery is saved
+        const isSaved = await checkIfBreweryIsSaved(brewery);
+
+        const actionButton = document.createElement('button');
+        actionButton.textContent = isSaved ? 'Remove Brewery' : 'Save Brewery';
+        actionButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (isSaved) {
+                removeSavedBreweries(brewery.id); // Call deleteBrewery if brewery is saved
+            } else {
+                saveBrewery(brewery); // Call saveBrewery if brewery is not saved
+            }
+        });
+        linkSection.appendChild(actionButton);
+
         li.appendChild(linkSection);
 
         // Append li element to breweriesList
@@ -103,6 +123,22 @@ function renderList(breweryData){
     });
 
     renderPaginationButtons(breweryData.length);
+}
+
+async function checkIfBreweryIsSaved(brewery){
+    let fetchedbrewery = await retrieveSavedBreweryById(brewery.id)
+
+    if (fetchedbrewery === null) {
+        return false;
+    }
+    return true;
+}
+
+async function showSaved(){
+    let saved = await retrieveSavedBreweries();
+    if (saved.length !== 0) {
+        renderList(saved)
+    }
 }
 
 function renderPaginationButtons(totalBreweries){
@@ -123,7 +159,6 @@ function renderPaginationButtons(totalBreweries){
 }
 
 async function fetchBreweries(){
-    console.log(state.state, state.type, state.chosenCities, state.search);
     let response = await getBreweries(state.state, state.type, state.chosenCities, state.search);
     if(response === null || response.length === 0) {
         return;
@@ -136,13 +171,11 @@ async function fetchBreweries(){
 }
 
 function clearCities(){
-    console.log('click');
     state.chosenCities = []
     const checkboxes = document.querySelectorAll('#filter-by-city-form input[type="checkbox"]');
     checkboxes.forEach(checkbox => {
         checkbox.checked = false;
     });
-    console.log(state.chosenCities);
 
     fetchBreweries()
 }
@@ -173,7 +206,6 @@ async function setCities(city){
 
 async function setSearch(e){
     e.preventDefault();
-    console.log(e.target.value);
     state.search = e.target.value
     fetchBreweries();
 }
@@ -187,7 +219,6 @@ async function setState(e){
 
 async function setType(e){
     e.preventDefault();
-    console.log(e.target.value);
     state.type =  e.target.value;
     fetchBreweries();
 }
