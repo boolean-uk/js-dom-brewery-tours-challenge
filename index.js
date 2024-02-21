@@ -8,11 +8,13 @@ let displayCities = [];
 let filterByCities = [];
 let countpages = 0;
 let currentpage = 0;
+let visitList = [];
 
 async function getData(){
     let requestURL = 'https://api.openbrewerydb.org/v1/breweries';
     if (stateSearch){
-        requestURL += `?by_state=${stateSearch}`;
+        req
+        uestURL += `?by_state=${stateSearch}`;
     }
     await fetch(requestURL)
         .then(response => response.json())
@@ -28,13 +30,11 @@ async function displayBreweries(){
     const breweryList = document.querySelector('#breweries-list');
     breweryList.innerHTML = '';
     if(!breweryData) await getData();
+    const filteredData = filterData();
     let count = 0;
     displayPagination();
-    breweryData.forEach(brewery => {
+    filteredData.forEach(brewery => {
         count++;
-        if (filterByType && brewery.brewery_type !== filterByType) return;
-        if (search && !brewery.name.toLowerCase().includes(search.toLowerCase())) return; // If the search input is not in the brewery name skip this iteration
-        if (filterByCities.length > 0 && !filterByCities.includes(brewery.city)) return; // If the brewery city is not in the filterByCities array skip this iteration
         if (count <= currentpage * 10 || count > (currentpage + 1) * 10) return; // If the count is not within the current page range skip this iteration
         const breweryLi = document.createElement('li');
         breweryLi.innerHTML = `
@@ -49,21 +49,46 @@ async function displayBreweries(){
                 <h3>Phone:</h3>
                 <p>${brewery.phone || 'N/A'}</p>
             </section>
+            <button class="add-to-visit-list"></button>
             <section class="link">
                 <a href="${brewery.website_url || 'null'}" target="_blank">Visit Website</a>
             </section>
         `;
+        const visitListButton = breweryLi.querySelector('.add-to-visit-list');
+        visitListButton.textContent = visitList.includes(brewery.name) ? 'Remove from visit list 🌠' : 'Add to visit list ⭐';
+        visitListButton.addEventListener('click', async () => {
+            console.log("Button clicked")
+            if (visitList.includes(brewery.name)){
+                console.log("Sending DELETE")
+                // todo send delete request
+                visitList = visitList.filter(b => b !== brewery.name);
+            }
+            else {
+                console.log("Sending POST")
+                // todo send post request
+                visitList.push(brewery.name);
+            }
+            displayBreweries();
+        });
         breweryList.appendChild(breweryLi);
+    });
+}
+function filterData(){
+    return breweryData.filter(brewery => {
+        if (filterByType && brewery.brewery_type !== filterByType) return false;
+        if (search && !brewery.name.toLowerCase().includes(search.toLowerCase())) return false;
+        if (filterByCities.length > 0 && !filterByCities.includes(brewery.city)) return false;
+        return true;
     });
 }
 
 function displayPagination(){
     const paginationList = document.querySelector('.pagination');
     paginationList.innerHTML = '';
-    countpages = Math.ceil(breweryData.length / 10);
-    console.log(countpages)
+    const filteredData = filterData();
+    countpages = Math.ceil(filteredData.length / 10);
     createPaginationButton(1, paginationList);
-    for (let i = 1; i < breweryData.length; i++){
+    for (let i = 1; i < filteredData.length; i++){
         if (i % 10 === 0){ // If the count is a multiple of 10 add a page button
             const page = i / 10;
             createPaginationButton(page + 1, paginationList);

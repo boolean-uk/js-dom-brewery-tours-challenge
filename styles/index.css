@@ -294,3 +294,20 @@ article {
 .pagination-active{
   background-color: #ffd9d8 !important;
 }
+
+.add-to-visit-list{
+  height: 50px;
+  width: 150px;
+  background-color: rgb(255, 253, 230);
+  border-radius: 10px;
+  border: 1px solid rgb(53, 25, 17);
+  margin-top: 12px;
+}
+
+.add-to-visit-list:hover{
+  background-color: #ffe3ba;
+  cursor: pointer;
+  transform: scale(1.05);
+  transition: all linear 0.2s;
+  filter: drop-shadow(0 0 10px #ffe3ba);
+}
