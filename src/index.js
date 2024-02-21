@@ -44,3 +44,16 @@ filterByCityFormElement.addEventListener("change", () => {
   }
   renderBreweries(filtered, false);
 });
+
+const filterByCityClearAllButton = document.getElementById(
+  "filter-by-city-clear-all-btn"
+);
+filterByCityClearAllButton.addEventListener("click", () => {
+  const cityElements = document.querySelectorAll(
+    "input[type=checkbox]:checked"
+  );
+  cityElements.forEach((x) => {
+    x.checked = false;
+  });
+  renderBreweries(currentBreweries, false);
+});
