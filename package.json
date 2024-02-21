@@ -1,0 +1,11 @@
+{
+  "name": "js-dom-brewery-tours-challenge",
+  "version": "1.0.0",
+  "description": "![BreweryTours](images/brewery.jpg)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
