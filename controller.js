@@ -1,6 +1,6 @@
 import { modelGetBreweries } from "./model.js";
 
-export async function getBreweries(state, filter, cities) {
+export async function getBreweries(state, filter, cities, search) {
     if (state === "") {
         return null
     }
@@ -8,12 +8,14 @@ export async function getBreweries(state, filter, cities) {
         let data = []
         if (cities.length !== 0) {
             for (let i = 0; i < cities.length; i++) {
-                let fetchdata = await modelGetBreweries(state, filter, cities[i]);
+                let fetchdata = await modelGetBreweries(state, filter, cities[i], search);
                 let currentdata = data
                 data = currentdata.concat(fetchdata)
             }
         }else{
-            let fetchdata = await modelGetBreweries(state, filter, cities);
+            console.log(state, filter, cities, search);
+
+            let fetchdata = await modelGetBreweries(state, filter, cities, search);
             data = fetchdata;
         }
 

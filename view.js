@@ -3,9 +3,13 @@ import { getBreweries } from './controller.js';
 window.addEventListener("load", init);
 
 const state = {
+    breweries: [],
     state: "",
     type: "",
-    cities: [],
+    chosenCities: [],
+    fetchedCities: [],
+    search: "",
+    currentPage: 1,
 }
 
 function init(){
@@ -14,16 +18,23 @@ function init(){
 
     const selectElement = document.getElementById('filter-by-type');
     selectElement.addEventListener('change', (e) => setType(e))
+    
+    const searchElement = document.getElementById("search-breweries")
+    searchElement.addEventListener('input', (e) => setSearch(e));
 
-    document.querySelector(".clear-all-btn").addEventListener("click", () => clearCities)
+    document.querySelector(".clear-all-btn").addEventListener("click", () => clearCities())
 }
 
 function renderList(breweryData){
     const breweriesList = document.getElementById("breweries-list");
     // Clear previous content
     breweriesList.innerHTML = '';
+    const startIndex = (state.currentPage - 1) * 10;
+    const endIndex = startIndex + 10;
 
-    breweryData.forEach(brewery => {
+    const breweriesToRender = breweryData.slice(startIndex, endIndex);
+
+    breweriesToRender.forEach(brewery => {
         // Create li element
         const li = document.createElement('li');
 
@@ -90,27 +101,55 @@ function renderList(breweryData){
         // Append li element to breweriesList
         breweriesList.appendChild(li);
     });
+
+    renderPaginationButtons(breweryData.length);
+}
+
+function renderPaginationButtons(totalBreweries){
+    const totalPages = Math.ceil(totalBreweries / 10);
+
+    const paginationContainer = document.getElementById("pagination-container");
+    paginationContainer.innerHTML = '';
+
+    for(let i = 1; i <= totalPages; i++){
+        const button = document.createElement('button');
+        button.textContent = i;
+        button.addEventListener('click', () => {
+            state.currentPage = i;
+            fetchBreweries();
+        });
+        paginationContainer.appendChild(button);
+    }
 }
 
 async function fetchBreweries(){
-    console.log(state);
-    let response = await getBreweries(state.state, state.type, state.cities);
+    console.log(state.state, state.type, state.chosenCities, state.search);
+    let response = await getBreweries(state.state, state.type, state.chosenCities, state.search);
     if(response === null || response.length === 0) {
         return;
     }
 
     renderList(response.breweries);
-    if(response.cities.length !== 0){
+    if(response.cities.length !== 0 && state.chosenCities.length === 0){
         renderCities(response.cities)
     }
 }
 
 function clearCities(){
+    console.log('click');
+    state.chosenCities = []
+    const checkboxes = document.querySelectorAll('#filter-by-city-form input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    console.log(state.chosenCities);
 
+    fetchBreweries()
 }
 
 function renderCities(cities){
     const form = document.getElementById("filter-by-city-form")
+    form.innerHTML = '';
     cities.forEach((city) => {
         const input = document.createElement("input")
         input.type = "checkbox";
@@ -126,9 +165,16 @@ function renderCities(cities){
 }
 
 async function setCities(city){
-    if (!state.cities.includes(city)) {
-        state.cities.push(city)
+    if (!state.chosenCities.includes(city)) {
+        state.chosenCities.push(city)
     }
+    fetchBreweries();
+}
+
+async function setSearch(e){
+    e.preventDefault();
+    console.log(e.target.value);
+    state.search = e.target.value
     fetchBreweries();
 }
 

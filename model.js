@@ -1,7 +1,7 @@
 const apiUrl = "https://api.openbrewerydb.org/v1/breweries?"
 
-export async function modelGetBreweries(state, type, city) {
-    let stateParam = `by_state=${state}`
+export async function modelGetBreweries(state, type, city, search) {
+    let stateParam = `&by_state=${state}`
     let typeParam = ""
     if (type !== "") {
         typeParam = `&by_type=${type}`;
@@ -12,9 +12,13 @@ export async function modelGetBreweries(state, type, city) {
     if(city !== ""){
         citiesParam += `&by_city=${city}`
     }
-    
+    let searchParam = ""
+    if (search !== "") {
+        searchParam = "by_name=" + search;
+    }
     try {
-        const response = await fetch(apiUrl + stateParam + typeParam + citiesParam);
+        const response = await fetch(apiUrl + searchParam + stateParam + typeParam + citiesParam);
+        console.log(apiUrl + searchParam + stateParam + typeParam + citiesParam);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
