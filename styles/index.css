@@ -16,6 +16,18 @@ body {
   place-items: center;
 }
 
+.navigation {
+  display: flex;
+  float: left;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  border: lightgray solid 1px;
+  padding: 0.3rem;
+  margin: 0.3rem;
+}
+
 .select-state-section h2 {
   width: 200px;
   margin-bottom: 1.5rem;
