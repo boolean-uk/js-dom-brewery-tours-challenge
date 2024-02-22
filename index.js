@@ -15,6 +15,30 @@ const nameFilter = document.querySelector("#search-breweries");
 const cityForm = document.querySelector("#filter-by-city-form");
 const cityFilter = document.querySelector("#checkbox");
 const clearButton = document.querySelector(".clear-all-btn");
+const paginationContent = document.querySelector("#pagination-content");
+
+// PAGINATION
+let pageIndex = 0;
+let itemsPerPage = 10;
+
+function pageNav(filteredBreweries) {
+  paginationContent.innerHTML = "";
+  for (let i = 0; i < filteredBreweries.length / itemsPerPage - 1; i++) {
+    const span = document.createElement("span");
+    span.setAttribute("class", "navigation");
+    span.innerHTML = i + 1;
+    span.addEventListener("click", (e) => {
+      pageIndex = e.target.innerHTML - 1;
+      renderBreweries();
+    });
+
+    if (i === pageIndex) {
+      span.style.fontSize = "2rem";
+    }
+
+    paginationContent.append(span);
+  }
+}
 
 // Filtering
 function updateFilterState() {
@@ -190,7 +214,11 @@ function renderBreweries() {
   });
 
   // for each task in my data, create a new li element
-  for (let i = 0; i < filteredBreweries.length; i++) {
+  for (
+    let i = pageIndex * itemsPerPage;
+    i < pageIndex * itemsPerPage + itemsPerPage;
+    i++
+  ) {
     const brew = filteredBreweries[i];
 
     const brewLi = document.createElement("li");
@@ -244,6 +272,8 @@ function renderBreweries() {
     // add the list element inside the breweryList
     breweryList.appendChild(brewLi);
   }
+
+  pageNav(filteredBreweries);
   //
 }
 
