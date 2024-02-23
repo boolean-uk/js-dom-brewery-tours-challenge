@@ -146,7 +146,7 @@ article {
   padding: 1rem;
 }
 
-.breweries-list > * + * {
+.breweries-list>*+* {
   margin-top: 1rem;
 }
 
@@ -227,4 +227,95 @@ article {
   text-align: center;
   text-decoration: none;
   font-weight: bold;
+}
+
+.search-breweries {
+  width: 400px;
+}
+
+.search-text {
+  margin-right: 20px;
+}
+
+.brewery-search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.filter-by-city-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1rem 0;
+  border: 1px solid #000;
+  border-bottom: none;
+}
+
+.clear-all {
+  background: none;
+  border: none;
+  font-size: small;
+  color: #1565c0;
+}
+
+.clear-all:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.filter-by-city-form {
+  padding: 1rem;
+  border: 1px solid #000;
+  border-top: none;
+  border-radius: 0 0 0.25rem 0.25rem;
+}
+
+.brewery-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.previous-page,
+.next-page,
+.pagination-inactive,
+.pagination-active {
+  padding: 10px;
+  margin: 0 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: #fbc02d;
+}
+
+.previous-page:hover,
+.next-page:hover,
+.pagination-inactive:hover,
+.pagination-active:hover {
+  background-color: #ffb06b;
+  cursor: pointer;
+  transform: scale(1.05);
+  transition: all linear 0.2s;
+}
+
+.pagination-active {
+  background-color: #ffd9d8 !important;
+}
+
+.add-to-visit-list {
+  height: 50px;
+  width: 150px;
+  background-color: rgb(255, 253, 230);
+  border-radius: 10px;
+  border: 1px solid rgb(53, 25, 17);
+  margin-top: 12px;
+}
+
+.add-to-visit-list:hover {
+  background-color: #ffe3ba;
+  cursor: pointer;
+  transform: scale(1.05);
+  transition: all linear 0.2s;
+  filter: drop-shadow(0 0 10px #ffe3ba);
 }
