@@ -49,7 +49,7 @@ Use the `index.html` file as a starting point. The `templates` folder provides H
 - The user can also go back a page.
 
 ### Extension 4
-Using json-server, add functionality to your page so the user can maintain a list of breweries they want to visit.
+Using [json-server](https://www.npmjs.com/package/json-server), add functionality to your page so the user can maintain a list of breweries they want to visit.
 - For each brewery in the search results list, add a "Add to visit list" button.
 - When the button is clicked, a POST request should be made to your json-server to store that brewery in a list of breweries the user wants to visit.
 - For breweries that are already in that list, add a "Remove from visit list" button that when clicked should make a DELETE request to json-server to remove the brewery from the list.
@@ -73,7 +73,7 @@ For this extension, if you are using the Live Server plugin, you must also remem
 Once this is done, you should also restart VS Code.
 
 ## Tips
-- Read the "Open Brewery DB" documentation: https://www.openbrewerydb.org/documentation/01-listbreweries
+- Read the "Open Brewery DB" documentation: https://www.openbrewerydb.org/documentation#list-breweries
 - The API supports searching by different criteria. In this case, you want to search by state so the URL format you will use is: `https://api.openbrewerydb.org/breweries?by_state=[state]`, with `[state]` replaced with the state the user searches for.
 - Start by sketching out your `state` object - what state exists in the application and how will you model it?
 - Write your `fetch` request to load the data based on the users search. Use `console.log` with the response to make sure you understand the returned data structure.
