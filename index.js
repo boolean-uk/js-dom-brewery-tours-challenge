@@ -2,6 +2,11 @@
 const buildCard = (brewery) => {
   const breweryList = document.querySelector("#breweries-list");
 
+  if (brewery.brewery_type != 'micro' && brewery.brewery_type != 'regional' && brewery.brewery_type != 'brewpub') {
+    console.log('in')
+    return
+  }
+
   const li = document.createElement("li");
   li.classList.add('brewery-card')
 
@@ -65,61 +70,93 @@ const buildCard = (brewery) => {
 };
 
 //Render cards
-const render = async (state, type) => {
+const render = async () => {
   const breweryList = document.querySelector("#breweries-list");
   breweryList.innerHTML = "";
+  let url = 'https://api.openbrewerydb.org/v1/breweries?'
 
-  const defaultBreweryTypes = ["micro", "regional", "brewpub"];
-   
-  if (!type) {
-    defaultBreweryTypes.forEach(async (element) => {
-      const data = await fetch(
-        `https://api.openbrewerydb.org/v1/breweries?by_state=${state}&by_type=${element}`
-      );
-      const json = await data.json();
-      json.forEach((element) => {buildCard(element)});
-    });
-  } else {
-    const data = await fetch(
-        `https://api.openbrewerydb.org/v1/breweries?by_state=${state}&by_type=${type}`
-      );
-      const json = await data.json();
-      json.forEach((element) => {buildCard(element)});
+  if (getState()) {
+    url += `by_state=${getState()}`
   }
+
+  if (getFilter()) {
+    url += `&by_type=${getFilter()}`
+  }
+  
+  const data = await fetch(url)
+  const json = await data.json() 
+
+  json.forEach(buildCard)
 };
 
-//Get search state input and filter input then trigger render
-const stateSearchForm = document.querySelector("#select-state-form");
-stateSearchForm.addEventListener("submit", (event) => {
-  event.preventDefault();
 
-  const searchInput = document.querySelector("#select-state").value;
+//State functionality
+const getState = () => {
+    return document.querySelector('#select-state').value
+}
 
-  const typeFilter = document.querySelector("#filter-by-type");
-  if (typeFilter.value.length > 0) {
-    render(searchInput, typeFilter.value);
-  } else {
-    render(searchInput);
-  }
-});
-
-//Search rendered breweries with search bar
-const searchBreweryForm = document.querySelector('#search-breweries-form')
-searchBreweryForm.addEventListener('keyup', (event) => {
-    const input = document.querySelector('#search-bar')
-    const populatedBreweries = document.querySelectorAll('.brewery-card')
-
-    for (let i = 0; i < populatedBreweries.length; i++) {
-        if (!displayNode(input.value, populatedBreweries[i])) {
-            console.log(populatedBreweries[i])
-            populatedBreweries[i].style.display = 'none'
-        } else {
-            populatedBreweries[i].style.display = 'grid'
-        }
-    }
+const stateForm = document.querySelector('#select-state-form')
+stateForm.addEventListener('submit', event => {
+    event.preventDefault()
+    render()
 })
 
-//Checks if brewery name matches search input
-const displayNode = (input, node) => {
-    return node.querySelector('h2').innerText.toLowerCase().startsWith(input)
+//Filter functionality
+const getFilter = () => {
+    return document.querySelector(`#filter-by-type`).value
 }
+
+const typeFilter = document.querySelector("#filter-by-type");
+typeFilter.addEventListener('change', event => {
+    event.preventDefault()
+    render()
+})
+
+
+
+
+
+// //Get search state input and render
+// const stateSearchForm = document.querySelector("#select-state-form");
+// stateSearchForm.addEventListener("submit", (event) => {
+//   event.preventDefault();
+//   const searchInput = document.querySelector("#select-state").value;
+//   render(searchInput)
+// });
+
+// //Filter rendered breweries with dropdown
+// const typeFilter = document.querySelector("#filter-by-type");
+// typeFilter.addEventListener('change')
+// if (typeFilter.value.length > 0) {
+//   render(searchInput, typeFilter.value);
+// } else {
+//   render(searchInput);
+// }
+
+// //Search rendered breweries with search bar
+// const searchBreweryForm = document.querySelector('#search-breweries-form')
+// searchBreweryForm.addEventListener('keyup', () => {
+//     const input = document.querySelector('#search-bar')
+//     const populatedBreweries = document.querySelectorAll('.brewery-card')
+
+//     for (let i = 0; i < populatedBreweries.length; i++) {
+//         if (!displayNode(input.value, populatedBreweries[i])) {
+//             populatedBreweries[i].style.display = 'none'
+//         } else {
+//             populatedBreweries[i].style.display = 'grid'
+//         }
+//     }
+// })
+
+// //Checks if brewery name matches search input
+// const displayNode = (input, node) => {
+//     return node.querySelector('h2').innerText.toLowerCase().startsWith(input)
+// }
+
+// defaultBreweryTypes.forEach(async (element) => {
+//     const data = await fetch(
+//       `https://api.openbrewerydb.org/v1/breweries?by_state=${state}&by_type=${element}`
+//     );
+//     const json = await data.json();
+//     json.forEach((element) => {buildCard(element)});
+// })
