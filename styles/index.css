@@ -215,7 +215,7 @@ article {
   grid-area: link;
 }
 
-.breweries-list li .link a {
+.breweries-list li .link {
   display: block;
   padding: 0.5rem 1rem;
 
