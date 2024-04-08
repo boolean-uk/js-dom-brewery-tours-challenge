@@ -9,7 +9,12 @@ async function getAllBreweries(filter) {
         const response = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${selectStateInput.value}`)
         const data = await response.json()
 
-        renderBreweryCards(data)
+        const filteredData = data.filter((brewery) => {
+            if (brewery.brewery_type === 'micro'|| brewery.brewery_type === 'brewpub' || brewery.brewery_type === 'regional') return brewery
+        })
+
+        renderBreweryCards(filteredData)
+
     } else {
         const response = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${selectStateInput.value}&by_type=${filter}`)
         const data = await response.json()
