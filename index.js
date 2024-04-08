@@ -1,6 +1,7 @@
 const breweryList = document.querySelector("#breweries-list")
 const typeFilter = document.querySelector("#filter-by-type")
 const stateSearch = document.querySelector("#select-state")
+const stateSearchForm = document.querySelector("#select-state-form")
 
 
 async function render() {
@@ -11,12 +12,19 @@ async function render() {
     const breweriesData = await breweries.json()
 
     const currentFilter = typeFilter.value
+
+    const state = stateSearch.value
     
     breweryList.innerHTML = ""
     
     breweriesData.forEach((item) => {
         const isValidBrewery = item.brewery_type === "micro" || item.brewery_type === "regional" || item.brewery_type === "brewpub"
-        if(isValidBrewery && (item.brewery_type === currentFilter || currentFilter === "")){
+        const isFiltered = item.brewery_type === currentFilter || currentFilter === ""
+        const isInState = item.state === state || state === ""
+
+
+
+        if(isValidBrewery && isFiltered && isInState){
             createListItem(item)
         }
     })
@@ -87,5 +95,10 @@ function createListItem(obj) {
 }
 
 typeFilter.addEventListener("change" , render)
+
+stateSearchForm.addEventListener("submit", (e) => {
+    e.preventDefault()
+    render()
+})
 
 render()
