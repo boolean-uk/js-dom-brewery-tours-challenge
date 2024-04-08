@@ -10,11 +10,13 @@ async function render() {
 
     const breweriesData = await breweries.json()
 
-
+    const currentFilter = typeFilter.value
+    
+    breweryList.innerHTML = ""
     
     breweriesData.forEach((item) => {
-        isValidBrewery = item.brewery_type === "micro" || item.brewery_type === "regional" || item.brewery_type === "brewpub"
-        if(isValidBrewery){
+        const isValidBrewery = item.brewery_type === "micro" || item.brewery_type === "regional" || item.brewery_type === "brewpub"
+        if(isValidBrewery && (item.brewery_type === currentFilter || currentFilter === "")){
             createListItem(item)
         }
     })
@@ -83,5 +85,7 @@ function createListItem(obj) {
 
     breweryList.append(breweryItem)
 }
+
+typeFilter.addEventListener("change" , render)
 
 render()
