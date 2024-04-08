@@ -3,6 +3,7 @@ const selectStateInput = document.querySelector('#select-state')
 const breweryUl = document.querySelector('#breweries-list')
 const selectBreweryType = document.querySelector('#filter-by-type')
 const filterTypeForm = document.querySelector('#filter-by-type-form')
+const listOfBreweries = document.querySelector('#list-of-breweries')
 
 async function getAllBreweries(filter) {
     if (filter === undefined) {
@@ -85,3 +86,4 @@ function renderBreweryCards(data) {
 filterTypeForm.addEventListener('change', () => {
     getAllBreweries(selectBreweryType.value)
 })
+
