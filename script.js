@@ -2,7 +2,7 @@ const url = 'https://api.openbrewerydb.org/v1/breweries'
 const breweriesList = document.getElementById('breweries-list')
 const breweriesFilter = document.getElementById('filter-by-type')
 
-function createBreweryEl(name, type, street, address_1, phoneNumber, website_url) {
+function createBreweryEl(name, type, street, city, phoneNumber, website_url) {
     const breweryEl = document.createElement('li')
     breweriesList.append(breweryEl)
 
@@ -27,12 +27,12 @@ function createBreweryEl(name, type, street, address_1, phoneNumber, website_url
     breweryAddressStreet.innerText = street
     breweryAddressSection.append(breweryAddressStreet)
 
-    const breweryAddress_1 = document.createElement('p')
-    breweryAddressSection.append(breweryAddress_1)
+    const breweryAddressCity = document.createElement('p')
+    breweryAddressSection.append(breweryAddressCity)
 
-    const breweryAddress_1Strong = document.createElement('strong')
-    breweryAddress_1Strong.innerText = address_1
-    breweryAddress_1.append(breweryAddress_1Strong)
+    const breweryStrongAddressCity = document.createElement('strong')
+    breweryStrongAddressCity.innerText = city
+    breweryAddressCity.append(breweryStrongAddressCity)
 
     const breweryPhoneSection = document.createElement('section')
     breweryPhoneSection.classList.add('phone')
@@ -61,7 +61,7 @@ async function getAllBreweries() {
     const res = await fetch(url)
     const json = await res.json()
 
-    json.forEach(brewery => createBreweryEl(brewery.name, brewery.brewery_type, brewery.street, brewery.address_1, brewery.phone, brewery.website_url))
+    json.forEach(brewery => createBreweryEl(brewery.name, brewery.brewery_type, brewery.street, `${brewery.city}, ${brewery.postal_code}`, brewery.phone, brewery.website_url))
 }
 
 getAllBreweries()
