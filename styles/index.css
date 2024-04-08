@@ -134,6 +134,7 @@ h1 {
 
   border-radius: 0.5rem;
   background-color: #ffe082;
+  margin-inline: 5px;
 }
 
 #search-breweries-form h2 {

@@ -3,6 +3,7 @@ const buildCard = (brewery) => {
   const breweryList = document.querySelector("#breweries-list");
 
   const li = document.createElement("li");
+  li.classList.add('brewery-card')
 
   const h2 = document.createElement("h2");
   h2.innerText = brewery.name;
@@ -69,7 +70,7 @@ const render = async (state, type) => {
   breweryList.innerHTML = "";
 
   const defaultBreweryTypes = ["micro", "regional", "brewpub"];
-    console.log(`${state}, ${type}`)
+   
   if (!type) {
     defaultBreweryTypes.forEach(async (element) => {
       const data = await fetch(
@@ -88,8 +89,8 @@ const render = async (state, type) => {
 };
 
 //Get search state input and filter input then trigger render
-const searchForm = document.querySelector("#select-state-form");
-searchForm.addEventListener("submit", (event) => {
+const stateSearchForm = document.querySelector("#select-state-form");
+stateSearchForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const searchInput = document.querySelector("#select-state").value;
@@ -101,3 +102,24 @@ searchForm.addEventListener("submit", (event) => {
     render(searchInput);
   }
 });
+
+//Search rendered breweries with search bar
+const searchBreweryForm = document.querySelector('#search-breweries-form')
+searchBreweryForm.addEventListener('keyup', (event) => {
+    const input = document.querySelector('#search-bar')
+    const populatedBreweries = document.querySelectorAll('.brewery-card')
+
+    for (let i = 0; i < populatedBreweries.length; i++) {
+        if (!displayNode(input.value, populatedBreweries[i])) {
+            console.log(populatedBreweries[i])
+            populatedBreweries[i].style.display = 'none'
+        } else {
+            populatedBreweries[i].style.display = 'grid'
+        }
+    }
+})
+
+//Checks if brewery name matches search input
+const displayNode = (input, node) => {
+    return node.querySelector('h2').innerText.toLowerCase().startsWith(input)
+}
