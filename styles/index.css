@@ -112,6 +112,10 @@ main {
   border-top: none;
 }
 
+#clear-city {
+  height: inherit;
+}
+
 h1 {
   grid-area: title;
 

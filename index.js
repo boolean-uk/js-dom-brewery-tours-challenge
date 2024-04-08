@@ -2,35 +2,59 @@ const breweryList = document.querySelector("#breweries-list")
 const typeFilter = document.querySelector("#filter-by-type")
 const stateSearch = document.querySelector("#select-state")
 const stateSearchForm = document.querySelector("#select-state-form")
+const nameSearch = document.querySelector("#name-search")
+const cityList = document.querySelector("#filter-by-city")
 
+const stateObj = {
+    Norman: false,
+}
 
 async function render() {
-    const breweries = await fetch(
-        "https://api.openbrewerydb.org/v1/breweries"
-    )
+    let breweries
+
+    try {
+        breweries = await fetch("https://api.openbrewerydb.org/v1/breweries")
+    } catch (err) {
+        alert("An error has occured, please contact the system administrator")
+        throw err
+    }
 
     const breweriesData = await breweries.json()
 
     const currentFilter = typeFilter.value
 
     const state = stateSearch.value
-    
+
     breweryList.innerHTML = ""
-    
+    cityList.innerHTML = ""
+
+    const name = nameSearch.value.toLowerCase()
+
     breweriesData.forEach((item) => {
-        const isValidBrewery = item.brewery_type === "micro" || item.brewery_type === "regional" || item.brewery_type === "brewpub"
-        const isFiltered = item.brewery_type === currentFilter || currentFilter === ""
+        const isValidBrewery =
+            item.brewery_type === "micro" ||
+            item.brewery_type === "regional" ||
+            item.brewery_type === "brewpub"
+        const isFiltered =
+            item.brewery_type === currentFilter || currentFilter === ""
         const isInState = item.state === state || state === ""
+        const isSearched = item.name.toLowerCase().includes(name) || name === ""
+        const isChecked =
+            stateObj[item.city] === true ||
+            !Object.values(stateObj) ||
+            !Object.values(stateObj).includes(true)
 
+        const isDisplayed =
+            isValidBrewery && isFiltered && isInState && isSearched && isChecked
 
-
-        if(isValidBrewery && isFiltered && isInState){
+        if (isDisplayed) {
             createListItem(item)
         }
+        createCityFilter(item)
     })
 }
 
-function createListItem(obj) {    
+function createListItem(obj) {
     const breweryName = document.createElement("h2")
     breweryName.innerHTML = obj.name
 
@@ -45,7 +69,7 @@ function createListItem(obj) {
 
     const addressTitle = document.createElement("h3")
     addressTitle.innerHTML = "Address:"
-    
+
     const addressStreet = document.createElement("p")
     addressStreet.innerHTML = obj.address_1
 
@@ -53,12 +77,9 @@ function createListItem(obj) {
     addressCity.innerHTML = obj.city + ", " + obj.postal_code
     addressCity.style.fontWeight = "700"
 
-
-
     addressBlock.append(addressTitle)
     addressBlock.append(addressStreet)
     addressBlock.append(addressCity)
-    
 
     const phoneBlock = document.createElement("div")
     phoneBlock.className = "phone"
@@ -69,8 +90,6 @@ function createListItem(obj) {
     const phoneNumber = document.createElement("p")
     phoneNumber.innerHTML = "+" + obj.phone
 
-    
-
     phoneBlock.append(phoneTitle)
     phoneBlock.append(phoneNumber)
 
@@ -80,10 +99,8 @@ function createListItem(obj) {
     websiteButton.href = obj.website_url
     websiteButton.target = "_blank"
 
-
     const breweryItem = document.createElement("li")
     breweryItem.className = "brewery--list"
-
 
     breweryItem.append(breweryName)
     breweryItem.append(breweryType)
@@ -94,11 +111,43 @@ function createListItem(obj) {
     breweryList.append(breweryItem)
 }
 
-typeFilter.addEventListener("change" , render)
+function createCityFilter(item) {
+    const checkbox = document.createElement("input")
+    checkbox.type = "checkbox"
+    checkbox.name = item.city
+
+    if (!stateObj[item.city]) {
+        stateObj[item.city] = false
+    }
+
+    checkbox.checked = stateObj[item.city]
+
+    checkbox.addEventListener("change", (e) => {
+        stateObj[item.city] = !stateObj[item.city]
+        render()
+    })
+
+    const checkboxLabel = document.createElement("label")
+    checkboxLabel.for = item.city
+    checkboxLabel.innerHTML = item.city
+
+    const checkboxContainer = document.createElement("li")
+    checkboxContainer.style.display = "flex"
+    checkboxContainer.style.flexDirection = "rows"
+
+    checkboxContainer.append(checkbox)
+    checkboxContainer.append(checkboxLabel)
+
+    cityList.append(checkboxContainer)
+}
+
+typeFilter.addEventListener("change", render)
 
 stateSearchForm.addEventListener("submit", (e) => {
     e.preventDefault()
     render()
 })
+
+nameSearch.addEventListener("input", render)
 
 render()
