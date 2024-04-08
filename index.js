@@ -8,6 +8,7 @@ const listOfBreweries = document.querySelector('#list-of-breweries')
 const searchBreweriesForm = document.querySelector('#search-breweries-form')
 const searchBreweries = document.querySelector('#search-breweries')
 const filterByCityForm = document.querySelector('#filter-by-city-form')
+const clearAllButton = document.querySelector('.clear-all-btn')
 
 // Get breweries from API
 async function getAllBreweries() {
@@ -22,43 +23,9 @@ async function getAllBreweries() {
     createUniqueCityList(filteredData)
 }
 
-// async function getAllBreweriesByState() {
-//     const response = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${selectStateInput.value}`)
-//     const data = await response.json()
-
-//     const filteredData = data.filter((brewery) => {
-//         if (brewery.brewery_type === 'micro'|| brewery.brewery_type === 'brewpub' || brewery.brewery_type === 'regional') return brewery
-//     })
-
-//     renderBreweryCards(filteredData)
-//     createUniqueCityList(filteredData)
-// }
-
-// async function getAllBreweriesByType(filter) {
-//     if (filter === undefined || filter === '') {
-//         const response = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${selectStateInput.value}`)
-//         const data = await response.json()
-
-//         const filteredData = data.filter((brewery) => {
-//             if (brewery.brewery_type === 'micro'|| brewery.brewery_type === 'brewpub' || brewery.brewery_type === 'regional') return brewery
-//         })
-
-//         renderBreweryCards(filteredData)
-//         createUniqueCityList(filteredData)
-
-//     } else {
-//         const response = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${selectStateInput.value}&by_type=${filter}`)
-//         const data = await response.json()
-
-//         renderBreweryCards(data)
-//         createUniqueCityList(data)
-//     }
-    
-// }
-
-async function getAllBreweriesFiltered(filter) {
-    if (filter === undefined || filter === '') {
-        const response = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${selectStateInput.value}&by_name=${searchBreweries.value}`)
+async function getAllBreweriesFiltered(typeFilter, cityFilter) {
+    if (typeFilter === undefined || typeFilter === '') {
+        const response = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${selectStateInput.value}&by_name=${searchBreweries.value}&by_city=${cityFilter}`)
         const data = await response.json()
     
         const filteredData = data.filter((brewery) => {
@@ -69,7 +36,7 @@ async function getAllBreweriesFiltered(filter) {
         createUniqueCityList(filteredData)
 
     } else {
-        const response = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${selectStateInput.value}&by_type=${filter}&by_name=${searchBreweries.value}`)
+        const response = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${selectStateInput.value}&by_type=${typeFilter}&by_name=${searchBreweries.value}`)
         const data = await response.json()
 
         renderBreweryCards(data)
@@ -90,6 +57,10 @@ filterTypeForm.addEventListener('change', () => {
 
 searchBreweries.addEventListener('keyup', () => {
     getAllBreweriesFiltered(selectBreweryType.value)
+})
+
+filterByCityForm.addEventListener('change', (event) => {
+    // getAllBreweriesFiltered(selectBreweryType.value, event.target.value)
 })
 
 // Render lists
@@ -161,11 +132,15 @@ function renderCities(uniqueCities) {
 
         filterByCityForm.append(checkbox)
         filterByCityForm.append(checkboxLabel)
+
+        clearAllButton.addEventListener('click', () => {
+            checkbox.checked = false
+        })
     })
 }
 
 function createUniqueCityList(data) {
-    const uniqueCities = [...new Set(data.map((item) => item.city))]
+    let uniqueCities = [...new Set(data.map((item) => item.city))]
 
     renderCities(uniqueCities)
 }
