@@ -1,9 +1,10 @@
 let breweryData = [];
 let stateSearch = ""
+let selectedType = ""
 
 async function getBreweryData() {
     try {
-        const response = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${stateSearch}`);
+        const response = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${stateSearch}${selectedType}`);
         const responseData = await response.json();
         breweryData = responseData.filter(brewery => ['micro', 'regional', 'brewpub'].includes(brewery.brewery_type));
         renderBreweries();
@@ -11,24 +12,6 @@ async function getBreweryData() {
         console.error("Error fetching brewery data:", error);
     }
 }
-
-async function filterByBreweryType(selectedType) {
-    try {
-        //if no filter applied, then fetch without filter and render.
-        console.log(selectedType)
-        if (selectedType === '') {
-            getBreweryData();
-            return;
-        }
-        const response = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_type=${selectedType}`);
-        const responseData = await response.json();
-        breweryData = responseData;
-        renderBreweries();
-    } catch (error) {
-        console.error("Error fetching brewery data:", error);
-    }
-}
-
 
 function renderBreweries() {
     const breweryListDOM = document.querySelector(".breweries-list");
@@ -60,13 +43,18 @@ function renderBreweries() {
 document.getElementById('select-state-form').addEventListener('submit', function(event) {
     event.preventDefault();
     stateSearch = document.getElementById('select-state').value;
-    getBreweryData(state);
+    getBreweryData();
 });
 
 document.getElementById('filter-by-type-form').addEventListener('submit', function(event) {
     event.preventDefault();
-    const selectedType = document.getElementById('filter-by-type').value;
-    filterByBreweryType(selectedType);
+    if (document.getElementById('filter-by-type').value === "") {
+        selectedType = ""
+    }
+    else {    
+        selectedType = `&by_type=${document.getElementById('filter-by-type').value}`;
+    }
+getBreweryData()
 });
 
 getBreweryData();
