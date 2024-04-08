@@ -227,4 +227,6 @@ article {
   text-align: center;
   text-decoration: none;
   font-weight: bold;
+
+  cursor: pointer;
 }

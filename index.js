@@ -39,11 +39,10 @@ function createListItem(obj) {
     const addressStreet = document.createElement("p")
     addressStreet.innerHTML = obj.address_1
 
-    const addressCity = document.createElement("strong")
+    const addressCity = document.createElement("p")
     addressCity.innerHTML = obj.city + ", " + obj.postal_code
+    addressCity.style.fontWeight = "700"
 
-    const addressPostCode = document.createElement("strong")
-    addressPostCode.innerHTML = obj.postal_code
 
 
     addressBlock.append(addressTitle)
@@ -57,7 +56,7 @@ function createListItem(obj) {
     const phoneTitle = document.createElement("h3")
     phoneTitle.innerHTML = "Phone:"
 
-    const phoneNumber = document.createElement("span")
+    const phoneNumber = document.createElement("p")
     phoneNumber.innerHTML = "+" + obj.phone
 
     
@@ -68,6 +67,8 @@ function createListItem(obj) {
     const websiteButton = document.createElement("a")
     websiteButton.className = "link"
     websiteButton.innerHTML = "VISIT WEBSITE"
+    websiteButton.href = obj.website_url
+    websiteButton.target = "_blank"
 
 
     const breweryItem = document.createElement("li")
