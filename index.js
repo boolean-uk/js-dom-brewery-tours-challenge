@@ -76,8 +76,8 @@ const buildCard = (brewery) => {
 const render = async () => {
   const breweryList = document.querySelector("#breweries-list");
   breweryList.innerHTML = "";
-  const searchInput = document.querySelector('#search-bar')  
-  searchInput.value = ''
+  const searchInput = document.querySelector("#search-bar");
+  searchInput.value = "";
 
   let url = "https://api.openbrewerydb.org/v1/breweries?";
 
@@ -115,23 +115,49 @@ typeFilter.addEventListener("change", (event) => {
   render();
 });
 
-//Search functionality
-const searchBreweryForm = document.querySelector('#search-breweries-form')
-searchBreweryForm.addEventListener('keyup', () => {
-    const input = document.querySelector('#search-bar')
-    const populatedBreweries = document.querySelectorAll('.brewery-card')
 
-    for (let i = 0; i < populatedBreweries.length; i++) {
-        if (!displayNode(input.value, populatedBreweries[i])) {
-            console.log(populatedBreweries[i])
-            populatedBreweries[i].style.display = 'none'
-        } else {
-            populatedBreweries[i].style.display = 'grid'
-        }
+//Throttle functions
+const throttle = (func, delay) => {
+    let lastTime = 0
+    return (...args) => {
+        const now = new Date().getTime()
+        if (now - lastTime < delay) return;
+        lastTime = now
+        func(...args)
     }
-})
+}
+
+
+//Throttled search function
+const searchAPI = () => {
+    console.log('throttled')
+}
+
+
+//Search functionality
+const searchBreweryForm = document.querySelector("#search-breweries-form");
+const throttledSearchAPI = throttle(searchAPI, 3000)
+
+searchBreweryForm.addEventListener("keyup", () => {
+  const input = document.querySelector("#search-bar");
+  const populatedBreweries = document.querySelectorAll(".brewery-card");
+
+  for (let i = 0; i < populatedBreweries.length; i++) {
+    if (!displayNode(input.value, populatedBreweries[i])) {
+      populatedBreweries[i].style.display = "none";
+    } else {
+      populatedBreweries[i].style.display = "grid";
+    }
+  }
+  throttledSearchAPI()
+});
 
 //Checks if brewery name matches search input
 const displayNode = (input, node) => {
-    return node.querySelector('h2').innerText.toLowerCase().startsWith(input)
-}
+  return node
+    .querySelector("h2")
+    .innerText.toLowerCase()
+    .startsWith(input.toLowerCase());
+};
+
+
