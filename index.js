@@ -4,9 +4,10 @@ const stateSearch = document.querySelector("#select-state")
 const stateSearchForm = document.querySelector("#select-state-form")
 const nameSearch = document.querySelector("#name-search")
 const cityList = document.querySelector("#filter-by-city")
+const clearCity = document.querySelector("#clear-city")
 
 const stateObj = {
-    Norman: false,
+    page : 1
 }
 
 async function render() {
@@ -30,6 +31,7 @@ async function render() {
 
     const name = nameSearch.value.toLowerCase()
 
+    
     breweriesData.forEach((item) => {
         const isValidBrewery =
             item.brewery_type === "micro" ||
@@ -50,7 +52,7 @@ async function render() {
         if (isDisplayed) {
             createListItem(item)
         }
-        createCityFilter(item)
+        if (isValidBrewery){createCityFilter(item)}
     })
 }
 
@@ -149,5 +151,15 @@ stateSearchForm.addEventListener("submit", (e) => {
 })
 
 nameSearch.addEventListener("input", render)
+
+clearCity.addEventListener("click" , () => {
+    Object.keys(stateObj).forEach((item) => {
+        stateObj[item] = false
+    })
+
+    stateObj.page = 1
+    
+    render()
+})
 
 render()
