@@ -1,12 +1,22 @@
 const selectStateForm = document.querySelector('#select-state-form')
 const selectStateInput = document.querySelector('#select-state')
 const breweryUl = document.querySelector('#breweries-list')
+const selectBreweryType = document.querySelector('#filter-by-type')
+const filterTypeForm = document.querySelector('#filter-by-type-form')
 
-async function getAllBreweries() {
-    const response = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${selectStateInput.value}`)
-    const data = await response.json()
+async function getAllBreweries(filter) {
+    if (filter === undefined) {
+        const response = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${selectStateInput.value}`)
+        const data = await response.json()
 
-    renderBreweryCards(data)
+        renderBreweryCards(data)
+    } else {
+        const response = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${selectStateInput.value}&by_type=${filter}`)
+        const data = await response.json()
+
+        renderBreweryCards(data)
+    }
+    
 }
 
 selectStateForm.addEventListener('submit', async (event) => {
@@ -66,3 +76,7 @@ function renderBreweryCards(data) {
         breweryUl.append(li)
     });
 }
+
+filterTypeForm.addEventListener('change', () => {
+    getAllBreweries(selectBreweryType.value)
+})
