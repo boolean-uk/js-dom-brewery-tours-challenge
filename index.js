@@ -53,23 +53,39 @@ const buildCard = (brewery) => {
         const linkSection = document.createElement('section')
         linkSection.classList.add('link')
         const link = document.createElement('a')
-    
         link.innerText = 'Visit Website'
         link.setAttribute('target', '_blank')
         link.setAttribute('href', brewery.website_url)
+        linkSection.append(link)
         li.append(linkSection)
     }
+
     breweryList.append(li)
 }
 
 
-//Render cards
-const render = async (state) => {
-    const data = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${state}`)
-    const json = await data.json()
+//Render cards by state
+const render = (state) => {
+    const breweryList = document.querySelector('#breweries-list')
+    breweryList.innerHTML = ''
 
-    json.forEach(buildCard)
-    console.log(json.length)
+    const breweryTypes = ['micro', 'regional', 'brewpub']
+
+    breweryTypes.forEach(async (element) => {
+        const data = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${state}&by_type=${element}`)
+        const json = await data.json()
+        json.forEach(buildCard)
+})
+
+
 }
 
-render('california')
+//Get search state input and trigger render
+const searchForm = document.querySelector('#select-state-form')
+searchForm.addEventListener('submit', (event) => {
+    event.preventDefault()
+    
+    const searchInput = document.querySelector('#select-state').value
+
+    render(searchInput)
+})
