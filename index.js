@@ -1,23 +1,3 @@
-/* <li>
-  <h2>Snow Belt Brew</h2>
-  <div class="type">micro</div>
-  <section class="address">
-    <h3>Address:</h3>
-    <p>9511 Kile Rd</p>
-    <p><strong>Chardon, 44024</strong></p>
-  </section>
-  <section class="phone">
-    <h3>Phone:</h3>
-    <p>N/A</p>
-  </section>
-  <section class="link">
-    <a href="null" target="_blank">Visit Website</a>
-  </section>
-</li>
-     */
-
-
-
 //Build brewery card
 const buildCard = (brewery) => {
     const breweryList = document.querySelector('#breweries-list')
@@ -79,7 +59,17 @@ const buildCard = (brewery) => {
         link.setAttribute('href', brewery.website_url)
         li.append(linkSection)
     }
-
     breweryList.append(li)
 }
 
+
+//Render cards
+const render = async (state) => {
+    const data = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_state=${state}`)
+    const json = await data.json()
+
+    json.forEach(buildCard)
+    console.log(json.length)
+}
+
+render('california')
