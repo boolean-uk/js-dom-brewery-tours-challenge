@@ -5,10 +5,26 @@ const stateSearchForm = document.querySelector("#select-state-form")
 const nameSearch = document.querySelector("#name-search")
 const cityList = document.querySelector("#filter-by-city")
 const clearCity = document.querySelector("#clear-city")
+const pageBack = document.querySelector("#page-back")
+const pageForward = document.querySelector("#page-forward")
+const pageNum = document.querySelector("#page-num")
+
+
+
 
 const stateObj = {
-    page : 1
+    page: 1,
 }
+
+pageForward.addEventListener('click', () => {
+    stateObj.page++
+    render()
+})
+
+pageBack.addEventListener('click', () => {
+    stateObj.page--
+    render()
+})
 
 async function render() {
     let breweries
@@ -28,32 +44,55 @@ async function render() {
 
     breweryList.innerHTML = ""
     cityList.innerHTML = ""
+    pageNum.innerHTML = `Page ${stateObj.page}`
+
+    if(stateObj.page < 2){
+        pageBack.setAttribute("disabled", true)
+    } else {
+        pageBack.removeAttribute("disabled")
+    }
 
     const name = nameSearch.value.toLowerCase()
 
-    
-    breweriesData.forEach((item) => {
-        const isValidBrewery =
-            item.brewery_type === "micro" ||
-            item.brewery_type === "regional" ||
-            item.brewery_type === "brewpub"
-        const isFiltered =
-            item.brewery_type === currentFilter || currentFilter === ""
-        const isInState = item.state === state || state === ""
-        const isSearched = item.name.toLowerCase().includes(name) || name === ""
-        const isChecked =
-            stateObj[item.city] === true ||
-            !Object.values(stateObj) ||
-            !Object.values(stateObj).includes(true)
+    const cardsToRender = []
 
-        const isDisplayed =
-            isValidBrewery && isFiltered && isInState && isSearched && isChecked
+    for (let i = 0; i < breweriesData.length; i++){
+            
+        item = breweriesData[i]
+            const isValidBrewery =
+                item.brewery_type === "micro" ||
+                item.brewery_type === "regional" ||
+                item.brewery_type === "brewpub"
+            const isFiltered =
+                item.brewery_type === currentFilter || currentFilter === ""
+            const isInState = item.state === state || state === ""
+            const isSearched =
+                item.name.toLowerCase().includes(name) || name === ""
+            const isChecked =
+                stateObj[item.city] === true ||
+                !Object.values(stateObj).includes(true)
 
-        if (isDisplayed) {
-            createListItem(item)
+            const isDisplayed =
+                isValidBrewery &&
+                isFiltered &&
+                isInState &&
+                isSearched &&
+                isChecked
+
+            if (isDisplayed) {
+                cardsToRender.push(item)
+            }
+            if (isValidBrewery) {
+                createCityFilter(item)
+            }
         }
-        if (isValidBrewery){createCityFilter(item)}
-    })
+
+        const fillPages = stateObj.page * 5 - 5
+        const pageSize = 8
+
+        for(let i = fillPages; i < fillPages + pageSize; i++) {
+            createListItem(cardsToRender[i])
+        }
 }
 
 function createListItem(obj) {
@@ -152,13 +191,13 @@ stateSearchForm.addEventListener("submit", (e) => {
 
 nameSearch.addEventListener("input", render)
 
-clearCity.addEventListener("click" , () => {
+clearCity.addEventListener("click", () => {
     Object.keys(stateObj).forEach((item) => {
         stateObj[item] = false
     })
 
     stateObj.page = 1
-    
+
     render()
 })
 
