@@ -4,6 +4,7 @@ const searchForm = document.querySelector("#select-state-form");
 const searchInput = document.querySelector("#select-state");
 const filterForm = document.querySelector("#filter-by-type-form");
 const filterSelectMenu = document.querySelector("#filter-by-type");
+const listBreweriesHeading = document.querySelector("#list-breweries-heading");
 
 //To populate the search result in HTML list.
 function getBreries(array) {
@@ -48,7 +49,7 @@ function serachByState(state) {
           searchResult.push(item);
         }
       });
-
+      addInstantSerachBar(searchResult);
       getBreries(searchResult);
       filterByType(searchResult);
     });
@@ -73,4 +74,31 @@ function filterByType(searchResult) {
 
     getBreries(filterResult);
   });
+}
+
+function addInstantSerachBar(searchResult) {
+  if (searchResult.length > 0) {
+    listBreweriesHeading.insertAdjacentHTML(
+      "afterend",
+      `<header class="search-bar">
+            <form id="search-breweries-form" autocomplete="off">
+                <label for="search-breweries"><h2>Search breweries:</h2></label>
+                 <input id="search-breweries" name="search-breweries" type="text">
+            </form>
+        </header>`
+    );
+
+    const instantSearchBar = document.querySelector("#search-breweries");
+    instantSearchBar.addEventListener("keyup", (event) => {
+      render(instantSearchBar.value, searchResult);
+    });
+  }
+}
+
+function render(query = "", searchResult) {
+  const cleanedupQuery = query.trim().toLowerCase();
+  const filteredByName = searchResult.filter((item) =>
+    item.name.toLowerCase().includes(cleanedupQuery)
+  );
+  getBreries(filteredByName);
 }
