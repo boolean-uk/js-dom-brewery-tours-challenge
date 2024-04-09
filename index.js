@@ -108,6 +108,22 @@ function filterSelection() {
     if (filterByBrewery.value === 'regional') {
         const filterRegionalBreweries = breweries.filter(brewery => brewery.brewery_type === "regional")
         const regionalBreweries = filterRegionalBreweries.map(brewery => brewery)
+        breweriesList.innerHTML = ''
         regionalBreweries.forEach(brewery => renderBreweries(brewery))
     }
 }
+
+selectStateForm.addEventListener('submit', (event) => {filterStates(event)})
+
+function filterStates(event) {
+    event.preventDefault()
+    const userSearch = selectStateForm.value
+
+    if (userSearch === breweries.state_province) {
+        const filterState = breweries.filter(brewery => brewery.state_province === selectStateSearch.value)
+        const mapStates = filterState.map(brewery => brewery)
+        breweriesList.innerHTML = ''
+        mapStates.forEach(brewery => renderBreweries(brewery))
+    }
+}
+
