@@ -33,6 +33,10 @@
               <option value="brewpub">Brewpub</option>
             </select>
           </form>
+          <form id="filter-by-city-form">
+            <h3>Cities</h3>
+            <a class="clear-all-btn">Clear all</a>
+          </form>
         </aside>
       </aside>
       <h1>List of Breweries</h1>
@@ -44,11 +48,8 @@
       </form>
       <article>
         <ul id="breweries-list" class="breweries-list">
-          <!--
-          For each brewery returned in the search, 
-          add to the list using the HTML provided 
-          in templates/standard-list-items.html
-          -->
+        </ul>
+        <ul id="additional-breweries" class="breweries-list">
         </ul>
       </article>
     </main>

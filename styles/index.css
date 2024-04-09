@@ -83,6 +83,7 @@ main {
 
   text-decoration: underline;
   font-size: 0.725rem;
+  place-self: end;
 }
 
 #filter-by-type-form {
@@ -135,6 +136,13 @@ h1 {
   border-radius: 0.5rem;
   background-color: #ffe082;
   margin-inline: 5px;
+}
+
+.breweries-list h4 {
+  background-color: #ffe082;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 20px;
 }
 
 #search-breweries-form h2 {
@@ -215,6 +223,8 @@ article {
 .breweries-list li .link {
   grid-area: link;
 }
+
+
 
 .breweries-list li .link a {
   display: block;

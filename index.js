@@ -1,7 +1,5 @@
 //Build brewery card
 const buildCard = (brewery) => {
-  const breweryList = document.querySelector("#breweries-list");
-
   if (
     brewery.brewery_type != "micro" &&
     brewery.brewery_type != "regional" &&
@@ -68,8 +66,8 @@ const buildCard = (brewery) => {
     linkSection.append(link);
     li.append(linkSection);
   }
-
-  breweryList.append(li);
+  renderCityFilter(brewery)
+  return li
 };
 
 //Render cards
@@ -90,7 +88,12 @@ const render = async () => {
 
   const data = await fetch(url);
   const json = await data.json();
-  json.forEach(buildCard);
+  json.forEach((element) => {
+    const li = buildCard(element)
+    if (li) {
+    breweryList.append(li)
+    };
+  })
 };
 
 //State functionality
@@ -121,7 +124,8 @@ const searchBreweryForm = document.querySelector("#search-breweries-form");
 let keyPresses = 0;
 searchBreweryForm.addEventListener("keyup", () => {
   const input = document.querySelector("#search-bar");
-  const populatedBreweries = document.querySelectorAll(".brewery-card");
+  const breweriesList = document.querySelector('#breweries-list')
+  const populatedBreweries = breweriesList.querySelectorAll(".brewery-card");
 
   for (let i = 0; i < populatedBreweries.length; i++) {
     if (!nameMatchCheck(input.value, populatedBreweries[i])) {
@@ -130,13 +134,41 @@ searchBreweryForm.addEventListener("keyup", () => {
       populatedBreweries[i].style.display = "grid";
     }
   }
-  if (keyPresses % Math.floor(Math.random() * 15) === 0 && keyPresses !== 0) {
-    console.log(keyPresses)
-    console.log('now')
+
+  if (keyPresses % Math.floor(Math.random() * 3) === 0 && keyPresses !== 0) {
+    searchExtraBreweries(input.value)
   }
   keyPresses++
-
 });
+
+//Finds extra breweries from API according to search
+const searchExtraBreweries = async input => {
+    const url = 'https://api.openbrewerydb.org/v1/breweries/search?query='
+
+    const data = await fetch(`${url}${input}&per_page=5`)
+    const json = await data.json()
+    if (json.length > 0) {
+        renderAdditionalBreweries(json)
+    }
+}
+
+//Render additional breweries from search
+const renderAdditionalBreweries = input => {
+    console.log('triggered')
+
+    const additionalBreweryList = document.querySelector("#additional-breweries");
+    additionalBreweryList.innerHTML = ""
+
+    const h4 = document.createElement('h4')
+    h4.innerText = 'These other breweries also match your search:'
+    additionalBreweryList.append(h4)
+    
+    for (let i = 0; i < input.length; i++) {   
+       let currentCard = buildCard(input[i])
+       if (currentCard) {
+       additionalBreweryList.append(currentCard)}
+    }
+}
 
 //Checks if brewery name matches search input
 const nameMatchCheck = (input, node) => {
@@ -146,4 +178,28 @@ const nameMatchCheck = (input, node) => {
     .startsWith(input.toLowerCase());
 };
 
+
+//Render city filter
+const cityFilterArr = []
+const renderCityFilter = brewery => {
+    const cityFilterForm = document.querySelector('#filter-by-city-form')
+
+    if (cityFilterArr.includes(brewery.city)) {
+        return;
+    }
+    
+    const input = document.createElement('input')
+    input.type = "checkbox"
+    input.value = brewery.city
+    input.name = brewery.city
+
+    const label = document.createElement('label')
+    label.setAttribute('for', brewery.city)
+    label.innerText = brewery.city
+
+    cityFilterArr.push(brewery.city)
+
+    cityFilterForm.append(input)
+    cityFilterForm.append(label)
+}
 
