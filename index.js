@@ -9,6 +9,8 @@ const searchBreweriesForm = document.querySelector('#search-breweries-form')
 const searchBreweries = document.querySelector('#search-breweries')
 const filterByCityForm = document.querySelector('#filter-by-city-form')
 const clearAllButton = document.querySelector('.clear-all-btn')
+
+// Global Variables
 const checkedCities = []
 
 // Get breweries from API
@@ -58,7 +60,11 @@ async function getAllBreweriesFilteredByCity() {
         if (checkedCities.includes(brew.city)) return brew
     })
 
-    renderBreweryCards(filteredByCity)
+    if (filteredByCity.length === 0) {
+        renderBreweryCards(filteredData)
+    } else {
+        renderBreweryCards(filteredByCity)
+    }
 
 }
 
@@ -148,6 +154,7 @@ function renderCities(uniqueCities) {
 
         clearAllButton.addEventListener('click', () => {
             checkbox.checked = false
+            getAllBreweries()
         })
 
         filterByCityForm.addEventListener('change', () => {
@@ -163,10 +170,12 @@ function renderCities(uniqueCities) {
     })
 }
 
+// Create unique cities list
 function createUniqueCityList(data) {
     let uniqueCities = [...new Set(data.map((item) => item.city))]
 
     renderCities(uniqueCities)
 }
 
+// Call functions
 getAllBreweries()
