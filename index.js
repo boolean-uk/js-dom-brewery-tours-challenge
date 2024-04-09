@@ -10,12 +10,31 @@ const breweriesListUl = document.querySelector('#breweries-list')
 
 const getUrl = 'https://api.openbrewerydb.org/v1/breweries'
 
+selectStateFormId.addEventListener('submit',(event) => {
+  console.log('test')
+  event.preventDefault()
+  console.log(selectStateId.value)
+  const state = selectStateId.value
+  breweriesListUl.innerHTML = ''
+  getFetchByState(state)
+})
+
+function getFetchByState(searchState){
+  fetch(getUrl)
+  .then(res => res.json())
+  .then(json => {
+    const filteredBreweriesByState = json.filter(brewer => {
+      return [searchState].includes(brewer.state) && ['micro', 'brewpub', 'Regional'].includes(brewer.brewery_type)
+    })
+    filteredBreweriesByState.forEach(item => listOfBreweries(item))
+  })
+}
 function render(){
   getFetch()
 }
 
 function typeCheck(brewery){
-  console.log(brewery)
+  
 }
 
 function listOfBreweries(brewery){
@@ -61,9 +80,11 @@ function listOfBreweries(brewery){
 }
 
   function getFetch() {
+    
     fetch(getUrl)
       .then(res => res.json())
       .then(json => {
+        console.log(json)
         const filteredBreweries = json.filter(brewer => {
           return ['micro', 'brewpub', 'Regional'].includes(brewer.brewery_type)
         })
@@ -72,4 +93,3 @@ function listOfBreweries(brewery){
 }
 
 render()
-
