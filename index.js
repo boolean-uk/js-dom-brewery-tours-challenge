@@ -10,23 +10,9 @@ const breweriesListUl = document.querySelector('#breweries-list')
 
 const getUrl = 'https://api.openbrewerydb.org/v1/breweries'
 
-selectStateFormId.addEventListener('submit',(event) => {
-  event.preventDefault()
-  const state = selectStateId.value
-  breweriesListUl.innerHTML = ''
-  getFetch(state)
-})
 
-filterByTpyeId.addEventListener('click', (event) => {
-  event.preventDefault();
-  if (event.target.value === 'micro' || event.target.value === 'regional' ||event.target.value === 'brewpub') {
-    const selectedType = event.target.value;
-    if (selectedType) {
-      breweriesListUl.innerHTML = '';
-      getFetchByType(selectedType);
-    }
-  }
-})
+
+
 
 function getFetchByType(type){
   fetch(getUrl)
@@ -39,7 +25,40 @@ function getFetchByType(type){
       filteredByType.forEach(item => listOfBreweries(item))
     })
 }
-function getFetch(searchState) {
+
+
+function render(){
+
+  const filterTypeName = filterByType()
+  const searchStateName =  searchState()
+
+  getFetch()
+
+}
+
+function filterByType(){
+  filterByTpyeId.addEventListener('click', (event) => {
+    event.preventDefault();
+    const typeValue = ['micro', 'regional', 'brewpub'].includes(event.target.value)
+    if(typeValue){
+      const selectedType = event.target.value;
+      if (selectedType) {
+        breweriesListUl.innerHTML = '';
+        getFetchByType(selectedType)
+      }
+    }
+  })
+}
+function searchState() { 
+  selectStateFormId.addEventListener('submit',(event) => {
+    event.preventDefault()
+    const state = selectStateId.value
+    breweriesListUl.innerHTML = ''
+    getFetch(state)
+  })
+ }
+
+ function getFetch(searchState) {
   fetch(getUrl)
     .then(res => res.json())
     .then(json => {
@@ -50,10 +69,6 @@ function getFetch(searchState) {
         console.log(filteredBreweries)
         filteredBreweries.forEach(item => listOfBreweries(item));
     });
-}
-
-function render(){
-  getFetch()
 }
 
 function listOfBreweries(brewery){
