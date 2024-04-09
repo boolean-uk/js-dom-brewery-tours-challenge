@@ -96,16 +96,12 @@ function filterSelection() {
         const microBreweries = filterMicroBreweries.map(brewery => brewery)
         breweriesList.innerHTML = ''
         microBreweries.forEach(brewery => renderBreweries(brewery))
-    }
-
-    if (filterByBrewery.value === 'brewpub') {
+    } else if (filterByBrewery.value === 'brewpub') {
         const filterBrewpubBreweries = breweries.filter(brewery => brewery.brewery_type === "brewpub")
         const brewpubBreweries = filterBrewpubBreweries.map(brewery => brewery)
         breweriesList.innerHTML = ''
         brewpubBreweries.forEach(brewery => renderBreweries(brewery))
-    }
-
-    if (filterByBrewery.value === 'regional') {
+    } else if (filterByBrewery.value === 'regional') {
         const filterRegionalBreweries = breweries.filter(brewery => brewery.brewery_type === "regional")
         const regionalBreweries = filterRegionalBreweries.map(brewery => brewery)
         breweriesList.innerHTML = ''
@@ -124,6 +120,14 @@ function filterStates(event) {
         const mapStates = filterState.map(brewery => brewery)
         breweriesList.innerHTML = ''
         mapStates.forEach(brewery => renderBreweries(brewery))
-    }
+    } else {errorMessage()}
 }
 
+function errorMessage() {
+    const listItem = document.createElement('li')
+    const breweryName = document.createElement('h2')
+    breweryName.innerText = 'Oops, sorry, no brewery matching your search request'
+    listItem.append(breweryName)
+    breweriesList.innerHTML = ''
+    breweriesList.append(listItem)
+}

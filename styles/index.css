@@ -25,7 +25,12 @@ body {
   text-align: center;
 }
 
-#select-state-form label {
+#search-breweries-form {
+  margin-left: 1rem;
+
+}
+
+#select-state-form label, #search-breweries-form label {
   display: block;
   margin-bottom: 0.25rem;
   text-align: center;
@@ -33,7 +38,7 @@ body {
   font-weight: bold;
 }
 
-#select-state-form input {
+#select-state-form input, #search-breweries-form input {
   border-radius: 0.25rem;
 }
 
