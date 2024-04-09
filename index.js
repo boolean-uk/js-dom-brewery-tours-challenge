@@ -1,4 +1,4 @@
-// const breweriesApi =
+const breweriesApi = `https://api.openbrewerydb.org/v1/breweries?by_country=United_States`
 // 	"https://api.openbrewerydb.org/v1/breweries?by_country=United_States"
 // 	"https://api.openbrewerydb.org/v1/breweries"
 
@@ -21,36 +21,19 @@ const regionalArray = []
 const brewPubArray = []
 
 //GET api pages
-async function fetchBreweriesFromPage(page) {
+async function fetchBreweriesFromPage() {
 	const response = await fetch(
-		// `breweriesApi?page=${page}`
-		`https://api.openbrewerydb.org/v1/breweries?page=${page}`
+		`https://api.openbrewerydb.org/v1/breweries?by_country=United_States`
 	)
 	return response.json()
 }
+fetchBreweriesFromPage()
 
-//Filter-out non US-Breweries
-function filterByCountry(breweries) {
-	return breweries.filter((brew) => brew.country === "United States")
-}
 
-//Paginate and filter brewery_types
+//Filter brewery_types
 async function getAllBreweries() {
-	let currentPage = 1
-
-	while (true) {
-		const breweries = await fetchBreweriesFromPage(currentPage)
-
-		if (breweries.length === 0) {
-			break
-		}
-
-		const usBreweries = filterByCountry(breweries)
-
-		allUsBreweriesArray.push(...usBreweries)
-		currentPage++
-	}
-
+	const usBreweries = await fetchBreweriesFromPage()
+	allUsBreweriesArray.push(...usBreweries)
 	allUsBreweriesArray.forEach((brew) => {
 		const micro = brew.brewery_type === "micro"
 		const regional = brew.brewery_type === "regional"
@@ -70,7 +53,9 @@ async function getAllBreweries() {
 		}
 	})
 }
-// console.log("reg", microArray)
+console.log(allUsBreweriesArray);
+console.log('us', filteredUsBreweriesArray);
+// console.log("reg", brewPubArray)
 
 //Create cards
 async function createCards(selectedBreweries) {
@@ -126,3 +111,10 @@ filterForm.addEventListener("change", function (event) {
 		createCards(allUsBreweriesArray)
 	}
 })
+
+// headerSearchBoxInput.addEventListener("submit", (event) => {
+// 	event.preventDefault()
+// 	const state = selectStateId.value
+// 	breweriesListUl.innerHTML = ""
+// 	getFetch(state)
+// })
