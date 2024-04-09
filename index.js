@@ -1,68 +1,32 @@
-const breweriesApi = `https://api.openbrewerydb.org/v1/breweries?by_country=United_States`
-// 	"https://api.openbrewerydb.org/v1/breweries?by_country=United_States"
-// 	"https://api.openbrewerydb.org/v1/breweries"
-
+const breweriesApi =
+	"https://api.openbrewerydb.org/v1/breweries?by_country=United_States&per_page=100"
 //Access HTML elements
 //Header elements
 const header = document.querySelector(".main-header")
 const headerSection = document.querySelector("section")
 const headerSearchBox = document.querySelector("#select-state-form")
-const headerSearchBoxInput = document.querySelector("#select-state")
+const searchBoxInput = document.querySelector("#select-state")
 //Main elements
 const filterForm = document.querySelector("#filter-by-type-form")
 const formSelect = document.querySelector("#filter-by-type")
+//Article elements
 const breweriesUl = document.querySelector(".breweries-list")
+const typeDefault = document.querySelector("option")
+typeDefault.innerText = "Select a type.. "
 
-//Create arrays for each  brewery type
-const allUsBreweriesArray = []
-const filteredUsBreweriesArray = []
+//Create arrays to populate by filtering
+const allBreweries = []
+const breweriesToVisit = []
 const microArray = []
 const regionalArray = []
 const brewPubArray = []
 
-//GET api pages
-async function fetchBreweriesFromPage() {
-	const response = await fetch(
-		`https://api.openbrewerydb.org/v1/breweries?by_country=United_States`
-	)
-	return response.json()
-}
-fetchBreweriesFromPage()
-
-
-//Filter brewery_types
-async function getAllBreweries() {
-	const usBreweries = await fetchBreweriesFromPage()
-	allUsBreweriesArray.push(...usBreweries)
-	allUsBreweriesArray.forEach((brew) => {
-		const micro = brew.brewery_type === "micro"
-		const regional = brew.brewery_type === "regional"
-		const bPub = brew.brewery_type === "brewpub"
-
-		if (micro) {
-			// console.log("mic", microArray)
-			microArray.push(brew)
-			filteredUsBreweriesArray.push(brew)
-		} else if (regional) {
-			// console.log("reg", regionalArray)
-			regionalArray.push(brew)
-			filteredUsBreweriesArray.push(brew)
-		} else if (bPub) {
-			brewPubArray.push(brew)
-			filteredUsBreweriesArray.push(brew)
-		}
-	})
-}
-console.log(allUsBreweriesArray);
-console.log('us', filteredUsBreweriesArray);
-// console.log("reg", brewPubArray)
-
-//Create cards
-async function createCards(selectedBreweries) {
-	const breweries = await getAllBreweries()
+//Create HTML
+async function createCards(breweryArr) {
+	const breweries = await fetchBreweries()
 
 	breweriesUl.innerHTML = ""
-	selectedBreweries.forEach((brew) => {
+	breweryArr.forEach((brew) => {
 		breweriesUl.insertAdjacentHTML(
 			"beforeend",
 			`<li>
@@ -88,33 +52,66 @@ async function createCards(selectedBreweries) {
 		)
 	})
 }
-createCards(filteredUsBreweriesArray)
 
-filterForm.addEventListener("change", function (event) {
+//GET breweries
+async function fetchBreweries() {
+	const response = await fetch(breweriesApi)
+	return response.json()
+}
+
+//Filter breweries by type
+async function filterBreweries() {
+	const allTypes = await fetchBreweries()
+	allBreweries.push(...allTypes)
+	allTypes.filter((brew) => {
+		const micro = brew.brewery_type === "micro"
+		const regional = brew.brewery_type === "regional"
+		const bPub = brew.brewery_type === "brewpub"
+
+		if (micro) {
+			microArray.push(brew)
+			breweriesToVisit.push(brew)
+		} else if (regional) {
+			regionalArray.push(brew)
+			breweriesToVisit.push(brew)
+		} else if (bPub) {
+			brewPubArray.push(brew)
+			breweriesToVisit.push(brew)
+		}
+	})
+}
+
+//Filtering dropdown functionality
+formSelect.addEventListener("change", async function (event) {
 	event.preventDefault()
-	
+	await fetchBreweries()
 	breweriesUl.innerHTML = ""
-	console.log(event.target.value)
-	let selectedType = event.target.value
+	const selectedType = event.target.value
+	// let breweryType = allUsBreweriesArray
 
 	if (selectedType === "micro") {
-		// console.log(microArray)
+		console.log(microArray)
 		createCards(microArray)
 	} else if (selectedType === "regional") {
-		// console.log(regionalArray)
+		console.log(regionalArray)
 		createCards(regionalArray)
 	} else if (selectedType === "brewpub") {
-		// console.log(brewPubArray)
+		console.log(brewPubArray)
 		createCards(brewPubArray)
 	} else {
-		console.log(allUsBreweriesArray)
-		createCards(allUsBreweriesArray)
+		console.log(breweriesToVisit)
+		createCards(breweriesToVisit)
 	}
 })
 
-// headerSearchBoxInput.addEventListener("submit", (event) => {
-// 	event.preventDefault()
-// 	const state = selectStateId.value
-// 	breweriesListUl.innerHTML = ""
-// 	getFetch(state)
-// })
+fetchBreweries()
+filterBreweries()
+createCards(breweriesToVisit)
+
+// const init = async () => {
+//    await fetchBreweries()
+// filterBreweries()
+// createCards(breweriesToVisit)
+// }
+
+// init()
