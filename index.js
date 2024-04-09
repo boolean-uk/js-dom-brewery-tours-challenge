@@ -1,12 +1,10 @@
 const selectStateForm = document.querySelector('#select-state-form')
 const selectStateSearch = document.querySelector('#select-state')
-
-
 const filterByForm = document.querySelector('#filter-by-type-form')
 const filterByBrewery = document.querySelector('#filter-by-type')
-
 const breweriesList = document.querySelector('#breweries-list')
-
+const brewerySearchForm = document.querySelector('#search-breweries-form')
+const brewerySearch = document.querySelector('#search-breweries')
 const url = 'https://api.openbrewerydb.org/v1/breweries'
 
 let breweries = []
@@ -97,7 +95,7 @@ function filterSelection(event) {
         const breweryType = filterBreweries.map(brewery => brewery)
         breweriesList.innerHTML = ''
         breweryType.forEach(brewery => renderBreweries(brewery))
-    }
+    } else {errorMessage()}
 }
 
 
@@ -114,6 +112,23 @@ function filterStates(event) {
         mapStates.forEach(brewery => renderBreweries(brewery))
     } else {errorMessage()}
 }
+
+brewerySearchForm.addEventListener('input', (event) => {searchBrewery(event)})
+
+function searchBrewery(event) {
+    event.preventDefault()
+    const userSearch = event.target.value
+ 
+    if (userSearch.value === breweries.name) {
+        const filterBrewery = breweries.filter(brewery => brewery.name === brewerySearch.value)
+        const mapSearch = filterBrewery.map(brewery => brewery)
+        breweriesList.innerHTML = ''
+        mapSearch.forEach(brewery => renderBreweries(brewery))
+    }
+}
+
+
+
 
 function errorMessage() {
     const listItem = document.createElement('li')
