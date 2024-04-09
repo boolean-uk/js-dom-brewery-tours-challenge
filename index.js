@@ -86,28 +86,20 @@ function renderBreweries(brewery) {
 }
 
 
-filterByBrewery.addEventListener('change', () => {filterSelection()})
+filterByBrewery.addEventListener('change', (event) => {filterSelection(event)})
 
+function filterSelection(event) {
+    event.preventDefault()
+    const userSelection = event.target.value
 
-function filterSelection() {
-
-    if (filterByBrewery.value === 'micro') {
-        const filterMicroBreweries = breweries.filter(brewery => brewery.brewery_type === "micro")
-        const microBreweries = filterMicroBreweries.map(brewery => brewery)
+    if (userSelection.value === breweries.brewery_type) {
+        const filterBreweries = breweries.filter(brewery => brewery.brewery_type === userSelection)
+        const breweryType = filterBreweries.map(brewery => brewery)
         breweriesList.innerHTML = ''
-        microBreweries.forEach(brewery => renderBreweries(brewery))
-    } else if (filterByBrewery.value === 'brewpub') {
-        const filterBrewpubBreweries = breweries.filter(brewery => brewery.brewery_type === "brewpub")
-        const brewpubBreweries = filterBrewpubBreweries.map(brewery => brewery)
-        breweriesList.innerHTML = ''
-        brewpubBreweries.forEach(brewery => renderBreweries(brewery))
-    } else if (filterByBrewery.value === 'regional') {
-        const filterRegionalBreweries = breweries.filter(brewery => brewery.brewery_type === "regional")
-        const regionalBreweries = filterRegionalBreweries.map(brewery => brewery)
-        breweriesList.innerHTML = ''
-        regionalBreweries.forEach(brewery => renderBreweries(brewery))
+        breweryType.forEach(brewery => renderBreweries(brewery))
     }
 }
+
 
 selectStateForm.addEventListener('submit', (event) => {filterStates(event)})
 
@@ -131,3 +123,4 @@ function errorMessage() {
     breweriesList.innerHTML = ''
     breweriesList.append(listItem)
 }
+
