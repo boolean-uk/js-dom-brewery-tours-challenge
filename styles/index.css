@@ -243,13 +243,28 @@ article {
 }
 
 .page {
-  display: inline;
+  display: grid;
+  align-items: center;
+  grid-area: page;
 }
 
 #pagination {
   margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: 135px 20px 135px;
+  place-content: center;
+  grid-template-areas: 
+  'previous page next';
 }
 
 .hidden {
   display: none;
+}
+
+.previous-button {
+  grid-area: previous;
+}
+
+.next-button {
+  grid-area: next;
 }

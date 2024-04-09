@@ -185,8 +185,10 @@ function renderPagination() {
 
     previousButton.innerText = 'Previous'
     previousButton.classList.add('pagination-button')
+    previousButton.classList.add('previous-button')
     nextButton.innerText = 'Next'
     nextButton.classList.add('pagination-button')
+    nextButton.classList.add('next-button')
     page.innerText = currentPage
     page.classList.add('page')
 
