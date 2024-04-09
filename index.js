@@ -17,29 +17,43 @@ selectStateFormId.addEventListener('submit',(event) => {
   getFetch(state)
 })
 
+filterByTpyeId.addEventListener('click', (event) => {
+  event.preventDefault();
+  if (event.target.value === 'micro' || event.target.value === 'regional' ||event.target.value === 'brewpub') {
+    const selectedType = event.target.value;
+    if (selectedType) {
+      breweriesListUl.innerHTML = '';
+      getFetchByType(selectedType);
+    }
+  }
+})
+
+function getFetchByType(type){
+  fetch(getUrl)
+    .then(res => res.json())
+    .then(json => {
+      const filteredByType = json.filter(brewer => {
+        return [type].includes(brewer.brewery_type)
+      })
+      console.log(filteredByType)
+      filteredByType.forEach(item => listOfBreweries(item))
+    })
+}
 function getFetch(searchState) {
   fetch(getUrl)
-      .then(res => res.json())
-      .then(json => {
-          const filteredBreweries = json.filter(brewer => {
-              return (!searchState || brewer.state === searchState) &&
-                  ['micro', 'brewpub', 'Regional'].includes(brewer.brewery_type);
-          });
-          console.log(filteredBreweries)
-          filteredBreweries.forEach(item => listOfBreweries(item));
-      });
+    .then(res => res.json())
+    .then(json => {
+        const filteredBreweries = json.filter(brewer => {
+            return (!searchState || brewer.state === searchState) &&
+                ['micro', 'brewpub', 'regional'].includes(brewer.brewery_type);
+        });
+        console.log(filteredBreweries)
+        filteredBreweries.forEach(item => listOfBreweries(item));
+    });
 }
 
 function render(){
   getFetch()
-}
-
-filterByTypeForm.addEventListener('submit', (event) => {
-  event.preventDefault()
-})
-
-function filterBy(breweryType){
-  
 }
 
 function listOfBreweries(brewery){
@@ -85,5 +99,3 @@ function listOfBreweries(brewery){
 }
 
 render()
-
-
