@@ -9,10 +9,12 @@ const breweriesList = document.querySelector('#breweries-list')
 
 const url = 'https://api.openbrewerydb.org/v1/breweries'
 
+let breweries = []
 
 fetch(url)
     .then(response => response.json())
     .then(json => {loadBreweries(json)})
+
 
 function loadBreweries(json) {
     const filterBreweries = json.filter(brewery =>
@@ -21,17 +23,19 @@ function loadBreweries(json) {
         brewery.brewery_type === "regional"
     )
     const allBreweries = filterBreweries.map(brewery => brewery)
-    
-    createEachItem(allBreweries)
+    breweries = breweries.concat(filterBreweries)
+
+    createEachListItem()
 }
 
-function createEachItem(allBreweries) {
-    allBreweries.forEach(brewery => createListItems(brewery))
+function createEachListItem() {
+    breweries.forEach(brewery => renderBreweries(brewery))
 }
 
 
 
-function createListItems(brewery) {
+function renderBreweries(brewery) {
+
     const listItem = document.createElement('li')
 
     const breweryName = document.createElement('h2')
@@ -77,6 +81,33 @@ function createListItems(brewery) {
     linkSection.append(websiteLink)
     listItem.append(linkSection)
 
-
+    
     breweriesList.append(listItem)
+}
+
+
+filterByBrewery.addEventListener('change', () => {filterSelection()})
+
+
+function filterSelection() {
+
+    if (filterByBrewery.value === 'micro') {
+        const filterMicroBreweries = breweries.filter(brewery => brewery.brewery_type === "micro")
+        const microBreweries = filterMicroBreweries.map(brewery => brewery)
+        breweriesList.innerHTML = ''
+        microBreweries.forEach(brewery => renderBreweries(brewery))
+    }
+
+    if (filterByBrewery.value === 'brewpub') {
+        const filterBrewpubBreweries = breweries.filter(brewery => brewery.brewery_type === "brewpub")
+        const brewpubBreweries = filterBrewpubBreweries.map(brewery => brewery)
+        breweriesList.innerHTML = ''
+        brewpubBreweries.forEach(brewery => renderBreweries(brewery))
+    }
+
+    if (filterByBrewery.value === 'regional') {
+        const filterRegionalBreweries = breweries.filter(brewery => brewery.brewery_type === "regional")
+        const regionalBreweries = filterRegionalBreweries.map(brewery => brewery)
+        regionalBreweries.forEach(brewery => renderBreweries(brewery))
+    }
 }
