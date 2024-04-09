@@ -184,8 +184,19 @@ function renderPagination() {
     const page = document.createElement('p')
 
     previousButton.innerText = 'Previous'
+    previousButton.classList.add('pagination-button')
     nextButton.innerText = 'Next'
+    nextButton.classList.add('pagination-button')
     page.innerText = currentPage
+    page.classList.add('page')
+
+    if (currentPage === 1) {
+        previousButton.classList.add('hidden')
+    }
+
+    if (currentPage === totalPages) {
+        nextButton.classList.add('hidden')
+    }
 
     pagination.append(previousButton)
     pagination.append(page)
