@@ -13,6 +13,7 @@ const formSelect = document.querySelector("#filter-by-type")
 const breweriesUl = document.querySelector(".breweries-list")
 const typeDefault = document.querySelector("option")
 typeDefault.innerText = "Select a type.. "
+const listTitle = document.querySelector("h1")
 
 //Create arrays to populate by filtering
 const allBreweries = []
@@ -81,7 +82,8 @@ async function filterBreweries() {
 	})
 }
 
-//Filtering dropdown functionality
+
+//Filtering-dropdown functionality
 formSelect.addEventListener("change", async function (event) {
 	event.preventDefault()
 	await fetchBreweries()
@@ -91,15 +93,19 @@ formSelect.addEventListener("change", async function (event) {
 
 	if (selectedType === "micro") {
 		console.log(microArray)
+		listTitle.innerText = "List of Micro Breweries"
 		createCards(microArray)
 	} else if (selectedType === "regional") {
 		console.log(regionalArray)
+		listTitle.innerText = "List of Regional Breweries"
 		createCards(regionalArray)
 	} else if (selectedType === "brewpub") {
 		console.log(brewPubArray)
+		listTitle.innerText = "List of BrewPub Breweries"
 		createCards(brewPubArray)
 	} else {
 		console.log(breweriesToVisit)
+		listTitle.innerText = "List of Breweries"
 		createCards(breweriesToVisit)
 	}
 })
