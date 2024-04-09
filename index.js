@@ -116,44 +116,30 @@ typeFilter.addEventListener("change", (event) => {
 });
 
 
-//Throttle functions
-const throttle = (func, delay) => {
-    let lastTime = 0
-    return (...args) => {
-        const now = new Date().getTime()
-        if (now - lastTime < delay) return;
-        lastTime = now
-        func(...args)
-    }
-}
-
-
-//Throttled search function
-const searchAPI = () => {
-    console.log('throttled')
-}
-
-
 //Search functionality
 const searchBreweryForm = document.querySelector("#search-breweries-form");
-const throttledSearchAPI = throttle(searchAPI, 3000)
-
+let keyPresses = 0;
 searchBreweryForm.addEventListener("keyup", () => {
   const input = document.querySelector("#search-bar");
   const populatedBreweries = document.querySelectorAll(".brewery-card");
 
   for (let i = 0; i < populatedBreweries.length; i++) {
-    if (!displayNode(input.value, populatedBreweries[i])) {
+    if (!nameMatchCheck(input.value, populatedBreweries[i])) {
       populatedBreweries[i].style.display = "none";
     } else {
       populatedBreweries[i].style.display = "grid";
     }
   }
-  throttledSearchAPI()
+  if (keyPresses % Math.floor(Math.random() * 15) === 0 && keyPresses !== 0) {
+    console.log(keyPresses)
+    console.log('now')
+  }
+  keyPresses++
+
 });
 
 //Checks if brewery name matches search input
-const displayNode = (input, node) => {
+const nameMatchCheck = (input, node) => {
   return node
     .querySelector("h2")
     .innerText.toLowerCase()
