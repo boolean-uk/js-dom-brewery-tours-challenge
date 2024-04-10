@@ -64,6 +64,13 @@ async function getAllBreweries() {
 
 }
 
+async function getVisitListBreweries() {
+    const response = await fetch(jsonUrl)
+    const data = await response.json()
+
+    return data
+}
+
 // Event listeners
 selectStateForm.addEventListener('submit', (event) => {
     event.preventDefault()
@@ -91,8 +98,10 @@ filterByCityForm.addEventListener('change', () => {
 })
 
 // Render lists
-function renderBreweryCards(data) {
+async function renderBreweryCards(data) {
     breweryUl.innerHTML = ''
+    const visitBreweriesList = await getVisitListBreweries()
+    console.log(visitBreweriesList)
 
     for (let i = 0; i < data.length; i++) {
         if (i >= (currentPage -1) * itemsPerPage && i < currentPage *itemsPerPage) {
@@ -109,7 +118,7 @@ function renderBreweryCards(data) {
         const phoneP = document.createElement('p')
         const websiteSection = document.createElement('section')
         const websiteLink = document.createElement('a')
-        const addButton = document.createElement('button')
+        const visitListButton = document.createElement('button')
         const addButtonSection = document.createElement('section')
 
         breweryName.innerText = data[i].name
@@ -126,8 +135,8 @@ function renderBreweryCards(data) {
         websiteLink.setAttribute('href', data[i].website_url)
         websiteLink.setAttribute('target', '_blank')
         websiteLink.innerText = 'Visit Website'
-        addButton.innerText = 'Add to visit list'
-        addButton.classList.add('add-button')
+        
+        visitListButton.classList.add('add-button')
         addButtonSection.classList.add('add-button-section')
 
         li.append(breweryName)
@@ -147,13 +156,23 @@ function renderBreweryCards(data) {
 
         websiteSection.append(websiteLink)
 
-        addButtonSection.append(addButton)
+        addButtonSection.append(visitListButton)
 
         breweryUl.append(li)
 
-        addButton.addEventListener('click', () => {
-            addBreweriesToVisitList(data[i])
-        })
+        if (visitBreweriesList.find((item) => item.id === data[i].id)) {
+            visitListButton.innerText = 'Remove from visit list'
+        
+            visitListButton.addEventListener('click', () => {
+                deleteBreweryFromVisitList(data[i])            
+            })
+        } else {
+            visitListButton.innerText = 'Add to visit list'
+            
+            visitListButton.addEventListener('click', () => {
+                addBreweriesToVisitList(data[i])            
+            })
+        }
     };
 }
     
@@ -243,16 +262,32 @@ function createUniqueCityList(data) {
 
 // Add breweries to visit list
 async function addBreweriesToVisitList(data) {
-    console.log(data)
     const options = {
         method: 'POST',
-        body: JSON.stringify({data}),
+        body: JSON.stringify(data),
         headers: {
             'Content-type': 'application/json',
         },
     }
 
     await fetch(jsonUrl, options)
+
+    getAllBreweries()
+}
+
+// Remove brewery from visit list
+async function deleteBreweryFromVisitList(data) {
+    const deleteUrl = `http://localhost:3000/breweries/${data.id}`
+    const options = {
+        method: 'DELETE',
+        headers: {
+            'Content-type': 'application/json',
+        },
+    }
+
+    await fetch(deleteUrl,options)
+
+    getAllBreweries()
 }
 
 // Call functions
