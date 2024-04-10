@@ -16,6 +16,7 @@ let checkedCities = []
 let totalPages = 0
 const itemsPerPage = 10
 let currentPage = 1
+const jsonUrl = 'http://localhost:3000/breweries/'
 
 // Get breweries from API
 async function getAllBreweries() {
@@ -149,6 +150,10 @@ function renderBreweryCards(data) {
         addButtonSection.append(addButton)
 
         breweryUl.append(li)
+
+        addButton.addEventListener('click', () => {
+            addBreweriesToVisitList(data[i])
+        })
     };
 }
     
@@ -234,6 +239,20 @@ function createUniqueCityList(data) {
     let uniqueCities = [...new Set(data.map((item) => item.city))]
 
     renderCities(uniqueCities)
+}
+
+// Add breweries to visit list
+async function addBreweriesToVisitList(data) {
+    console.log(data)
+    const options = {
+        method: 'POST',
+        body: JSON.stringify({data}),
+        headers: {
+            'Content-type': 'application/json',
+        },
+    }
+
+    await fetch(jsonUrl, options)
 }
 
 // Call functions
