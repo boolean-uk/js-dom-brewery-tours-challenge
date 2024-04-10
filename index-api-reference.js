@@ -50,6 +50,7 @@ async function render() {
         filterQuery = `by_type=${currentFilter}&`
     }
 
+
     let breweries
 
     let apiReq = `https://api.openbrewerydb.org/v1/breweries?${filterQuery}&by_state=${state}&by_name=${name}&page=${page}`
@@ -62,6 +63,14 @@ async function render() {
             apiReq += `&by_city=${item}`
         }
     })
+
+    
+
+    console.log(name==false)
+
+    if(name) {
+        apiReq += `/search?query=&by_name=${name}`
+    }
 
     try {
         breweries = await fetch(apiReq)
