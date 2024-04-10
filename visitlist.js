@@ -1,11 +1,14 @@
+// HTML imports 
 const breweryUl = document.querySelector('#breweries-list')
 const pagination = document.querySelector('#pagination')
 
+// Global Variables
 let totalPages = 0
 const itemsPerPage = 10
 let currentPage = 1
 const jsonUrl = 'http://localhost:3000/breweries/'
 
+// Get breweries visit list from API
 async function getVisitListBreweries() {
     const response = await fetch(jsonUrl)
     const data = await response.json()
@@ -117,5 +120,5 @@ function renderPagination() {
     })
 }
 
-
+// Call functions
 getVisitListBreweries()
