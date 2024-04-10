@@ -125,7 +125,6 @@ formSelect.addEventListener("change", async function (event) {
 	await fetchBreweries()
 	breweriesUl.innerHTML = ""
 	const selectedType = event.target.value
-	// let breweryType = allUsBreweriesArray
 
 	if (selectedType === "micro") {
 		console.log(microArray)
@@ -172,29 +171,18 @@ async function handleNameSearch(event) {
 		item.name.toLowerCase().includes(searchTerm)
 	)
 
-	filteredByName.length = 0 // Clear previous results
+	filteredByName.length = 0 // Clear previous results(?)
 	filteredByName.push(...searchResults)
 
-	// Call createCards after filteredByState has been populated
 	await createCards(filteredByName)
-
-	// You can also log here to ensure filteredByState is populated correctly
-	console.log("Filtered by state:", filteredByName)
 }
 
-
-headerSearchBox.addEventListener("input", function (event) {
+stateInput.addEventListener("input", function (event) {
 	event.preventDefault()
 	handleSearch(event)
 })
 
-headerSearchBox.addEventListener("click", function (event) {
+headerSearchBox.addEventListener("submit", async function (event) {
 	event.preventDefault()
-	handleSearch(event)
-})
-headerSearchBox.addEventListener("submit", function (event) {
-	event.preventDefault()
-	handleSearch(event)
 })
 
-console.log("fbout", filteredByState)
