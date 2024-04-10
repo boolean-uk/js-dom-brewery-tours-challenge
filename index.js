@@ -9,81 +9,125 @@ const pageBack = document.querySelector("#page-back")
 const pageForward = document.querySelector("#page-forward")
 const pageNum = document.querySelector("#page-num")
 
-const stateObj = {
-    page: 1,
-}
+const stateObj = { rendered: {} }
+
+let page = 1
 
 pageForward.addEventListener("click", () => {
-    stateObj.page++
+    page++
     render()
 })
 
 pageBack.addEventListener("click", () => {
-    stateObj.page--
+    page--
     render()
 })
 
 async function render() {
-    let breweries
+    stateObj.rendered = {}
 
-    try {
-        breweries = await fetch("https://api.openbrewerydb.org/v1/breweries")
-    } catch (err) {
-        alert("An error has occured, please contact the system administrator")
-        throw err
-    }
+    const currentFilter = typeFilter.value.toLowerCase()
 
-    const breweriesData = await breweries.json()
+    const state = stateSearch.value.toLowerCase()
 
-    const currentFilter = typeFilter.value
-
-    const state = stateSearch.value
+    let pageSize = 3
 
     breweryList.innerHTML = ""
     cityList.innerHTML = ""
-    pageNum.innerHTML = `Page ${stateObj.page}`
+    pageNum.innerHTML = `Page ${page}`
 
-    if (stateObj.page < 2) {
+    if (page < 2) {
         pageBack.setAttribute("disabled", true)
     } else {
         pageBack.removeAttribute("disabled")
     }
 
-    const name = nameSearch.value.toLowerCase()
+    const name = nameSearch.value
+
+    let filterQuery = ""
+
+    if (currentFilter) {
+        filterQuery = [`by_type=${currentFilter}`]
+    } else {
+        filterQuery = ["by_type=micro", "by_type=regional", "by_type=brewpub"]
+    }
+
+    const citiesToFilter = Object.keys(stateObj)
 
     const cardsToRender = []
+    const cityFiltersToRender = []
 
-    for (let i = 0; i < breweriesData.length; i++) {
-        item = breweriesData[i]
-        const isValidBrewery =
-            item.brewery_type === "micro" ||
-            item.brewery_type === "regional" ||
-            item.brewery_type === "brewpub"
-        const isFiltered =
-            item.brewery_type === currentFilter || currentFilter === ""
-        const isInState = item.state === state || state === ""
-        const isSearched = item.name.toLowerCase().includes(name) || name === ""
-        const isChecked =
-            stateObj[item.city] === true ||
-            !Object.values(stateObj).includes(true)
-
-        const isDisplayed =
-            isValidBrewery && isFiltered && isInState && isSearched && isChecked
-
-        if (isDisplayed) {
-            cardsToRender.push(item)
+    for (let i = 0; i < filterQuery.length; i++) {
+        if (filterQuery.length === 1) {
+            pageSize *= 3
         }
-        if (isValidBrewery) {
-            createCityFilter(item)
+
+        let apiReq = `https://api.openbrewerydb.org/v1/breweries?${filterQuery[i]}&by_state=${state}&by_name=${name}&page=${page}&per_page=${pageSize}`
+
+        if (name) {
+            apiReq += `/search?query=&by_name=${name}`
+        }
+
+        cityFiltersToRender.push(apiReq)
+
+        if (Object.values(stateObj).includes(true) || !stateObj.length === 1) {
+            citiesToFilter.forEach((item) => {
+                isChecked = stateObj[item] === true
+                if (isChecked) {
+                    const cityFilterReq =
+                        apiReq + `&by_city=${item.replace(" ", "_")}`
+
+                    cardsToRender.push(cityFilterReq)
+                }
+            })
+        } else {
+            cardsToRender.push(apiReq)
         }
     }
 
-    const fillPages = stateObj.page * 5 - 5
-    const pageSize = 8
+    cardsToRender.forEach(async (element) => {
+        let breweries
 
-    for (let i = fillPages; i < fillPages + pageSize; i++) {
-        createListItem(cardsToRender[i])
-    }
+        try {
+            breweries = await fetch(element)
+            const breweriesData = await breweries.json()
+            breweriesData.forEach((item) => {
+                createListItem(item)
+            })
+        } catch (err) {
+            alert(
+                "An error has occured while loading the page, please contact the system administrator"
+            )
+            throw err
+        }
+
+        let cityDataReq
+
+        try {
+            cityDataReq = await fetch(element)
+            const cityData = await cityDataReq.json()
+        } catch (err) {
+            alert(
+                "An error has occured with your visit list, please contact the system administrator"
+            )
+            throw err
+        }
+    })
+    cityFiltersToRender.forEach(async (element) => {
+        try {
+            const breweryCites = await fetch(element)
+            const breweryCitesData = await breweryCites.json()
+            console.log(breweryCitesData)
+            breweryCitesData.forEach((item) => {
+                createCityFilter(item)
+            })
+        } catch (err) {
+            alert(
+                "An error has occured while loading the page, please contact the system administrator"
+            )
+            throw err
+        }
+    })
 }
 
 function createListItem(obj) {
@@ -144,33 +188,39 @@ function createListItem(obj) {
 }
 
 function createCityFilter(item) {
-    const checkbox = document.createElement("input")
-    checkbox.type = "checkbox"
-    checkbox.name = item.city
+    const isRendered = item.city in stateObj.rendered
 
-    if (!stateObj[item.city]) {
-        stateObj[item.city] = false
+    if (!isRendered) {
+        const checkbox = document.createElement("input")
+        checkbox.type = "checkbox"
+        checkbox.name = item.city
+
+        if (!stateObj[item.city]) {
+            stateObj[item.city] = false
+        }
+
+        checkbox.checked = stateObj[item.city]
+
+        checkbox.addEventListener("change", (e) => {
+            stateObj[item.city] = !stateObj[item.city]
+            render()
+        })
+
+        const checkboxLabel = document.createElement("label")
+        checkboxLabel.for = item.city
+        checkboxLabel.innerHTML = item.city
+
+        const checkboxContainer = document.createElement("li")
+        checkboxContainer.style.display = "flex"
+        checkboxContainer.style.flexDirection = "rows"
+
+        checkboxContainer.append(checkbox)
+        checkboxContainer.append(checkboxLabel)
+
+        cityList.append(checkboxContainer)
+
+        stateObj.rendered[item.city] = true
     }
-
-    checkbox.checked = stateObj[item.city]
-
-    checkbox.addEventListener("change", (e) => {
-        stateObj[item.city] = !stateObj[item.city]
-        render()
-    })
-
-    const checkboxLabel = document.createElement("label")
-    checkboxLabel.for = item.city
-    checkboxLabel.innerHTML = item.city
-
-    const checkboxContainer = document.createElement("li")
-    checkboxContainer.style.display = "flex"
-    checkboxContainer.style.flexDirection = "rows"
-
-    checkboxContainer.append(checkbox)
-    checkboxContainer.append(checkboxLabel)
-
-    cityList.append(checkboxContainer)
 }
 
 typeFilter.addEventListener("change", render)
@@ -178,7 +228,7 @@ typeFilter.addEventListener("change", render)
 stateSearchForm.addEventListener("submit", (e) => {
     e.preventDefault()
 
-    stateObj.page = 1
+    page = 1
 
     render()
 })
@@ -190,7 +240,7 @@ clearCity.addEventListener("click", () => {
         stateObj[item] = false
     })
 
-    stateObj.page = 1
+    page = 1
 
     render()
 })
