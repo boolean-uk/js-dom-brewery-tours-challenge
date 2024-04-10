@@ -1,9 +1,13 @@
 const url = 'https://api.openbrewerydb.org/v1/breweries'
 const breweriesList = document.getElementById('breweries-list')
-const breweriesFilter = document.getElementById('filter-by-type')
+const breweriesFilterByType = document.getElementById('filter-by-type')
+const breweriesFilterByState = document.getElementById('select-state-form')
+const breweriesFilterInput = document.getElementById('select-state')
 
-function createBreweryEl(name, type, street, city, phoneNumber, website_url) {
+function createBreweryEl(name, type, street, city, phoneNumber, website_url, state) {
     const breweryEl = document.createElement('li')
+    breweryEl.setAttribute('value', state)
+    breweryEl.setAttribute('type', type)
     breweriesList.append(breweryEl)
 
     const breweryName = document.createElement('h2')
@@ -55,13 +59,51 @@ function createBreweryEl(name, type, street, city, phoneNumber, website_url) {
     breweryLink.setAttribute('target', '_blank')
     breweryLink.innerText = 'Visit Website'
     breweryLinkSection.append(breweryLink)
+
+    checkBreweryType(type, breweryEl)
+
+    breweriesFilterByState.addEventListener('submit', (e) => {
+        e.preventDefault()
+        
+        if (
+            breweryEl.getAttribute('value').toLowerCase() === breweriesFilterInput.value.toLowerCase() ||
+            breweriesFilterInput.value === ''
+        ) {
+            breweryEl.style.display = ''
+        } else {
+            breweryEl.style.display = 'none'
+        }
+    })
+}
+
+function checkBreweryType(brewery_type, brewery_el) {
+    if (
+        brewery_type !== 'micro' &&
+        brewery_type !== 'regional' &&
+        brewery_type !== 'brewpub'
+    ) brewery_el.remove()
 }
 
 async function getAllBreweries() {
     const res = await fetch(url)
     const json = await res.json()
 
-    json.forEach(brewery => createBreweryEl(brewery.name, brewery.brewery_type, brewery.street, `${brewery.city}, ${brewery.postal_code}`, brewery.phone, brewery.website_url))
+    json.forEach(brewery => createBreweryEl(brewery.name, brewery.brewery_type, brewery.street, `${brewery.city}, ${brewery.postal_code}`, brewery.phone, brewery.website_url, brewery.state))
 }
+
+function onChange() {
+    for (let i = 0; i < breweriesList.children.length; i++) {
+        if (
+            breweriesFilterByType.value ===  breweriesList.children[i].getAttribute('type') ||
+            breweriesFilterByType.value === ''
+        ) {
+            breweriesList.children[i].style.display = ''
+        } else {
+            breweriesList.children[i].style.display = 'none'
+        }
+    }
+}
+
+breweriesFilterByType.addEventListener('change', onChange)
 
 getAllBreweries()
