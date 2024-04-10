@@ -159,7 +159,7 @@ article {
   grid-template-areas:
     "heading heading type"
     "address phone ."
-    ". . link";
+    ". add-button-section link";
   grid-template-columns: repeat(2, 1fr) minmax(140px, auto);
   grid-template-rows: repeat(3, auto);
 
@@ -267,4 +267,18 @@ article {
 
 .next-button {
   grid-area: next;
+}
+
+.add-button {
+  padding: 5px 10px;
+  grid-area: add-button;
+  margin-right: 10px;
+}
+
+.add-button-section {
+  grid-area: add-button-section;
+  display: grid;
+  grid-template-columns: 1fr 150px;
+  grid-template-areas: 
+  '. add-button';
 }

@@ -108,6 +108,8 @@ function renderBreweryCards(data) {
         const phoneP = document.createElement('p')
         const websiteSection = document.createElement('section')
         const websiteLink = document.createElement('a')
+        const addButton = document.createElement('button')
+        const addButtonSection = document.createElement('section')
 
         breweryName.innerText = data[i].name
         div.classList.add('type')
@@ -123,12 +125,16 @@ function renderBreweryCards(data) {
         websiteLink.setAttribute('href', data[i].website_url)
         websiteLink.setAttribute('target', '_blank')
         websiteLink.innerText = 'Visit Website'
+        addButton.innerText = 'Add to visit list'
+        addButton.classList.add('add-button')
+        addButtonSection.classList.add('add-button-section')
 
         li.append(breweryName)
         li.append(div)
         li.append(addressSection)
         li.append(phoneSection)
         li.append(websiteSection)
+        li.append(addButtonSection)
 
         addressSection.append(addressH3)
         addressSection.append(adressP)
@@ -139,6 +145,8 @@ function renderBreweryCards(data) {
         phoneSection.append(phoneP)
 
         websiteSection.append(websiteLink)
+
+        addButtonSection.append(addButton)
 
         breweryUl.append(li)
     };
