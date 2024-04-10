@@ -9,9 +9,9 @@ const pageBack = document.querySelector("#page-back")
 const pageForward = document.querySelector("#page-forward")
 const pageNum = document.querySelector("#page-num")
 
-const stateObj = {rendered:{}}
+const stateObj = { rendered: {} }
 
-const page = 1
+let page = 1
 
 pageForward.addEventListener("click", () => {
     page++
@@ -25,12 +25,12 @@ pageBack.addEventListener("click", () => {
 
 async function render() {
     stateObj.rendered = {}
-    
+
     const currentFilter = typeFilter.value.toLowerCase()
 
     const state = stateSearch.value.toLowerCase()
 
-    const pageSize = 8
+    let pageSize = 3
 
     breweryList.innerHTML = ""
     cityList.innerHTML = ""
@@ -47,53 +47,85 @@ async function render() {
     let filterQuery = ""
 
     if (currentFilter) {
-        filterQuery = `by_type=${currentFilter}&`
+        filterQuery = [`by_type=${currentFilter}`]
+    } else {
+        filterQuery = ["by_type=micro", "by_type=regional", "by_type=brewpub"]
     }
-
-
-    let breweries
-
-    let apiReq = `https://api.openbrewerydb.org/v1/breweries?${filterQuery}&by_state=${state}&by_name=${name}&page=${page}`
 
     const citiesToFilter = Object.keys(stateObj)
 
-    citiesToFilter.forEach((item) => {
-        isChecked = stateObj[item] === true
-        if (isChecked) {
-            apiReq += `&by_city=${item}`
+    const cardsToRender = []
+    const cityFiltersToRender = []
+
+    for (let i = 0; i < filterQuery.length; i++) {
+        if (filterQuery.length === 1) {
+            pageSize *= 3
+        }
+
+        let apiReq = `https://api.openbrewerydb.org/v1/breweries?${filterQuery[i]}&by_state=${state}&by_name=${name}&page=${page}&per_page=${pageSize}`
+
+        if (name) {
+            apiReq += `/search?query=&by_name=${name}`
+        }
+
+        cityFiltersToRender.push(apiReq)
+
+        if (Object.values(stateObj).includes(true) || !stateObj.length === 1) {
+            citiesToFilter.forEach((item) => {
+                isChecked = stateObj[item] === true
+                if (isChecked) {
+                    const cityFilterReq =
+                        apiReq + `&by_city=${item.replace(" ", "_")}`
+
+                    cardsToRender.push(cityFilterReq)
+                }
+            })
+        } else {
+            cardsToRender.push(apiReq)
+        }
+    }
+
+    cardsToRender.forEach(async (element) => {
+        let breweries
+
+        try {
+            breweries = await fetch(element)
+            const breweriesData = await breweries.json()
+            breweriesData.forEach((item) => {
+                createListItem(item)
+            })
+        } catch (err) {
+            alert(
+                "An error has occured while loading the page, please contact the system administrator"
+            )
+            throw err
+        }
+
+        let cityDataReq
+
+        try {
+            cityDataReq = await fetch(element)
+            const cityData = await cityDataReq.json()
+        } catch (err) {
+            alert(
+                "An error has occured with your visit list, please contact the system administrator"
+            )
+            throw err
         }
     })
-
-    
-
-    console.log(name==false)
-
-    if(name) {
-        apiReq += `/search?query=&by_name=${name}`
-    }
-
-    try {
-        breweries = await fetch(apiReq)
-    } catch (err) {
-        alert("An error has occured, please contact the system administrator")
-        throw err
-    }
-
-    const breweriesData = await breweries.json()
-
-    breweriesData.forEach((item) => {
-        const isValidBrewery =
-            item.brewery_type === "micro" ||
-            item.brewery_type === "regional" ||
-            item.brewery_type === "brewpub"
-
-        const isDisplayed = isValidBrewery
-
-        if (isDisplayed) {
-            createListItem(item)
-        }
-        if (isValidBrewery) {
-            createCityFilter(item)
+    cityFiltersToRender.forEach(async (element) => {
+        try {
+            const breweryCites = await fetch(element)
+            const breweryCitesData = await breweryCites.json()
+            console.log(breweryCitesData)
+            breweryCitesData.forEach((item) => {
+                createCityFilter(item)
+            })
+        } catch (err) {
+            alert(
+                "An error has occured while loading the page, please contact the system administrator"
+            )
+            throw err
         }
     })
 }
@@ -156,10 +188,8 @@ function createListItem(obj) {
 }
 
 function createCityFilter(item) {
-    
-    
     const isRendered = item.city in stateObj.rendered
-    
+
     if (!isRendered) {
         const checkbox = document.createElement("input")
         checkbox.type = "checkbox"
@@ -198,7 +228,7 @@ typeFilter.addEventListener("change", render)
 stateSearchForm.addEventListener("submit", (e) => {
     e.preventDefault()
 
-    stateObj.page = 1
+    page = 1
 
     render()
 })
@@ -210,7 +240,7 @@ clearCity.addEventListener("click", () => {
         stateObj[item] = false
     })
 
-    stateObj.page = 1
+    page = 1
 
     render()
 })
