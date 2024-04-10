@@ -101,81 +101,79 @@ filterByCityForm.addEventListener('change', () => {
 async function renderBreweryCards(data) {
     breweryUl.innerHTML = ''
     const visitBreweriesList = await getVisitListBreweries()
-    console.log(visitBreweriesList)
 
     for (let i = 0; i < data.length; i++) {
         if (i >= (currentPage -1) * itemsPerPage && i < currentPage *itemsPerPage) {
-        const li = document.createElement('li')
-        const breweryName = document.createElement('h2')
-        const div = document.createElement('div')
-        const addressSection = document.createElement('section')
-        const addressH3 = document.createElement('h3')
-        const adressP = document.createElement('p')
-        const cityP = document.createElement('p')
-        const strong = document.createElement('strong')
-        const phoneSection = document.createElement('section')
-        const phoneH3 = document.createElement('h3')
-        const phoneP = document.createElement('p')
-        const websiteSection = document.createElement('section')
-        const websiteLink = document.createElement('a')
-        const visitListButton = document.createElement('button')
-        const addButtonSection = document.createElement('section')
+            const li = document.createElement('li')
+            const breweryName = document.createElement('h2')
+            const div = document.createElement('div')
+            const addressSection = document.createElement('section')
+            const addressH3 = document.createElement('h3')
+            const adressP = document.createElement('p')
+            const cityP = document.createElement('p')
+            const strong = document.createElement('strong')
+            const phoneSection = document.createElement('section')
+            const phoneH3 = document.createElement('h3')
+            const phoneP = document.createElement('p')
+            const websiteSection = document.createElement('section')
+            const websiteLink = document.createElement('a')
+            const visitListButton = document.createElement('button')
+            const visitListButtonSection = document.createElement('section')
 
-        breweryName.innerText = data[i].name
-        div.classList.add('type')
-        div.innerText = data[i].brewery_type
-        addressSection.classList.add('address')
-        addressH3.innerText = 'Address:'
-        adressP.innerText = data[i].address_1
-        strong.innerText = data[i].city + ', ' + data[i].postal_code
-        phoneSection.classList.add('phone')
-        phoneH3.innerText = 'Phone:'
-        phoneP.innerText = data[i].phone
-        websiteSection.classList.add('link')
-        websiteLink.setAttribute('href', data[i].website_url)
-        websiteLink.setAttribute('target', '_blank')
-        websiteLink.innerText = 'Visit Website'
-        
-        visitListButton.classList.add('add-button')
-        addButtonSection.classList.add('add-button-section')
-
-        li.append(breweryName)
-        li.append(div)
-        li.append(addressSection)
-        li.append(phoneSection)
-        li.append(websiteSection)
-        li.append(addButtonSection)
-
-        addressSection.append(addressH3)
-        addressSection.append(adressP)
-        addressSection.append(cityP)
-        cityP.append(strong)
-
-        phoneSection.append(phoneH3)
-        phoneSection.append(phoneP)
-
-        websiteSection.append(websiteLink)
-
-        addButtonSection.append(visitListButton)
-
-        breweryUl.append(li)
-
-        if (visitBreweriesList.find((item) => item.id === data[i].id)) {
-            visitListButton.innerText = 'Remove from visit list'
-        
-            visitListButton.addEventListener('click', () => {
-                deleteBreweryFromVisitList(data[i])            
-            })
-        } else {
-            visitListButton.innerText = 'Add to visit list'
+            breweryName.innerText = data[i].name
+            div.classList.add('type')
+            div.innerText = data[i].brewery_type
+            addressSection.classList.add('address')
+            addressH3.innerText = 'Address:'
+            adressP.innerText = data[i].address_1
+            strong.innerText = data[i].city + ', ' + data[i].postal_code
+            phoneSection.classList.add('phone')
+            phoneH3.innerText = 'Phone:'
+            phoneP.innerText = data[i].phone
+            websiteSection.classList.add('link')
+            websiteLink.setAttribute('href', data[i].website_url)
+            websiteLink.setAttribute('target', '_blank')
+            websiteLink.innerText = 'Visit Website'
             
-            visitListButton.addEventListener('click', () => {
-                addBreweriesToVisitList(data[i])            
-            })
-        }
-    };
-}
-    
+            visitListButton.classList.add('visit-list-button')
+            visitListButtonSection.classList.add('visit-list-section')
+
+            li.append(breweryName)
+            li.append(div)
+            li.append(addressSection)
+            li.append(phoneSection)
+            li.append(websiteSection)
+            li.append(visitListButtonSection)
+
+            addressSection.append(addressH3)
+            addressSection.append(adressP)
+            addressSection.append(cityP)
+            cityP.append(strong)
+
+            phoneSection.append(phoneH3)
+            phoneSection.append(phoneP)
+
+            websiteSection.append(websiteLink)
+
+            visitListButtonSection.append(visitListButton)
+
+            breweryUl.append(li)
+
+            if (visitBreweriesList.find((item) => item.id === data[i].id)) {
+                visitListButton.innerText = 'Remove from visit list'
+            
+                visitListButton.addEventListener('click', () => {
+                    deleteBreweryFromVisitList(data[i])            
+                })
+            } else {
+                visitListButton.innerText = 'Add to visit list'
+
+                visitListButton.addEventListener('click', () => {
+                    addBreweriesToVisitList(data[i])            
+                })
+            }
+        };
+    }
 }
 
 function renderCities(uniqueCities) {

@@ -40,9 +40,9 @@ body {
 main {
   display: grid;
   grid-template-areas:
-    "sidebar title"
-    "sidebar search-bar"
-    "sidebar article";
+    "sidebar title visit-list"
+    "sidebar search-bar search-bar"
+    "sidebar article article";
   grid-template-columns: 1fr 3fr;
   grid-template-rows: auto auto 1fr;
 }
@@ -269,16 +269,33 @@ article {
   grid-area: next;
 }
 
-.add-button {
+.visit-list-button {
   padding: 5px 10px;
   grid-area: add-button;
   margin-right: 10px;
+  border: 2px solid #002171;
+  border-radius: 8px;
 }
 
-.add-button-section {
+.visit-list-section {
   grid-area: add-button-section;
   display: grid;
-  grid-template-columns: 1fr 150px;
+  grid-template-columns: 1fr 200px;
   grid-template-areas: 
   '. add-button';
+}
+
+.visit-list-link-container {
+  display: grid;
+  place-content: center;
+  padding-right: 16px;
+}
+
+.visit-list-link-container a {
+  font-size: 1.3rem;
+  text-decoration: none;
+  color: white;
+  background-color: #1565c0;
+  padding: 5px 10px;
+  border-radius: 8px;
 }
