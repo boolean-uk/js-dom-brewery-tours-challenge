@@ -299,3 +299,17 @@ article {
   padding: 5px 10px;
   border-radius: 8px;
 }
+
+.back-button {
+  margin-left: 16px;
+  color: white;
+  background-color: #1565c0;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+.back-button a {
+  text-decoration: none;
+  color: white;
+}
