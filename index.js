@@ -100,18 +100,6 @@ async function render() {
             )
             throw err
         }
-
-        let cityDataReq
-
-        try {
-            cityDataReq = await fetch(element)
-            const cityData = await cityDataReq.json()
-        } catch (err) {
-            alert(
-                "An error has occured with your visit list, please contact the system administrator"
-            )
-            throw err
-        }
     })
     cityFiltersToRender.forEach(async (element) => {
         try {
@@ -130,7 +118,7 @@ async function render() {
     })
 }
 
-function createListItem(obj) {
+async function createListItem(obj) {
     const breweryName = document.createElement("h2")
     breweryName.innerHTML = obj.name
 
@@ -175,6 +163,56 @@ function createListItem(obj) {
     websiteButton.href = obj.website_url
     websiteButton.target = "_blank"
 
+    const visitButton = document.createElement("button")
+    let isVisiting = false
+    try {
+        const visitReq = await fetch(`http://localhost:3000/visits/${obj.id}`)
+
+        let is404 = false
+
+        if (visitReq.status === 404) {
+            is404 = true
+        }
+
+        if (!is404) {
+            const visitReqData = await visitReq.json()
+            isVisiting = true
+        }
+    } catch (err) {
+        
+    }
+
+    if (!isVisiting) {
+        visitButton.innerHTML = "Add to Visit List"
+        visitButton.addEventListener("click", async () => {
+            const options = {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: `{"id":"${obj.id}","name":"${obj.name}"}`,
+            }
+
+            console.log(options.body)
+
+            fetch(`http://localhost:3000/visits`, options)
+                .then((response) => response.json())
+                .then((response) => {console.log(response); render()})
+                .catch((err) => console.error(err))
+        })
+    } else {
+        visitButton.innerHTML = "Remove from Visit List"
+        visitButton.addEventListener("click", async () => {
+            const options = {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+            }
+
+            fetch(`http://localhost:3000/visits/${obj.id}`, options)
+                .then((response) => response.json())
+                .then((response) => {console.log(response); render()})
+                .catch((err) => console.error(err))
+        })
+    }
+
     const breweryItem = document.createElement("li")
     breweryItem.className = "brewery--list"
 
@@ -183,6 +221,7 @@ function createListItem(obj) {
     breweryItem.append(addressBlock)
     breweryItem.append(phoneBlock)
     breweryItem.append(websiteButton)
+    breweryItem.append(visitButton)
 
     breweryList.append(breweryItem)
 }
