@@ -38,6 +38,8 @@ function renderVisitBreweryCards(data) {
             const phoneP = document.createElement('p')
             const websiteSection = document.createElement('section')
             const websiteLink = document.createElement('a')
+            const visitListButton = document.createElement('button')
+            const visitListButtonSection = document.createElement('section')
 
             breweryName.innerText = data[i].name
             div.classList.add('type')
@@ -53,12 +55,16 @@ function renderVisitBreweryCards(data) {
             websiteLink.setAttribute('href', data[i].website_url)
             websiteLink.setAttribute('target', '_blank')
             websiteLink.innerText = 'Visit Website'
+            visitListButton.classList.add('visit-list-button')
+            visitListButtonSection.classList.add('visit-list-section')
+            visitListButton.innerText = 'Remove from visit list'
 
             li.append(breweryName)
             li.append(div)
             li.append(addressSection)
             li.append(phoneSection)
             li.append(websiteSection)
+            li.append(visitListButtonSection)
 
             addressSection.append(addressH3)
             addressSection.append(adressP)
@@ -70,7 +76,13 @@ function renderVisitBreweryCards(data) {
 
             websiteSection.append(websiteLink)
 
+            visitListButtonSection.append(visitListButton)
+
             breweryUl.append(li)
+
+            visitListButton.addEventListener('click', () => {
+                deleteBreweryFromVisitList(data[i])            
+            })
         };
     }
 }
@@ -95,7 +107,7 @@ function renderPagination() {
         previousButton.classList.add('hidden')
     }
 
-    if (currentPage === totalPages) {
+    if (currentPage === totalPages || totalPages === 0) {
         nextButton.classList.add('hidden')
     }
 
@@ -118,6 +130,21 @@ function renderPagination() {
             getVisitListBreweries()
         }
     })
+}
+
+// Delete brewery from visit list
+async function deleteBreweryFromVisitList(data) {
+    const deleteUrl = `http://localhost:3000/breweries/${data.id}`
+    const options = {
+        method: 'DELETE',
+        headers: {
+            'Content-type': 'application/json',
+        },
+    }
+
+    await fetch(deleteUrl,options)
+
+    getVisitListBreweries()
 }
 
 // Call functions
