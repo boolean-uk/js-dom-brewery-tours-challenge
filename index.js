@@ -20,8 +20,7 @@ function loadBreweries(json) {
         brewery.brewery_type === "brewpub" ||
         brewery.brewery_type === "regional"
     )
-    const allBreweries = filterBreweries.map(brewery => brewery)
-    breweries = breweries.concat(filterBreweries)
+    breweries = structuredClone(filterBreweries)
 
     createEachListItem()
 }
@@ -29,7 +28,6 @@ function loadBreweries(json) {
 function createEachListItem() {
     breweries.forEach(brewery => renderBreweries(brewery))
 }
-
 
 
 function renderBreweries(brewery) {
@@ -113,21 +111,20 @@ function filterStates(event) {
     } else {errorMessage()}
 }
 
-brewerySearchForm.addEventListener('input', (event) => {searchBrewery(event)})
+brewerySearch.addEventListener('input', (event) => searchBrewery(event))
+
 
 function searchBrewery(event) {
     event.preventDefault()
-    const userSearch = event.target.value
- 
+    const userSearch = brewerySearch.value
+
     if (userSearch.value === breweries.name) {
-        const filterBrewery = breweries.filter(brewery => brewery.name === brewerySearch.value)
+        const filterBrewery = breweries.filter(brewery => brewery.name === userSearch)
         const mapSearch = filterBrewery.map(brewery => brewery)
         breweriesList.innerHTML = ''
         mapSearch.forEach(brewery => renderBreweries(brewery))
-    }
+    } else {errorMessage()}
 }
-
-
 
 
 function errorMessage() {
