@@ -28,7 +28,7 @@ async function render() {
 
     const currentFilter = typeFilter.value.toLowerCase()
 
-    const state = stateSearch.value.toLowerCase()
+    const state = stateSearch.value.toLowerCase().replace(" ", "_")
 
     let pageSize = 3
 
@@ -42,7 +42,7 @@ async function render() {
         pageBack.removeAttribute("disabled")
     }
 
-    const name = nameSearch.value
+    const name = nameSearch.value.replace(" ", "_")
 
     let filterQuery = ""
 
