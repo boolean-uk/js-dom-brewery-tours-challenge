@@ -117,13 +117,11 @@ brewerySearch.addEventListener('input', (event) => searchBrewery(event))
 function searchBrewery(event) {
     event.preventDefault()
     const userSearch = brewerySearch.value
-
-    if (userSearch.value === breweries.name) {
-        const filterBrewery = breweries.filter(brewery => brewery.name === userSearch)
-        const mapSearch = filterBrewery.map(brewery => brewery)
-        breweriesList.innerHTML = ''
-        mapSearch.forEach(brewery => renderBreweries(brewery))
-    } else {errorMessage()}
+    const breweryNameList = breweries.map(brewery => brewery.name)
+    const compareNames = breweryNameList.forEach(brewery => brewery === userSearch)
+    console.log(compareNames)
+    
+    // findEachName.forEach(brewery => renderBreweries(brewery))
 }
 
 
