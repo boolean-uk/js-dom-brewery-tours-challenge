@@ -105,7 +105,6 @@ async function render() {
         try {
             const breweryCites = await fetch(element)
             const breweryCitesData = await breweryCites.json()
-            console.log(breweryCitesData)
             breweryCitesData.forEach((item) => {
                 createCityFilter(item)
             })
@@ -191,11 +190,10 @@ async function createListItem(obj) {
                 body: `{"id":"${obj.id}","name":"${obj.name}"}`,
             }
 
-            console.log(options.body)
 
             fetch(`http://localhost:3000/visits`, options)
                 .then((response) => response.json())
-                .then((response) => {console.log(response); render()})
+                .then((response) =>  render())
                 .catch((err) => console.error(err))
         })
     } else {
@@ -208,7 +206,7 @@ async function createListItem(obj) {
 
             fetch(`http://localhost:3000/visits/${obj.id}`, options)
                 .then((response) => response.json())
-                .then((response) => {console.log(response); render()})
+                .then((response) => {render()})
                 .catch((err) => console.error(err))
         })
     }
