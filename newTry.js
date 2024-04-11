@@ -208,18 +208,50 @@ const clearAll = () => {
 }
 
 
-//Pagination elements
+//Builds pagination elements
+let pageNumber = 0
 const renderPageButtons = () => {
 const breweryList = document.querySelector("#breweries-list");
   
 const nextButton = document.createElement('button')
 nextButton.innerText = 'Next Page'
+nextButton.addEventListener('click', () => {
+    const currentlyRenderedCards = document.querySelectorAll('.brewery-card')
+    if ((pageNumber + 1) * 10 > currentlyRenderedCards.length) {
+        return
+    }
+    pageNumber ++
+    console.log(pageNumber)
+    render10(pageNumber)
+})
 
 const prevButton = document.createElement('button')
 prevButton.innerText = 'Prev Page'
+prevButton.addEventListener('click', () => {
+    if (pageNumber < 1) {
+        return
+    }
+    pageNumber --
+    console.log(pageNumber)
+    render10(pageNumber)
+})
+
+
 
 breweryList.append(prevButton, nextButton)
 
-console.log(currentlyRenderedBreweries)
+render10(pageNumber)
 }
 
+
+const render10 = (number) => {
+    const currentlyRenderedCards = document.querySelectorAll('.brewery-card')
+
+    for (let i = 0; i < currentlyRenderedCards.length ; i++) {
+        if (i < (number*10) || i > (number*10 + 9)) {
+            currentlyRenderedCards[i].style.display = "none"
+        } else {
+            currentlyRenderedCards[i].style.display = "grid"
+        }
+    }
+}
