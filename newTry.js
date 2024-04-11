@@ -1,3 +1,5 @@
+let currentlyRenderedBreweries = []
+
 //Build brewery card
 const buildCard = (brewery) => {
   if (
@@ -66,16 +68,20 @@ const buildCard = (brewery) => {
     linkSection.append(link);
     li.append(linkSection);
   }
+  
+  if (!currentlyRenderedBreweries.includes(brewery)) {
+    currentlyRenderedBreweries.push(brewery)
+  }
   return li;
 };
 
 //Render cards
-let currentlyRenderedBreweries = [];
 const render = async () => {
   const breweryList = document.querySelector("#breweries-list");
   breweryList.innerHTML = "";
-
-  currentlyRenderedBreweries = [];
+  const cityFilterForm = document.querySelector("#filter-by-city-form");
+  cityFilterForm.innerHTML = "";
+  currentlyRenderedBreweries = []
 
   let url = "https://api.openbrewerydb.org/v1/breweries?";
 
@@ -97,7 +103,6 @@ const render = async () => {
   json.forEach((element) => {
     const li = buildCard(element);
     if (li) {
-      currentlyRenderedBreweries.push(element);
       breweryList.append(li);
       renderCityCheckboxes(element.city);
     }
@@ -138,15 +143,13 @@ searchBar.addEventListener("keyup", (event) => {
 });
 
 //Build city input checkboxes and labels
-let filterCities = [];
 const renderCityCheckboxes = (city) => {
+  const cityFilterForm = document.querySelector("#filter-by-city-form");
 
-    const cityFilterForm = document.querySelector("#filter-by-city-form");
-
-  if (filterCities.includes(city) || cityFilterForm.innerHTML.includes(city)) {
+  if (cityFilterForm.innerHTML.includes(city)) {
     return;
   }
-  
+
   const input = document.createElement("input");
   input.type = "checkbox";
   input.value = city;
@@ -162,29 +165,27 @@ const renderCityCheckboxes = (city) => {
 
   cityFilterForm.append(input);
   cityFilterForm.append(label);
-
-  filterCities.push(city);
 };
 
 //Render according to available cities
 const renderBreweriesByCheckbox = (event) => {
   const breweryList = document.querySelector("#breweries-list");
   breweryList.innerHTML = "";
-  if (
-    !event.srcElement.checked &&
-    filterCities.includes(event.target.defaultValue)
-  ) {
-    filterCities.splice(filterCities.indexOf(event.target.defaultValue), 1);
-  } else {
-    filterCities.push(event.target.defaultValue);
-  }
 
-  currentlyRenderedBreweries.forEach((brewery) => {
-    if (filterCities.includes(brewery.city)) {
-    const breweryToAdd = buildCard(brewery);
-    breweryList.append(breweryToAdd);
+  const cityFilterForm = document.querySelectorAll('input[type=checkbox]');
+  
+
+    currentlyRenderedBreweries.forEach((brewery) => {
+        for (let i = 0; i < cityFilterForm.length; i++) {
+            if (cityFilterForm[i].checked && cityFilterForm[i].defaultValue === brewery.city) {
+                const breweryToAdd = buildCard(brewery)
+                breweryList.append(breweryToAdd)
+            }
     }
-  });
+  })
+
+  console.log(currentlyRenderedBreweries)
+ 
 };
 
 // //Clear city filters
