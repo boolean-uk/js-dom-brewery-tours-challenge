@@ -42,9 +42,10 @@ main {
   grid-template-areas:
     "sidebar title"
     "sidebar search-bar"
+    "sidebar page-bar"
     "sidebar article";
   grid-template-columns: 1fr 3fr;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto auto 1fr;
 }
 
 .filters-section {
@@ -123,6 +124,12 @@ h1 {
   grid-area: search-bar;
 
   padding: 0 1rem;
+}
+
+.page-bar {
+  grid-area: page-bar;
+  padding: 0 1rem;
+  margin-top: 10px;
 }
 
 #search-breweries-form {
