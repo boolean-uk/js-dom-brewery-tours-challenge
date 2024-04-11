@@ -90,7 +90,7 @@ main {
   font-size: 0.725rem;
 }
 
-#filter-by-type-form {
+#filter-by-type-form, #filter-cities-form {
   padding: 1rem;
 
   display: grid;
@@ -105,15 +105,13 @@ main {
   font-weight: bold;
 }
 
-#filter-by-city-form {
-  padding: 1rem;
+#filter-by-city {
 
   display: grid;
   grid-template-columns: 24px auto;
   align-items: center;
 
   border-radius: 0 0 0.25rem 0.25rem;
-  border: 1px solid #000;
   border-top: none;
 }
 

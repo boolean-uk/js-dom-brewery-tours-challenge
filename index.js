@@ -5,6 +5,8 @@ const filterByBreweryElement = document.querySelector('#filter-by-type')
 const breweriesList = document.querySelector('#breweries-list')
 const brewerySearchForm = document.querySelector('#search-breweries-form')
 const brewerySearchElement = document.querySelector('#search-breweries')
+const filterByCityForm = document.querySelector('#filter-cities-form')
+const filterByCitySection = document.querySelector('#filter-by-city')
 const url = 'https://api.openbrewerydb.org/v1/breweries'
 
 let breweries = []
@@ -31,7 +33,7 @@ function createEachListItem() {
 
 
 function renderBreweries(brewery) {
-    
+
     const listItem = document.createElement('li')
 
     const breweryName = document.createElement('h2')
@@ -114,6 +116,29 @@ function searchBrewery(event) {
     fetch(`https://api.openbrewerydb.org/breweries?by_name=${userSearch}`)
         .then(response => response.json())
         .then(json => {breweriesList.innerHTML = '', json.forEach(brewery => renderBreweries(brewery))})
+}
+
+
+function listCities() {
+    fetch(url)
+        .then(response => response.json())
+        .then(json => {json.forEach(brewery => createCitiesForFilter(brewery))})
+}
+listCities()
+
+function createCitiesForFilter(brewery) {
+    const input = document.createElement('input')
+    input.type = 'checkbox'
+    input.setAttribute('id', 'city-option')
+    const label = document.createElement('label')
+    label.setAttribute('for', 'city-option')
+
+    
+    label.innerText = brewery.city
+    
+    filterByCitySection.append(input)
+    filterByCitySection.append(label)
+    filterByCityForm.append(filterByCitySection)
 }
 
 
