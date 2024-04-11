@@ -66,30 +66,26 @@ async function createSearchByName(breweryArr) {
 	listTitle.insertAdjacentHTML(
 		"beforeend",
 		`<header class="search-bar">
-  <form id="search-breweries-form" autocomplete="off">
-    <label for="search-breweries"><h2>Search breweries:</h2></label>
-    <input id="search-breweries" name="search-breweries" type="text">
-  </form>
-</header>`
+			<form id="search-breweries-form" autocomplete="off">
+				<label for="search-breweries"><h2>Search breweries:</h2></label>
+				<input id="search-breweries" name="search-breweries" type="text">
+			</form>
+		</header>`
 	)
 
 	const searchInput = document.getElementById("search-breweries")
 
-
 	searchInput.addEventListener("input", function (event) {
-		handleNameSearch(event) 
+		handleNameSearch(event)
 	})
-
 
 	const searchForm = document.getElementById("search-breweries-form")
 	searchForm.addEventListener("submit", function (event) {
-		event.preventDefault() 
-		handleNameSearch(event) 
+		event.preventDefault()
+		handleNameSearch(event)
 	})
 }
 createSearchByName(filteredByName)
-
-
 
 //GET breweries
 async function fetchBreweries() {
@@ -127,19 +123,16 @@ formSelect.addEventListener("change", async function (event) {
 	const selectedType = event.target.value
 
 	if (selectedType === "micro") {
-		console.log(microArray)
 		listTitle.innerText = "List of Micro Breweries"
 		createCards(microArray)
 	} else if (selectedType === "regional") {
-		console.log(regionalArray)
 		listTitle.innerText = "List of Regional Breweries"
 		createCards(regionalArray)
 	} else if (selectedType === "brewpub") {
-		console.log(brewPubArray)
 		listTitle.innerText = "List of BrewPub Breweries"
 		createCards(brewPubArray)
 	} else {
-		console.log(breweriesToVisit)
+		listTitle.innerText = "List of Breweries"
 		createCards(breweriesToVisit)
 	}
 })
@@ -159,9 +152,6 @@ async function handleSearch(event) {
 	filteredByState.push(...searchResults)
 
 	await createCards(filteredByState)
-
-
-	console.log("Filtered by state:", filteredByState)
 }
 
 async function handleNameSearch(event) {
@@ -182,7 +172,6 @@ stateInput.addEventListener("input", function (event) {
 	handleSearch(event)
 })
 
-headerSearchBox.addEventListener("submit", async function (event) {
+headerSearchBox.addEventListener("submit", function (event) {
 	event.preventDefault()
 })
-
