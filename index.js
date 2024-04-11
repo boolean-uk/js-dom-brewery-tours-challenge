@@ -73,7 +73,7 @@ const buildCard = (brewery) => {
     console.log(currentBreweries)
     }
 
-  buildCityCheckboxes(brewery);
+  renderCityCheckboxes(brewery);
   return li;
 };
 

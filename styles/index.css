@@ -113,6 +113,11 @@ main {
   border-top: none;
 }
 
+.check-boxes {
+  display: grid;
+  grid-template-columns: 24px 100px;
+}
+
 h1 {
   grid-area: title;
 
