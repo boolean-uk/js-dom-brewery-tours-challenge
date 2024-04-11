@@ -10,13 +10,16 @@ const searchBreweries = document.querySelector('#search-breweries')
 const filterByCityForm = document.querySelector('#filter-by-city-form')
 const clearAllButton = document.querySelector('.clear-all-btn')
 const pagination = document.querySelector('#pagination')
+const page = document.querySelector('.page')
+const previousButton = document.querySelector('.previous-button')
+const nextButton = document.querySelector('.next-button')
 
 // Global Variables
 let checkedCities = []
 let totalPages = 0
 const itemsPerPage = 10
 let currentPage = 1
-const jsonUrl = 'http://localhost:3000/breweries/'
+const jsonUrl = `http://localhost:3000/breweries/`
 
 // Get breweries from API
 async function getAllBreweries() {
@@ -59,6 +62,7 @@ async function getAllBreweries() {
             renderBreweryCards(filteredByCity)
             totalPages = Math.ceil(filteredByCity.length / itemsPerPage)
         }
+        
         renderPagination()
     }
 
@@ -95,6 +99,22 @@ clearAllButton.addEventListener('click', () => {
 
 filterByCityForm.addEventListener('change', () => {
     getAllBreweries()
+})
+
+previousButton.addEventListener('click', () => {
+    if (currentPage > 1) {
+        currentPage--
+        renderPagination()
+        getAllBreweries()
+    }
+})
+
+nextButton.addEventListener('click', () => {
+    if (currentPage < totalPages) {
+        currentPage++
+        renderPagination()
+        getAllBreweries()
+    }
 })
 
 // Render lists
@@ -207,48 +227,19 @@ function renderCities(uniqueCities) {
 }
 
 function renderPagination() {
-    pagination.innerHTML = ''
-    
-    const previousButton = document.createElement('button')
-    const nextButton = document.createElement('button')
-    const page = document.createElement('p')
-
-    previousButton.innerText = 'Previous'
-    previousButton.classList.add('pagination-button')
-    previousButton.classList.add('previous-button')
-    nextButton.innerText = 'Next'
-    nextButton.classList.add('pagination-button')
-    nextButton.classList.add('next-button')
     page.innerText = currentPage
-    page.classList.add('page')
 
     if (currentPage === 1) {
         previousButton.classList.add('hidden')
+    } else {
+        previousButton.classList.remove('hidden')
     }
 
-    if (currentPage === totalPages) {
+    if (currentPage === totalPages || totalPages === 0) {
         nextButton.classList.add('hidden')
+    } else {
+        nextButton.classList.remove('hidden')
     }
-
-    pagination.append(previousButton)
-    pagination.append(page)
-    pagination.append(nextButton)
-
-    previousButton.addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--
-            renderPagination()
-            getAllBreweries()
-        }
-    })
-
-    nextButton.addEventListener('click', () => {
-        if (currentPage < totalPages) {
-            currentPage++
-            renderPagination()
-            getAllBreweries()
-        }
-    })
 }
 
 // Create unique cities list
@@ -275,7 +266,7 @@ async function addBreweriesToVisitList(data) {
 
 // Remove brewery from visit list
 async function deleteBreweryFromVisitList(data) {
-    const deleteUrl = `http://localhost:3000/breweries/${data.id}`
+    const deleteUrl = jsonUrl + `${data.id}`
     const options = {
         method: 'DELETE',
         headers: {

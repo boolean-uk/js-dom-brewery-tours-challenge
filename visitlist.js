@@ -134,7 +134,7 @@ function renderPagination() {
 
 // Delete brewery from visit list
 async function deleteBreweryFromVisitList(data) {
-    const deleteUrl = `http://localhost:3000/breweries/${data.id}`
+    const deleteUrl = jsonUrl + `${data.id}`
     const options = {
         method: 'DELETE',
         headers: {
