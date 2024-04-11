@@ -1,6 +1,9 @@
 // HTML imports 
 const breweryUl = document.querySelector('#breweries-list')
 const pagination = document.querySelector('#pagination')
+const page = document.querySelector('.page')
+const previousButton = document.querySelector('.previous-button')
+const nextButton = document.querySelector('.next-button')
 
 // Global Variables
 let totalPages = 0
@@ -18,6 +21,23 @@ async function getVisitListBreweries() {
     renderVisitBreweryCards(data)
     renderPagination()
 }
+
+// Event listeners
+previousButton.addEventListener('click', () => {
+    if (currentPage > 1) {
+        currentPage--
+        renderPagination()
+        getVisitListBreweries()
+    }
+})
+
+nextButton.addEventListener('click', () => {
+    if (currentPage < totalPages) {
+        currentPage++
+        renderPagination()
+        getVisitListBreweries()
+    }
+})
 
 // Render lists
 function renderVisitBreweryCards(data) {
@@ -88,48 +108,19 @@ function renderVisitBreweryCards(data) {
 }
 
 function renderPagination() {
-    pagination.innerHTML = ''
-    
-    const previousButton = document.createElement('button')
-    const nextButton = document.createElement('button')
-    const page = document.createElement('p')
-
-    previousButton.innerText = 'Previous'
-    previousButton.classList.add('pagination-button')
-    previousButton.classList.add('previous-button')
-    nextButton.innerText = 'Next'
-    nextButton.classList.add('pagination-button')
-    nextButton.classList.add('next-button')
     page.innerText = currentPage
-    page.classList.add('page')
 
     if (currentPage === 1) {
         previousButton.classList.add('hidden')
+    } else {
+        previousButton.classList.remove('hidden')
     }
 
     if (currentPage === totalPages || totalPages === 0) {
         nextButton.classList.add('hidden')
+    } else {
+        nextButton.classList.remove('hidden')
     }
-
-    pagination.append(previousButton)
-    pagination.append(page)
-    pagination.append(nextButton)
-
-    previousButton.addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--
-            renderPagination()
-            getVisitListBreweries()
-        }
-    })
-
-    nextButton.addEventListener('click', () => {
-        if (currentPage < totalPages) {
-            currentPage++
-            renderPagination()
-            getVisitListBreweries()
-        }
-    })
 }
 
 // Delete brewery from visit list
