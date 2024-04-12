@@ -58,6 +58,14 @@ const buildCard = (brewery) => {
 
   li.append(phoneSection);
 
+  const visitBtn = document.createElement('button')
+  visitBtn.setAttribute('id', 'want-to-visit-btn')
+  visitBtn.innerText = "Add To 'Want To Visit' List"
+  visitBtn.addEventListener('click', () => {
+    addToVisitList(brewery)
+  })
+  li.append(visitBtn)
+
   if (brewery.website_url) {
     const linkSection = document.createElement("section");
     linkSection.classList.add("link");
@@ -68,6 +76,7 @@ const buildCard = (brewery) => {
     linkSection.append(link);
     li.append(linkSection);
   }
+  
 
   if (!currentlyRenderedBreweries.includes(brewery)) {
     currentlyRenderedBreweries.push(brewery);
@@ -109,7 +118,6 @@ const render = async () => {
       renderCityCheckboxes(element.city);
     }
   });
-
   renderPageButtons();
 };
 
@@ -228,7 +236,6 @@ const renderPageButtons = () => {
       return;
     }
     pageNumber++;
-    console.log(pageNumber);
     render10(pageNumber);
   });
 
@@ -245,7 +252,6 @@ const renderPageButtons = () => {
       return;
     }
     pageNumber--;
-    console.log(pageNumber);
     render10(pageNumber);
   });
 
@@ -280,4 +286,37 @@ const renderPageNumber = currentlyRenderedCards => {
         pageNumber = 0;
         render10(pageNumber);
     }
+}
+
+
+//Add to want to visit list
+const addToVisitList = async brewery => {
+     const url = "http://localhost:3000/breweries";
+
+     const visitList = await getVisitList()
+    
+    console.log(brewery)
+    console.log(visitList)
+    console.log(visitList.includes('')) 
+    
+
+     const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(brewery),
+        headers: {
+            "content-type": "application/json"
+        }
+     })
+}
+
+//Get want to visit list 
+const getVisitList = async () => {
+  const url = "http://localhost:3000/breweries";
+
+  const response = await fetch(url, {
+    method: "GET",
+  })
+
+  const json = await response.json()
+  return json
 }

@@ -251,3 +251,7 @@ article {
   grid-template-columns: repeat(3, 1fr);
   place-items: center;
 }
+
+#want-to-visit-btn {
+  height: 30px;
+}
