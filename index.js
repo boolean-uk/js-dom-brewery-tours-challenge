@@ -6,6 +6,7 @@ const filterForm = document.querySelector("#filter-by-type-form");
 const filterSelectMenu = document.querySelector("#filter-by-type");
 const listBreweriesHeading = document.querySelector("#list-breweries-heading");
 
+console.dir(brewerieslist.classList);
 //To populate the search result in HTML list.
 function getBreries(array) {
   brewerieslist.innerHTML = "";
@@ -52,6 +53,9 @@ function serachByState(state) {
       addInstantSerachBar(searchResult);
       getBreries(searchResult);
       filterByType(searchResult);
+    })
+    .catch((error) => {
+      console.error(error);
     });
 }
 
@@ -63,8 +67,13 @@ searchForm.addEventListener("submit", (event) => {
 
 function filterByType(searchResult) {
   filterSelectMenu.addEventListener("change", (event) => {
-    const filterResult = [];
+    // let: to give filteredResult the value of searchResult when option is "".
+    let filterResult = [];
     const option = event.currentTarget.value;
+    //when user clicks on 'select type' option
+    if (!option) {
+      filterResult = [...searchResult];
+    }
 
     searchResult.filter((item) => {
       if (item.brewery_type === option) {
