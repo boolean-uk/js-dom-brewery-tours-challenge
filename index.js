@@ -85,7 +85,7 @@ async function createSearchByName() {
 	})
 }
 
-async function handleNameSearch(event) {
+ function handleNameSearch(event) {
 	const searchTerm = event.target.value.trim().toLowerCase()
 
 	const searchResults = breweriesToVisit.filter((item) =>
@@ -95,7 +95,7 @@ async function handleNameSearch(event) {
 	filteredByName.length = 0 // Clear previous results(?)
 	filteredByName.push(...searchResults)
 
-	await createCards(filteredByName)
+ createCards(filteredByName)
 }
 
 // Filter breweries by type
