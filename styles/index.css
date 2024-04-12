@@ -104,16 +104,16 @@ main {
 #filter-by-type-form label {
   font-weight: bold;
 }
-
 #filter-by-city {
 
   display: grid;
-  grid-template-columns: 24px auto;
+  grid-template-rows: 24px auto;
   align-items: center;
-
+  list-style: none;
   border-radius: 0 0 0.25rem 0.25rem;
   border-top: none;
 }
+
 
 h1 {
   grid-area: title;

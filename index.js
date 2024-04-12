@@ -7,6 +7,7 @@ const brewerySearchForm = document.querySelector('#search-breweries-form')
 const brewerySearchElement = document.querySelector('#search-breweries')
 const filterByCityForm = document.querySelector('#filter-cities-form')
 const filterByCitySection = document.querySelector('#filter-by-city')
+
 const url = 'https://api.openbrewerydb.org/v1/breweries'
 
 let breweries = []
@@ -28,11 +29,11 @@ function loadBreweries(json) {
 }
 
 function createEachListItem() {
-    breweries.forEach(brewery => renderBreweries(brewery))
+    breweries.forEach(brewery => renderBrewery(brewery))
 }
 
 
-function renderBreweries(brewery) {
+function renderBrewery(brewery) {
 
     const listItem = document.createElement('li')
 
@@ -92,7 +93,7 @@ function filterSelection(event) {
 
     const filterBreweries = breweries.filter(brewery => brewery.brewery_type === userSelection)
     breweriesList.innerHTML = ''
-    filterBreweries.forEach(brewery => renderBreweries(brewery))
+    filterBreweries.forEach(brewery => renderBrewery(brewery))
 }
 
 
@@ -104,7 +105,7 @@ function filterStates(event) {
 
     fetch(`https://api.openbrewerydb.org/breweries?by_state=${userSearch}`)
         .then(response => response.json())
-        .then(json => {breweriesList.innerHTML = '', json.forEach(brewery => renderBreweries(brewery))})
+        .then(json => {breweriesList.innerHTML = '', json.forEach(brewery => renderBrewery(brewery))})
 }
 
 brewerySearchElement.addEventListener('input', (event) => searchBrewery(event))
@@ -115,31 +116,88 @@ function searchBrewery(event) {
     const userSearch = brewerySearchElement.value
     fetch(`https://api.openbrewerydb.org/breweries?by_name=${userSearch}`)
         .then(response => response.json())
-        .then(json => {breweriesList.innerHTML = '', json.forEach(brewery => renderBreweries(brewery))})
+        .then(json => {breweriesList.innerHTML = '', json.forEach(brewery => renderBrewery(brewery))})
 }
 
 
 function listCities() {
     fetch(url)
         .then(response => response.json())
-        .then(json => {json.forEach(brewery => createCitiesForFilter(brewery))})
+        .then(brewery => {filterCities(brewery)})
+
 }
 listCities()
 
-function createCitiesForFilter(brewery) {
-    const input = document.createElement('input')
-    input.type = 'checkbox'
-    input.setAttribute('id', 'city-option')
-    const label = document.createElement('label')
-    label.setAttribute('for', 'city-option')
+
+function filterCities(brewery) {
+    const filterCitiesFromAPI = brewery.map(brewery => brewery.city)
+    removeDuplicates(filterCitiesFromAPI)
+    function removeDuplicates(filterCitiesFromAPI) {
+        return filterCitiesFromAPI.filter((city, index) => filterCitiesFromAPI.indexOf(city) === index)
+    }
+    removeDuplicates(filterCitiesFromAPI).forEach(brewery => createCitiesForFilter(brewery))
+}
+
+
+// function createCitiesForFilter(brewery) {
+//     const listItem = document.createElement('li')
+
+//     const input = document.createElement('input')
+//     input.type = 'checkbox'
+//     input.setAttribute('id', 'city-option')
+//     const label = document.createElement('label')
+//     label.setAttribute('for', 'city-option')
 
     
-    label.innerText = brewery.city
+//     label.innerText = brewery
     
-    filterByCitySection.append(input)
-    filterByCitySection.append(label)
+//     listItem.append(input)
+//     listItem.append(label)
+//     filterByCitySection.append(listItem)
+//     filterByCityForm.append(filterByCitySection)
+
+//     const cityOptionCheckbox = document.querySelector('#city-option')
+//     const labelForCityOption = document.querySelector('label[for="city-option"]')
+    
+//     cityOptionCheckbox.addEventListener('change', () => {cityOptionCheckbox.checked = !cityOptionCheckbox.checked, citiesCheckedByUser()})
+
+//     function citiesCheckedByUser() {
+
+//     if(cityOptionCheckbox.checked) {
+//         console.log('box checked')
+//         }
+//     }
+// }
+
+function createCitiesForFilter(brewery) {
+    const listItem = document.createElement('li')
+    const label = document.createElement('label')
+    label.innerText = brewery
+    const input = document.createElement('input')
+    input.type = 'checkbox'
+    input.classList.add('city-option')
+    
+    
+    label.append(input)
+    listItem.append(label)
+    filterByCitySection.append(listItem)
     filterByCityForm.append(filterByCitySection)
+
+    label.addEventListener('change', () => {label.checked = !label.checked, citiesCheckedByUser()})
+
+    function citiesCheckedByUser() {
+
+    if(label.checked) {
+        console.log(label.innerText)
+        fetch(`https://api.openbrewerydb.org/breweries?by_city=${label.innerText}`)
+            .then(response => response.json())
+            .then(brewery => {breweriesList.innerHTML = '', brewery.forEach(brewery => renderBrewery(brewery))})
+        }
+    } 
 }
+
+
+
 
 
 function errorMessage() {
