@@ -88,6 +88,7 @@ main {
 
   text-decoration: underline;
   font-size: 0.725rem;
+  justify-self: end;
 }
 
 #filter-by-type-form, #filter-cities-form {
@@ -104,6 +105,14 @@ main {
 #filter-by-type-form label {
   font-weight: bold;
 }
+
+#filter-cities-header-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+}
+
+
 #filter-by-city {
 
   display: grid;

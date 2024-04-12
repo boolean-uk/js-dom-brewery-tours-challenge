@@ -139,35 +139,6 @@ function filterCities(brewery) {
 }
 
 
-// function createCitiesForFilter(brewery) {
-//     const listItem = document.createElement('li')
-
-//     const input = document.createElement('input')
-//     input.type = 'checkbox'
-//     input.setAttribute('id', 'city-option')
-//     const label = document.createElement('label')
-//     label.setAttribute('for', 'city-option')
-
-    
-//     label.innerText = brewery
-    
-//     listItem.append(input)
-//     listItem.append(label)
-//     filterByCitySection.append(listItem)
-//     filterByCityForm.append(filterByCitySection)
-
-//     const cityOptionCheckbox = document.querySelector('#city-option')
-//     const labelForCityOption = document.querySelector('label[for="city-option"]')
-    
-//     cityOptionCheckbox.addEventListener('change', () => {cityOptionCheckbox.checked = !cityOptionCheckbox.checked, citiesCheckedByUser()})
-
-//     function citiesCheckedByUser() {
-
-//     if(cityOptionCheckbox.checked) {
-//         console.log('box checked')
-//         }
-//     }
-// }
 
 function createCitiesForFilter(brewery) {
     const listItem = document.createElement('li')
@@ -187,13 +158,26 @@ function createCitiesForFilter(brewery) {
 
     function citiesCheckedByUser() {
 
-    if(label.checked) {
-        console.log(label.innerText)
+        if(label.checked) {
         fetch(`https://api.openbrewerydb.org/breweries?by_city=${label.innerText}`)
             .then(response => response.json())
             .then(brewery => {breweriesList.innerHTML = '', brewery.forEach(brewery => renderBrewery(brewery))})
         }
+        else {breweriesList.innerHTML = '', createEachListItem()}
     } 
+  
+}
+
+const clearAllBtn = document.querySelector('.clear-all-btn')
+clearAllBtn.addEventListener('click', (event) => {clearAll(event)})
+
+function clearAll(event) {
+    
+    event.preventDefault()
+    filterByCitySection.innerHTML = ''
+    listCities()
+    breweriesList.innerHTML = ''
+    createEachListItem()
 }
 
 
