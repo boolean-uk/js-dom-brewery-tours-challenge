@@ -81,7 +81,7 @@ const render = async () => {
   const breweryList = document.querySelector("#breweries-list");
   breweryList.innerHTML = "";
   const cityFilterCheckboxes = document.querySelector(".check-boxes");
- 
+
   cityFilterCheckboxes.innerHTML = "";
   currentlyRenderedBreweries = [];
 
@@ -110,7 +110,7 @@ const render = async () => {
     }
   });
 
-  renderPageButtons()
+  renderPageButtons();
 };
 
 //State functionality
@@ -176,7 +176,9 @@ const renderBreweriesByCheckbox = () => {
   const breweryList = document.querySelector("#breweries-list");
   breweryList.innerHTML = "";
 
-  const cityFilterCheckboxes = document.querySelectorAll("input[type=checkbox]");
+  const cityFilterCheckboxes = document.querySelectorAll(
+    "input[type=checkbox]"
+  );
 
   currentlyRenderedBreweries.forEach((brewery) => {
     for (let i = 0; i < cityFilterCheckboxes.length; i++) {
@@ -188,70 +190,94 @@ const renderBreweriesByCheckbox = () => {
         breweryList.append(breweryToAdd);
       }
     }
-  });   
+  });
+  renderPageButtons();
 };
 
 //Cities clear-all functionality
-const clearAllButton = document.querySelector('.clear-all-btn')
-clearAllButton.addEventListener('click', () => {
-    clearAll()
-    
-})
+const clearAllButton = document.querySelector(".clear-all-btn");
+clearAllButton.addEventListener("click", () => {
+  clearAll();
+});
 
 const clearAll = () => {
-    const cityFilterCheckboxes = document.querySelectorAll("input[type=checkbox]");
+  const cityFilterCheckboxes = document.querySelectorAll(
+    "input[type=checkbox]"
+  );
 
-    cityFilterCheckboxes.forEach((checkbox) => {
-        checkbox.checked = false
-    })
-    renderBreweriesByCheckbox()
-}
-
+  cityFilterCheckboxes.forEach((checkbox) => {
+    checkbox.checked = false;
+  });
+  renderBreweriesByCheckbox();
+};
 
 //Builds pagination elements
-let pageNumber = 0
+let pageNumber = 0;
 const renderPageButtons = () => {
-const breweryList = document.querySelector("#breweries-list");
-  
-const nextButton = document.createElement('button')
-nextButton.innerText = 'Next Page'
-nextButton.addEventListener('click', () => {
-    const currentlyRenderedCards = document.querySelectorAll('.brewery-card')
+  const breweryList = document.querySelector("#breweries-list");
+
+  const paginationSection = document.createElement('div')
+  paginationSection.classList.add('pagination-section')
+
+  const nextButton = document.createElement("button");
+  nextButton.innerText = "Next Page";
+  nextButton.classList.add('page-button')
+  nextButton.addEventListener("click", () => {
+    const currentlyRenderedCards = document.querySelectorAll(".brewery-card");
     if ((pageNumber + 1) * 10 > currentlyRenderedCards.length) {
-        return
+      return;
     }
-    pageNumber ++
-    console.log(pageNumber)
-    render10(pageNumber)
-})
+    pageNumber++;
+    console.log(pageNumber);
+    render10(pageNumber);
+  });
 
-const prevButton = document.createElement('button')
-prevButton.innerText = 'Prev Page'
-prevButton.addEventListener('click', () => {
+  paginationSection.append(nextButton)
+
+  const pageCounter = document.createElement('p')
+  pageCounter.setAttribute('id', 'page-counter')
+
+  const prevButton = document.createElement("button");
+  prevButton.innerText = "Prev Page";
+  prevButton.classList.add('page-button')
+  prevButton.addEventListener("click", () => {
     if (pageNumber < 1) {
-        return
+      return;
     }
-    pageNumber --
-    console.log(pageNumber)
-    render10(pageNumber)
-})
+    pageNumber--;
+    console.log(pageNumber);
+    render10(pageNumber);
+  });
 
+  paginationSection.append(prevButton, pageCounter, nextButton)
 
+  breweryList.append(paginationSection);
+  render10(pageNumber);
+};
 
-breweryList.append(prevButton, nextButton)
-
-render10(pageNumber)
-}
-
-
+//Render just 10 breweries
 const render10 = (number) => {
-    const currentlyRenderedCards = document.querySelectorAll('.brewery-card')
+  const currentlyRenderedCards = document.querySelectorAll(".brewery-card");
 
-    for (let i = 0; i < currentlyRenderedCards.length ; i++) {
-        if (i < (number*10) || i > (number*10 + 9)) {
-            currentlyRenderedCards[i].style.display = "none"
-        } else {
-            currentlyRenderedCards[i].style.display = "grid"
-        }
+  for (let i = 0; i < currentlyRenderedCards.length; i++) {
+    if (i < number * 10 || i > number * 10 + 9) {
+      currentlyRenderedCards[i].style.display = "none";
+    } else {
+      currentlyRenderedCards[i].style.display = "grid";
+    }
+  }
+  renderPageNumber(currentlyRenderedCards);
+};
+
+//Render Page Number
+const renderPageNumber = currentlyRenderedCards => {
+    const pageCounter = document.querySelector('#page-counter')
+    totalPages = Math.ceil(currentlyRenderedCards.length/10)
+
+    pageCounter.innerText = `Page ${pageNumber + 1} of ${totalPages}`
+
+    if (pageNumber + 1 > totalPages) {
+        pageNumber = 0;
+        render10(pageNumber);
     }
 }

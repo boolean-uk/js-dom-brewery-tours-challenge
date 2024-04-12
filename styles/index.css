@@ -244,3 +244,10 @@ article {
   text-decoration: none;
   font-weight: bold;
 }
+
+
+.pagination-section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  place-items: center;
+}
