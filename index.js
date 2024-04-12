@@ -11,6 +11,7 @@ const filterByCitySection = document.querySelector('#filter-by-city')
 const url = 'https://api.openbrewerydb.org/v1/breweries'
 
 let breweries = []
+const cities = []
 
 fetch(url)
     .then(response => response.json())
@@ -80,7 +81,6 @@ function renderBrewery(brewery) {
     linkSection.append(websiteLink)
     listItem.append(linkSection)
 
-    
     breweriesList.append(listItem)
 }
 
@@ -124,7 +124,6 @@ function listCities() {
     fetch(url)
         .then(response => response.json())
         .then(brewery => {filterCities(brewery)})
-
 }
 listCities()
 
@@ -148,7 +147,6 @@ function createCitiesForFilter(brewery) {
     input.type = 'checkbox'
     input.classList.add('city-option')
     
-    
     label.append(input)
     listItem.append(label)
     filterByCitySection.append(listItem)
@@ -157,31 +155,30 @@ function createCitiesForFilter(brewery) {
     label.addEventListener('change', () => {label.checked = !label.checked, citiesCheckedByUser()})
 
     function citiesCheckedByUser() {
-
-        if(label.checked) {
-        fetch(`https://api.openbrewerydb.org/breweries?by_city=${label.innerText}`)
+        breweriesList.innerHTML = ''
+        const cityChecked = label.innerText
+        cities.push(cityChecked)
+        console.log(cities)
+        for(let i = 0; i < cities.length; i++) {
+            fetch(`https://api.openbrewerydb.org/breweries?by_city=${cities[i]}`)
             .then(response => response.json())
-            .then(brewery => {breweriesList.innerHTML = '', brewery.forEach(brewery => renderBrewery(brewery))})
+            .then(brewery => {brewery.forEach(brewery => renderBrewery(brewery))})
         }
-        else {breweriesList.innerHTML = '', createEachListItem()}
-    } 
-  
+        
+    }
 }
 
 const clearAllBtn = document.querySelector('.clear-all-btn')
 clearAllBtn.addEventListener('click', (event) => {clearAll(event)})
 
 function clearAll(event) {
-    
     event.preventDefault()
+    cities.splice(cities)
     filterByCitySection.innerHTML = ''
     listCities()
     breweriesList.innerHTML = ''
     createEachListItem()
 }
-
-
-
 
 
 function errorMessage() {
