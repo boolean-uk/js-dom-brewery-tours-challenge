@@ -30,6 +30,22 @@ async function fetchBreweries() {
 	// breweriesToVisit.push(...breweries)
 }
 
+// Filter breweries by type
+function filterBreweries() {
+	allBreweries.forEach((brew) => {
+		if (brew.brewery_type === "micro") {
+			microArray.push(brew)
+			breweriesToVisit.push(brew)
+		} else if (brew.brewery_type === "regional") {
+			regionalArray.push(brew)
+			breweriesToVisit.push(brew)
+		} else if (brew.brewery_type === "brewpub") {
+			brewPubArray.push(brew)
+			breweriesToVisit.push(brew)
+		}
+	})
+}
+
 // Create HTML for brewery cards
 function createCards(breweryArr) {
 	breweriesUl.innerHTML = ""
@@ -85,7 +101,7 @@ async function createSearchByName() {
 	})
 }
 
- function handleNameSearch(event) {
+function handleNameSearch(event) {
 	const searchTerm = event.target.value.trim().toLowerCase()
 
 	const searchResults = breweriesToVisit.filter((item) =>
@@ -95,23 +111,7 @@ async function createSearchByName() {
 	filteredByName.length = 0 // Clear previous results(?)
 	filteredByName.push(...searchResults)
 
- createCards(filteredByName)
-}
-
-// Filter breweries by type
-function filterBreweries() {
-	allBreweries.forEach((brew) => {
-		if (brew.brewery_type === "micro") {
-			microArray.push(brew)
-			breweriesToVisit.push(brew)
-		} else if (brew.brewery_type === "regional") {
-			regionalArray.push(brew)
-			breweriesToVisit.push(brew)
-		} else if (brew.brewery_type === "brewpub") {
-			brewPubArray.push(brew)
-			breweriesToVisit.push(brew)
-		}
-	})
+	createCards(filteredByName)
 }
 
 // Populate brewery cards based on selected type
@@ -135,6 +135,21 @@ function populateBreweryCards(selectedType) {
 		createSearchByName()
 		createCards(breweriesToVisit)
 	}
+}
+
+// Take care of pagination
+function createPrevNextPage() {
+	const numPages = Math.ceil(breweriesToVisit.length / 10) // Calculate number of pages
+	list.insertAdjacentHTML(
+		"beforeend",
+		`
+        <div id="pagination">
+            <button id="prevPage">Previous Page</button>
+            <button id="nextPage">Next Page</button>
+            <span id="pageInfo"></span>
+        </div>
+        `
+	)
 }
 
 // Event listener for filtering dropdown
