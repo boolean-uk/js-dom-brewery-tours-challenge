@@ -123,38 +123,24 @@ function handleNameSearch(event) {
 function populateBreweryCards(selectedType) {
 	breweriesUl.innerHTML = ""
 
-	if (selectedType === "micro") {
-		listTitle.innerText = "List of Micro Breweries"
-		createSearchByName()
-		createCards(microArray)
-	} else if (selectedType === "regional") {
-		listTitle.innerText = "List of Regional Breweries"
-		createSearchByName()
-		createCards(regionalArray)
-	} else if (selectedType === "brewpub") {
-		listTitle.innerText = "List of BrewPub Breweries"
-		createSearchByName()
-		createCards(brewPubArray)
-	} else {
-		listTitle.innerText = "List of Breweries"
-		createSearchByName()
-		createCards(breweriesToVisit)
-	}
-}
+	let selectedArray = breweriesToVisit
+	let titleText = "List of Breweries"
 
-// Take care of pagination
-function createPrevNextPage() {
-	const numPages = Math.ceil(breweriesToVisit.length / 10)
-	list.insertAdjacentHTML(
-		"beforeend",
-		`
-        <div id="pagination">
-            <button id="prevPage">Previous Page</button>
-            <button id="nextPage">Next Page</button>
-            <span id="pageInfo"></span>
-        </div>
-        `
-	)
+	if (selectedType === "micro") {
+		selectedArray = microArray
+		titleText = "List of Micro Breweries"
+	} else if (selectedType === "regional") {
+		selectedArray = regionalArray
+		titleText = "List of Regional Breweries"
+	} else if (selectedType === "brewpub") {
+		selectedArray = brewPubArray
+		titleText = "List of BrewPub Breweries"
+	}
+
+	listTitle.innerText = titleText
+	createSearchByName()
+	createCards(selectedArray)
+	createPrevNextPage(selectedArray) // Update pagination with the selected array
 }
 
 // Take care of pagination
@@ -181,41 +167,45 @@ function createPrevNextPage(arr) {
 	)
 
 	const pageInfo = document.getElementById("pageInfo")
-	pageInfo.textContent = `Page 1 of ${numPages}`
+	pageInfo.textContent = `Page ${currentPage} of ${numPages}`
 	paginationContainer.style.display = "flex"
 	paginationContainer.style.justifyContent = "space-between"
 	paginationContainer.style.alignItems = "center"
 
-	addPaginationEventListeners(arr, numPages, pageInfo, 1)
+	addPaginationEventListeners(arr, numPages, pageInfo)
 }
 
-function addPaginationEventListeners(arr, numPages, pageInfo, currentPage) {
+// Event listeners
+
+let currentPage = 1
+function addPaginationEventListeners(arr, numPages, pageInfo) {
 	const prevPageBtn = document.getElementById("prevPage")
 	const nextPageBtn = document.getElementById("nextPage")
 
 	prevPageBtn.addEventListener("click", function () {
 		currentPage--
-		if (currentPage < 1) currentPage = 1 
-		pageInfo.textContent = `Page ${currentPage} of ${numPages}`
+
+		if (currentPage < 1) currentPage = 1
 		createCards(arr, currentPage)
+		pageInfo.innerText = `Page ${currentPage} of ${numPages}`
 	})
 
 	nextPageBtn.addEventListener("click", function () {
 		currentPage++
-		if (currentPage > numPages) currentPage = numPages 
-		pageInfo.textContent = `Page ${currentPage} of ${numPages}`
+
+		if (currentPage > numPages) currentPage = numPages
 		createCards(arr, currentPage)
+		pageInfo.innerText = `Page ${currentPage} of ${numPages}`
 	})
 }
 
-
-// Event listener for filtering dropdown
+// Filtering dropdown
 formSelect.addEventListener("change", function (event) {
 	const selectedType = event.target.value
 	populateBreweryCards(selectedType)
 })
 
-// Event listener for state input
+// Search_by_State input
 stateInput.addEventListener("input", function (event) {
 	const searchTerm = event.target.value.trim().toLowerCase()
 	const searchResults = breweriesToVisit.filter((item) =>
@@ -226,17 +216,16 @@ stateInput.addEventListener("input", function (event) {
 	createCards(filteredByState)
 })
 
-// Event listener for name search
+// Search_by_Name search
 headerSearchBox.addEventListener("submit", function (event) {
 	event.preventDefault()
 })
 
-// Initialize the application
+// Initialize the application with all the visitable breweries listed
 async function initialize() {
 	await fetchBreweries()
 	filterBreweries()
 	createSearchByName()
-	createPrevNextPage(breweriesToVisit)
 	createCards(breweriesToVisit)
 }
 
