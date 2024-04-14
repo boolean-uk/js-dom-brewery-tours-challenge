@@ -12,6 +12,7 @@ const formSelect = document.querySelector("#filter-by-type")
 const breweriesUl = document.querySelector(".breweries-list")
 const typeDefault = document.querySelector("option")
 const listTitle = document.querySelector("h1")
+const list = document.querySelector("article")
 
 // Create arrays to populate by filtering
 const allBreweries = []
@@ -47,9 +48,12 @@ function filterBreweries() {
 }
 
 // Create HTML for brewery cards
-function createCards(breweryArr) {
+function createCards(breweriesArr, page = 1, pageSize = 10) {
+	const startIndex = (page - 1) * pageSize
+	const endIndex = startIndex + pageSize
+	const currentPageData = breweriesArr.slice(startIndex, endIndex)
 	breweriesUl.innerHTML = ""
-	breweryArr.forEach((brew) => {
+	currentPageData.forEach((brew) => {
 		breweriesUl.insertAdjacentHTML(
 			"beforeend",
 			`<li>
@@ -74,6 +78,7 @@ function createCards(breweryArr) {
             </li>`
 		)
 	})
+	createPrevNextPage(breweriesArr)
 }
 
 //Create HTML and functionality for search_by_name box
@@ -108,7 +113,7 @@ function handleNameSearch(event) {
 		item.name.toLowerCase().includes(searchTerm)
 	)
 
-	filteredByName.length = 0 // Clear previous results(?)
+	filteredByName.length = 0
 	filteredByName.push(...searchResults)
 
 	createCards(filteredByName)
@@ -139,7 +144,7 @@ function populateBreweryCards(selectedType) {
 
 // Take care of pagination
 function createPrevNextPage() {
-	const numPages = Math.ceil(breweriesToVisit.length / 10) // Calculate number of pages
+	const numPages = Math.ceil(breweriesToVisit.length / 10)
 	list.insertAdjacentHTML(
 		"beforeend",
 		`
@@ -151,6 +156,58 @@ function createPrevNextPage() {
         `
 	)
 }
+
+// Take care of pagination
+
+function createPrevNextPage(arr) {
+	const numPages = Math.ceil(arr.length / 10) // Calculate number of pages
+	let paginationContainer = document.getElementById("paginationContainer")
+
+	if (!paginationContainer) {
+		paginationContainer = document.createElement("div")
+		paginationContainer.id = "paginationContainer"
+		list.insertAdjacentElement("beforeend", paginationContainer)
+	} else {
+		paginationContainer.innerHTML = ""
+	}
+
+	paginationContainer.insertAdjacentHTML(
+		"beforeend",
+		`
+        <button id="prevPage">Previous Page</button>
+        <span id="pageInfo"></span>
+        <button id="nextPage">Next Page</button>
+        `
+	)
+
+	const pageInfo = document.getElementById("pageInfo")
+	pageInfo.textContent = `Page 1 of ${numPages}`
+	paginationContainer.style.display = "flex"
+	paginationContainer.style.justifyContent = "space-between"
+	paginationContainer.style.alignItems = "center"
+
+	addPaginationEventListeners(arr, numPages, pageInfo, 1)
+}
+
+function addPaginationEventListeners(arr, numPages, pageInfo, currentPage) {
+	const prevPageBtn = document.getElementById("prevPage")
+	const nextPageBtn = document.getElementById("nextPage")
+
+	prevPageBtn.addEventListener("click", function () {
+		currentPage--
+		if (currentPage < 1) currentPage = 1 
+		pageInfo.textContent = `Page ${currentPage} of ${numPages}`
+		createCards(arr, currentPage)
+	})
+
+	nextPageBtn.addEventListener("click", function () {
+		currentPage++
+		if (currentPage > numPages) currentPage = numPages 
+		pageInfo.textContent = `Page ${currentPage} of ${numPages}`
+		createCards(arr, currentPage)
+	})
+}
+
 
 // Event listener for filtering dropdown
 formSelect.addEventListener("change", function (event) {
@@ -179,6 +236,7 @@ async function initialize() {
 	await fetchBreweries()
 	filterBreweries()
 	createSearchByName()
+	createPrevNextPage(breweriesToVisit)
 	createCards(breweriesToVisit)
 }
 
