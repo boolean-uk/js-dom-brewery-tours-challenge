@@ -161,25 +161,25 @@ function createPagination(arr) {
 		"beforeend",
 		`
         <button id="prevPage">Previous Page</button>
-        <span id="pageInfo"></span>
+        <span id="pageOfPages"></span>
         <button id="nextPage">Next Page</button>
         `
 	)
 
-	const pageInfo = document.getElementById("pageInfo")
-	pageInfo.textContent = `Page ${currentPage} of ${numPages}`
+	const pageOfPages = document.getElementById("pageOfPages")
+	pageOfPages.textContent = `Page ${currentPage} of ${numPages}`
 	paginationContainer.style.display = "flex"
 	paginationContainer.style.justifyContent = "space-between"
 	paginationContainer.style.alignItems = "center"
 
-	addPaginationEventListeners(arr, numPages, pageInfo)
+	addPaginationEventListeners(arr, numPages, pageOfPages)
 }
 
 // Event listeners
 
 //Pagination buttons
 let currentPage = 1
-function addPaginationEventListeners(arr, numPages, pageInfo) {
+function addPaginationEventListeners(arr, numPages, pageOfPages) {
 	const prevPageBtn = document.getElementById("prevPage")
 	const nextPageBtn = document.getElementById("nextPage")
 
@@ -188,7 +188,7 @@ function addPaginationEventListeners(arr, numPages, pageInfo) {
 
 		if (currentPage < 1) currentPage = 1
 		createCards(arr, currentPage)
-		pageInfo.innerText = `Page ${currentPage} of ${numPages}`
+		pageOfPages.innerText = `Page ${currentPage} of ${numPages}`
 	})
 
 	nextPageBtn.addEventListener("click", function () {
@@ -196,7 +196,7 @@ function addPaginationEventListeners(arr, numPages, pageInfo) {
 
 		if (currentPage > numPages) currentPage = numPages
 		createCards(arr, currentPage)
-		pageInfo.innerText = `Page ${currentPage} of ${numPages}`
+		pageOfPages.innerText = `Page ${currentPage} of ${numPages}`
 	})
 }
 
