@@ -140,13 +140,13 @@ function populateBreweryCards(selectedType) {
 	listTitle.innerText = titleText
 	createSearchByName()
 	createCards(selectedArray)
-	createPrevNextPage(selectedArray) // Update pagination with the selected array
+	createPrevNextPage(selectedArray) 
 }
 
 // Take care of pagination
 
 function createPrevNextPage(arr) {
-	const numPages = Math.ceil(arr.length / 10) // Calculate number of pages
+	const numPages = Math.ceil(arr.length / 10) 
 	let paginationContainer = document.getElementById("paginationContainer")
 
 	if (!paginationContainer) {
@@ -177,6 +177,7 @@ function createPrevNextPage(arr) {
 
 // Event listeners
 
+//Pagination buttons
 let currentPage = 1
 function addPaginationEventListeners(arr, numPages, pageInfo) {
 	const prevPageBtn = document.getElementById("prevPage")
@@ -211,17 +212,17 @@ stateInput.addEventListener("input", function (event) {
 	const searchResults = breweriesToVisit.filter((item) =>
 		item.state.toLowerCase().includes(searchTerm)
 	)
-	filteredByState.length = 0 // Clear previous results
+	filteredByState.length = 0 
 	filteredByState.push(...searchResults)
 	createCards(filteredByState)
 })
 
-// Search_by_Name search
+// Search_by_Name input
 headerSearchBox.addEventListener("submit", function (event) {
 	event.preventDefault()
 })
 
-// Initialize the application with all the visitable breweries listed
+// Initialize the application with (breweriesToVisit) = all the visitable breweries listed
 async function initialize() {
 	await fetchBreweries()
 	filterBreweries()
