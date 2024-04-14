@@ -59,7 +59,7 @@ function createCards(breweryArr) {
                     <h3>Address:</h3>
                     <p>${brew.address_1}</p>
                     <p>
-                        <strong>${brew.city}, ${brew.postal_code}</strong>
+                        <strong>${brew.city}, ${brew.postal_code}, ${brew.state}</strong>
                     </p>
                 </section>
                 <section class='phone'>
