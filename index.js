@@ -78,7 +78,7 @@ function createCards(breweriesArr, page = 1, pageSize = 10) {
             </li>`
 		)
 	})
-	createPrevNextPage(breweriesArr)
+	createPagination(breweriesArr)
 }
 
 //Create HTML and functionality for search_by_name box
@@ -140,12 +140,12 @@ function populateBreweryCards(selectedType) {
 	listTitle.innerText = titleText
 	createSearchByName()
 	createCards(selectedArray)
-	createPrevNextPage(selectedArray) 
+	createPagination(selectedArray) 
 }
 
 // Take care of pagination
 
-function createPrevNextPage(arr) {
+function createPagination(arr) {
 	const numPages = Math.ceil(arr.length / 10) 
 	let paginationContainer = document.getElementById("paginationContainer")
 
@@ -222,7 +222,7 @@ headerSearchBox.addEventListener("submit", function (event) {
 	event.preventDefault()
 })
 
-// Initialize the application with (breweriesToVisit) = all the visitable breweries listed
+// Initialize the application with breweriesToVisit[] so it lists all the visitable breweries
 async function initialize() {
 	await fetchBreweries()
 	filterBreweries()
