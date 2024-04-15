@@ -1,5 +1,6 @@
 let currentlyRenderedBreweries = [];
 let wantToVisitBreweries = []
+let pageNumber = 0;
 
 //Build brewery card
 const buildCard = (brewery) => {
@@ -62,6 +63,7 @@ const buildCard = (brewery) => {
 
   const visitBtn = document.createElement("button");
   visitBtn.setAttribute("id", "want-to-visit-btn");
+
   visitBtn.innerText = "Add to 'Want To Visit' List";
   visitBtn.addEventListener("click", (event) => {
     removeOrAddToList(brewery, event);
@@ -120,6 +122,7 @@ const render = async () => {
       renderCityCheckboxes(element.city);
     }
   });
+  pageNumber = 0;
   renderPageButtons();
   getVisitList();
 };
@@ -223,12 +226,18 @@ const clearAll = () => {
 };
 
 //Builds pagination elements
-let pageNumber = 0;
+
 const renderPageButtons = () => {
   const breweryList = document.querySelector("#breweries-list");
 
+  if (document.querySelector('.pagination-section')) {
+    const paginationSection = document.querySelector('.pagination-section')
+    breweryList.removeChild(paginationSection)
+  }
+
   const paginationSection = document.createElement("div");
   paginationSection.classList.add("pagination-section");
+  
 
   const nextButton = document.createElement("button");
   nextButton.innerText = "Next Page";
@@ -284,11 +293,6 @@ const renderPageNumber = (currentlyRenderedCards) => {
   totalPages = Math.ceil(currentlyRenderedCards.length / 10);
 
   pageCounter.innerText = `Page ${pageNumber + 1} of ${totalPages}`;
-
-  if (pageNumber + 1 > totalPages) {
-    pageNumber = 0;
-    render10(pageNumber);
-  }
 }; 
 
 
@@ -335,8 +339,8 @@ const removeOrAddToList = async (brewery, event) => {
   });
 };
 
+//Remove from list
 const removeBrewery = async (brewery, event) => {
-
   const url = `http://localhost:3000/breweries/${brewery.id}`;
 
   const response = await fetch(url, {
@@ -344,5 +348,24 @@ const removeBrewery = async (brewery, event) => {
   });
 
   event.target.innerText = "Add to 'Want To Visit' List"
-
 }
+
+//Display breweries on visit list
+const wantToVisitButton = document.querySelector('#visit-list-button')
+wantToVisitButton.addEventListener('click', async (event) => {
+  const visitList = await getVisitList()
+  const breweryList = document.querySelector("#breweries-list");
+  breweryList.innerHTML = "";
+  const checkBoxes = document.querySelector('.check-boxes')
+  checkBoxes.innerHTML = ''
+
+  visitList.forEach((brewery) => {
+    const breweryCard = buildCard(brewery)
+    console.log(breweryCard)
+    visitButton = breweryCard.querySelector('#want-to-visit-btn')
+    visitButton.innerText = "Remove from 'Want to Visit' List"
+
+    renderCityCheckboxes(brewery.city);
+    breweryList.append(breweryCard)
+  })
+})

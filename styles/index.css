@@ -118,6 +118,10 @@ main {
   grid-template-columns: 24px 100px;
 }
 
+#visit-list-button {
+  margin-top: 5px;
+}
+
 h1 {
   grid-area: title;
 
