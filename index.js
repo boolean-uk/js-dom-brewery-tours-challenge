@@ -63,8 +63,8 @@ const buildCard = (brewery) => {
   const visitBtn = document.createElement("button");
   visitBtn.setAttribute("id", "want-to-visit-btn");
   visitBtn.innerText = "Add to 'Want To Visit' List";
-  visitBtn.addEventListener("click", () => {
-    addToVisitList(brewery);
+  visitBtn.addEventListener("click", (event) => {
+    removeOrAddToList(brewery, event);
     visitBtn.innerText = "Remove from 'Want to Visit' List";
     getVisitList()
   });
@@ -291,24 +291,6 @@ const renderPageNumber = (currentlyRenderedCards) => {
   }
 }; 
 
-//Add to want to visit list
-const addToVisitList = async (brewery) => {
-  const url = "http://localhost:3000/breweries";
-
-  const visitList = await getVisitList();
-
-  if (JSON.stringify(visitList).includes(JSON.stringify(brewery))) {
-    return;
-  }
-
-  const response = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify(brewery),
-    headers: {
-      "content-type": "application/json",
-    },
-  });
-};
 
 //Get want to visit list
 const getVisitList = async () => {
@@ -328,7 +310,39 @@ const changeButtons = json => {
   currentlyRenderedCards.forEach((element) => {
    const button = element.querySelector('#want-to-visit-btn')
    if (JSON.stringify(json).includes(element.id)) {
-    button.innerText = "Remove from 'Want to Visit List"
+    button.innerText = "Remove from 'Want to Visit' List"
    }
   })
+}
+
+//Add to want to visit list
+const removeOrAddToList = async (brewery, event) => {
+  const url = "http://localhost:3000/breweries";
+
+  const visitList = await getVisitList();
+
+  if (JSON.stringify(visitList).includes(JSON.stringify(brewery))) {
+    removeBrewery(brewery, event)
+    return
+  }
+
+  const response = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify(brewery),
+    headers: {
+      "content-type": "application/json",
+    },
+  });
+};
+
+const removeBrewery = async (brewery, event) => {
+
+  const url = `http://localhost:3000/breweries/${brewery.id}`;
+
+  const response = await fetch(url, {
+    method: "DELETE",
+  });
+
+  event.target.innerText = "Add to 'Want To Visit' List"
+
 }
