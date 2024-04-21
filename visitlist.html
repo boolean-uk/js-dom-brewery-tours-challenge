@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles/reset.css" />
+    <link rel="stylesheet" href="./styles/index.css" />
+    <script defer src="./visitlist.js"></script>
+    <title>Brewery Tours</title>
+  </head>
+  <body>
+    <header class="main-header">
+        <section class="select-state-section">
+          <h2>Welcome to Brewery Tours</h2>
+        </section>
+    </header>
+    <main>
+        <aside>
+            <button class="back-button">
+                <a href="./index.html">Back</a>
+            </button>
+        </aside>
+
+        <h1>List of Breweries</h1>
+        <article>
+            <div id="pagination">
+                <button class="pagination-button previous-button">Previous</button>
+                <p class="page"></p>
+                <button class="pagination-button next-button">Next</button>
+            </div>
+            <ul id="breweries-list" class="breweries-list">
+            </ul>
+        </article>
+    </main>
+  </body>
+</html>
