@@ -51,11 +51,15 @@ const state = {
       fetchData(url);
     });
   }
-  
   function filter() {
-    formEl.addEventListener("change", function () {
+    filterEl.addEventListener("change", function () {
       const typeFilter = filterEl.value;
-      let url = `https://api.openbrewerydb.org/breweries?by_state=${stateEl.value}`;
+      let url = "";
+      if (state.breweries.length > 0) {
+        url = `https://api.openbrewerydb.org/breweries?by_state=${stateEl.value}`;
+      } else {
+        url = `https://api.openbrewerydb.org/breweries`;
+      }
       if (typeFilter) {
         url += `&by_type=${typeFilter}`;
       }
