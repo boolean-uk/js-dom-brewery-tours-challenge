@@ -1,25 +1,42 @@
 
+const state = {
+  selectedState: '',
+  selectedType: '',
+  breweries: []
+}
 
-  const url = 'https://api.openbrewerydb.org/v1/breweries'
+let url = `https://api.openbrewerydb.org/v1/breweries?by_state=${state.selectedState}`
 
-  // const list = document.createElement('li')
+const list = document.createElement('li')
 
+const stateInput = document.querySelector('#select-state-form')
+
+const typeSelect = document.querySelector('#filter-by-type-form')
+
+
+
+async function fetchBreweries() {
+  const response = await fetch(url)
+  const data = await response.json()
+  
+  state.breweries.push(data)
+  console.log(state.breweries)
+
+  state.breweries = data.filter(brewery => 
+    ['micro', 'regional', 'brewpub'].includes(brewery.brewery_type)
+  )
+  
+  renderList(state.breweries)
+
+}
+
+
+function renderList(breweries) {
   const breweriesList = document.querySelector('#breweries-list')
-
-  const stateInput = document.querySelector('#select-state-form')
-
-  const typeSelect = document.querySelector('#filter-by-type-form')
-
-
-
-  async function fetchBreweries() { 
-    const response = await fetch(url); 
-    const data = await response.json();
-
-    function renderList(breweries) {
-      const breweryDetails = breweries
-      .map(
-        item => `
+  breweriesList.innerHTML = ''
+  const breweryDetails = breweries
+   .map(
+      item => `
         <li>
           <h2>${item.name}</h2>
           <div class="type">${item.brewery_type}</div>
@@ -36,31 +53,75 @@
             <a href="${item.website_url}" target="_blank">Visit Website</a>
           </section>
         </li>`
-      )
-        breweriesList.innerHTML = breweryDetails
-    }
-
-    stateInput.addEventListener('submit', (e) => {
-      const searchTerm = e.target.value.toLowerCase()
-      const filteredBreweries = data.filter((brewery) => brewery.state.toLowerCase() === searchTerm)
-      breweriesList.innerHTML = ''
-      renderList(filteredBreweries)
-    })
-
-    typeSelect.addEventListener('click', (e) => {
-      const searchTerm = e.target.value
-      const filteredBreweries = data.filter((brewery) => brewery.brewery_type === searchTerm)
-      breweriesList.innerHTML = ''
-      renderList(filteredBreweries)
-      if(searchTerm === "") {
-        renderList(data)
-      }
-    })
-
+    )
+    .join('')
     
+  breweriesList.innerHTML = breweryDetails
+}
 
-    renderList(data)
-    
+
+
+
+stateInput.addEventListener('submit', async (e) => {
+  e.preventDefault()
+  const searchTerm = document.querySelector('#select-state').value.toLowerCase()
+  // searchTerm.value
+
+  console.log(searchTerm.value)
+
+  state.selectedState = searchTerm
+  await fetchBreweries()
+
+  console.log(state.breweries[20].state)
+  
+  if (searchTerm === "") {
+    renderList(state.breweries)
+    return
   }
 
-  fetchBreweries()
+  const filteredBreweriesState = state.breweries
+    .filter(brewery => brewery.state.toLowerCase() === searchTerm)
+    .map(brewery => ({
+      address_2: null,
+      address_3: null,
+      brewery_type: brewery.brewery_type,
+      city: brewery.city,
+      country: brewery.country,
+      county_province: null,
+      created_at: brewery.created_at,
+      id: brewery.id,
+      latitude: brewery.latitude,
+      longitude: brewery.longitude,
+      name: brewery.name,
+      obdb_id: brewery.obdb_id,
+      phone: brewery.phone,
+      postal_code: brewery.postal_code,
+      state: brewery.state,
+      street: brewery.street,
+      updated_at: brewery.updated_at,
+      website_url: brewery.website_url
+    }))
+
+  
+  renderList(filteredBreweriesState)
+})
+
+
+
+typeSelect.addEventListener('change', (e) => {
+  const searchTerm = e.target.value
+  state.selectedType = searchTerm
+  
+  const filteredBreweries = state.breweries.filter((brewery) => 
+    brewery.brewery_type === searchTerm
+  )
+  
+  if (searchTerm === "") {
+    renderList(state.breweries)
+  } else {
+    renderList(filteredBreweries)
+  }
+})
+
+
+fetchBreweries()

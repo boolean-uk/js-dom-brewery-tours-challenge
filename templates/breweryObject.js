@@ -21,4 +21,3 @@ const breweries = [
   }
 ];
 
-window.data = breweries[0]
