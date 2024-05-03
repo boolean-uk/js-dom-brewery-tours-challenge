@@ -11,6 +11,7 @@
   const typeSelect = document.querySelector('#filter-by-type-form')
 
 
+
   async function fetchBreweries() { 
     const response = await fetch(url); 
     const data = await response.json();
@@ -46,12 +47,17 @@
       renderList(filteredBreweries)
     })
 
-    typeSelect.addEventListener('change', (e) => {
+    typeSelect.addEventListener('click', (e) => {
       const searchTerm = e.target.value
       const filteredBreweries = data.filter((brewery) => brewery.brewery_type === searchTerm)
       breweriesList.innerHTML = ''
       renderList(filteredBreweries)
+      if(searchTerm === "") {
+        renderList(data)
+      }
     })
+
+    
 
     renderList(data)
     
