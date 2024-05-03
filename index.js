@@ -1,69 +1,60 @@
-//   <li>
-//     <h2>Snow Belt Brew</h2>
-//     <div class="type">micro</div>
-//     <section class="address">
-//       <h3>Address:</h3>
-//       <p>9511 Kile Rd</p>
-//       <p><strong>Chardon, 44024</strong></p>
-//     </section>
-//     <section class="phone">
-//       <h3>Phone:</h3>
-//       <p>N/A</p>
-//     </section>
-//     <section class="link">
-//       <a href="null" target="_blank">Visit Website</a>
-//     </section>
-//   </li>
-
-const url = 'https://api.openbrewerydb.org/v1/breweries/{obdb-id}'
-
-const list = document.createElement('li')
-
-const nameHeader = document.createElement('h2')
-const breweryType = document.createElement('div')
-breweryType.classList.add('type')
-const addressSection = document.createElement('section')
-addressSection.classList.add('address')
-const phoneSection = document.createElement('section')
-phoneSection.classList.add('phone')
-const linkSection = document.createElement('section')
-linkSection.classList.add('link')
 
 
-const addressHeader = document.createElement('h3')
-addressHeader.innerText = 'Address:'
-const paragOne = document.createElement('p')
-const paragTwo = document.createElement('p')
-const paragTwoStr = document.createElement('strong')
-paragTwo.append(paragTwoStr)
+  const url = 'https://api.openbrewerydb.org/v1/breweries'
 
-addressSection.append(
-    addressHeader,
-    paragOne,
-    paragTwo
-)
+  // const list = document.createElement('li')
 
-const phoneHeader = document.createElement('h3')
-phoneHeader.innerText = 'Phone:'
-const phoneParag = document.createElement('p')
-phoneSection.appendChild(
-    phoneHeader,
-    phoneParag
-)
+  const breweriesList = document.querySelector('#breweries-list')
 
-const link = document.createElement('a')
-link.setAttribute('href', null)
-link.setAttribute('target', '_blank')
-link.innerText = 'Visit Website'
-linkSection.append(link)
+  const stateInput = document.querySelector('#select-state-form')
 
-list.append(
-    nameHeader,
-    breweryType,
-    addressSection,
-    phoneSection,
-    linkSection
-)
+  const typeSelect = document.querySelector('#filter-by-type-form')
 
-const breweriesList = document.querySelector('#breweries-list')
-breweriesList.appendChild(list)
+
+  async function fetchBreweries() { 
+    const response = await fetch(url); 
+    const data = await response.json();
+
+    function renderList(breweries) {
+      const breweryDetails = breweries
+      .map(
+        item => `
+        <li>
+          <h2>${item.name}</h2>
+          <div class="type">${item.brewery_type}</div>
+          <section class="address">
+            <h3>Address:</h3>
+            <p>${item.street}</p>
+            <p><strong>${item.city}, ${item.state}</p>
+          </section>
+          <section class="phone">
+            <h3>Phone:</h3>
+            <p>${item.phone}</p>
+          </section>
+          <section class="link">
+            <a href="${item.website_url}" target="_blank">Visit Website</a>
+          </section>
+        </li>`
+      )
+        breweriesList.innerHTML = breweryDetails
+    }
+
+    stateInput.addEventListener('submit', (e) => {
+      const searchTerm = e.target.value.toLowerCase()
+      const filteredBreweries = data.filter((brewery) => brewery.state.toLowerCase() === searchTerm)
+      breweriesList.innerHTML = ''
+      renderList(filteredBreweries)
+    })
+
+    typeSelect.addEventListener('change', (e) => {
+      const searchTerm = e.target.value
+      const filteredBreweries = data.filter((brewery) => brewery.brewery_type === searchTerm)
+      breweriesList.innerHTML = ''
+      renderList(filteredBreweries)
+    })
+
+    renderList(data)
+    
+  }
+
+  fetchBreweries()

@@ -20,3 +20,5 @@ const breweries = [
     website_url: "http://10barrel.com"
   }
 ];
+
+window.data = breweries[0]
