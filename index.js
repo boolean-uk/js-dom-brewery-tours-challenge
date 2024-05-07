@@ -2,25 +2,23 @@
 const state = {
   selectedState: '',
   selectedType: '',
+  selectedName: '',
   breweries: []
 }
-
-let url = `https://api.openbrewerydb.org/v1/breweries?by_state=${state.selectedState}`
-
-const list = document.createElement('li')
 
 const stateInput = document.querySelector('#select-state-form')
 
 const typeSelect = document.querySelector('#filter-by-type-form')
 
 
-
 async function fetchBreweries() {
+  let url = `https://api.openbrewerydb.org/v1/breweries?by_state=${state.selectedState}`
+  if (state.selectedType) {
+    url += `&by_type=${state.selectedType}`
+  }
   const response = await fetch(url)
   const data = await response.json()
-  
-  state.breweries.push(data)
-  console.log(state.breweries)
+
 
   state.breweries = data.filter(brewery => 
     ['micro', 'regional', 'brewpub'].includes(brewery.brewery_type)
@@ -54,9 +52,10 @@ function renderList(breweries) {
           </section>
         </li>`
     )
-    .join('')
+    .join(`<br>`)
     
   breweriesList.innerHTML = breweryDetails
+  renderSearchByName()
 }
 
 
@@ -64,17 +63,13 @@ function renderList(breweries) {
 
 stateInput.addEventListener('submit', async (e) => {
   e.preventDefault()
-  const searchTerm = document.querySelector('#select-state').value.toLowerCase()
-  // searchTerm.value
-
-  console.log(searchTerm.value)
+  let searchTerm = document.querySelector('#select-state').value.toLowerCase()
 
   state.selectedState = searchTerm
-  await fetchBreweries()
-
-  console.log(state.breweries[20].state)
   
-  if (searchTerm === "") {
+  await fetchBreweries()
+  
+  if (searchTerm === '') {
     renderList(state.breweries)
     return
   }
@@ -108,20 +103,64 @@ stateInput.addEventListener('submit', async (e) => {
 
 
 
-typeSelect.addEventListener('change', (e) => {
-  const searchTerm = e.target.value
+typeSelect.addEventListener('change', async (e) => {
+  let searchTerm = e.target.value
+ 
   state.selectedType = searchTerm
   
+
   const filteredBreweries = state.breweries.filter((brewery) => 
     brewery.brewery_type === searchTerm
   )
   
-  if (searchTerm === "") {
+  if (searchTerm === 'Select a type...') {
     renderList(state.breweries)
+    return
   } else {
     renderList(filteredBreweries)
   }
+  await fetchBreweries()
 })
+
+
+function renderSearchByName() {
+
+  const siblingElem = document.getElementById('article')
+
+  const header = document.createElement('header')
+
+  const searchForm = document.createElement('form')
+  searchForm.setAttribute ('id', 'search-breweries-form')
+  searchForm.setAttribute ('autocomplete', 'off')
+  header.append(searchForm)
+
+  const formLabel = document.createElement('label')
+  formLabel.setAttribute('for', 'search-breweries')
+
+  const heading = document.createElement('h2')
+  heading.textContent = 'Search breweries:'
+  formLabel.append(heading)
+
+  const input = document.createElement('input')
+  input.setAttribute('id', 'search-breweries')
+  input.setAttribute('name', 'search-breweries')
+  input.setAttribute('type', 'text')
+  searchForm.append(formLabel, input)
+
+  const parentElem = siblingElem.parentNode
+
+  parentElem.insertBefore(header, siblingElem)
+
+}
+
+{/* <header class="search-bar">
+  <form id="search-breweries-form" autocomplete="off">
+    <label for="search-breweries"><h2>Search breweries:</h2></label>
+    <input id="search-breweries" name="search-breweries" type="text">
+  </form>
+</header> */}
+
+
 
 
 fetchBreweries()
