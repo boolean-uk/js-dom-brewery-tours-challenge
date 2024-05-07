@@ -1,22 +1,40 @@
 {
   "breweries": [
     {
-      "id": "5128df48-79fc-4f0f-8b52-d06be54d0cec",
-      "name": "(405) Brewing Co",
+      "id": "483666c9-df7b-48b6-a09e-9dc2c39ddd22",
+      "name": "Dialogue Brewing",
       "brewery_type": "micro",
-      "address_1": "1716 Topeka St",
+      "address_1": "1501 1st St NW",
       "address_2": null,
       "address_3": null,
-      "city": "Norman",
-      "state_province": "Oklahoma",
-      "postal_code": "73069-8224",
+      "city": "Albuquerque",
+      "state_province": "New Mexico",
+      "postal_code": "87102-1535",
       "country": "United States",
-      "longitude": "-97.46818222",
-      "latitude": "35.25738891",
-      "phone": "4058160490",
-      "website_url": "http://www.405brewing.com",
-      "state": "Oklahoma",
-      "street": "1716 Topeka St"
+      "longitude": "-106.6456104",
+      "latitude": "35.0976942",
+      "phone": "5055851501",
+      "website_url": "http://www.dialoguebrewing.com",
+      "state": "New Mexico",
+      "street": "1501 1st St NW"
+    },
+    {
+      "id": "871b70be-e09e-4936-8b29-f92c0d2e2667",
+      "name": "Bonaventure Brewing Co",
+      "brewery_type": "brewpub",
+      "address_1": "404 S Figueroa St Ste 418A",
+      "address_2": null,
+      "address_3": null,
+      "city": "Los Angeles",
+      "state_province": "California",
+      "postal_code": "90071-1797",
+      "country": "United States",
+      "longitude": "-118.2562113",
+      "latitude": "34.05314634",
+      "phone": "2132360802",
+      "website_url": "http://www.bonaventurebrewing.com",
+      "state": "California",
+      "street": "404 S Figueroa St Ste 418A"
     }
   ]
 }

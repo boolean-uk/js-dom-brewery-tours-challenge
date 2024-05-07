@@ -3,65 +3,100 @@ const LOCALHOST = "http://localhost:3000/breweries"
 let store = {
     currentPage: 0,
     breweries: [],
-    cities: new Set(),
+    cities: [],
     visited_breweries: []
 }
 
-const localhost_get = async () => {
-    let response = await fetch(`${LOCALHOST}/`)
-    if (response.status == 200) { 
-        store.visited_breweries = await response.json()
-    }
+
+function localhost_get() {
+    fetch(`${LOCALHOST}`)
+        .then(response => response.json())
+        .then(data => {
+            renderVisitBreweries(data)
+        })
 }
-const localhost_add = async id => {
+
+function localhost_add(id) {
     let payload = store.breweries.find(brewery => brewery.id === id)
     const options = {
         method: "POST",
         body: JSON.stringify(payload),
         headers: { "Content-Type": "application/json" }
     }
-    let response = await fetch(`${LOCALHOST}`, options)
-    if (response.status == 200) {
-        console.log(await response.json())
-     }
-     await localhost_get()
-     render()
+
+    fetch(`${LOCALHOST}`, options)
+        .then(response => {
+            localhost_get()
+        })
 }
-const localhost_remove = async id => {
+
+function localhost_remove(id) {
     const options = {
         method: "DELETE",
         headers: { "Content-Type": "application/json" }
     }
-    const response = await fetch(`${LOCALHOST}/${id}`, options)
-    if (response.status == 200) { }
-    await localhost_get()
+
+    fetch(`${LOCALHOST}/${id}`, options)
+        .then(response => {
+            localhost_get()
+        })
+}
+
+function clearStore() {
+    store.breweries = []
+    store.cities = []
+    store.visited_breweries = []
+}
+
+function getBreweries(limit, page) {
+    fetch(`${BASE_URL}` + `?per_page=${limit}` + `&page=${page}`)
+        .then(response => response.json())
+        .then(data => {
+            loadBreweries(data)
+        })
+}
+
+function getBreweriesByState(limit, page, state) {
+    fetch(`${BASE_URL}` + `?per_page=${limit}` + `&page=${page}` + `&by_state=${state}`)
+        .then(response => response.json())
+        .then(data => {
+            loadBreweries(data)
+        })
+}
+
+function getBreweriesByCity(limit, page, city) {
+    fetch(`${BASE_URL}` + `?per_page=${limit}` + `&page=${page}` + `&by_city=${city}`)
+        .then(response => response.json())
+        .then(data => {
+            loadBreweries(data)
+        })
+}
+
+function getBreweriesByType(limit, page, type) {
+    fetch(`${BASE_URL}` + `?per_page=${limit}` + `&page=${page}` + `&by_type=${type}`)
+        .then(response => response.json())
+        .then(data => {
+            loadBreweries(data)
+        })
+}
+
+function searchBreweries(query) {
+    fetch(`${BASE_URL}` + `search?query=${query}`)
+        .then(response => response.json())
+        .then(data => {
+            loadBreweries(data)
+        })
+}
+
+function loadBreweries(data) {
+    clearStore()
+    store.breweries = data.filter(brewery => brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub')
+    store.breweries.forEach(brewery => store.cities.push(brewery.city));
     render()
 }
 
-const clearStore = () => {
-    store.breweries = []
-    store.cities.clear()
-}
-
-const getBreweries = async (limit, page, query, state, city, type) => {
-    let response = await fetch(`${BASE_URL}` +
-        `${query != undefined ? `search?query=${query}` : ``}` +
-        `${limit != undefined ? `?per_page=${limit}` : ``}` +
-        `${page != undefined ? `&page=${page}` : ``}` +
-        `${state != undefined ? `&by_state=${state}` : ``}` +
-        `${city != undefined ? `&by_city=${city}` : ``}` +
-        `${type != undefined ? `&by_type=${type}` : ``}`)
-
-    if (response.status == 200) {
-        store.breweries = []
-        store.breweries = (await response.json()).filter(brewery => brewery.brewery_type === 'micro' || brewery.brewery_type === 'regional' || brewery.brewery_type === 'brewpub')
-        store.breweries.forEach(brewery => store.cities.add(brewery.city));
-        store.currentPage = page
-    }
-}
-
 let city_filter = []
-const handleCheckCity = (event, city) => {
+function handleCheckCity(event, city) {
     if (event.checked) {
         city_filter.push(city)
     } else {
@@ -70,7 +105,7 @@ const handleCheckCity = (event, city) => {
     city_filter.length > 0 ? renderBreweries(store.breweries.filter(brewery => city_filter.includes(brewery.city))) : renderBreweries(store.breweries)
 }
 
-const renderBreweries = (breweries) => {
+function renderBreweries(breweries) {
     let brewery_list = document.getElementById("breweries-list")
     brewery_list.innerHTML = ''
     breweries.forEach(brewery => {
@@ -98,7 +133,7 @@ const renderBreweries = (breweries) => {
     })
 }
 
-const renderCityFilter = (cities) => {
+function renderCityFilter(cities) {
     let city_filter_form = document.getElementById("filter-by-city-form")
     city_filter_form.innerHTML = ''
     cities.forEach(city => {
@@ -109,7 +144,7 @@ const renderCityFilter = (cities) => {
     })
 }
 
-const renderPagination = currentPage => {
+function renderPagination(currentPage) {
     document.getElementById("page-current").innerText = store.currentPage
     document.getElementById("page-prev").onclick = async event => {
         if (store.currentPage == 1)
@@ -128,7 +163,8 @@ const renderPagination = currentPage => {
     }
 }
 
-const renderVisitBreweries = breweries => {
+function renderVisitBreweries(breweries) {
+    console.log(breweries)
     let visit_brewery_list = document.getElementById("visit-breweries-list")
     visit_brewery_list.innerHTML = ''
     breweries.forEach(brewery => {
@@ -141,11 +177,10 @@ const renderVisitBreweries = breweries => {
     })
 }
 
-const render = () => {
+function render() {
     renderBreweries(store.breweries)
     renderCityFilter(store.cities)
     renderPagination(store.currentPage)
-    renderVisitBreweries(store.visited_breweries)
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
@@ -154,7 +189,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         event.preventDefault()
         let state = event.target.elements["select-state"].value
         clearStore()
-        await getBreweries(10, 1, undefined, state)
+        getBreweriesByState(10, 1, state)
         render();
     }
 
@@ -162,7 +197,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         event.preventDefault()
         let query = event.target.value
         clearStore()
-        await getBreweries(undefined, undefined, query)
+        searchBreweries(query)
         render();
     }
 
@@ -179,8 +214,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         render()
     }
 
-    await getBreweries(10, 1)
-    await localhost_get()
-    render()
-
+    getBreweries(10, 1)
+    localhost_get()
+    
 })
