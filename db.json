@@ -1,0 +1,40 @@
+{
+  "breweries": [
+    {
+      "id": "871b70be-e09e-4936-8b29-f92c0d2e2667",
+      "name": "Bonaventure Brewing Co",
+      "brewery_type": "brewpub",
+      "address_1": "404 S Figueroa St Ste 418A",
+      "address_2": null,
+      "address_3": null,
+      "city": "Los Angeles",
+      "state_province": "California",
+      "postal_code": "90071-1797",
+      "country": "United States",
+      "longitude": "-118.2562113",
+      "latitude": "34.05314634",
+      "phone": "2132360802",
+      "website_url": "http://www.bonaventurebrewing.com",
+      "state": "California",
+      "street": "404 S Figueroa St Ste 418A"
+    },
+    {
+      "id": "950180bd-29c9-46b3-ad0c-e6f09799ec7f",
+      "name": "13 Below Brewery",
+      "brewery_type": "micro",
+      "address_1": "7391 Forbes Rd",
+      "address_2": null,
+      "address_3": null,
+      "city": "Cincinnati",
+      "state_province": "Ohio",
+      "postal_code": "45233-1013",
+      "country": "United States",
+      "longitude": "-84.70634815",
+      "latitude": "39.12639764",
+      "phone": "5139750613",
+      "website_url": "http://www.13belowbrewery.com",
+      "state": "Ohio",
+      "street": "7391 Forbes Rd"
+    }
+  ]
+}

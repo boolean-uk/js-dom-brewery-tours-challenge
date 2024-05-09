@@ -40,11 +40,26 @@ body {
 main {
   display: grid;
   grid-template-areas:
-    "sidebar title"
-    "sidebar search-bar"
-    "sidebar article";
-  grid-template-columns: 1fr 3fr;
+    "sidebar title right-sidebar"
+    "sidebar search-bar right-sidebar"
+    "sidebar article right-sidebar";
+  grid-template-columns: 1fr 3fr 1fr;
   grid-template-rows: auto auto 1fr;
+}
+
+.visit-section {
+  grid-area: right-sidebar;
+
+  padding: 1rem 2rem 1rem 1rem;
+}
+
+.visited-breweries-list li {
+  list-style-type: none;
+  padding: 1rem 2rem 1rem 2rem;
+  margin: 10px;
+  border-radius: 0.25rem;
+  border: 1px solid #000;
+  font-size: 14px;
 }
 
 .filters-section {
@@ -227,4 +242,16 @@ article {
   text-align: center;
   text-decoration: none;
   font-weight: bold;
+}
+
+.pagination{
+  display: block;
+  padding: 0.5rem 1rem;
+}
+
+.pagination button {
+  border: none;
+  background-color: transparent;
+  text-decoration: underline blue;
+  cursor: pointer;
 }
