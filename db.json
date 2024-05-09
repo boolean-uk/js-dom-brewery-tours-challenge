@@ -1,24 +1,6 @@
 {
   "breweries": [
     {
-      "id": "483666c9-df7b-48b6-a09e-9dc2c39ddd22",
-      "name": "Dialogue Brewing",
-      "brewery_type": "micro",
-      "address_1": "1501 1st St NW",
-      "address_2": null,
-      "address_3": null,
-      "city": "Albuquerque",
-      "state_province": "New Mexico",
-      "postal_code": "87102-1535",
-      "country": "United States",
-      "longitude": "-106.6456104",
-      "latitude": "35.0976942",
-      "phone": "5055851501",
-      "website_url": "http://www.dialoguebrewing.com",
-      "state": "New Mexico",
-      "street": "1501 1st St NW"
-    },
-    {
       "id": "871b70be-e09e-4936-8b29-f92c0d2e2667",
       "name": "Bonaventure Brewing Co",
       "brewery_type": "brewpub",
@@ -35,6 +17,24 @@
       "website_url": "http://www.bonaventurebrewing.com",
       "state": "California",
       "street": "404 S Figueroa St Ste 418A"
+    },
+    {
+      "id": "950180bd-29c9-46b3-ad0c-e6f09799ec7f",
+      "name": "13 Below Brewery",
+      "brewery_type": "micro",
+      "address_1": "7391 Forbes Rd",
+      "address_2": null,
+      "address_3": null,
+      "city": "Cincinnati",
+      "state_province": "Ohio",
+      "postal_code": "45233-1013",
+      "country": "United States",
+      "longitude": "-84.70634815",
+      "latitude": "39.12639764",
+      "phone": "5139750613",
+      "website_url": "http://www.13belowbrewery.com",
+      "state": "Ohio",
+      "street": "7391 Forbes Rd"
     }
   ]
 }
