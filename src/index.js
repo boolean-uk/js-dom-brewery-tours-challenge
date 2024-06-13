@@ -2,10 +2,10 @@ const API_URL = 'https://api.openbrewerydb.org/v1/breweries/?per_page=200'
 
 const state = {
     breweries: [],
-    typeFilter: '',
-    stateFilter: '',
     cities: [],
     cityFilter: [],
+    typeFilter: '',
+    stateFilter: '',
 }
 
 async function getBreweries() {
@@ -50,11 +50,12 @@ async function render() {
         state.breweries.forEach((brewery) =>
             breweriesList.appendChild(generateCard(brewery))
         )
-        filterByCity()
     }
+
+    filterByCity()
 }
 
-function renderLocal(list) {
+function renderFromState(list) {
     const breweriesList = document.getElementById('breweries-list')
     breweriesList.innerHTML = ''
     list.forEach((brewery) => breweriesList.appendChild(generateCard(brewery)))
@@ -122,6 +123,9 @@ function createStateFilter() {
 
 function filterByCity() {
     const form = document.getElementById('filter-by-city-form')
+    form.innerHTML = ''
+
+    state.cities = []
 
     const clearAllBtn = document.querySelector('.clear-all-btn')
     clearAllBtn.addEventListener('click', clearAllCities)
@@ -154,23 +158,25 @@ function filterByCity() {
 }
 
 function updateSelectedCities() {
-    const checkboxes = document.querySelectorAll(
-        '#filter-by-city-form input[type="checkbox"]'
-    )
-
     state.cityFilter = []
 
-    checkboxes.forEach((checkbox) => {
-        if (checkbox.checked) {
-            const newFilteredBreweries = state.breweries.filter(
-                (brewery) => brewery.city === checkbox.value
-            )
-            state.cityFilter = state.cityFilter.concat(newFilteredBreweries)
-        } else if (state.cityFilter.includes(checkbox.value)) {
-        }
-    })
+    document
+        .querySelectorAll('#filter-by-city-form input[type="checkbox"]')
+        .forEach((checkbox) => {
+            if (checkbox.checked) {
+                const newFilteredBreweries = state.breweries.filter(
+                    (brewery) => brewery.city === checkbox.value
+                )
+                state.cityFilter = state.cityFilter.concat(newFilteredBreweries)
+            } else if (state.cityFilter.includes(checkbox.value)) {
+            }
+        })
 
-    renderLocal(state.cityFilter)
+    if (state.cityFilter.length === 0) {
+        return render()
+    }
+
+    renderFromState(state.cityFilter)
 }
 
 function clearAllCities() {
