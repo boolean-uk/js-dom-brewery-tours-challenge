@@ -123,6 +123,9 @@ function createStateFilter() {
 function filterByCity() {
     const form = document.getElementById('filter-by-city-form')
 
+    const clearAllBtn = document.querySelector('.clear-all-btn')
+    clearAllBtn.addEventListener('click', clearAllCities)
+
     for (brewery of state.breweries) {
         if (!state.cities.includes(brewery.city)) {
             state.cities.push(brewery.city)
@@ -168,6 +171,22 @@ function updateSelectedCities() {
     })
 
     renderLocal(state.cityFilter)
+}
+
+function clearAllCities() {
+    const checkboxes = document.querySelectorAll(
+        '#filter-by-city-form input[type="checkbox"]'
+    )
+
+    state.cityFilter = []
+
+    checkboxes.forEach((checkbox) => {
+        if (checkbox.checked) {
+            checkbox.checked = false
+        }
+    })
+
+    render()
 }
 
 window.onload = () => {
