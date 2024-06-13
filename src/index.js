@@ -4,6 +4,8 @@ const state = {
     breweries: [],
     typeFilter: '',
     stateFilter: '',
+    cities: [],
+    cityFilter: [],
 }
 
 async function getBreweries() {
@@ -48,7 +50,14 @@ async function render() {
         state.breweries.forEach((brewery) =>
             breweriesList.appendChild(generateCard(brewery))
         )
+        filterByCity()
     }
+}
+
+function renderLocal(list) {
+    const breweriesList = document.getElementById('breweries-list')
+    breweriesList.innerHTML = ''
+    list.forEach((brewery) => breweriesList.appendChild(generateCard(brewery)))
 }
 
 function generateCard(brewery) {
@@ -109,6 +118,56 @@ function createStateFilter() {
         state.stateFilter = filters.value
         render()
     })
+}
+
+function filterByCity() {
+    const form = document.getElementById('filter-by-city-form')
+
+    for (brewery of state.breweries) {
+        if (!state.cities.includes(brewery.city)) {
+            state.cities.push(brewery.city)
+        }
+    }
+
+    state.cities = state.cities.sort()
+
+    for (let i = 0; i < state.cities.length; ++i) {
+        const city = state.cities[i]
+
+        const cityCheckbox = document.createElement('input')
+        cityCheckbox.type = 'checkbox'
+        cityCheckbox.id = city
+        cityCheckbox.name = 'city'
+        cityCheckbox.value = city
+        form.appendChild(cityCheckbox)
+
+        const cityName = document.createElement('label')
+        cityName.htmlFor = city
+        cityName.innerText = `${city[0].toUpperCase() + city.slice(1)}\n`
+        form.appendChild(cityName)
+
+        cityCheckbox.addEventListener('click', updateSelectedCities)
+    }
+}
+
+function updateSelectedCities() {
+    const checkboxes = document.querySelectorAll(
+        '#filter-by-city-form input[type="checkbox"]'
+    )
+
+    state.cityFilter = []
+
+    checkboxes.forEach((checkbox) => {
+        if (checkbox.checked) {
+            const newFilteredBreweries = state.breweries.filter(
+                (brewery) => brewery.city === checkbox.value
+            )
+            state.cityFilter = state.cityFilter.concat(newFilteredBreweries)
+        } else if (state.cityFilter.includes(checkbox.value)) {
+        }
+    })
+
+    renderLocal(state.cityFilter)
 }
 
 window.onload = () => {
