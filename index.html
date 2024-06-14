@@ -22,7 +22,7 @@
     <main>
       <aside class="filters-section">
         <h2>Filter By:</h2>
-        <form id="filter-by-type-form" autocompete="off">
+        <form id="filter-by-type-form" autocomplete="off">
           <label for="filter-by-type"><h3>Type of Brewery</h3></label>
           <select name="filter-by-type" id="filter-by-type">
             <option value="">Select a type...</option>
@@ -34,14 +34,9 @@
       </aside>
       <h1>List of Breweries</h1>
       <article>
-        <ul id="breweries-list" class="breweries-list">
-          <!--
-          For each brewery returned in the search, 
-          add to the list using the HTML provided 
-          in templates/standard-list-items.html
-          -->
-        </ul>
+        <ul id="breweries-list" class="breweries-list"></ul>
       </article>
     </main>
+    <script src="./scripts/INDEX.js"></script>
   </body>
 </html>
