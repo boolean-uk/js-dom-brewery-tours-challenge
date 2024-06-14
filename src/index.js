@@ -1,5 +1,5 @@
 // Always fetch 200 results
-const API_URL = 'https://api.openbrewerydb.org/v1/breweries/?per_page=200'
+const API_URL = 'https://api.openbrewerydb.org/v1/breweries/?per_page=200&page='
 
 const state = {
     // All the breweries from the API
@@ -14,6 +14,8 @@ const state = {
     stateFilter: '',
     // Filter by brewery name (search-bar)
     nameFilter: '',
+    // Current page
+    currentPage: 1,
 }
 
 // Fetch the breweries from the API
@@ -21,13 +23,13 @@ async function getBreweries() {
     try {
         // Fetch the default if there is no US state filter
         if (!state.stateFilter) {
-            const response = await fetch(API_URL)
+            const response = await fetch(API_URL + state.currentPage)
             const jsonResponse = await response.json()
             return jsonResponse
         } else {
             // Fetch the results matching the selected US state
             const response = await fetch(
-                `${API_URL}&by_state=${state.stateFilter}`
+                `${API_URL}${state.currentPage}&by_state=${state.stateFilter}`
             )
             const jsonResponse = await response.json()
             return jsonResponse
@@ -66,18 +68,27 @@ async function render() {
         )
     }
 
+    if (state.cityFilter.length != 0) {
+        state.breweries = state.breweries.filter((brewery) =>
+            state.cityFilter.includes(brewery.city)
+        )
+    }
+
     // Display error message if no results are found
     if (state.breweries.length === 0) {
         breweriesList.innerText = 'No matching results found.'
     } else {
         // Generate the list with the matching results
+        breweriesList.appendChild(createPageButtons())
         state.breweries.forEach((brewery) =>
             breweriesList.appendChild(generateCard(brewery))
         )
     }
 
     // Reset / populate the city list
-    filterByCity()
+    if (state.cityFilter.length === 0) {
+        filterByCity()
+    }
 }
 
 // Render from a cached list in state
@@ -214,20 +225,11 @@ function updateSelectedCities() {
         .querySelectorAll('#filter-by-city-form input[type="checkbox"]')
         .forEach((checkbox) => {
             if (checkbox.checked) {
-                const newFilteredBreweries = state.breweries.filter(
-                    (brewery) => brewery.city === checkbox.value
-                )
-                state.cityFilter = state.cityFilter.concat(newFilteredBreweries)
+                state.cityFilter.push(checkbox.value)
             }
         })
 
-    // If there is no filter, return the default list
-    if (state.cityFilter.length === 0) {
-        return render()
-    }
-
-    // Render only the selected cities
-    renderFromState(state.cityFilter)
+    render()
 }
 
 function clearAllCities() {
@@ -245,6 +247,42 @@ function clearAllCities() {
 
     // Render the default list
     render()
+}
+
+function createPageButtons() {
+    const buttonContainer = document.createElement('div')
+
+    const prevButton = document.createElement('button')
+    prevButton.innerText = 'Previous page'
+
+    if (state.currentPage === 1) {
+        prevButton.disabled = true
+    }
+
+    prevButton.addEventListener('click', () => {
+        if (!state.currentPage <= 1) {
+            state.currentPage -= 1
+            render()
+        }
+        if (state.currentPage === 1) {
+            prevButton.disabled = true
+        }
+    })
+
+    const nextButton = document.createElement('button')
+    nextButton.innerText = 'Next page'
+    nextButton.addEventListener('click', () => {
+        state.currentPage += 1
+        render()
+
+        if (state.currentPage === 1) {
+            prevButton.disabled = true
+        }
+    })
+
+    buttonContainer.appendChild(prevButton)
+    buttonContainer.appendChild(nextButton)
+    return buttonContainer
 }
 
 window.onload = () => {
