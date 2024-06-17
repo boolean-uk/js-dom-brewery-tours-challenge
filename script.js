@@ -3,26 +3,30 @@ const state = {
   breweries: [],
   currentUsStateFilter: "",
   currentBreweryTypeFilter: "",
+  searchQuery: "",
+  searchResults: [],
+  searchBreweryInput: "",
 };
 
 // Get the element from the html
-const searchButton = document.querySelector("#search-btn");
+const searchButton = document.querySelector('input[type="submit"]');
 const selectStateInput = document.querySelector("#select-state");
 const filterByTypeSelect = document.querySelector("#filter-by-type");
 const breweryListElement = document.querySelector("#breweries-list");
+const main = document.querySelector("main");
+const searchBreweryInput = document.querySelector("#search-breweries");
 
 // async function to fetch the beweries data from api
 async function fetchBreweries() {
   if (state.currentUsStateFilter) {
     try {
-      let apiUrl = `https://api.openbrewerydb.org/v1/breweries?by_city=${state.currentUsStateFilter}&per_page=200`;
+      let apiUrl = `https://api.openbrewerydb.org/v1/breweries?by_state=${state.currentUsStateFilter}&per_page=200`;
       if (state.currentBreweryTypeFilter) {
-        apiUrl = apiUrl + `&by_type=${state.currentBreweryTypeFilter}`;
+        apiUrl += `&by_type=${state.currentBreweryTypeFilter}`;
       }
       const response = await fetch(apiUrl);
       const data = await response.json();
       state.breweries = data;
-      console.log(state.breweries);
       return state.breweries;
     } catch (error) {
       console.error("Failed to fetch data:", error);
@@ -30,30 +34,67 @@ async function fetchBreweries() {
   }
 }
 
+async function fetchSearchResults(query) {
+  if (query) {
+    try {
+      const apiUrl = `https://api.openbrewerydb.org/v1/breweries/autocomplete?query=${query}`;
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      state.searchResults = data;
+      // renderSearchResults();
+    } catch (error) {
+      console.error("Failed to fetch search results:", error);
+    }
+  } else {
+    state.searchResults = [];
+    //   renderSearchResults();
+  }
+}
+
 searchButton.addEventListener("click", async (event) => {
   event.preventDefault();
-  // Get us state by input value
+
+  // Get the state from input value
   state.currentUsStateFilter = selectStateInput.value;
-  // Get select filter option
+
+  // Get the brewery type filter option
   state.currentBreweryTypeFilter = filterByTypeSelect.value;
 
-    // awit fetchBreweries before rendering the breweries list
-    await fetchBreweries();
-    //rendering the breweries list
+  // Await fetchBreweries before rendering the breweries list
+  await fetchBreweries();
+
+  // Rendering the breweries list
   renderBreweries();
 
-     // Clear input fields
+  // Clear input fields
   selectStateInput.value = "";
   filterByTypeSelect.value = "";
-});
 
+  // only render header if search ipnut or filter exit
+  if (state.currentBreweryTypeFilter || state.currentUsStateFilter) {
+    renderSearchHeader();
+  }
+});
+// if (searchBreweryInput) {
+    // when search/filter on the search input
+    searchBreweryInput.addEventListener("input", () => {
+        // input is save in the state for easy access
+        state.searchQuery = searchBreweryInput.value;
+        console.log("search input:", state.searchQuery);
+        fetchSearchResults(state.searchQuery);
+        console.log("auto search results", fetchSearchResults);
+    });
+// }
+// rendering breweries with html template
 function renderBreweries() {
+  // clear the page innerhtml
   breweryListElement.innerHTML = "";
+
+  // loop through the list of the breweris
   for (let i = 0; i < state.breweries.length; i++) {
     const brewery = state.breweries[i];
     const li = document.createElement("li");
     breweryListElement.appendChild(li);
-    console.log("BREWERY : ", brewery);
 
     const listH2 = document.createElement("h2");
     listH2.textContent = brewery.name;
@@ -96,8 +137,30 @@ function renderBreweries() {
     const link = document.createElement("a");
     link.href = brewery.website_url;
     link.target = "_blank";
-    link.textContent = "Visit Website" || "null";
+    link.textContent = "Visit Website";
     linkSection.appendChild(link);
     li.appendChild(linkSection);
   }
 }
+
+// render search header with html template/
+function renderSearchHeader() {
+  const SearchBarHeader = document.createElement("header");
+  SearchBarHeader.classList = "search-bar";
+  main.appendChild(SearchBarHeader);
+  const searchForm = document.createElement("form");
+  searchForm.autocomplete = "off";
+  searchForm.id = "search-breweries-form";
+  SearchBarHeader.appendChild(searchForm);
+  const searchLabel = document.createElement("label");
+  searchLabel.attributes = ("for", "search-breweries");
+  searchForm.appendChild(searchLabel);
+  const searchInput = document.createElement("input");
+  searchInput.type = "text";
+  searchInput.name = "search-breweries";
+  searchInput.id = "search-breweries";
+  searchForm.appendChild(searchInput);
+  console.log(state.search, "test");
+}
+
+
