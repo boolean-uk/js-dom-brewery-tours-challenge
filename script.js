@@ -14,7 +14,6 @@ const selectStateInput = document.querySelector("#select-state");
 const filterByTypeSelect = document.querySelector("#filter-by-type");
 const breweryListElement = document.querySelector("#breweries-list");
 const main = document.querySelector("main");
-// const searchBreweryInput = document.querySelector("#search-breweries");
 
 // async function to fetch the beweries data from api
 async function fetchBreweries() {
@@ -47,7 +46,7 @@ async function fetchSearchResults(query) {
     }
   } else {
     state.searchResults = [];
-      renderSearchResults();
+    renderSearchResults();
   }
 }
 
@@ -156,17 +155,15 @@ function renderSearchHeader() {
   searchInput.addEventListener("input", () => {
     // input is save in the state for easy access
     state.searchQuery = searchInput.value;
-    console.log("search input:", state.searchQuery);
     fetchSearchResults(state.searchQuery);
-    console.log("auto search results", fetchSearchResults);
   });
 }
 
 // render search results
 function renderSearchResults() {
   // clear the page inner html
-      breweryListElement.innerHTML = "";
-   
+  breweryListElement.innerHTML = "";
+
   // loop through the list of the breweris
   for (let i = 0; i < state.searchResults.length; i++) {
     const searchResults = state.searchResults[i];
