@@ -1,245 +1,169 @@
-let state = {
+const state = {
   breweries: [],
-  filters: {
-    type: "",
-    city: [],
-  },
-  search: "",
+  selectedState: "",
+  selectedType: "",
+  selectedCities: [],
+  searchQuery: "",
+  visitList: [],
   pagination: {
     currentPage: 1,
-    perPage: 3,
+    perPage: 10,
   },
-  visitList: [],
 };
 
-// Load visit list from json-server
-function loadVisitList() {
-  fetch("http://localhost:3000/visitList")
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Visit list loaded:", data);
-      state.visitList = data;
-      renderVisitList();
-    })
-    .catch((error) => console.error("Error loading visit list:", error));
+// Fetch breweries by state
+async function fetchBreweriesByState(state) {
+  const response = await fetch(
+    `https://api.openbrewerydb.org/breweries?by_state=${state}`
+  );
+  return response.json();
 }
 
-// Add a brewery to the visit list
-function addToVisitList(brewery) {
-  fetch("http://localhost:3000/visitList", {
+// Fetch visit list from JSON server
+async function fetchVisitList() {
+  const response = await fetch("http://localhost:3000/visitList");
+  return response.json();
+}
+
+// Add brewery to visit list
+async function addToVisitList(brewery) {
+  const response = await fetch("http://localhost:3000/visitList", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(brewery),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Brewery added to visit list:", data);
-      state.visitList.push(data);
-      renderBreweries();
-    })
-    .catch((error) => console.error("Error adding to visit list:", error));
+  });
+  return response.json();
 }
 
-// Remove a brewery from the visit list
-function removeFromVisitList(breweryId) {
-  fetch(`http://localhost:3000/visitList/${breweryId}`, {
+// Remove brewery from visit list
+async function removeFromVisitList(id) {
+  await fetch(`http://localhost:3000/visitList/${id}`, {
     method: "DELETE",
-  })
-    .then(() => {
-      console.log("Brewery removed from visit list:", breweryId);
-      state.visitList = state.visitList.filter(
-        (brewery) => brewery.id !== breweryId
-      );
-      renderBreweries();
-    })
-    .catch((error) => console.error("Error removing from visit list:", error));
+  });
 }
 
-// Function to check if a brewery is in the visit list
-function isInVisitList(breweryId) {
-  return state.visitList.some((brewery) => brewery.id === breweryId);
-}
-
-// Function to create a new element with text content and optional class
-function createElement(tag, textContent, className) {
+// Create a new element with text content
+function createElementWithText(tag, text) {
   const element = document.createElement(tag);
-  if (textContent) element.textContent = textContent;
-  if (className) element.className = className;
+  element.textContent = text;
   return element;
 }
 
-// Function to render the list of breweries
-function renderBreweries() {
-  const breweryList = document.getElementById("breweries-list");
-  breweryList.textContent = ""; // Clear the list
-
-  const filteredBreweries = state.breweries
-    .filter(
-      (brewery) =>
-        !state.filters.type || brewery.brewery_type === state.filters.type
-    )
-    .filter((brewery) =>
-      brewery.name.toLowerCase().includes(state.search.toLowerCase())
-    )
-    .filter(
-      (brewery) =>
-        !state.filters.city.length || state.filters.city.includes(brewery.city)
-    );
+// Render the list of breweries
+function renderBreweries(breweries) {
+  const breweriesList = document.getElementById("breweries-list");
+  breweriesList.textContent = ""; // Clear the list
 
   const startIndex =
     (state.pagination.currentPage - 1) * state.pagination.perPage;
-  const paginatedBreweries = filteredBreweries.slice(
+  const paginatedBreweries = breweries.slice(
     startIndex,
     startIndex + state.pagination.perPage
   );
 
-  console.log(
-    `Rendering breweries with search term "${state.search}":`,
-    paginatedBreweries
-  );
-
   paginatedBreweries.forEach((brewery) => {
-    const breweryItem = document.createElement("li");
+    if (["micro", "regional", "brewpub"].includes(brewery.brewery_type)) {
+      const li = document.createElement("li");
 
-    const nameElement = createElement("h2", brewery.name);
-    breweryItem.appendChild(nameElement);
+      const h2 = createElementWithText("h2", brewery.name);
 
-    const typeElement = createElement(
-      "div",
-      brewery.brewery_type.toUpperCase(),
-      "type"
-    );
-    breweryItem.appendChild(typeElement);
+      const typeDiv = createElementWithText("div", brewery.brewery_type);
+      typeDiv.className = "type";
 
-    const addressSection = createElement("section", null, "address");
-    addressSection.appendChild(createElement("h3", "Address:"));
-    addressSection.appendChild(createElement("p", brewery.street));
-    addressSection.appendChild(
-      createElement("p", `${brewery.city}, ${brewery.postal_code}`)
-    );
-    breweryItem.appendChild(addressSection);
+      const addressSection = document.createElement("section");
+      addressSection.className = "address";
+      const addressH3 = createElementWithText("h3", "Address:");
+      const addressP1 = createElementWithText("p", brewery.street);
+      const addressP2 = createElementWithText(
+        "p",
+        `${brewery.city}, ${brewery.state} ${brewery.postal_code}`
+      );
+      addressP2.style.fontWeight = "bold";
+      addressSection.append(addressH3, addressP1, addressP2);
 
-    const phoneSection = createElement("section", null, "phone");
-    phoneSection.appendChild(createElement("h3", "Phone:"));
-    phoneSection.appendChild(createElement("p", brewery.phone || "N/A"));
-    breweryItem.appendChild(phoneSection);
+      const phoneSection = document.createElement("section");
+      phoneSection.className = "phone";
+      const phoneH3 = createElementWithText("h3", "Phone:");
+      const phoneP = createElementWithText("p", brewery.phone || "N/A");
+      phoneSection.append(phoneH3, phoneP);
 
-    const linkSection = createElement("section", null, "link");
-    const linkElement = createElement("a", "VISIT WEBSITE");
-    linkElement.href = brewery.website_url;
-    linkElement.target = "_blank";
-    linkSection.appendChild(linkElement);
-    breweryItem.appendChild(linkSection);
+      const linkSection = document.createElement("section");
+      linkSection.className = "link";
+      const linkA = document.createElement("a");
+      linkA.href = brewery.website_url || "#";
+      linkA.target = "_blank";
+      linkA.textContent = "Visit Website";
+      linkSection.appendChild(linkA);
 
-    // Add/Remove visit list button
-    const visitListButton = createElement(
-      "button",
-      isInVisitList(brewery.id) ? "Remove from Visit List" : "Add to Visit List"
-    );
-    visitListButton.addEventListener("click", () => {
-      if (isInVisitList(brewery.id)) {
-        removeFromVisitList(brewery.id);
-      } else {
-        addToVisitList(brewery);
-      }
-    });
-    breweryItem.appendChild(visitListButton);
+      const visitButton = createElementWithText(
+        "button",
+        isInVisitList(brewery.id)
+          ? "Remove from Visit List"
+          : "Add to Visit List"
+      );
+      visitButton.addEventListener("click", async () => {
+        if (isInVisitList(brewery.id)) {
+          await removeFromVisitList(brewery.id);
+        } else {
+          await addToVisitList(brewery);
+        }
+        await updateVisitList();
+        filterBreweries();
+      });
 
-    breweryList.appendChild(breweryItem);
+      li.append(
+        h2,
+        typeDiv,
+        addressSection,
+        phoneSection,
+        linkSection,
+        visitButton
+      );
+      breweriesList.appendChild(li);
+    }
   });
 
-  updatePaginationControls(filteredBreweries.length);
+  updatePaginationControls(breweries.length);
 }
 
-// Function to render the visit list
-function renderVisitList() {
-  const visitList = document.getElementById("visit-list");
-  visitList.textContent = ""; // Clear the list
-
-  state.visitList.forEach((brewery) => {
-    const breweryItem = document.createElement("li");
-
-    const nameElement = createElement("h2", brewery.name);
-    breweryItem.appendChild(nameElement);
-
-    const typeElement = createElement(
-      "div",
-      brewery.brewery_type.toUpperCase(),
-      "type"
-    );
-    breweryItem.appendChild(typeElement);
-
-    const addressSection = createElement("section", null, "address");
-    addressSection.appendChild(createElement("h3", "Address:"));
-    addressSection.appendChild(createElement("p", brewery.street));
-    addressSection.appendChild(
-      createElement("p", `${brewery.city}, ${brewery.postal_code}`)
-    );
-    breweryItem.appendChild(addressSection);
-
-    const phoneSection = createElement("section", null, "phone");
-    phoneSection.appendChild(createElement("h3", "Phone:"));
-    phoneSection.appendChild(createElement("p", brewery.phone || "N/A"));
-    breweryItem.appendChild(phoneSection);
-
-    const linkSection = createElement("section", null, "link");
-    const linkElement = createElement("a", "VISIT WEBSITE");
-    linkElement.href = brewery.website_url;
-    linkElement.target = "_blank";
-    linkSection.appendChild(linkElement);
-    breweryItem.appendChild(linkSection);
-
-    // Remove from visit list button
-    const removeButton = createElement("button", "Remove from Visit List");
-    removeButton.addEventListener("click", () =>
-      removeFromVisitList(brewery.id)
-    );
-    breweryItem.appendChild(removeButton);
-
-    visitList.appendChild(breweryItem);
-  });
-}
-
-// Function to update pagination controls
+// Update pagination controls
 function updatePaginationControls(totalItems) {
   const totalPages = Math.ceil(totalItems / state.pagination.perPage);
-  const pageInfo = document.getElementById("page-info");
-  pageInfo.textContent = `Page ${state.pagination.currentPage} of ${totalPages}`;
+  document.getElementById(
+    "page-info"
+  ).textContent = `Page ${state.pagination.currentPage} of ${totalPages}`;
 
-  const prevPageButton = document.getElementById("prev-page");
-  const nextPageButton = document.getElementById("next-page");
-
-  prevPageButton.disabled = state.pagination.currentPage === 1;
-  nextPageButton.disabled = state.pagination.currentPage === totalPages;
-
-  prevPageButton.addEventListener("click", function () {
-    if (state.pagination.currentPage > 1) {
-      state.pagination.currentPage--;
-      renderBreweries();
-    }
-  });
-
-  nextPageButton.addEventListener("click", function () {
-    if (state.pagination.currentPage < totalPages) {
-      state.pagination.currentPage++;
-      renderBreweries();
-    }
-  });
+  document.getElementById("prev-page").disabled =
+    state.pagination.currentPage === 1;
+  document.getElementById("next-page").disabled =
+    state.pagination.currentPage === totalPages;
 }
 
-// Function to render city filters
+// Render city filters
 function renderCityFilters() {
-  const cities = [...new Set(state.breweries.map((brewery) => brewery.city))];
   const cityFilterForm = document.getElementById("filter-by-city-form");
   cityFilterForm.textContent = ""; // Clear the form
+
+  const cities = [...new Set(state.breweries.map((brewery) => brewery.city))];
 
   cities.forEach((city) => {
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.name = city;
     checkbox.value = city;
+    checkbox.checked = state.selectedCities.includes(city);
+    checkbox.addEventListener("change", (event) => {
+      if (event.target.checked) {
+        state.selectedCities.push(city);
+      } else {
+        state.selectedCities = state.selectedCities.filter(
+          (selectedCity) => selectedCity !== city
+        );
+      }
+      filterBreweries();
+    });
 
     const label = document.createElement("label");
     label.textContent = city;
@@ -250,90 +174,175 @@ function renderCityFilters() {
   });
 }
 
-// Event listener for state form submission
+// Filter the breweries based on the selected type and cities
+function filterBreweries() {
+  let filteredBreweries = state.breweries;
+
+  if (state.selectedType) {
+    filteredBreweries = filteredBreweries.filter(
+      (brewery) => brewery.brewery_type === state.selectedType
+    );
+  }
+
+  if (state.selectedCities.length > 0) {
+    filteredBreweries = filteredBreweries.filter((brewery) =>
+      state.selectedCities.includes(brewery.city)
+    );
+  }
+
+  if (state.searchQuery) {
+    filteredBreweries = filteredBreweries.filter((brewery) =>
+      brewery.name.toLowerCase().includes(state.searchQuery.toLowerCase())
+    );
+  }
+
+  renderBreweries(filteredBreweries);
+}
+
+// Check if a brewery is in the visit list
+function isInVisitList(breweryId) {
+  return state.visitList.some((brewery) => brewery.id === breweryId);
+}
+
+// Update visit list
+async function updateVisitList() {
+  const visitList = await fetchVisitList();
+  state.visitList = visitList;
+  renderVisitList();
+}
+
+// Render the visit list
+function renderVisitList() {
+  const visitListElement = document.getElementById("visit-list");
+  visitListElement.textContent = ""; // Clear the list
+
+  state.visitList.forEach((brewery) => {
+    const li = document.createElement("li");
+
+    const h2 = createElementWithText("h2", brewery.name);
+
+    const typeDiv = createElementWithText("div", brewery.brewery_type);
+    typeDiv.className = "type";
+
+    const addressSection = document.createElement("section");
+    addressSection.className = "address";
+    const addressH3 = createElementWithText("h3", "Address:");
+    const addressP1 = createElementWithText("p", brewery.street);
+    const addressP2 = createElementWithText(
+      "p",
+      `${brewery.city}, ${brewery.state} ${brewery.postal_code}`
+    );
+    addressP2.style.fontWeight = "bold";
+    addressSection.append(addressH3, addressP1, addressP2);
+
+    const phoneSection = document.createElement("section");
+    phoneSection.className = "phone";
+    const phoneH3 = createElementWithText("h3", "Phone:");
+    const phoneP = createElementWithText("p", brewery.phone || "N/A");
+    phoneSection.append(phoneH3, phoneP);
+
+    const linkSection = document.createElement("section");
+    linkSection.className = "link";
+    const linkA = document.createElement("a");
+    linkA.href = brewery.website_url || "#";
+    linkA.target = "_blank";
+    linkA.textContent = "Visit Website";
+    linkSection.appendChild(linkA);
+
+    const removeButton = createElementWithText(
+      "button",
+      "Remove from Visit List"
+    );
+    removeButton.addEventListener("click", async () => {
+      await removeFromVisitList(brewery.id);
+      await updateVisitList();
+      filterBreweries();
+    });
+
+    li.append(
+      h2,
+      typeDiv,
+      addressSection,
+      phoneSection,
+      linkSection,
+      removeButton
+    );
+    visitListElement.appendChild(li);
+  });
+}
+
+// Event listener for state selection form submission
 document
   .getElementById("select-state-form")
-  .addEventListener("submit", function (event) {
+  .addEventListener("submit", async (event) => {
     event.preventDefault();
-    const stateName = document.getElementById("select-state").value.trim();
-    console.log(`State name entered: ${stateName}`);
-    if (stateName) {
-      loadBreweriesByState(stateName);
+    const stateInput = document.getElementById("select-state").value.trim();
+    if (stateInput) {
+      state.selectedState = stateInput;
+      const breweries = await fetchBreweriesByState(state.selectedState);
+      state.breweries = breweries;
+      state.pagination.currentPage = 1;
+      renderCityFilters();
+      filterBreweries();
     }
   });
-
-// Function to load breweries by state from the local breweries object
-function loadBreweriesByState(stateName) {
-  console.log(`Loading breweries for state: ${stateName}`);
-  state.breweries = breweries.filter(
-    (brewery) => brewery.state.toLowerCase() === stateName.toLowerCase()
-  );
-  console.log(`Filtered breweries:`, state.breweries);
-  state.pagination.currentPage = 1;
-  renderCityFilters();
-  renderBreweries();
-}
 
 // Event listener for type filter change
 document
   .getElementById("filter-by-type")
-  .addEventListener("change", function (event) {
-    state.filters.type = event.target.value;
-    console.log(`Type filter selected: ${state.filters.type}`);
-    state.pagination.currentPage = 1;
-    renderBreweries();
+  .addEventListener("change", (event) => {
+    state.selectedType = event.target.value;
+    filterBreweries();
   });
 
 // Event listener for search input
 document
   .getElementById("search-breweries")
-  .addEventListener("input", function (event) {
-    state.search = event.target.value.trim();
-    console.log(`Search term entered: ${state.search}`);
-    state.pagination.currentPage = 1;
-    renderBreweries();
+  .addEventListener("input", (event) => {
+    state.searchQuery = event.target.value.trim();
+    filterBreweries();
   });
 
-// Event listener for city filter change
-document
-  .getElementById("filter-by-city-form")
-  .addEventListener("change", function (event) {
-    const checkboxes = document.querySelectorAll(
-      '#filter-by-city-form input[type="checkbox"]'
-    );
-    state.filters.city = Array.from(checkboxes)
-      .filter((checkbox) => checkbox.checked)
-      .map((checkbox) => checkbox.value);
-    console.log(`City filters selected: ${state.filters.city}`);
-    state.pagination.currentPage = 1;
-    renderBreweries();
-  });
-
-// Event listener for clear all button
-document.querySelector(".clear-all-btn").addEventListener("click", function () {
-  const checkboxes = document.querySelectorAll(
-    '#filter-by-city-form input[type="checkbox"]'
-  );
-  checkboxes.forEach((checkbox) => (checkbox.checked = false));
-  state.filters.city = [];
-  console.log(`City filters cleared`);
-  state.pagination.currentPage = 1;
-  renderBreweries();
+// Event listener for pagination buttons
+document.getElementById("prev-page").addEventListener("click", () => {
+  if (state.pagination.currentPage > 1) {
+    state.pagination.currentPage--;
+    filterBreweries();
+  }
 });
+
+document.getElementById("next-page").addEventListener("click", () => {
+  state.pagination.currentPage++;
+  filterBreweries();
+});
+
+// Event listener for clearing all city filters
+document.querySelector(".clear-all-btn").addEventListener("click", () => {
+  state.selectedCities = [];
+  renderCityFilters();
+  filterBreweries();
+});
+// Toggle the visibility of the visit list section
+function toggleVisitList() {
+  const visitListSection = document.getElementById("visit-list-section");
+  const breweriesSection = document.querySelector("main > article");
+
+  if (visitListSection.style.display === "none") {
+    visitListSection.style.display = "block";
+    breweriesSection.style.display = "none";
+  } else {
+    visitListSection.style.display = "none";
+    breweriesSection.style.display = "block";
+  }
+}
 
 // Event listener for viewing visit list
 document
   .getElementById("view-visit-list")
-  .addEventListener("click", function (event) {
+  .addEventListener("click", (event) => {
     event.preventDefault();
-    const visitListSection = document.getElementById("visit-list-section");
-    if (visitListSection.style.display === "none") {
-      visitListSection.style.display = "block";
-      renderVisitList();
-    } else {
-      visitListSection.style.display = "none";
-    }
+    toggleVisitList();
   });
 
-// Load initial data
-loadVisitList();
+// Initial load of the visit list
+updateVisitList();
