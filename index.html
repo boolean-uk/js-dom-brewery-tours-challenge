@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="./styles/reset.css" />
     <link rel="stylesheet" href="./styles/index.css" />
     <title>Brewery Tours</title>
+    <script defer src="script.js"></script>
   </head>
   <body>
     <header class="main-header">
@@ -22,7 +23,7 @@
     <main>
       <aside class="filters-section">
         <h2>Filter By:</h2>
-        <form id="filter-by-type-form" autocompete="off">
+        <form id="filter-by-type-form" autocomplete="off">
           <label for="filter-by-type"><h3>Type of Brewery</h3></label>
           <select name="filter-by-type" id="filter-by-type">
             <option value="">Select a type...</option>
@@ -31,16 +32,28 @@
             <option value="brewpub">Brewpub</option>
           </select>
         </form>
+        <section id="filter-by-city-section">
+          <h3>Cities</h3>
+          <button id="clear-cities" type="button">Clear All</button>
+          <ul id="city-list">
+            <!-- City checkboxes will be dynamically added here -->
+          </ul>
+        </section>
       </aside>
       <h1>List of Breweries</h1>
+      <section id="search-breweries-section">
+        <label for="search-breweries">Search breweries:</label>
+        <input id="search-breweries" name="search-breweries" type="text" />
+      </section>
       <article>
         <ul id="breweries-list" class="breweries-list">
-          <!--
-          For each brewery returned in the search, 
-          add to the list using the HTML provided 
-          in templates/standard-list-items.html
-          -->
+          <!-- For each brewery returned in the search, add to the list using the render function -->
         </ul>
+        <div id="pagination-controls">
+          <button id="prev-page" disabled>Previous</button>
+          <span id="page-info">Page 1</span>
+          <button id="next-page" disabled>Next</button>
+        </div>
       </article>
     </main>
   </body>
