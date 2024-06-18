@@ -40,7 +40,7 @@ function renderCard(currentBrewery) {
   const addressStreet = document.createElement("p");
   addressStreet.textContent = currentBrewery.street;
   const addressEnd = document.createElement("p");
-  addressEnd.innerHTML = `${currentBrewery.city}, ${currentBrewery.postal_code}`;
+  addressEnd.innerHTML = `<strong>${currentBrewery.city}, ${currentBrewery.postal_code}</strong>`;
   address.append(addressTitle, addressStreet, addressEnd);
   const phone = document.createElement("section");
   phone.className = "phone";
