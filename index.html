@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./styles/reset.css" />
     <link rel="stylesheet" href="./styles/index.css" />
     <title>Brewery Tours</title>
   </head>
@@ -22,26 +21,39 @@
     <main>
       <aside class="filters-section">
         <h2>Filter By:</h2>
-        <form id="filter-by-type-form" autocompete="off">
+        <form id="filter-by-type-form" autocomplete="off">
           <label for="filter-by-type"><h3>Type of Brewery</h3></label>
           <select name="filter-by-type" id="filter-by-type">
             <option value="">Select a type...</option>
             <option value="micro">Micro</option>
             <option value="regional">Regional</option>
             <option value="brewpub">Brewpub</option>
+            <option value="large">Large</option>
           </select>
         </form>
+        <div class="filter-by-city-heading">
+          <h3>Cities</h3>
+          <button class="clear-all-btn">clear all</button>
+        </div>
+        <form id="filter-by-city-form"></form>
       </aside>
       <h1>List of Breweries</h1>
+      <header class="search-bar">
+        <form id="search-breweries-form" autocomplete="off">
+          <label for="search-breweries"><h2>Search breweries:</h2></label>
+          <input id="search-breweries" name="search-breweries" type="text" />
+        </form>
+      </header>
       <article>
-        <ul id="breweries-list" class="breweries-list">
-          <!--
-          For each brewery returned in the search, 
-          add to the list using the HTML provided 
-          in templates/standard-list-items.html
-          -->
-        </ul>
+        <ul id="breweries-list" class="breweries-list"></ul>
       </article>
+      <div class="pagination-controls">
+        <button id="prev-page" disabled>Previous</button>
+        <span id="page-info">Page 1</span>
+        <button id="next-page" disabled>Next</button>
+      </div>
     </main>
+    <script src="./templates/breweryObject.js"></script>
+    <script src="./index.js"></script>
   </body>
 </html>
