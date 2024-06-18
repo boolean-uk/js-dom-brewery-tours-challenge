@@ -1,0 +1,58 @@
+{
+  "visitList": [
+    {
+      "id": "a74744eb-ca98-43c5-9199-09df39f8b400",
+      "name": "3 Iron Brewing Company",
+      "brewery_type": "micro",
+      "address_1": "898 Via Lata Ste A",
+      "address_2": null,
+      "address_3": null,
+      "city": "Colton",
+      "state_province": "California",
+      "postal_code": "92324-3920",
+      "country": "United States",
+      "longitude": "-117.3066993",
+      "latitude": "34.05616889",
+      "phone": "9095334892",
+      "website_url": "http://www.3ironbrewingco.com",
+      "state": "California",
+      "street": "898 Via Lata Ste A"
+    },
+    {
+      "id": "4788221a-a03b-458c-9084-4cadd69ade6d",
+      "name": "14 Cannons Brewing Company",
+      "brewery_type": "micro",
+      "address_1": "31125 Via Colinas Ste 907",
+      "address_2": null,
+      "address_3": null,
+      "city": "Westlake Village",
+      "state_province": "California",
+      "postal_code": "91362-3974",
+      "country": "United States",
+      "longitude": "-118.802397",
+      "latitude": "34.15334",
+      "phone": "8186996165",
+      "website_url": "http://14cannons.com",
+      "state": "California",
+      "street": "31125 Via Colinas Ste 907"
+    },
+    {
+      "id": "fe6b9893-b93e-43d5-a9f6-3e0c89a3f13c",
+      "name": "1850 Brewing Company",
+      "brewery_type": "micro",
+      "address_1": null,
+      "address_2": null,
+      "address_3": null,
+      "city": "Mariposa",
+      "state_province": "California",
+      "postal_code": "95338",
+      "country": "United States",
+      "longitude": "-119.9036592",
+      "latitude": "37.570148",
+      "phone": null,
+      "website_url": "http://www.1850restaurant.com",
+      "state": "California",
+      "street": null
+    }
+  ]
+}
