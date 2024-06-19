@@ -1,11 +1,27 @@
-state = {};
+state = {
+  breweries: [],
+  currentUsState: "",
+  breweryTypeFilter: "",
+};
 
 const BREWERIES_LIST_UL = document.querySelector("#breweries-list");
 
 async function getAllBreweries() {
-  const response = await fetch("https://api.openbrewerydb.org/breweries");
+  let response = "";
+  if (state.breweryTypeFilter != "") {
+    response = await fetch(
+      `https://api.openbrewerydb.org/breweries?per_page=200&by_state=${state.currentUsState}&by_type=${state.breweryTypeFilter}`
+    );
+  } else {
+    response = await fetch(
+      `https://api.openbrewerydb.org/breweries?per_page=200&by_state=${state.currentUsState}`
+    );
+  }
+
   state.breweries = await response.json();
-  removeUnwantedBreweries();
+  for (let j = 0; j < 3; j++) {
+    removeUnwantedBreweries();
+  }
 }
 
 function removeUnwantedBreweries() {
@@ -60,12 +76,30 @@ function renderCard(currentBrewery) {
   BREWERIES_LIST_UL.appendChild(li);
 }
 
+function getUsStateInput(usState) {}
+
 function renderCards() {
+  BREWERIES_LIST_UL.innerHTML = "";
   for (let i = 0; i < state.breweries.length; i++) {
     const currentBrewery = state.breweries[i];
     renderCard(currentBrewery);
   }
 }
 function createListItem() {}
+
+const submitButton = document.querySelector("input[type=submit]");
+
+submitButton.addEventListener("click", () => {
+  event.preventDefault();
+  state.currentUsState = document.getElementById("select-state").value;
+  getAllBreweries();
+});
+
+const typeFilter = document.getElementById("filter-by-type");
+
+typeFilter.addEventListener("click", () => {
+  state.breweryTypeFilter = typeFilter.value;
+  getAllBreweries();
+});
 
 getAllBreweries();
