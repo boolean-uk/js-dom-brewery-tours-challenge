@@ -97,7 +97,7 @@ submitButton.addEventListener("click", () => {
 
 const typeFilter = document.getElementById("filter-by-type");
 
-typeFilter.addEventListener("click", () => {
+typeFilter.addEventListener("input", () => {
   state.breweryTypeFilter = typeFilter.value;
   getAllBreweries();
 });
